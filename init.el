@@ -182,18 +182,6 @@ and source-file directory for your debugger." t)
 ;; 候補の最大件数 デフォルトは 10件
 (setq ac-candidate-max 20)
 
-;; flymake
-;(add-hook 'c++-mode-hook
-;         (lambda ()
-;           ;; 存在するファイルかつ書き込み可能ファイル時のみ flymake-mode を有効にします
-;           (if (and (not (null buffer-file-name)) (file-writable-p buffer-file-name))
-;               (flymake-mode t))
-;         ))
-;(defun flymake-display-err-minibuffer ()
-;  "現在行の error や warinig minibuffer に表示する"
-;  (interactive)
-;  (let* ((line-no (flymake-current-line-no))
-;         (line-err-info-list (nth 0 (flymake-find-err-info flymake-err-info line-no)))
 ;;; YaTeX
 ;; yatex-mode の起動
 (setq auto-mode-alist 

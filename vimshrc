@@ -9,4 +9,8 @@
   alias Emacs='open -a /Applications/MacPorts/Emacs.app'
   alias emacs='emacs-23.3'
   alias Vim='open -a /Applications/MacVim.app'
+  alias pg='ps aux | grep'
+  alias pd='popd'
+  alias c='cd'
+  alias locate='/usr/bin/locate'
 

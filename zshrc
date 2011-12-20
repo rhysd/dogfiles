@@ -22,7 +22,6 @@ alias v='vim'
 alias V='Vim'
 alias c='cd'
 alias s='sudo'
-#alias grep='/opt/local/bin/grep'
 # alias g++46='g++-mp-4.6 -std=c++0x -Wall -Wextra -O2'
 
 # suffix alias

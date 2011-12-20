@@ -231,7 +231,7 @@ let g:vimfiler_safe_mode_by_default = 0
 let g:vimfiler_execute_file_list = { 'c' : 'vim',  'h' : 'vim',  'cpp' : 'vim',  'hpp' : 'vim',
                                   \ 'cc' : 'vim',  'rb' : 'vim',  'py' : 'vim',  'sh' : 'vim',
                                   \ 'java' : 'vim',  'txt' : 'vim',  'jpg' : 'open',  'png' : 'open',
-                                  \ 'pdf' : 'open',  'html' : 'open',  'mp3' : 'open',  }
+                                  \ 'pdf' : 'open',  }
 
 " }}}
 
