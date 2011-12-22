@@ -79,6 +79,7 @@ set completeopt=longest,menu
 set foldenable
 set foldmethod=marker
 " autocmd FileType cpp,c  set foldmethod=syntax
+" IMがオンのときはカーソルの色を変える．（MacVimはカーソルの形が変わるので不要）
 " カーソル下のハイライトグループを取得
 " command! -nargs=0 GetHighlightingGroup echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<' . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<' . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
 "}}}
@@ -429,8 +430,7 @@ omap ic <Plug>(textobj-wiw-i)
 " }}}
 
 " vundle.vim の設定 {{{
-filetype off                   " required!
-
+filetype off
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
@@ -469,7 +469,6 @@ Bundle 'h1mesuke/textobj-wiw'
 Bundle 'surround.vim'
 Bundle 'Align'
 " Bundle 'errormarker.vim'
-
 " Bundle 'endwise.vim'
 
 " non github repos

@@ -22,6 +22,8 @@ alias v='vim'
 alias V='Vim'
 alias c='cd'
 alias s='sudo'
+alias g='grep -l'
+alias pg='ps aux | grep'
 # alias g++46='g++-mp-4.6 -std=c++0x -Wall -Wextra -O2'
 
 # suffix alias
@@ -29,8 +31,6 @@ alias -s pdf='open -a Preview'
 
 # global alias
 # alias -g G='| grep'
-alias g='grep -l'
-alias pg='ps aux | grep'
 
 #Homebrew
 export HOMEBREW_VERBOSE=true

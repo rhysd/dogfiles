@@ -3,6 +3,7 @@ if has("gui_running")
     " set guifont=Migu\ 2M:h16
     set guifont=Ricty:h16
     set fuoptions=maxvert,maxhorz
+    set background=light
     colorscheme solarized_sl "カラースキーマの指定
     set guioptions-=T "ツールバーの非表示
     set guioptions-=r "右スクロールバー無し

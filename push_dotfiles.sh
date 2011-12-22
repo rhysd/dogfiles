@@ -7,7 +7,7 @@ do
     dotfile_name=${dotfile##*/}
     case "$dotfile_name" in
     .* )
-        dotfile_name=${dotfile##.}
+        dotfile_name=${dotfile##*.}
         ;;
     esac
     cp $dotfile $dotfile_name
