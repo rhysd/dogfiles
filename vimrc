@@ -318,9 +318,7 @@ nnoremap <BS> i<BS><ESC>
 "コマンドラインモードでのカーソル移動
 cnoremap <C-f> <Right>
 cnoremap <C-b> <Left>
-"d_で次の_の手前まで消す
-onoremap _ vf_h
-"c_で次の_の手前まで消して訂正
+"_で次の_の手前まで
 onoremap _ vf_h
 " カーソルキーでの上下移動
 nnoremap <silent><Down>  <C-w>-
