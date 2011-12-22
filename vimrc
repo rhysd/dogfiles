@@ -40,8 +40,8 @@ set vb t_vb=
 "ホワイトスペース類を表示する
 set list
 set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
-"Boostをpathに追加
-set path=.,/usr/include,/usr/local/include,/usr/local/Cellar/gcc/4.6.2/gcc/include/c++/4.6.2,/Users/rhayasd/programs/**,/Users/rhayasd
+"Boostや自前ビルドgccをpathに追加
+set path=.,/usr/include,/usr/local/include,/usr/local/Cellar/gcc/4.6.2/gcc/include/c++/4.6.2,/Users/rhayasd/programs/**
 "起動時のメッセージを消す
 set shortmess+=I
 "起動時IMEをOFFにする
@@ -125,16 +125,14 @@ endif
 let g:neocomplcache_delimiter_patterns.vim = ['#']
 let g:neocomplcache_delimiter_patterns.cpp = ['::']
 "インクルードパスの指定
-let g:neocomplcache_include_paths = {
-	\ 'cpp'  : '.,/usr/local/include,/usr/local/Cellar/gcc/4.6.2/gcc/include/c++/4.6.2',
-	\ 'c'    : '.,/usr/include',
-	\ 'perl' : '.,/System/Library/Perl,/Users/rhayasd/programs',
-	\ }
+if !exists('g:neocomplcache_include_paths')
+    let g:neocomplcache_include_paths = {}
+endif
+let g:neocomplcache_include_paths.cpp  = '.,/usr/local/include,/usr/local/Cellar/gcc/4.6.2/gcc/include/c++/4.6.2'
+let g:neocomplcache_include_paths.c    = '.,/usr/include'
+let g:neocomplcache_include_paths.perl = '.,/System/Library/Perl,/Users/rhayasd/programs'
 "インクルード文のパターンを指定
-let g:neocomplcache_include_patterns = {
-	\ 'cpp' : '^\s*#\s*include',
-	\ 'perl' : '^\s*use',
-	\ }
+let g:neocomplcache_include_patterns = { 'cpp' : '^\s*#\s*include', 'perl' : '^\s*use', }
 "インクルード先のファイル名の解析パターン
 " let g:neocomplcache_include_exprs = {
 " 	\ 'ruby' : substitute(substitute(v:fname,'::','/','g'),'$','.rb','')
@@ -184,15 +182,9 @@ if !has("g:quickrun_config")
 	let g:quickrun_config = {}
 endif
 "C++
-let g:quickrun_config.cpp = {
-	\ 'command' : 'g++-4.6.2',
-	\ 'cmdopt'  : '-std=c++0x -Wall -Wextra -O2 '
-	\}
+let g:quickrun_config.cpp = { 'command' : 'g++-4.6.2', 'cmdopt'  : '-std=c++0x -Wall -Wextra -O2 '}
 "QuickRun 実行時のバッファの開き方
-let g:quickrun_config._ = {
-	\ 'outputter' : 'quickfix',
-	\ 'split'   : 'rightbelow 10sp'
-	\}
+let g:quickrun_config._ = { 'outputter' : 'quickfix', 'split'   : 'rightbelow 10sp'}
 " }}}
 
 " Hier.vim {{{
@@ -229,11 +221,7 @@ endif
 " VimFilerの設定 {{{
 let g:vimfiler_as_default_explorer = 1
 let g:vimfiler_safe_mode_by_default = 0
-let g:vimfiler_execute_file_list = { 'c' : 'vim',  'h' : 'vim',  'cpp' : 'vim',  'hpp' : 'vim',
-                                  \ 'cc' : 'vim',  'rb' : 'vim',  'py' : 'vim',  'sh' : 'vim',
-                                  \ 'java' : 'vim',  'txt' : 'vim',  'jpg' : 'open',  'png' : 'open',
-                                  \ 'pdf' : 'open',  }
-
+let g:vimfiler_execute_file_list = { 'c' : 'vim',  'h' : 'vim',  'cpp' : 'vim',  'hpp' : 'vim', 'cc' : 'vim',  'rb' : 'vim', 'sh' : 'vim', 'pdf' : 'open', 'vim' : 'vim' }
 " }}}
 
 " neocomplecache-clang {{{
@@ -433,44 +421,44 @@ set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
 " let Vundle manage Vundle
-" required! 
+" required!
 Bundle 'gmarik/vundle'
 
 " My Bundles here:
 
 " original repos on github
-Bundle 'Shougo/vimproc'
-Bundle 'Shougo/vimshell'
-Bundle 'Shougo/vimfiler'
-Bundle 'Shougo/neocomplcache'
-Bundle 'thinca/vim-quickrun'
-Bundle 'Shougo/unite.vim'
-Bundle 'tomtom/tcomment_vim'
-Bundle 'h1mesuke/unite-outline'
-Bundle 'tsukkee/unite-help'
-Bundle 'vim-jp/vimdoc-ja'
-Bundle 'jceb/vim-hier'
-Bundle 'rhysd/my-vimtoggle'
-Bundle 'rhysd/my-endwise'
-Bundle 'Shougo/clang_complete'
-Bundle 'kana/vim-textobj-user'
-Bundle 'kana/vim-textobj-indent'
-" Bundle 'kana/vim-textobj-lastpat' これと同様の効果をキーマップに設定済み
-Bundle 'h1mesuke/textobj-wiw'
-" Bundle 'ujihisa/vimshell-ssh'
-" Bundle 'h1mesuke/vim-alignta'
-" Bundle 'ujihisa/unite-colorscheme'
-" Bundle 'ujihisa/neco-look'
-" Bundle 'taku-o/vim-toggle'
-
-" vim-scripts repos
-Bundle 'surround.vim'
-Bundle 'Align'
-" Bundle 'errormarker.vim'
+" Bundle 'Shougo/vimproc'
+" Bundle 'Shougo/vimshell'
+" Bundle 'Shougo/vimfiler'
+" Bundle 'Shougo/neocomplcache'
+" Bundle 'thinca/vim-quickrun'
+" Bundle 'Shougo/unite.vim'
+" Bundle 'tomtom/tcomment_vim'
+" Bundle 'h1mesuke/unite-outline'
+" Bundle 'tsukkee/unite-help'
+" Bundle 'vim-jp/vimdoc-ja'
+" Bundle 'jceb/vim-hier'
+" Bundle 'rhysd/my-vimtoggle'
+" Bundle 'rhysd/my-endwise'
+" Bundle 'Shougo/clang_complete'
+" Bundle 'kana/vim-textobj-user'
+" Bundle 'kana/vim-textobj-indent'
+" " Bundle 'kana/vim-textobj-lastpat' これと同様の効果をキーマップに設定済み
+" Bundle 'h1mesuke/textobj-wiw'
+" " Bundle 'ujihisa/vimshell-ssh'
+" " Bundle 'h1mesuke/vim-alignta'
+" " Bundle 'ujihisa/unite-colorscheme'
+" " Bundle 'ujihisa/neco-look'
+" " Bundle 'taku-o/vim-toggle'
+" 
+" " vim-scripts repos
+" Bundle 'surround.vim'
+" Bundle 'Align'
+" " Bundle 'errormarker.vim'
 " Bundle 'endwise.vim'
 
 " non github repos
 " Bundle 'git://git.wincent.com/command-t.git'
 
-filetype plugin indent on     " required! 
+filetype plugin indent on     " required!
 " }}}
