@@ -68,7 +68,7 @@ set lazyredraw
 set ttyfast
 "MacVim Kaoriyaに標準で入っている辞書を無効化
 let g:plugin_dicwin_disable = 1
-"imsertモードから抜けるときにIMをOFFにする（GUI(MacVim)は自動的にやってくれる
+"insertモードから抜けるときにIMをOFFにする（GUI(MacVim)は自動的にやってくれる
 "iminsert=2にすると，insertモードに戻ったときに自動的にIMの状態が復元される
 if !has("gui_running")
 	inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
@@ -79,13 +79,15 @@ set completeopt=longest,menu
 set foldenable
 set foldmethod=marker
 " autocmd FileType cpp,c  set foldmethod=syntax
-" IMがオンのときはカーソルの色を変える．（MacVimはカーソルの形が変わるので不要）
+" C++ ラベル字下げ設定
+set cinoptions+=:0,g0
 " カーソル下のハイライトグループを取得
 " command! -nargs=0 GetHighlightingGroup echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<' . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<' . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
 "}}}
 
 " user defined commands {{{
 command! RmDust :%s/\s\s*$//g | :nohlsearch
+command! EditVimrc :e $MYVIMRC $MYGVIMRC
 "}}}
 
 " neocomplcacheの設定 {{{
@@ -427,34 +429,34 @@ Bundle 'gmarik/vundle'
 " My Bundles here:
 
 " original repos on github
-" Bundle 'Shougo/vimproc'
-" Bundle 'Shougo/vimshell'
-" Bundle 'Shougo/vimfiler'
-" Bundle 'Shougo/neocomplcache'
-" Bundle 'thinca/vim-quickrun'
-" Bundle 'Shougo/unite.vim'
-" Bundle 'tomtom/tcomment_vim'
-" Bundle 'h1mesuke/unite-outline'
-" Bundle 'tsukkee/unite-help'
-" Bundle 'vim-jp/vimdoc-ja'
-" Bundle 'jceb/vim-hier'
-" Bundle 'rhysd/my-vimtoggle'
-" Bundle 'rhysd/my-endwise'
-" Bundle 'Shougo/clang_complete'
-" Bundle 'kana/vim-textobj-user'
-" Bundle 'kana/vim-textobj-indent'
-" " Bundle 'kana/vim-textobj-lastpat' これと同様の効果をキーマップに設定済み
-" Bundle 'h1mesuke/textobj-wiw'
-" " Bundle 'ujihisa/vimshell-ssh'
-" " Bundle 'h1mesuke/vim-alignta'
-" " Bundle 'ujihisa/unite-colorscheme'
-" " Bundle 'ujihisa/neco-look'
-" " Bundle 'taku-o/vim-toggle'
-" 
-" " vim-scripts repos
-" Bundle 'surround.vim'
-" Bundle 'Align'
-" " Bundle 'errormarker.vim'
+Bundle 'Shougo/vimproc'
+Bundle 'Shougo/vimshell'
+Bundle 'Shougo/vimfiler'
+Bundle 'Shougo/neocomplcache'
+Bundle 'thinca/vim-quickrun'
+Bundle 'Shougo/unite.vim'
+Bundle 'tomtom/tcomment_vim'
+Bundle 'h1mesuke/unite-outline'
+Bundle 'tsukkee/unite-help'
+Bundle 'vim-jp/vimdoc-ja'
+Bundle 'jceb/vim-hier'
+Bundle 'rhysd/my-vimtoggle'
+Bundle 'rhysd/my-endwise'
+Bundle 'Shougo/neocomplcache-clang'
+Bundle 'kana/vim-textobj-user'
+Bundle 'kana/vim-textobj-indent'
+" Bundle 'kana/vim-textobj-lastpat' これと同様の効果をキーマップに設定済み
+Bundle 'h1mesuke/textobj-wiw'
+" Bundle 'ujihisa/vimshell-ssh'
+" Bundle 'h1mesuke/vim-alignta'
+" Bundle 'ujihisa/unite-colorscheme'
+" Bundle 'ujihisa/neco-look'
+" Bundle 'taku-o/vim-toggle'
+
+" vim-scripts repos
+Bundle 'surround.vim'
+Bundle 'Align'
+" Bundle 'errormarker.vim'
 " Bundle 'endwise.vim'
 
 " non github repos
