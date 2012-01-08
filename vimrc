@@ -81,6 +81,11 @@ set foldmethod=marker
 " autocmd FileType cpp,c  set foldmethod=syntax
 " C++ ラベル字下げ設定
 set cinoptions+=:0,g0
+" 編集履歴を保存して終了する
+if has('persistent_undo')
+    set undodir=~/.vim/undo
+    set undofile
+endif
 " カーソル下のハイライトグループを取得
 " command! -nargs=0 GetHighlightingGroup echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<' . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<' . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
 "}}}
