@@ -173,6 +173,13 @@ let g:neocomplcache_snippets_dir = $HOME.'/.vim/snippets'
 " Unite.vim {{{
 "insertモードをデフォルトに
 let g:unite_enable_start_insert = 1
+" 無指定にすることで高速化
+let g:unite_source_file_mru_filename_format = ''
+" most recently used のリストサイズ
+let g:unite_source_file_mru_limit = 100
+" highlight settings
+let g:unite_cursor_line_highlight = 'TabLineSel'
+" let g:unite_abbr_highlight = 'TabLine'
 " }}}
 
 " VimShellの設定 {{{
