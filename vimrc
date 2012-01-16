@@ -22,6 +22,8 @@ set wrapscan
 set showmatch
 "カーソルが何行何列目にあるか表示する
 set ruler
+"エンコーディング
+set encoding=utf-8
 "最下ウィンドウにステータス行が表示される時
 "1: ウィンドウの数が2以上 2:常
 set laststatus=2
@@ -254,6 +256,12 @@ let g:neocomplcache_clang_user_options =
     \'-I /usr/local/Cellar/boost/1.48.0/include '
 " }}}
 
+" vim-powerlineの設定 {{{
+" キャッシュファイルの保存場所
+let g:Powerline_cache_file=expand('~/.Powerline.cache')
+
+" }}}
+
 " キーマップの設定 {{{
 "insertモードから抜ける
 inoremap jj <ESC>
@@ -459,12 +467,12 @@ Bundle 'kana/vim-textobj-user'
 Bundle 'kana/vim-textobj-indent'
 " Bundle 'kana/vim-textobj-lastpat' これと同様の効果をキーマップに設定済み
 Bundle 'h1mesuke/textobj-wiw'
+Bundle 'Lokaltog/vim-powerline'
 " Bundle 'ujihisa/vimshell-ssh'
 " Bundle 'h1mesuke/vim-alignta'
 " Bundle 'ujihisa/unite-colorscheme'
 " Bundle 'ujihisa/neco-look'
 " Bundle 'taku-o/vim-toggle'
-
 " vim-scripts repos
 Bundle 'surround.vim'
 Bundle 'Align'
