@@ -279,10 +279,12 @@ nnoremap k gk
 "Esc->Escで検索結果をクリア
 nnoremap <silent><ESC><ESC> :nohlsearch<CR><ESC>
 "行頭・行末の移動
-nnoremap - $
-vnoremap - $
-nnoremap ^ 0
-vnoremap ^ 0
+nnoremap 0 $
+vnoremap 0 $
+nnoremap <TAB> ^
+vnoremap <TAB> ^
+nnoremap - 0
+vnoremap - 0
 " ffで直前のfを再実行
 nnoremap ff ;
 vnoremap ff ;
@@ -327,8 +329,6 @@ autocmd BufNewFile *.rb 0r ~/.vim/skeletons/ruby.skel
 nnoremap <Space> i<Space><ESC>l
 "<CR>の挙動
 nnoremap <CR> i<CR><ESC>
-"<TAB>の挙動
-nnoremap <TAB> >>
 "<BS>の挙動
 nnoremap <BS> i<BS><ESC>
 "コマンドラインモードでのカーソル移動
