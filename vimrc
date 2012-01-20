@@ -185,9 +185,12 @@ let g:unite_cursor_line_highlight = 'TabLineSel'
 " }}}
 
 " VimShellの設定 {{{
+" 追加プロンプト
 let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
+" 右プロンプト
 let g:vimshell_right_prompt = 'vimshell#vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
-let g:vimshell_split_height = 20
+" 分割割合(%)
+let g:vimshell_split_height = 25
 " }}}
 
 " vim-quickrunの設定 {{{
@@ -258,11 +261,13 @@ let g:neocomplcache_clang_user_options =
 
 " vim-powerlineの設定 {{{
 " キャッシュファイルの保存場所
-let g:Powerline_cache_file=expand('~/.Powerline.cache')
+" let g:Powerline_cache_file=expand('~/.Powerline.cache')
+let g:Powerline_cache_file=''
 
 " }}}
 
 " キーマップの設定 {{{
+" Base {{{
 "insertモードから抜ける
 inoremap jj <ESC>
 inoremap <C-j> j
@@ -274,12 +279,10 @@ nnoremap k gk
 "Esc->Escで検索結果をクリア
 nnoremap <silent><ESC><ESC> :nohlsearch<CR><ESC>
 "行頭・行末の移動
-nnoremap 1 0
-vnoremap 1 0
-nnoremap 0 ^
-vnoremap 0 ^
-nnoremap 9 $
-vnoremap 9 $
+nnoremap - $
+vnoremap - $
+nnoremap ^ 0
+vnoremap ^ 0
 " ffで直前のfを再実行
 nnoremap ff ;
 vnoremap ff ;
@@ -289,7 +292,10 @@ nnoremap <silent>; :<C-u>call append(expand('.'), '')<CR>j
 nnoremap <Leader>vh :vert bo help<Space>
 "insertモード時はEmacsライクなバインディング．ポップアップが出ないように移動．
 inoremap <C-e> <END>
-inoremap <C-a> <HOME>
+inoremap <C-e> <END>
+cnoremap <C-e> <END>
+cnoremap <C-a> <HOME>
+inoremap <C-a> <HOME>noremap <C-a> <HOME>
 inoremap <expr><C-n> pumvisible() ? "\<C-y>\<Down>" : "\<Down>"
 inoremap <expr><C-p> pumvisible() ? "\<C-y>\<Up>" : "\<Up>"
 inoremap <expr><C-b> pumvisible() ? "\<C-y>\<Left>" : "\<Left>"
@@ -335,7 +341,6 @@ nnoremap <silent><Down>  <C-w>-
 nnoremap <silent><Up>    <C-w>+
 nnoremap <silent><Left>  <C-w><
 nnoremap <silent><Right> <C-w>>
-
 " ペーストした文字列をビジュアルモードで選択
 nnoremap <expr>gp '`['.strpart(getregtype(),0,1).'`]'
 " 日付の挿入
@@ -350,8 +355,9 @@ nnoremap <Leader>te :tabnew<CR>
 nnoremap <Leader>tn :tabnext<CR>
 nnoremap <Leader>tp :tabprevious<CR>
 nnoremap <Leader>tc :tabclose<CR>
+" }}}
 
-"VimShellの設定
+"VimShellの設定 {{{
 nmap <expr><Leader>vs "\<Plug>(vimshell_split_switch)"
 
 "neocomplcacheの設定
@@ -372,8 +378,9 @@ inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
 inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
 inoremap <expr><C-y> neocomplcache#close_popup()
 inoremap <expr><C-e> neocomplcache#cancel_popup()
+" }}}
 
-"Unite.vimのキーマップ
+"Unite.vimのキーマップ {{{
 "insertモード時はC-gでいつでもバッファを閉じられる（絞り込み欄が空の時はC-hでもOK）
 autocmd FileType unite imap <buffer> <C-g> <Plug>(unite_exit)
 "ファイル上にカーソルがある時，pでプレビューを見る
@@ -404,8 +411,9 @@ nnoremap <silent> <Leader>y  :<C-u>Unite -no-start-insert history/yank<CR>
 nnoremap <silent> <Leader>h  :<C-u>UniteWithInput -no-start-insert help<CR>
 "Uniteバッファの復元
 nnoremap <silent> <Leader>r  :<C-u>UniteResume<CR>
+" }}}
 
-"QuickRunのキーマップ
+"QuickRunのキーマップ {{{
 nnoremap <Leader>q  <Nop>
 nmap     <silent><Leader>qr <Plug>(quickrun):copen<CR>
 nnoremap <Leader>qR :w<CR>:QuickRun<Space>
@@ -414,27 +422,32 @@ nnoremap <Leader>qR :w<CR>:QuickRun<Space>
 autocmd FileType qf nnoremap <buffer><silent> q :q<CR>
 autocmd FileType qf nnoremap <buffer><silent> j :cn<CR>
 autocmd FileType qf nnoremap <buffer><silent> k :cp<CR>
+" }}}
 
-"tcomment.vimのキーマップ
+"tcomment.vimのキーマップ {{{
 nnoremap <Leader>c :TComment<CR>
 vnoremap <Leader>c :TComment<CR>
 vnoremap <Leader>C :TCommentBlock<CR>
+" }}}
 
-"endwise.vimのキーマップ
+"endwise.vimのキーマップ {{{
 autocmd FileType ruby imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"
+" }}}
 
-"vim-toggleのキーマップ
+"vim-toggleのキーマップ {{{
 " nmap <silent><C-t> <Plug>MyToggleN
+" }}}
 
-" vimfiler.vim のキーマップ
+" vimfiler.vim のキーマップ {{{
 nnoremap <Leader>f :VimFiler<CR>
 nnoremap <Leader>F :VimFiler<Space>-no-quit<CR>
+" }}}
 
-" textobj-wiw のキーマップ
+" textobj-wiw のキーマップ {{{
 let g:textobj_wiw_no_default_key_mappings = 1 " デフォルトキーマップの解除
 omap ac <Plug>(textobj-wiw-a)
 omap ic <Plug>(textobj-wiw-i)
-
+" }}}
 " }}}
 
 " vundle.vim の設定 {{{
@@ -467,7 +480,9 @@ Bundle 'kana/vim-textobj-user'
 Bundle 'kana/vim-textobj-indent'
 " Bundle 'kana/vim-textobj-lastpat' これと同様の効果をキーマップに設定済み
 Bundle 'h1mesuke/textobj-wiw'
-Bundle 'Lokaltog/vim-powerline'
+" if !has('gui_running')
+" Bundle 'Lokaltog/vim-powerline'
+" endif
 " Bundle 'ujihisa/vimshell-ssh'
 " Bundle 'h1mesuke/vim-alignta'
 " Bundle 'ujihisa/unite-colorscheme'

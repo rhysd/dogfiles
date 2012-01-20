@@ -22,7 +22,8 @@ alias v='vim'
 alias V='Vim'
 alias c='cd'
 alias s='sudo'
-alias g='grep -l'
+alias gr='grep -l'
+alias g=git
 alias pg='ps aux | grep'
 # alias g++46='g++-mp-4.6 -std=c++0x -Wall -Wextra -O2'
 
