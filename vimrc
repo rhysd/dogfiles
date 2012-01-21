@@ -267,7 +267,7 @@ let g:Powerline_cache_file=''
 " }}}
 
 " キーマップの設定 {{{
-" Base {{{
+" Base Settings {{{
 "insertモードから抜ける
 inoremap jj <ESC>
 inoremap <C-j> j
@@ -294,10 +294,11 @@ nnoremap <silent>; :<C-u>call append(expand('.'), '')<CR>j
 nnoremap <Leader>vh :vert bo help<Space>
 "insertモード時はEmacsライクなバインディング．ポップアップが出ないように移動．
 inoremap <C-e> <END>
-inoremap <C-e> <END>
+vnoremap <C-e> <END>
 cnoremap <C-e> <END>
+inoremap <C-a> <HOME>
+vnoremap <C-a> <HOME>
 cnoremap <C-a> <HOME>
-inoremap <C-a> <HOME>noremap <C-a> <HOME>
 inoremap <expr><C-n> pumvisible() ? "\<C-y>\<Down>" : "\<Down>"
 inoremap <expr><C-p> pumvisible() ? "\<C-y>\<Up>" : "\<Up>"
 inoremap <expr><C-b> pumvisible() ? "\<C-y>\<Left>" : "\<Left>"
@@ -307,7 +308,9 @@ inoremap <expr><C-f> pumvisible() ? "\<C-y>\<Right>" : "\<Right>"
 " inoremap <C-b> <Left>
 " inoremap <C-f> <Right>
 inoremap <C-d> <Del>
+cnoremap <C-d> <Del>
 inoremap <C-k> <C-o>D
+cnoremap <C-k> <C-o>D
 "バッファ切り替え
 nnoremap <silent><C-n>   :<C-u>bnext<CR>
 nnoremap <silent><C-p>   :<C-u>bprevious<CR>
@@ -346,11 +349,11 @@ nnoremap <expr>gp '`['.strpart(getregtype(),0,1).'`]'
 " 日付の挿入
 inoremap <C-x>date <C-r>=strftime('%Y/%m/%d(%a) %H:%M')<CR>
 nnoremap <Leader>date :r<Space>!date<Space>+'\%Y/\%m/\%d(\%a)<Space>\%H:\%M'<CR>
-" text-obj-lastpat
+" text-obj-lastpat:sでマッチした部分をtextobjに
 nnoremap di/ d//e<CR>
 nnoremap ci/ c//e<CR>
 nnoremap yi/ y//e<CR>
-" Tabの設定
+" タブの設定
 nnoremap <Leader>te :tabnew<CR>
 nnoremap <Leader>tn :tabnext<CR>
 nnoremap <Leader>tp :tabprevious<CR>
@@ -431,7 +434,8 @@ vnoremap <Leader>C :TCommentBlock<CR>
 " }}}
 
 "endwise.vimのキーマップ {{{
-autocmd FileType ruby imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"
+autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"
+"
 " }}}
 
 "vim-toggleのキーマップ {{{
