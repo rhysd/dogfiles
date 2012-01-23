@@ -259,13 +259,6 @@ let g:neocomplcache_clang_user_options =
     \'-I /usr/local/Cellar/boost/1.48.0/include '
 " }}}
 
-" vim-powerlineの設定 {{{
-" キャッシュファイルの保存場所
-" let g:Powerline_cache_file=expand('~/.Powerline.cache')
-let g:Powerline_cache_file=''
-
-" }}}
-
 " キーマップの設定 {{{
 " Base Settings {{{
 "insertモードから抜ける
