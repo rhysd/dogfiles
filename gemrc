@@ -4,7 +4,7 @@
 - http://gems.github.com
 :benchmark: false
 :update_sources: true
-nstall: --no-rdoc --no-ri
+install: --no-rdoc --no-ri
 update: --no-rdoc --no-ri
 search: --remote
 specification: --remote
