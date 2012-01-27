@@ -1,6 +1,6 @@
 #!/bin/sh
 
-dotfiles="$HOME/.vimrc $HOME/.vimshrc $HOME/.gvimrc $HOME/.bashrc $HOME/.zshrc $HOME/.emacs.d/init.el $HOME/.gemrc"
+dotfiles="$HOME/.vimrc $HOME/.vimshrc $HOME/.gvimrc $HOME/.bashrc $HOME/.zshrc $HOME/.emacs.d/init.el $HOME/.gemrc $HOME/.vim/snippets"
 
 for dotfile in $dotfiles
 do
@@ -10,7 +10,7 @@ do
         dotfile_name=${dotfile##*.}
         ;;
     esac
-    cp $dotfile $dotfile_name
+    cp -r $dotfile $dotfile_name
 done
 git add .
 git commit -m "updated at `date`"
