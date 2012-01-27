@@ -278,11 +278,13 @@ nnoremap <TAB> ^
 vnoremap <TAB> ^
 nnoremap - 0
 vnoremap - 0
-" ffで直前のfを再実行
-nnoremap ff ;
-vnoremap ff ;
+" q:は誤爆しやすい
+nnoremap q; q:
+nnoremap q: :q
+" insertモードでもquit
+inoremap <C-q><C-q> <ESC>:wqa<CR>
 " 空行挿入
-nnoremap <silent>; :<C-u>call append(expand('.'), '')<CR>j
+nnoremap <silent><Space> :<C-u>call append(expand('.'), '')<CR>j
 "ヘルプ表示
 nnoremap <Leader>vh :vert bo help<Space>
 "insertモード時はEmacsライクなバインディング．ポップアップが出ないように移動．
@@ -315,14 +317,12 @@ function! s:good_width()
         vertical resize 84
     endif
 endfunction
-nnoremap <C-j> <C-w>j:call <SID>good_width()<CR>
-nnoremap <C-h> <C-w>h:call <SID>good_width()<CR>
-nnoremap <C-l> <C-w>l:call <SID>good_width()<CR>
-nnoremap <C-k> <C-w>k:call <SID>good_width()<CR>
+nnoremap <silent><C-j> <C-w>j:call <SID>good_width()<CR>
+nnoremap <silent><C-h> <C-w>h:call <SID>good_width()<CR>
+nnoremap <silent><C-l> <C-w>l:call <SID>good_width()<CR>
+nnoremap <silent><C-k> <C-w>k:call <SID>good_width()<CR>
 "Ruby新規ファイルを開いたときに書きこむ
 autocmd BufNewFile *.rb 0r ~/.vim/skeletons/ruby.skel
-"Spaceの挙動
-nnoremap <Space> i<Space><ESC>l
 "<CR>の挙動
 nnoremap <CR> i<CR><ESC>
 "<BS>の挙動
@@ -477,14 +477,14 @@ Bundle 'kana/vim-textobj-user'
 Bundle 'kana/vim-textobj-indent'
 " Bundle 'kana/vim-textobj-lastpat' これと同様の効果をキーマップに設定済み
 Bundle 'h1mesuke/textobj-wiw'
-" if !has('gui_running')
+Bundle 'rhysd/accelerate'
 " Bundle 'Lokaltog/vim-powerline'
-" endif
 " Bundle 'ujihisa/vimshell-ssh'
 " Bundle 'h1mesuke/vim-alignta'
 " Bundle 'ujihisa/unite-colorscheme'
 " Bundle 'ujihisa/neco-look'
 " Bundle 'taku-o/vim-toggle'
+
 " vim-scripts repos
 Bundle 'surround.vim'
 Bundle 'Align'

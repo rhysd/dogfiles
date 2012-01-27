@@ -104,6 +104,11 @@ setopt auto_cd
 setopt auto_pushd
 setopt pushd_ignore_dups
 
+# フロー制御の無効化
+unsetopt flow_control
+setopt no_flow_control
+stty -ixon
+
 # コマンド修正
 # setopt correct
 
