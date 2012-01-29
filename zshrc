@@ -15,9 +15,9 @@ alias locate='/usr/bin/locate'
 
 alias -g ls='ls -G'
 alias -g l='ls'
-alias -g l!='ls -R'
+alias -g lr='ls -R'
 alias -g ll='ls -la'
-alias -g lr='ls -laR'
+alias -g llr='ls -laR'
 alias -g la='ls -a'
 alias -g pd='popd'
 alias -g v='vim'
@@ -99,6 +99,7 @@ bindkey "^P" history-beginning-search-backward-end
 bindkey "^N" history-beginning-search-forward-end
 bindkey '^[^i' reverse-menu-complete
 
+# history pattern matching
 # zsh 4.3.10 or later is required
 bindkey '^R' history-incremental-pattern-search-backward
 bindkey '^S' history-incremental-pattern-search-forward
