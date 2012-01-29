@@ -1,0 +1,39 @@
+# 標準のスニペットを上書き
+delete      for
+snippet     for
+abbr        for(;;) {}
+    for(${1}; ${2}; ${3}) {
+        ${0}
+    }
+
+delete      template
+snippet     template
+abbr        template<>
+    template<class ${0:T}>
+
+delete      inc
+snippet     inc
+alias       #inc,#include
+abbr        #include <>
+    #include <${1}>${0}
+
+delete      inc2
+snippet     inc2
+alias       #inc2,#include2
+abbr        #include ".hpp"
+    #include "${1}.hpp"${0}
+
+snippet     cout
+alias       std::cout
+abbr        std::cout << "\n";
+    std::cout << "${1}\n";
+    ${0}
+
+snippet     static_assert
+abbr        static_assert(,"")
+    static_assert( ${1}, "${2}" );
+    ${0}
+
+snippet     decltype
+abbr        decltype()
+    decltype(${1})${0}

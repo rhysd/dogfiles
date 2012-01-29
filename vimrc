@@ -283,6 +283,8 @@ nnoremap q; q:
 nnoremap q: :q
 " insertモードでもquit
 inoremap <C-q><C-q> <ESC>:wqa<CR>
+" insertモードでもcmdmode
+inoremap <C-:> <Esc>:
 " 空行挿入
 nnoremap <silent><Space> :<C-u>call append(expand('.'), '')<CR>j
 "ヘルプ表示
@@ -373,7 +375,6 @@ inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
 inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
 inoremap <expr><C-y> neocomplcache#close_popup()
-inoremap <expr><C-e> neocomplcache#cancel_popup()
 " }}}
 
 "Unite.vimのキーマップ {{{
@@ -445,6 +446,11 @@ let g:textobj_wiw_no_default_key_mappings = 1 " デフォルトキーマップ�
 omap ac <Plug>(textobj-wiw-a)
 omap ic <Plug>(textobj-wiw-i)
 " }}}
+
+" lindapp_cpp の キーマップ {{{
+autocmd FileType cpp call lindapp_cpp#my_cpp_mapping()
+autocmd FileType cpp inoremap <silent><buffer><expr><CR> lindapp_cpp#expand_brace()."\<CR>"
+autocmd FileType cpp nmap <silent><buffer><leader>dt <Plug>lindapp_cpp_return_type
 " }}}
 
 " vundle.vim の設定 {{{
@@ -478,6 +484,7 @@ Bundle 'kana/vim-textobj-indent'
 " Bundle 'kana/vim-textobj-lastpat' これと同様の効果をキーマップに設定済み
 Bundle 'h1mesuke/textobj-wiw'
 Bundle 'rhysd/accelerate'
+Bundle 'rhysd/lindapp_cpp'
 " Bundle 'Lokaltog/vim-powerline'
 " Bundle 'ujihisa/vimshell-ssh'
 " Bundle 'h1mesuke/vim-alignta'

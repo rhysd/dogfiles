@@ -99,6 +99,10 @@ bindkey "^P" history-beginning-search-backward-end
 bindkey "^N" history-beginning-search-forward-end
 bindkey '^[^i' reverse-menu-complete
 
+# zsh 4.3.10 or later is required
+bindkey '^R' history-incremental-pattern-search-backward
+bindkey '^S' history-incremental-pattern-search-forward
+
 # cd
 setopt auto_cd
 setopt auto_pushd
@@ -123,6 +127,13 @@ setopt noautoremoveslash
 
 # 日本語表示
 setopt print_eight_bit
+
+function Emacs(){
+    if [ "$1" != "" ]; then
+        touch $1
+    fi
+    open -a /usr/local/bin/emacs $1
+}
 
 # Twitter Timeline Prompt
 ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb init
