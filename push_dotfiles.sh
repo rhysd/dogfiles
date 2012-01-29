@@ -12,6 +12,6 @@ do
     esac
     cp -r $dotfile $dotfile_name
 done
-git add *
+git add `find ./*`
 git commit -m "updated at `date`"
 git push origin master
