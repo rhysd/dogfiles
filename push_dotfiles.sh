@@ -11,8 +11,7 @@ do
         ;;
     esac
     cp -r $dotfile $dotfile_name
-    echo "cp -r ${dotfile} ${dotfile_name}"
 done
-git add .
+git add *
 git commit -m "updated at `date`"
 git push origin master
