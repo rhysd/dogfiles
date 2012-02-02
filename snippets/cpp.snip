@@ -43,37 +43,45 @@ snippet     decltype
 abbr        decltype()
     decltype(${1})${0}
 
-snippet     iostream
+snippet     iostream_inclusion
+prev_word   '^'
 abbr        #include <iostream>
     #include <iostream>${0}
 
-snippet     vector
+snippet     vector_inclusion
+prev_word   '^'
 abbr        #include <vector>
     #include <vector>${0}
 
-snippet     algorithm
+snippet     algorithm_inclusion
+prev_word   '^'
 abbr        #include <algorithm>
     #include <algorithm>${0}
 
-snippet     memory
+snippet     memory_inclusion
+prev_word   '^'
 abbr        #include <memory>
     #include <memory>${0}
 
-snippet     unordered_map
+snippet     unordered_map_inclusion
+prev_word   '^'
 abbr        #include <unordered_map>
     #include <unordered_map>${0}
 
-delete      string.h
-snippet     string
+delete      string.h_inclusion
+snippet     string_inclusion
+prev_word   '^'
 abbr        #include <string>
     #include <string>${0}
 
-snippet     cstddef
+snippet     cstddef_inclusion
+prev_word   '^'
 abbr        #include <cstddef>
     #include <cstddef>
     ${0}
     using std::size_t;
 
-snippet     optional
+snippet     optional_inclusion
+prev_word   '^'
 abbr        #include <boost/optional.hpp>
     #include <boost/optional.hpp>${0}

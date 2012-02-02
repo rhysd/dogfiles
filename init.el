@@ -1,29 +1,17 @@
-; key-binding for activate uim (ex. C-\)
-;(global-set-key "\C-\\" 'uim-mode)
-
 ;; lispディレクトリのパスの追加
-(setq load-path (cons "~/.emacs.d/elisp" load-path))
-(setq load-path (cons "~/.emacs.d/elisp/company" load-path))
-(setq load-path (cons "~/.emacs.d/elisp/ruby" load-path))
-(setq load-path (cons "~/.emacs.d/elisp/yatex" load-path))
+(setq load-path (cons "~/.emacs.d/site-lisp" load-path))
+(setq load-path (cons "~/.emacs.d/site-lisp/ruby" load-path))
+(setq load-path (cons "~/.emacs.d/site-lisp/company" load-path))
+(setq load-path (cons "~/.emacs.d/site-lisp/yatex" load-path))
 
-;; C+/ にundoを割り当てる
-;;(global-set-key "\C-/" 'advertised-undo)
+;; デフォルトの透明度を設定する (80%)
+(add-to-list 'default-frame-alist '(alpha . 80))
 
-;; encoding UTF-8 (MacOS X)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(set-buffer-file-coding-system 'utf-8)
-(setq default-buffer-file-coding-system 'utf-8)
-
-;; clipboardを共有する
-;;(setq x-select-enable-clipboard t)
-
-;;タブ幅を 4 に設定
-(setq-default tab-width 4)
+;;タブ幅を 2 に設定
+(setq-default tab-width 2)
 ;;タブ幅の倍数を設定
 (setq tab-stop-list
-  '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72))
+  '(2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 42 44 46 48 50 52 54 56 58 60))
 ;;タブではなくスペースを使う
 (setq-default indent-tabs-mode nil)
 (setq indent-line-function 'indent-relative-maybe)
@@ -32,23 +20,23 @@
 (setq default-frame-alist
       (append (list
          '(width . 120)
-         '(height . 56)
+         '(height . 40)
          '(top . 0)
          '(left . 0)
-         '(alpha . (80 80 80 80))
-;;         '(font . "Ricty-15")
-         '(font . "Hiragino Mincho Pro-15")
+         ;;'(alpha . (70 50 50 30))
+         ;;'(font . "Monospace-11")
+         '(font . "Ricty-11")
          )
               default-frame-alist))
 
 (if window-system (progn
 
   ;; 文字の色を設定します。
-  (add-to-list 'default-frame-alist '(foreground-color . "white smoke"))
+  (add-to-list 'default-frame-alist '(foreground-color . "white"))
   ;; 背景色を設定します。
   (add-to-list 'default-frame-alist '(background-color . "black"))
   ;; カーソルの色を設定します。
-  (add-to-list 'default-frame-alist '(cursor-color . "white smoke"))
+  (add-to-list 'default-frame-alist '(cursor-color . "white"))
   ;; マウスポインタの色を設定します。
   ;;(add-to-list 'default-frame-alist '(mouse-color . "SlateBlue2"))
   ;; モードラインの文字の色を設定します。
@@ -65,13 +53,13 @@
 ))
 
 ;;スクロールバー
-;;(set-scroll-bar-mode 'right) ;; 右側
+(set-scroll-bar-mode 'right) ;; 右側
 
 ;;; スクロールを一行ずつにする
 (setq scroll-step 1)
 
 ;;; ツールバーを消す
-;(tool-bar-mode 0)
+(tool-bar-mode 0)
 
 ;;;メニューバーを消す
 (menu-bar-mode 0)
@@ -85,8 +73,8 @@
 ;;; バックアップファイルを作らない
 (setq backup-inhibited t)
 
-;;行番号を表示
-;;(require 'linum)
+;;行番号を表示(linum.el)
+(require 'linum)
 (global-linum-mode)
 
 ;;C-hをバックスペースに割り当てる
@@ -95,6 +83,20 @@
 ;;C-x h をヘルプに割り当てる
 ;;; overrides mark-whole-buffer
 (global-set-key "\C-xh" 'help-command)
+
+
+;;twittering-mode
+;;(add-to-list 'load-path "~/.emacs.d/elisp")
+;;(require 'twittering-mode)
+;;(setq twittering-username "Linda_PlusPlus")
+;;(setq twittering-password "Se90i1sB6e2")
+
+;;encordingをutf-8に
+(set-terminal-coding-system 'euc-japan)
+(set-keyboard-coding-system 'utf-8)
+(set-buffer-file-coding-system 'utf-8)
+(setq default-buffer-file-coding-system 'utf-8)
+
 
 (add-hook 'c-mode-common-hook
           '(lambda ()
@@ -138,13 +140,15 @@ the directory containing file becomes the initial working directory
 and source-file directory for your debugger." t)
 
 ;; rails
-;;(defun try-complete-abbrev (old)
-;;  (if (expand-abbrev) t nil))
-;;(setq hippie-expand-try-functions-list
-;;      '(try-complete-abbrev
-;;        try-complete-file-name
-;;        try-expand-dabbrev))
-;;(require 'cl)
+;(defun try-complete-abbrev (old)
+;  (if (expand-abbrev) t nil))
+;(setq hippie-expand-try-functions-list
+;      '(try-complete-abbrev
+;        try-complete-file-name
+;        try-expand-dabbrev))
+;(setq rails-use-mongrel t)
+;(require 'cl)
+;(require 'rails)
 
 ;; ruby-block
 (require 'ruby-block)
@@ -182,6 +186,21 @@ and source-file directory for your debugger." t)
 ;; 候補の最大件数 デフォルトは 10件
 (setq ac-candidate-max 20)
 
+;;yatex
+;(autoload 'yatex-mode "yatex" "Yet Another LaTeX mode" t)
+;(setq load-path (cons "/usr/share/emacs23/site-lisp/yatex" load-path))
+;(modify-coding-system-alist 'file "\\.tex$" 'euc-jp)
+;; 従来どおりのキーマップを使う
+;(setq YaTeX-inhibit-prefix-letter nil)
+;(setq auto-mode-alist
+;      (append '(("\\.tex$" . yatex-mode)
+;                ("\\.ltx$" . yatex-mode)
+;                ("\\.cls$" . yatex-mode)
+;                ("\\.sty$" . yatex-mode)
+;                ("\\.clo$" . yatex-mode)
+;                ("\\.bbl$" . yatex-mode)) auto-mode-alist)
+;)
+
 ;;; YaTeX
 ;; yatex-mode の起動
 (setq auto-mode-alist 
@@ -193,32 +212,12 @@ and source-file directory for your debugger." t)
 ;; 2: ISO-2022-JP (other default)
 ;; 3: EUC
 ;; 4: UTF-8
-(setq YaTeX-kanji-code 4);;; YaTeX
-;(setq tex-command "/opt/local/bin/platex")
-;(setq dvi2-command "/opt/local/bin/xdvi")
-(setq tex-command "/Users/rhayasd/.emacs.d/elisp/yatex/latex2pdf")
-(setq dvi2-command "open -a Preview")
+(setq YaTeX-kanji-code 3);;; YaTeX
+(setq tex-command "platex")
+(setq dvi2-command "xdvi")
 
-
-;    (while (> count 0)
-;      (when line-err-info-list
-;        (let* ((file (flymake-ler-file (nth (1- count) line-err-info-list)))
-;               (full-file (flymake-ler-full-file (nth (1- count) line-err-info-list)))
-;               (text (flymake-ler-text (nth (1- count) line-err-info-list)))
-;               (line (flymake-ler-line (nth (1- count) line-err-info-list))))
-;          (message "[%s] %s" line text)))
-;      (setq count (1- count)))))
-
-;(defadvice flymake-goto-next-error (after display-message activate compile)
-;  "次のエラーへ進む"
-;  (flymake-display-err-minibuffer))
-
-;(defadvice flymake-goto-prev-error (after display-message activate compile)
-;  "前のエラーへ戻る"
-;  (flymake-display-err-minibuffer))
-
-;(defadvice flymake-mode (before post-command-stuff activate compile)
-;  "エラー行にカーソルが当ったら自動的にエラーが minibuffer に表示されるように
-;post command hook に機能追加"
-;  (set (make-local-variable 'post-command-hook)
-;       (add-hook 'post-command-hook 'flymake-display-err-minibuffer)))
+;; orgモード
+(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(add-hook 'org-mode-hook 'turn-on-font-lock)

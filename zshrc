@@ -1,29 +1,21 @@
 export LANG=ja_JP.UTF-8
-
-export PATH=/opt/local/bin:$PATH
-export PATH=/usr/local/bin:$PATH
-export PATH=/usr/local/switcher.bin:$PATH
+export TERM=xterm-256color
 
 export EDITOR=vim
 
 alias g++='g++ -std=c++0x -Wall -Wextra -O2'
-alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
-alias Vim='open -a /Applications/MacVim.app'
-alias emacs='/usr/local/bin/emacs -nw'
-alias Emacs='open -a /usr/local/bin/emacs'
-alias locate='/usr/bin/locate'
 
-alias -g ls='ls -G'
-alias -g l='ls'
-alias -g lr='ls -R'
-alias -g ll='ls -la'
-alias -g llr='ls -laR'
-alias -g la='ls -a'
-alias -g pd='popd'
-alias -g v='vim'
-alias -g V='Vim'
-alias -g c='cd'
-alias -g s='sudo'
+alias ls='ls --color=auto'
+alias l='ls'
+alias ll='ls -la'
+alias la='ls -a'
+alias pd='popd'
+alias v='vim'
+alias V='Vim'
+alias gvim='vim -g'
+alias gv='gvim'
+alias c='cd'
+alias s='sudo'
 alias -g gr='grep -nl --color'
 alias -g g=git
 alias -g pg='ps aux | grep'
@@ -31,29 +23,16 @@ alias -g md='mkdir'
 alias -g mkdir='mkdir -pv'
 alias -g h='history 0'
 alias -g k='kill'
-alias -g rmr='rm -R'
-alias -g rm!='rm -f'
-alias -g rmr!='rm -Rf'
+alias -g rm!='rm -R'
+alias -g x='exit'
 alias -g ja='LANG=ja_JP.UTF8 LC_ALL=ja_JP.UTF-8'
 alias -g en='LANG=en_US.UTF8 LC_ALL=en_US.UTF-8'
 
-# suffix alias
-alias -s pdf='open -a Preview'
+#suffix alias
+alias -s pdf='acroread'
 
 # global alias
 # alias -g G='| grep'
-
-#Homebrew
-export HOMEBREW_VERBOSE=true
-export HOMEBREW_EDITOR=vim
-
-#Gentoo
-# alias ls='ls --color=auto'
-# alias mman='/usr/bin/man'
-# export EPREFIX="$HOME/gentoo"
-# export PATH="$EPREFIX/usr/bin:$EPREFIX/bin:$EPREFIX/tmp/usr/bin:$EPREFIX/tmp/bin:$PATH"
-# export PATH="$PATH:$EPREFIX/usr/portage/scripts"
-# export DYLD_LIBRARY_PATH=/Users/rhayasd/gentoo/usr/lib:$DYLD_LIBRARY_PATH
 
 # Completion
 fpath=(~/.zsh/functions ${fpath})
@@ -101,20 +80,10 @@ bindkey "^P" history-beginning-search-backward-end
 bindkey "^N" history-beginning-search-forward-end
 bindkey '^[^i' reverse-menu-complete
 
-# history pattern matching
-# zsh 4.3.10 or later is required
-bindkey '^R' history-incremental-pattern-search-backward
-bindkey '^S' history-incremental-pattern-search-forward
-
 # cd
 setopt auto_cd
 setopt auto_pushd
 setopt pushd_ignore_dups
-
-# フロー制御の無効化
-unsetopt flow_control
-setopt no_flow_control
-stty -ixon
 
 # コマンド修正
 # setopt correct
@@ -130,32 +99,3 @@ setopt noautoremoveslash
 
 # 日本語表示
 setopt print_eight_bit
-
-function Emacs(){
-    if [ "$1" != "" ]; then
-        touch $1
-    fi
-    open -a /usr/local/bin/emacs $1
-}
-
-# Twitter Timeline Prompt
-ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb init
-function precmd(){
-    ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb
-}
-function init_twit_prompt(){
-    ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb init
-}
-function tweet_status(){
-    ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb update "$1"
-}
-
-# switcher setting
-function switcher(){
-    /usr/local/bin/switcher $*
-
-    if [ "$1" = "use" ]; then
-        echo "rehash shell database"
-        rehash
-    fi
-}

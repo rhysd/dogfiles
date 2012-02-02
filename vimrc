@@ -1,4 +1,7 @@
-" Base settings {{{
+""""""""""""""""""""""""""""""""""""""""""""""""
+"              Base settings                   "
+""""""""""""""""""""""""""""""""""""""""""""""""
+" {{{
 let mapleader = ','
 
 syntax enable
@@ -22,8 +25,6 @@ set wrapscan
 set showmatch
 "カーソルが何行何列目にあるか表示する
 set ruler
-"エンコーディング
-set encoding=utf-8
 "最下ウィンドウにステータス行が表示される時
 "1: ウィンドウの数が2以上 2:常
 set laststatus=2
@@ -42,8 +43,8 @@ set vb t_vb=
 "ホワイトスペース類を表示する
 set list
 set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
-"Boostや自前ビルドgccをpathに追加
-set path=.,/usr/include,/usr/local/include,/usr/local/Cellar/gcc/4.6.2/gcc/include/c++/4.6.2,/Users/rhayasd/programs/**
+"Boostをpathに追加
+set path=.,/usr/include,/usr/local/include,/Users/rhayasd/programs/**,/Users/rhayasd
 "起動時のメッセージを消す
 set shortmess+=I
 "起動時IMEをOFFにする
@@ -57,7 +58,7 @@ set backspace=indent,eol,start
 "ファイル切替時にファイルを隠す
 set hidden
 "日本語ヘルプを優先的に検索
-set helplang=ja,en
+set helplang=ja
 "OSのクリップボードを使う
 set clipboard+=unnamed
 "矩形選択で自由に移動する
@@ -70,7 +71,7 @@ set lazyredraw
 set ttyfast
 "MacVim Kaoriyaに標準で入っている辞書を無効化
 let g:plugin_dicwin_disable = 1
-"insertモードから抜けるときにIMをOFFにする（GUI(MacVim)は自動的にやってくれる
+"imsertモードから抜けるときにIMをOFFにする（GUI(MacVim)は自動的にやってくれる
 "iminsert=2にすると，insertモードに戻ったときに自動的にIMの状態が復元される
 if !has("gui_running")
 	inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
@@ -81,23 +82,18 @@ set completeopt=longest,menu
 set foldenable
 set foldmethod=marker
 " autocmd FileType cpp,c  set foldmethod=syntax
-" C++ ラベル字下げ設定
-set cinoptions+=:0,g0
-" 編集履歴を保存して終了する
-if has('persistent_undo')
-    set undodir=~/.vim/undo
-    set undofile
-endif
+" helpのバグ対策
+set notagbsearch
+" 暗い背景に合わせる
+set background=dark
 " カーソル下のハイライトグループを取得
 " command! -nargs=0 GetHighlightingGroup echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<' . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<' . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
 "}}}
 
-" user defined commands {{{
-command! RmDust :%s/\s\s*$//g | :nohlsearch
-command! EditVimrc :e $MYVIMRC $MYGVIMRC
-"}}}
-
-" neocomplcacheの設定 {{{
+""""""""""""""""""""""""""""""""""
+"     neocomplcacheの設定        "
+""""""""""""""""""""""""""""""""""
+" {{{
 "AutoComplPopを無効にする
 let g:acp_enableAtStartup = 0
 "vim起動時に有効化
@@ -134,22 +130,24 @@ endif
 let g:neocomplcache_delimiter_patterns.vim = ['#']
 let g:neocomplcache_delimiter_patterns.cpp = ['::']
 "インクルードパスの指定
-if !exists('g:neocomplcache_include_paths')
-    let g:neocomplcache_include_paths = {}
-endif
-let g:neocomplcache_include_paths.cpp  = '.,/usr/local/include,/usr/local/Cellar/gcc/4.6.2/gcc/include/c++/4.6.2'
-let g:neocomplcache_include_paths.c    = '.,/usr/include'
-let g:neocomplcache_include_paths.perl = '.,/System/Library/Perl,/Users/rhayasd/programs'
+let g:neocomplcache_include_paths = {
+	\ 'cpp'  : '.,/usr/local/include/c++/4.6.2,/usr/include',
+	\ 'c'    : '.,/usr/include',
+	\ 'perl' : '.,/usr/lib/perl/5.10',
+	\ }
 "インクルード文のパターンを指定
-let g:neocomplcache_include_patterns = { 'cpp' : '^\s*#\s*include', 'perl' : '^\s*use', }
+let g:neocomplcache_include_patterns = {
+	\ 'cpp' : '^\s*#\s*include',
+	\ 'perl' : '^\s*use',
+	\ }
 "インクルード先のファイル名の解析パターン
 " let g:neocomplcache_include_exprs = {
 " 	\ 'ruby' : substitute(substitute(v:fname,'::','/','g'),'$','.rb','')
 " 	\ }
-if !has("gui_running")
-	"CUIのvimでの補完リストの色を調節する
-	highlight Pmenu ctermbg=8
-endif
+" if !has("gui_running")
+" 	"CUIのvimでの補完リストの色を調節する
+" 	highlight Pmenu ctermbg=8
+" endif
 " Enable omni completion.
 autocmd FileType python set omnifunc=pythoncomplete#Complete
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
@@ -172,28 +170,27 @@ let g:neocomplcache_snippets_dir = $HOME.'/.vim/snippets'
 " 最大候補数
 " }}}
 
-" Unite.vim {{{
+""""""""""""""""""""""""""""""""""""""""""""
+"             Unite.vim                    "
+""""""""""""""""""""""""""""""""""""""""""""
+" {{{
 "insertモードをデフォルトに
 let g:unite_enable_start_insert = 1
-" 無指定にすることで高速化
-let g:unite_source_file_mru_filename_format = ''
-" most recently used のリストサイズ
-let g:unite_source_file_mru_limit = 100
-" highlight settings
-let g:unite_cursor_line_highlight = 'TabLineSel'
-" let g:unite_abbr_highlight = 'TabLine'
 " }}}
 
-" VimShellの設定 {{{
-" 追加プロンプト
+""""""""""""""""""""""""""""""
+"       VimShellの設定       "
+""""""""""""""""""""""""""""""
+" {{{
 let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
-" 右プロンプト
 let g:vimshell_right_prompt = 'vimshell#vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
-" 分割割合(%)
-let g:vimshell_split_height = 25
+let g:vimshell_split_height = 20
 " }}}
 
-" vim-quickrunの設定 {{{
+"""""""""""""""""""""""""""""""
+"      vim-quickrunの設定     "
+"""""""""""""""""""""""""""""""
+" {{{
 "<Leader>r を使わない
 let g:quickrun_no_default_key_mappings = 1
 " quickrun_configの初期化
@@ -201,14 +198,23 @@ if !has("g:quickrun_config")
 	let g:quickrun_config = {}
 endif
 "C++
-let g:quickrun_config.cpp = { 'command' : 'g++-4.6.2', 'cmdopt'  : '-std=c++0x -Wall -Wextra -O2 '}
+let g:quickrun_config.cpp = {
+	\ 'command' : 'g++',
+	\ 'cmdopt'  : '-std=c++0x -g -Wall -Wextra -O2 '
+	\}
 "QuickRun 実行時のバッファの開き方
-let g:quickrun_config._ = { 'outputter' : 'quickfix', 'split'   : 'rightbelow 10sp'}
+let g:quickrun_config._ = {
+	\ 'outputter' : 'quickfix',
+	\ 'split'   : 'rightbelow 10sp'
+	\}
 " }}}
 
-" Hier.vim {{{
+"""""""""""""""""""""""""""""""""""
+"          Hier.vim               "
+"""""""""""""""""""""""""""""""""""
+" {{{
 "CUIだとエラーハイライトが見づらいので修正
-" let g:hier_enabled = 1
+let g:hier_enabled = 1
 if !has("gui_running")
 	highlight qf_error_ucurl ctermbg=9
 	let g:hier_highlight_group_qf = "qf_error_ucurl"
@@ -217,11 +223,14 @@ if !has("gui_running")
 	let g:hier_highlight_group_qfw = "qf_warning_ucurl"
 	let g:hier_highlight_group_locw = "qf_warning_ucurl"
 	" QuickFix選択中のエラー
-	highlight Search ctermbg=8
+	" highlight Search ctermbg=8
 endif
 " }}}
 
-" vim-toggle.vim {{{
+""""""""""""""""""""""""""""""""""
+"         vim-toggle.vim         "
+""""""""""""""""""""""""""""""""""
+" {{{
 " let g:my_toggle_pairs = {}
 " let g:my_toggle_pairs = {
 " 			\'and':'or', 'or':'and',
@@ -237,33 +246,47 @@ endif
 " 			\}
 " }}}
 
-" VimFilerの設定 {{{
+""""""""""""""""""""""""""""""""""""""""""""
+"          VimFilerの設定                  "
+""""""""""""""""""""""""""""""""""""""""""""
+" {{{
 let g:vimfiler_as_default_explorer = 1
 let g:vimfiler_safe_mode_by_default = 0
-let g:vimfiler_execute_file_list = { 'c' : 'vim',  'h' : 'vim',  'cpp' : 'vim',  'hpp' : 'vim', 'cc' : 'vim',  'rb' : 'vim', 'sh' : 'vim', 'pdf' : 'open', 'vim' : 'vim' }
+let g:vimfiler_execute_file_list = { 'c' : 'vim',  'h' : 'vim',  'cpp' : 'vim',  'hpp' : 'vim',
+                                  \ 'cc' : 'vim',  'rb' : 'vim',  'py' : 'vim',  'sh' : 'vim',
+                                  \ 'java' : 'vim',  'txt' : 'vim',  'jpg' : 'open',  'png' : 'open',
+                                  \ 'pdf' : 'open',  'html' : 'open',  'mp3' : 'open',  }
+
 " }}}
 
-" neocomplecache-clang {{{
-" libclangを使う
-let g:neocomplcache_clang_use_library = 1
-" ライブラリへのパス
-let g:neocomplcache_clang_library_path = '/Developer/usr/clang-ide/lib'
-" clangへのパス
-let g:neocomplcache_clang_executable_path = '/usr/bin'
-" let g:neocomplcache_clang_auto_options = ''
-" clangのコマンドオプション
-let g:neocomplcache_clang_user_options =
-    \'-I /usr/local/Cellar/gcc/4.6.2/gcc/include '.
-    \'-I /usr/include/c++/4.2.1 '.
-    \'-I /usr/include '.
-    \'-I /usr/local/Cellar/boost/1.48.0/include '
+""""""""""""""""""""""""""""""""""""""""""""
+"        vim-powerlineの設定               "
+""""""""""""""""""""""""""""""""""""""""""""
+"{{{
+let g:Powerline_cache_file = expand('~/.Powerline.cache')
+"}}}
+
+""""""""""""""""""""""""""""""""""""""""""""
+"            tweetvimの設定                "
+""""""""""""""""""""""""""""""""""""""""""""
+" {{{
+" スクリーン名のキャッシュを利用して、neocomplcache で補完する
+if !exists('g:neocomplcache_dictionary_filetype_lists')
+    let g:neocomplcache_dictionary_filetype_lists = {}
+endif
+let neco_dic = g:neocomplcache_dictionary_filetype_lists
+let neco_dic.tweetvim_say = $HOME . '/.tweetvim/screen_name'
+" RTを含める
+let g:tweet_include_rts = 1
 " }}}
 
-" キーマップの設定 {{{
-" Base Settings {{{
+""""""""""""""""""""""""""""""""""""""""""""
+"          キーマップの設定                "
+""""""""""""""""""""""""""""""""""""""""""""
+" {{{
 "insertモードから抜ける
 inoremap jj <ESC>
-inoremap <C-j> j
+inoremap <C-j> <ESC>
 " Yの挙動はy$のほうが自然な気がする
 nnoremap Y y$
 " 縦方向は論理移動する
@@ -272,29 +295,20 @@ nnoremap k gk
 "Esc->Escで検索結果をクリア
 nnoremap <silent><ESC><ESC> :nohlsearch<CR><ESC>
 "行頭・行末の移動
-nnoremap 0 $
-vnoremap 0 $
-nnoremap <TAB> ^
-vnoremap <TAB> ^
 nnoremap - 0
 vnoremap - 0
-" q:は誤爆しやすい
-nnoremap q; q:
-nnoremap q: :q
-" insertモードでもquit
-inoremap <C-q><C-q> <ESC>:wqa<CR>
-" insertモードでもcmdmode
-inoremap <C-:> <Esc>:
+nnoremap <TAB> ^
+vnoremap <TAB> ^
+nnoremap 0 $
+vnoremap 0 $
 " 空行挿入
 nnoremap <silent><Space> :<C-u>call append(expand('.'), '')<CR>j
 "ヘルプ表示
 nnoremap <Leader>vh :vert bo help<Space>
 "insertモード時はEmacsライクなバインディング．ポップアップが出ないように移動．
 inoremap <C-e> <END>
-vnoremap <C-e> <END>
-cnoremap <C-e> <END>
 inoremap <C-a> <HOME>
-vnoremap <C-a> <HOME>
+cnoremap <C-e> <END>
 cnoremap <C-a> <HOME>
 inoremap <expr><C-n> pumvisible() ? "\<C-y>\<Down>" : "\<Down>"
 inoremap <expr><C-p> pumvisible() ? "\<C-y>\<Up>" : "\<Up>"
@@ -332,30 +346,31 @@ nnoremap <BS> i<BS><ESC>
 "コマンドラインモードでのカーソル移動
 cnoremap <C-f> <Right>
 cnoremap <C-b> <Left>
-"_で次の_の手前まで
-onoremap _ vf_h
+"d_で次の_の手前まで消す
+nnoremap d_ vf_hd
+"c_で次の_の手前まで消して訂正
+nnoremap c_ vf_hc
+"d,で次の,の手前まで消す
+nnoremap d, vf,hd
+"c,で次の,の手前まで消して訂正
+nnoremap c, vf,hc
 " カーソルキーでの上下移動
 nnoremap <silent><Down>  <C-w>-
 nnoremap <silent><Up>    <C-w>+
 nnoremap <silent><Left>  <C-w><
 nnoremap <silent><Right> <C-w>>
+
 " ペーストした文字列をビジュアルモードで選択
 nnoremap <expr>gp '`['.strpart(getregtype(),0,1).'`]'
 " 日付の挿入
 inoremap <C-x>date <C-r>=strftime('%Y/%m/%d(%a) %H:%M')<CR>
 nnoremap <Leader>date :r<Space>!date<Space>+'\%Y/\%m/\%d(\%a)<Space>\%H:\%M'<CR>
-" text-obj-lastpat:sでマッチした部分をtextobjに
+" text-obj-lastpat
 nnoremap di/ d//e<CR>
 nnoremap ci/ c//e<CR>
 nnoremap yi/ y//e<CR>
-" タブの設定
-nnoremap <Leader>te :tabnew<CR>
-nnoremap <Leader>tn :tabnext<CR>
-nnoremap <Leader>tp :tabprevious<CR>
-nnoremap <Leader>tc :tabclose<CR>
-" }}}
 
-"VimShellの設定 {{{
+"VimShellの設定
 nmap <expr><Leader>vs "\<Plug>(vimshell_split_switch)"
 
 "neocomplcacheの設定
@@ -375,9 +390,9 @@ inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
 inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
 inoremap <expr><C-y> neocomplcache#close_popup()
-" }}}
+inoremap <expr><C-e> neocomplcache#cancel_popup()
 
-"Unite.vimのキーマップ {{{
+"Unite.vimのキーマップ
 "insertモード時はC-gでいつでもバッファを閉じられる（絞り込み欄が空の時はC-hでもOK）
 autocmd FileType unite imap <buffer> <C-g> <Plug>(unite_exit)
 "ファイル上にカーソルがある時，pでプレビューを見る
@@ -408,58 +423,55 @@ nnoremap <silent> <Leader>y  :<C-u>Unite -no-start-insert history/yank<CR>
 nnoremap <silent> <Leader>h  :<C-u>UniteWithInput -no-start-insert help<CR>
 "Uniteバッファの復元
 nnoremap <silent> <Leader>r  :<C-u>UniteResume<CR>
-" }}}
 
-"QuickRunのキーマップ {{{
+"QuickRunのキーマップ
 nnoremap <Leader>q  <Nop>
-nmap     <silent><Leader>qr <Plug>(quickrun):copen<CR>
+nmap     <silent><Leader>qr :w<CR><Plug>(quickrun):copen<CR>
 nnoremap <Leader>qR :w<CR>:QuickRun<Space>
 "QuickFixバッファを閉じると同時にエラー表示も消す
-" autocmd FileType qf nnoremap <buffer><silent> q :q<CR>:HierClear<CR>
-autocmd FileType qf nnoremap <buffer><silent> q :q<CR>
+autocmd FileType qf nnoremap <buffer><silent> q :q<CR>:HierClear<CR>
 autocmd FileType qf nnoremap <buffer><silent> j :cn<CR>
 autocmd FileType qf nnoremap <buffer><silent> k :cp<CR>
-" }}}
 
-"tcomment.vimのキーマップ {{{
+"tcomment.vimのキーマップ
 nnoremap <Leader>c :TComment<CR>
 vnoremap <Leader>c :TComment<CR>
 vnoremap <Leader>C :TCommentBlock<CR>
-" }}}
 
-"endwise.vimのキーマップ {{{
-autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"
-"
-" }}}
+"endwise.vimのキーマップ
+autocmd FileType ruby imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"
 
-"vim-toggleのキーマップ {{{
+"vim-toggleのキーマップ
 " nmap <silent><C-t> <Plug>MyToggleN
-" }}}
 
-" vimfiler.vim のキーマップ {{{
+" vimfiler.vim のキーマップ
 nnoremap <Leader>f :VimFiler<CR>
 nnoremap <Leader>F :VimFiler<Space>-no-quit<CR>
-" }}}
 
-" textobj-wiw のキーマップ {{{
+" textobj-wiw のキーマップ
 let g:textobj_wiw_no_default_key_mappings = 1 " デフォルトキーマップの解除
 omap ac <Plug>(textobj-wiw-a)
 omap ic <Plug>(textobj-wiw-i)
+
+"tweetvimのキーマップ
+nnoremap <silent><Leader>tw :<C-u>TweetVimHomeTimeline<CR>
+autocmd FileType tweetvim nnoremap <buffer><silent>t :Unite tweetvim<CR>
+autocmd FileType tweetvim nnoremap <buffer><silent>s :TweetVimSay<CR>
+
+
 " }}}
 
-" lindapp_cpp の キーマップ {{{
-autocmd FileType cpp call lindapp_cpp#my_cpp_mapping()
-autocmd FileType cpp inoremap <silent><buffer><expr><CR> lindapp_cpp#expand_brace()."\<CR>"
-autocmd FileType cpp nmap <silent><buffer><leader>dt <Plug>lindapp_cpp_return_type
-" }}}
+"""""""""""""""""""""""""""""
+"    vundle.vim の設定      "
+"""""""""""""""""""""""""""""
+" {{{
+filetype off                   " required!
 
-" vundle.vim の設定 {{{
-filetype off
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
 " let Vundle manage Vundle
-" required!
+" required! 
 Bundle 'gmarik/vundle'
 
 " My Bundles here:
@@ -478,14 +490,18 @@ Bundle 'vim-jp/vimdoc-ja'
 Bundle 'jceb/vim-hier'
 Bundle 'rhysd/my-vimtoggle'
 Bundle 'rhysd/my-endwise'
-Bundle 'Shougo/neocomplcache-clang'
 Bundle 'kana/vim-textobj-user'
 Bundle 'kana/vim-textobj-indent'
 " Bundle 'kana/vim-textobj-lastpat' これと同様の効果をキーマップに設定済み
 Bundle 'h1mesuke/textobj-wiw'
+Bundle 'Lokaltog/vim-powerline'
 Bundle 'rhysd/accelerate'
-Bundle 'rhysd/lindapp_cpp'
-" Bundle 'Lokaltog/vim-powerline'
+
+"tweetvim
+Bundle 'mattn/webapi-vim'
+Bundle 'tyru/open-browser.vim'
+Bundle 'basyura/twibill.vim'
+Bundle 'basyura/TweetVim'
 " Bundle 'ujihisa/vimshell-ssh'
 " Bundle 'h1mesuke/vim-alignta'
 " Bundle 'ujihisa/unite-colorscheme'
@@ -496,10 +512,11 @@ Bundle 'rhysd/lindapp_cpp'
 Bundle 'surround.vim'
 Bundle 'Align'
 " Bundle 'errormarker.vim'
+
 " Bundle 'endwise.vim'
 
 " non github repos
 " Bundle 'git://git.wincent.com/command-t.git'
 
-filetype plugin indent on     " required!
+filetype plugin indent on     " required! 
 " }}}
