@@ -267,6 +267,15 @@ let g:Powerline_cache_file = expand('~/.Powerline.cache')
 "}}}
 
 """"""""""""""""""""""""""""""""""""""""""""
+"            lindapp_cppの設定             "
+""""""""""""""""""""""""""""""""""""""""""""
+"{{{
+autocmd FileType cpp call lindapp_cpp#my_cpp_mapping()
+autocmd FileType cpp nmap <buffer><silent><Leader>dt <Plug>lindapp_cpp_return_type
+autocmd FileType cpp inoremap <buffer><expr><CR> lindapp_cpp#expand_brace()."\<CR>"
+"}}}
+
+""""""""""""""""""""""""""""""""""""""""""""
 "            tweetvimの設定                "
 """"""""""""""""""""""""""""""""""""""""""""
 " {{{
@@ -496,6 +505,7 @@ Bundle 'kana/vim-textobj-indent'
 Bundle 'h1mesuke/textobj-wiw'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'rhysd/accelerate'
+Bundle 'rhysd/lindapp_cpp'
 
 "tweetvim
 Bundle 'mattn/webapi-vim'
