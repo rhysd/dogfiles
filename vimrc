@@ -43,7 +43,7 @@ set vb t_vb=
 set list
 set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
 "Boostや自前ビルドgccをpathに追加
-set path=.,/usr/include,/usr/local/include,/usr/local/Cellar/gcc/4.6.2/gcc/include/c++/4.6.2,/Users/rhayasd/programs/**
+set path=.,/usr/include,/usr/local/include,/usr/local/Cellar/gcc/4.6.3/gcc/include/c++/4.6.3,/Users/rhayasd/programs/**
 "起動時のメッセージを消す
 set shortmess+=I
 "起動時IMEをOFFにする
@@ -88,6 +88,8 @@ if has('persistent_undo')
     set undodir=~/.vim/undo
     set undofile
 endif
+" command-line-window の縦幅
+set cmdwinheight=14
 " カーソル下のハイライトグループを取得
 " command! -nargs=0 GetHighlightingGroup echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<' . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<' . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
 "}}}
@@ -137,7 +139,7 @@ let g:neocomplcache_delimiter_patterns.cpp = ['::']
 if !exists('g:neocomplcache_include_paths')
     let g:neocomplcache_include_paths = {}
 endif
-let g:neocomplcache_include_paths.cpp  = '.,/usr/local/include,/usr/local/Cellar/gcc/4.6.2/gcc/include/c++/4.6.2'
+let g:neocomplcache_include_paths.cpp  = '.,/usr/local/include,/usr/local/Cellar/gcc/4.6.3/gcc/include/c++/4.6.3'
 let g:neocomplcache_include_paths.c    = '.,/usr/include'
 let g:neocomplcache_include_paths.perl = '.,/System/Library/Perl,/Users/rhayasd/programs'
 "インクルード文のパターンを指定
@@ -201,7 +203,7 @@ if !has("g:quickrun_config")
 	let g:quickrun_config = {}
 endif
 "C++
-let g:quickrun_config.cpp = { 'command' : 'g++-4.6.2', 'cmdopt'  : '-std=c++0x -Wall -Wextra -O2 '}
+let g:quickrun_config.cpp = { 'command' : 'g++-4.6', 'cmdopt'  : '-std=c++0x -Wall -Wextra -O2 '}
 "QuickRun 実行時のバッファの開き方
 let g:quickrun_config._ = { 'outputter' : 'quickfix', 'split'   : 'rightbelow 10sp'}
 " }}}
@@ -253,11 +255,15 @@ let g:neocomplcache_clang_executable_path = '/usr/bin'
 " let g:neocomplcache_clang_auto_options = ''
 " clangのコマンドオプション
 let g:neocomplcache_clang_user_options =
-    \'-I /usr/local/Cellar/gcc/4.6.2/gcc/include '.
+    \'-I /usr/local/Cellar/gcc/4.6.3/gcc/include '.
     \'-I /usr/include/c++/4.2.1 '.
     \'-I /usr/include '.
     \'-I /usr/local/Cellar/boost/1.48.0/include '
 " }}}
+
+" lindapp_cpp {{{
+let g:neocomplcache_snippets_dir = $HOME.'/.vim/bundle/lindapp_cpp/snippets'
+"
 
 " キーマップの設定 {{{
 " Base Settings {{{
@@ -280,6 +286,7 @@ nnoremap - 0
 vnoremap - 0
 " q:は誤爆しやすい
 nnoremap q; q:
+nnoremap <C-:> q:
 nnoremap q: :q
 " insertモードでもquit
 inoremap <C-q><C-q> <ESC>:wqa<CR>
@@ -353,6 +360,8 @@ nnoremap <Leader>te :tabnew<CR>
 nnoremap <Leader>tn :tabnext<CR>
 nnoremap <Leader>tp :tabprevious<CR>
 nnoremap <Leader>tc :tabclose<CR>
+" Rubyのキーマップ
+autocmd FileType ruby inoremap <buffer><C-s> self.
 " }}}
 
 "VimShellの設定 {{{
@@ -388,32 +397,33 @@ autocmd FileType unite imap <buffer> <C-x> <Plug>(unite_quick_match_default_acti
 autocmd FileType unite nmap <buffer> l <Plug>(unite_do_default_action)
 autocmd FileType unite imap <buffer><expr> l unite#smart_map("l", unite#do_action(unite#get_current_unite().context.default_action))
 "増えすぎてアレなら <Leader>ua などに置き換える．そのときはnnoremap <Leader>u <Nop>を忘れないようにする．
-"すべてを表示
-nnoremap <silent> <Leader>a  :<C-u>Unite -buffer-name=files buffer file_mru bookmark file outline history/yank<CR>
 "バッファを開いた時のパスを起点としたファイル検索
 " nnoremap <silent> <Leader>f  :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
 "バッファ一覧
-nnoremap <silent> <Leader>b  :<C-u>Unite -no-start-insert buffer<CR>
+nnoremap <silent> <Leader>ub  :<C-u>Unite -no-start-insert buffer<CR>
 "ブックマークしたファイル/ディレクトリ
-nnoremap <silent> <Leader>B  :<C-u>Unite -no-start-insert bookmark<CR>
+nnoremap <silent> <Leader>uB  :<C-u>Unite -no-start-insert bookmark<CR>
 "最近使用したファイル
+nnoremap <silent> <Leader>um  :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
 nnoremap <silent> <Leader>m  :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
 "プログラミングにおけるアウトラインの表示
-nnoremap <silent> <Leader>o  :<C-u>Unite outline<CR>
+nnoremap <silent> <Leader>uo  :<C-u>Unite outline<CR>
 "grep検索．
-nnoremap <silent> <Leader>g  :<C-u>Unite -no-start-insert grep<CR>
+nnoremap <silent> <Leader>ug  :<C-u>Unite -no-start-insert grep<CR>
 "yank履歴
-nnoremap <silent> <Leader>y  :<C-u>Unite -no-start-insert history/yank<CR>
+nnoremap <silent> <Leader>uy  :<C-u>Unite -no-start-insert history/yank<CR>
+"find
+nnoremap <silent> <Leader>uf  :<C-u>Unite -no-start-insert find<CR>
 "helpを引く．絞り込み初期は候補が膨大になるのでワードを先に入力
-nnoremap <silent> <Leader>h  :<C-u>UniteWithInput -no-start-insert help<CR>
+nnoremap <silent> <Leader>uh  :<C-u>UniteWithInput -no-start-insert help<CR>
 "Uniteバッファの復元
-nnoremap <silent> <Leader>r  :<C-u>UniteResume<CR>
+nnoremap <silent> <Leader>ur  :<C-u>UniteResume<CR>
 " }}}
 
 "QuickRunのキーマップ {{{
 nnoremap <Leader>q  <Nop>
 nmap     <silent><Leader>qr <Plug>(quickrun):copen<CR>
-nnoremap <Leader>qR :w<CR>:QuickRun<Space>
+nnoremap <Leader>qR :QuickRun<Space>
 "QuickFixバッファを閉じると同時にエラー表示も消す
 " autocmd FileType qf nnoremap <buffer><silent> q :q<CR>:HierClear<CR>
 autocmd FileType qf nnoremap <buffer><silent> q :q<CR>
@@ -452,6 +462,7 @@ autocmd FileType cpp call lindapp_cpp#my_cpp_mapping()
 autocmd FileType cpp inoremap <silent><buffer><expr><CR> lindapp_cpp#expand_brace()."\<CR>"
 autocmd FileType cpp nmap <silent><buffer><leader>dt <Plug>lindapp_cpp_return_type
 " }}}
+" }}}
 
 " vundle.vim の設定 {{{
 filetype off
@@ -469,6 +480,8 @@ Bundle 'Shougo/vimproc'
 Bundle 'Shougo/vimshell'
 Bundle 'Shougo/vimfiler'
 Bundle 'Shougo/neocomplcache'
+Bundle 'Shougo/neocomplcache-snippets-complete'
+Bundle 'Shougo/neocomplcache-clang'
 Bundle 'thinca/vim-quickrun'
 Bundle 'Shougo/unite.vim'
 Bundle 'tomtom/tcomment_vim'
@@ -478,7 +491,6 @@ Bundle 'vim-jp/vimdoc-ja'
 Bundle 'jceb/vim-hier'
 Bundle 'rhysd/my-vimtoggle'
 Bundle 'rhysd/my-endwise'
-Bundle 'Shougo/neocomplcache-clang'
 Bundle 'kana/vim-textobj-user'
 Bundle 'kana/vim-textobj-indent'
 " Bundle 'kana/vim-textobj-lastpat' これと同様の効果をキーマップに設定済み
@@ -503,3 +515,4 @@ Bundle 'Align'
 
 filetype plugin indent on     " required!
 " }}}
+

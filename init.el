@@ -37,7 +37,9 @@
          '(left . 0)
          '(alpha . (80 80 80 80))
 ;;         '(font . "Ricty-15")
-         '(font . "Hiragino Mincho Pro-15")
+         ; '(font . "Hiragino Mincho Pro-15")
+         '(font . "Hiragino Kaku Gothic Pro-15")
+
          )
               default-frame-alist))
 

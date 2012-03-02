@@ -28,7 +28,7 @@ alias -g gr='grep -nl --color'
 alias -g g=git
 alias -g pg='ps aux | grep'
 alias -g md='mkdir'
-alias -g mkdir='mkdir -pv'
+alias -g mdp='mkdir -pv'
 alias -g h='history 0'
 alias -g k='kill'
 alias -g rmr='rm -R'
@@ -36,6 +36,7 @@ alias -g rm!='rm -f'
 alias -g rmr!='rm -Rf'
 alias -g ja='LANG=ja_JP.UTF8 LC_ALL=ja_JP.UTF-8'
 alias -g en='LANG=en_US.UTF8 LC_ALL=en_US.UTF-8'
+alias -g cpr='cp -r'
 
 # suffix alias
 alias -s pdf='open -a Preview'
@@ -54,6 +55,9 @@ export HOMEBREW_EDITOR=vim
 # export PATH="$EPREFIX/usr/bin:$EPREFIX/bin:$EPREFIX/tmp/usr/bin:$EPREFIX/tmp/bin:$PATH"
 # export PATH="$PATH:$EPREFIX/usr/portage/scripts"
 # export DYLD_LIBRARY_PATH=/Users/rhayasd/gentoo/usr/lib:$DYLD_LIBRARY_PATH
+
+# rbenv
+eval "$(rbenv init -)"
 
 # Completion
 fpath=(~/.zsh/functions ${fpath})
@@ -156,6 +160,16 @@ function switcher(){
 
     if [ "$1" = "use" ]; then
         echo "rehash shell database"
+        rehash
+    fi
+}
+
+# for rbenv
+function gem(){
+    /Users/rhayasd/.rbenv/shims/gem $*
+    if [ "$1" = "install" ] || [ "$1" = "i" ] || [ "$1" = "uninstall" ] || [ "$1" = "uni" ]
+    then
+        rbenv rehash
         rehash
     fi
 }
