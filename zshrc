@@ -1,8 +1,9 @@
 export LANG=ja_JP.UTF-8
 
-export PATH=/opt/local/bin:$PATH
+# export PATH=/opt/local/bin:$PATH
 export PATH=/usr/local/bin:$PATH
 export PATH=/usr/local/switcher.bin:$PATH
+export PATH=/usr/local/texlive/2011/bin/x86_64-darwin:$PATH
 
 export EDITOR=vim
 
@@ -37,6 +38,7 @@ alias -g rmr!='rm -Rf'
 alias -g ja='LANG=ja_JP.UTF8 LC_ALL=ja_JP.UTF-8'
 alias -g en='LANG=en_US.UTF8 LC_ALL=en_US.UTF-8'
 alias -g cpr='cp -r'
+alias -g cpr!'cp -R'
 
 # suffix alias
 alias -s pdf='open -a Preview'

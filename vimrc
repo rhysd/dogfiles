@@ -90,6 +90,18 @@ if has('persistent_undo')
 endif
 " command-line-window の縦幅
 set cmdwinheight=14
+" Ruby シンタックスチェック
+function! s:ExecuteMake()
+  if &filetype == 'ruby' && expand('%:t') !~? '^pry\d\{8}.\+\.rb'
+    silent make! -c "%" | redraw!
+  endif
+endfunction
+
+compiler ruby
+augroup rbsyntaxcheck
+  autocmd! BufWritePost <buffer> call s:ExecuteMake()
+augroup END
+
 " カーソル下のハイライトグループを取得
 " command! -nargs=0 GetHighlightingGroup echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<' . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<' . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
 "}}}
@@ -170,8 +182,7 @@ let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
 let g:neocomplcache_omni_patterns.c = '\%(\.\|->\)\h\w*'
 let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
 "スニペットファイルのパス
-let g:neocomplcache_snippets_dir = $HOME.'/.vim/snippets'
-" 最大候補数
+" let g:neocomplcache_snippets_dir = $HOME.'/.vim/snippets'
 " }}}
 
 " Unite.vim {{{
@@ -184,6 +195,8 @@ let g:unite_source_file_mru_limit = 100
 " highlight settings
 let g:unite_cursor_line_highlight = 'TabLineSel'
 " let g:unite_abbr_highlight = 'TabLine'
+" Unite起動時のウィンドウ分割
+let g:unite_split_rule = 'rightbelow'
 " }}}
 
 " VimShellの設定 {{{
@@ -263,7 +276,7 @@ let g:neocomplcache_clang_user_options =
 
 " lindapp_cpp {{{
 let g:neocomplcache_snippets_dir = $HOME.'/.vim/bundle/lindapp_cpp/snippets'
-"
+" }}}
 
 " キーマップの設定 {{{
 " Base Settings {{{
@@ -407,7 +420,7 @@ nnoremap <silent> <Leader>uB  :<C-u>Unite -no-start-insert bookmark<CR>
 nnoremap <silent> <Leader>um  :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
 nnoremap <silent> <Leader>m  :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
 "プログラミングにおけるアウトラインの表示
-nnoremap <silent> <Leader>uo  :<C-u>Unite outline<CR>
+nnoremap <silent> <Leader>uo  :<C-u>Unite outline -vertical -no-start-insert<CR>
 "grep検索．
 nnoremap <silent> <Leader>ug  :<C-u>Unite -no-start-insert grep<CR>
 "yank履歴
@@ -495,7 +508,7 @@ Bundle 'kana/vim-textobj-user'
 Bundle 'kana/vim-textobj-indent'
 " Bundle 'kana/vim-textobj-lastpat' これと同様の効果をキーマップに設定済み
 Bundle 'h1mesuke/textobj-wiw'
-Bundle 'rhysd/accelerate'
+Bundle 'rhysd/vim-accelerate'
 Bundle 'rhysd/lindapp_cpp'
 " Bundle 'Lokaltog/vim-powerline'
 " Bundle 'ujihisa/vimshell-ssh'
