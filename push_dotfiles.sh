@@ -1,7 +1,7 @@
 #!/bin/sh
 
 dotfiles="$HOME/.vimrc $HOME/.vimshrc $HOME/.gvimrc $HOME/.bashrc $HOME/.zshrc $HOME/.emacs.d/init.el $HOME/.gemrc"
-directories="$HOME/.vim/bundle/lindapp_cpp/snippets/"
+directories="$HOME/.vim/bundle/lindapp_cpp/snippets"
 
 for dotfile in $dotfiles
 do
@@ -16,7 +16,7 @@ done
 
 for directory in $directories
 do
-    cp -R $directory .
+    cp -r $directory .
 done
 
 git add -A

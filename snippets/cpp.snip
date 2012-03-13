@@ -63,45 +63,66 @@ snippet     dynamic_cast
 abbr        dynamic_cast<>()
     dynamic_cast<${1}>(${2})${0}
 
-snippet     iostream_include
+snippet     iostream_inclusion
 abbr        #include <iostream>
 prev_word   '^'
     #include <iostream>${0}
 
-snippet     vector_include
+snippet     vector_inclusion
 abbr        #include <vector>
 prev_word   '^'
     #include <vector>${0}
 
-snippet     algorithm_include
+snippet     array_inclusion
+abbr        #include <array>
+prev_word   '^'
+    #include <array>${0}
+
+snippet     tuple_inclusion
+abbr        #include <tuple>
+prev_word   '^'
+    #include <tuple>${0}
+
+snippet     algorithm_inclusion
 abbr        #include <algorithm>
 prev_word   '^'
     #include <algorithm>${0}
 
-snippet     memory_include
+snippet     memory_inclusion
 abbr        #include <memory>
 prev_word   '^'
     #include <memory>${0}
 
-snippet     unordered_map_include
+snippet     unordered_map_inclusion
 abbr        #include <unordered_map>
 prev_word   '^'
     #include <unordered_map>${0}
 
-delete      string.h
+delete      string.h_inclusion
 snippet     string
 abbr        #include <string>
 prev_word   '^'
     #include <string>${0}
 
-snippet     cstddef_include
+snippet     cstddef_inclusion
 abbr        #include <cstddef>
 prev_word   '^'
     #include <cstddef>
     ${0}
     using std::size_t;
 
-snippet     optional_include
+snippet     cstdio_inclusion
+abbr        #include <cstdio>
+prev_word   '^'
+    #include <cstdio>${0}
+
+
+snippet     optional_inclusion
 abbr        #include <boost/optional.hpp>
 prev_word   '^'
     #include <boost/optional.hpp>${0}
+
+snippet     variant_inclusion
+abbr        #include <boost/variant.hpp>
+prev_word   '^'
+    #include <boost/variant.hpp>${0}

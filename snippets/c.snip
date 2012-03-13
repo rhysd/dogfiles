@@ -26,3 +26,12 @@ abbr       #include<stdlib.h>
 snippet    string.h
 abbr       #include<string.h>
     #include <string.h>{$0}
+
+delete  ifndef
+delete  #ifndef
+snippet ifndef
+alias   #ifndef
+abbr #ifndef ... #define ... #endif
+    #ifndef $1
+    #define ${1:SYMBOL}
+    #endif${0} // $1
