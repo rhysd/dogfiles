@@ -43,7 +43,7 @@ set vb t_vb=
 set list
 set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
 "Boostや自前ビルドgccをpathに追加
-set path=.,/usr/include,/usr/local/include,/usr/local/Cellar/gcc/4.6.3/gcc/include/c++/4.6.3,/Users/rhayasd/programs/**
+set path=.,/usr/include,/usr/local/include,/usr/local/Cellar/gcc/4.6.3/gcc/include/c++/4.6.3,/Users/rhayasd/.rbenv/versions/1.9.3-p125/lib/ruby/1.9.1/,/Users/rhayasd/programs/**
 "起動時のメッセージを消す
 set shortmess+=I
 "起動時IMEをOFFにする
@@ -255,7 +255,7 @@ endif
 " VimFilerの設定 {{{
 let g:vimfiler_as_default_explorer = 1
 let g:vimfiler_safe_mode_by_default = 0
-let g:vimfiler_execute_file_list = { 'c' : 'vim',  'h' : 'vim',  'cpp' : 'vim',  'hpp' : 'vim', 'cc' : 'vim',  'rb' : 'vim', 'sh' : 'vim', 'pdf' : 'open', 'vim' : 'vim' }
+let g:vimfiler_execute_file_list = { 'c' : 'vim',  'h' : 'vim',  'cpp' : 'vim',  'hpp' : 'vim', 'cc' : 'vim',  'rb' : 'vim', 'txt' : 'vim', 'pdf' : 'open', 'vim' : 'vim' }
 " }}}
 
 " neocomplecache-clang {{{
@@ -289,7 +289,7 @@ nnoremap Y y$
 nnoremap j gj
 nnoremap k gk
 "Esc->Escで検索結果をクリア
-nnoremap <silent><ESC><ESC> :nohlsearch<CR><ESC>
+nnoremap <silent><ESC><ESC> :<C-u>nohlsearch<CR><ESC>
 "行頭・行末の移動
 nnoremap 0 $
 vnoremap 0 $

@@ -32,16 +32,24 @@ alias -g md='mkdir'
 alias -g mdp='mkdir -pv'
 alias -g h='history 0'
 alias -g k='kill'
+alias -g rm='grm'
 alias -g rmr='rm -R'
 alias -g rm!='rm -f'
 alias -g rmr!='rm -Rf'
 alias -g ja='LANG=ja_JP.UTF8 LC_ALL=ja_JP.UTF-8'
 alias -g en='LANG=en_US.UTF8 LC_ALL=en_US.UTF-8'
 alias -g cpr='cp -r'
-alias -g cpr!'cp -R'
+alias -g cpr!='cp -R'
+alias -g gita='git add'
+alias -g gitc='git commit'
+alias -g gitl='git log'
+alias -g gitp='git push'
+alias -g gitpl='git pull'
+
 
 # suffix alias
 alias -s pdf='open -a Preview'
+alias -s html='open -a Google\ Chrome'
 
 # global alias
 # alias -g G='| grep'

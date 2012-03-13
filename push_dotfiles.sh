@@ -19,7 +19,7 @@ do
     cp -R $directory .
 done
 
-git add .
+git add -A
 git commit -m "updated at `date`"
 git push origin master
 
