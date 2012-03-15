@@ -183,3 +183,16 @@ function gem(){
         rehash
     fi
 }
+
+# auto-fu.zsh
+source $HOME/.zsh/auto-fu.zsh/auto-fu.zsh
+zle-line-init(){auto-fu-init;}; zle -N zle-line-init
+zstyle ':completion:*' completer _oldlist _complete _match _history
+# vi-cmd の場合
+# zle -N zle-keymap-select auto-fu-zle-keymap-select
+# '-azfu-' を消す
+zstyle ':auto-fu:var' postdisplay
+# git はオプション補完でバグるのでOFFにする
+# zstyle ':auto-fu:var' autoable-function/skipwords "^git *"
+# 最初の3文字と"で囲まれた文字列の補完を無効に
+# zstyle ':auto-fu:var' autoable-function/skipwords "('|$'|")*" "^((???)##)" #"
