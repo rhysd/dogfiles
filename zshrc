@@ -14,7 +14,7 @@ alias emacs='/usr/local/bin/emacs -nw'
 alias Emacs='open -a /usr/local/bin/emacs'
 alias locate='/usr/bin/locate'
 
-alias -g ls='ls -G'
+alias ls='ls -Gh'
 alias -g l='ls'
 alias -g lr='ls -R'
 alias -g ll='ls -la'
@@ -38,6 +38,7 @@ alias -g rm!='rm -f'
 alias -g rmr!='rm -Rf'
 alias -g ja='LANG=ja_JP.UTF8 LC_ALL=ja_JP.UTF-8'
 alias -g en='LANG=en_US.UTF8 LC_ALL=en_US.UTF-8'
+alias cp='cp -p'
 alias -g cpr='cp -r'
 alias -g cpr!='cp -R'
 alias -g gita='git add'
@@ -45,6 +46,9 @@ alias -g gitc='git commit'
 alias -g gitl='git log'
 alias -g gitp='git push'
 alias -g gitpl='git pull'
+alias -g gitls='git ls-files'
+alias df='df -h'
+alias su='su -'
 
 
 # suffix alias
@@ -139,8 +143,7 @@ setopt list_packed
 # ビープ音OFF
 setopt nolistbeep
 
-# /を除去しない
-setopt noautoremoveslash
+
 
 # 日本語表示
 setopt print_eight_bit
@@ -154,13 +157,13 @@ function Emacs(){
 
 # Twitter Timeline Prompt
 ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb init
-function precmd(){
-    ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb
-}
+# function precmd(){
+#     ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb
+# }
 function init_twit_prompt(){
     ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb init
 }
-function tweet_status(){
+function tweet(){
     ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb update "$1"
 }
 
@@ -194,5 +197,15 @@ zstyle ':completion:*' completer _oldlist _complete _match _history
 zstyle ':auto-fu:var' postdisplay
 # git はオプション補完でバグるのでOFFにする
 # zstyle ':auto-fu:var' autoable-function/skipwords "^git *"
-# 最初の3文字と"で囲まれた文字列の補完を無効に
-# zstyle ':auto-fu:var' autoable-function/skipwords "('|$'|")*" "^((???)##)" #"
+# 最初の2文字の補完を無効に
+# zstyle ':auto-fu:var' autoable-function/skipwords "^((???)##)"
+# /が重複しないように unsetopt
+unsetopt noautoremoveslash
+
+# z
+_Z_CMD=j
+source $HOME/.zsh/z/z.sh
+precmd(){
+    _z --add "$(pwd -P)"
+    ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb
+}

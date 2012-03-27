@@ -102,6 +102,10 @@ augroup rbsyntaxcheck
   autocmd! BufWritePost <buffer> call s:ExecuteMake()
 augroup END
 
+" ステータスライン
+set ruf=%45(%12f%=\ %m%{'['.(&fenc!=''?&fenc:&enc).']'}\ %l-%v\ %p%%\ [%02B]%)
+set statusline=%f:\ %{substitute(getcwd(),'.*/','','')}\ %m%=%{(&fenc!=''?&fenc:&enc).':'.strpart(&ff,0,1)}\ %l-%v\ %p%%\ %02B
+
 " カーソル下のハイライトグループを取得
 " command! -nargs=0 GetHighlightingGroup echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<' . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<' . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
 "}}}
@@ -216,7 +220,7 @@ if !has("g:quickrun_config")
 	let g:quickrun_config = {}
 endif
 "C++
-let g:quickrun_config.cpp = { 'command' : 'g++-4.6', 'cmdopt'  : '-std=c++0x -Wall -Wextra -O2 '}
+let g:quickrun_config.cpp = { 'command' : 'g++-4.7', 'cmdopt'  : '-std=c++11 -Wall -Wextra -O2 '}
 "QuickRun 実行時のバッファの開き方
 let g:quickrun_config._ = { 'outputter' : 'quickfix', 'split'   : 'rightbelow 10sp'}
 " }}}
