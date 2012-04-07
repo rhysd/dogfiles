@@ -96,7 +96,6 @@ function! s:ExecuteMake()
     silent make! -c "%" | redraw!
   endif
 endfunction
-
 compiler ruby
 augroup rbsyntaxcheck
   autocmd! BufWritePost <buffer> call s:ExecuteMake()
@@ -111,7 +110,13 @@ set statusline=%f:\ %{substitute(getcwd(),'.*/','','')}\ %m%=%{(&fenc!=''?&fenc:
 "}}}
 
 " user defined commands {{{
-command! RmDust :%s/\s\s*$//g | :nohlsearch
+function! RemoveSpaces()
+    let s:cursor = getpos(".")
+    %s/\s\+$//g
+    call setpos(".", s:cursor)
+    unlet s:cursor
+endfunction
+command! RmDust :call RemoveSpaces()
 command! EditVimrc :e $MYVIMRC $MYGVIMRC
 "}}}
 
@@ -206,8 +211,8 @@ let g:unite_split_rule = 'rightbelow'
 " VimShellの設定 {{{
 " 追加プロンプト
 let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
-" 右プロンプト
-let g:vimshell_right_prompt = 'vimshell#vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
+" 右プロンプト ( vcs#info は deprecated )
+" let g:vimshell_right_prompt = 'vimshell#vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
 " 分割割合(%)
 let g:vimshell_split_height = 25
 " }}}
@@ -486,13 +491,9 @@ filetype off
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
-" let Vundle manage Vundle
-" required!
 Bundle 'gmarik/vundle'
 
-" My Bundles here:
-
-" original repos on github
+" GitHub上のリポジトリ
 Bundle 'Shougo/vimproc'
 Bundle 'Shougo/vimshell'
 Bundle 'Shougo/vimfiler'
@@ -521,13 +522,13 @@ Bundle 'rhysd/lindapp_cpp'
 " Bundle 'ujihisa/neco-look'
 " Bundle 'taku-o/vim-toggle'
 
-" vim-scripts repos
+" vim-scripts上のリポジトリ
 Bundle 'surround.vim'
 Bundle 'Align'
 " Bundle 'errormarker.vim'
 " Bundle 'endwise.vim'
 
-" non github repos
+" その他のgitリポジトリ
 " Bundle 'git://git.wincent.com/command-t.git'
 
 filetype plugin indent on     " required!

@@ -49,6 +49,7 @@ alias -g gitpl='git pull'
 alias -g gitls='git ls-files'
 alias df='df -h'
 alias su='su -'
+alias be='bundle exec'
 
 
 # suffix alias
