@@ -289,6 +289,9 @@ let g:neocomplcache_snippets_dir = $HOME.'/.vim/bundle/lindapp_cpp/snippets'
 
 " キーマップの設定 {{{
 " Base Settings {{{
+" ; と : をスワップ
+nnoremap ; :
+nnoremap : ;
 "insertモードから抜ける
 inoremap jj <ESC>
 inoremap <C-j> j

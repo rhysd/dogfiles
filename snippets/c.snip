@@ -35,3 +35,12 @@ abbr #ifndef ... #define ... #endif
     #ifndef $1
     #define ${1:SYMBOL}
     #endif${0} // $1
+
+snippet include_guard
+alias   inc_guard
+prev_word '^'
+abbr    #if !defined HOGE #define HOGE #endif
+    #if !defined `toupper( substitute( expand("%"), "\\.", "_", "g" ) )."_INCLUDED__"`
+    #define `toupper( substitute( expand("%"), "\\.", "_", "g" ) )."_INCLUDED__"`
+    ${0}
+    #endif // `toupper( substitute( expand("%"), "\\.", "_", "g" ) )."_INCLUDED__"`

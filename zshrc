@@ -191,7 +191,7 @@ function gem(){
 # auto-fu.zsh
 source $HOME/.zsh/auto-fu.zsh/auto-fu.zsh
 zle-line-init(){auto-fu-init;}; zle -N zle-line-init
-zstyle ':completion:*' completer _oldlist _complete _match _history
+zstyle ':completion:*' completer _oldlist _complete _match
 # vi-cmd の場合
 # zle -N zle-keymap-select auto-fu-zle-keymap-select
 # '-azfu-' を消す
