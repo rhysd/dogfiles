@@ -1,0 +1,23 @@
+!! Additional Escapes
+! keycode 49  = Escape
+! keycode 101 = Escape
+
+!! Mac-like IM exchange
+! keycode 130 = Henkan_Mode
+! keycode 131 = Muhenkan
+
+!! muhenkan to super
+keycode 102 = Super_L
+!! r-shift to under_score
+keycode 62 = underscore
+
+!! CapsLock as additional Ctrl
+! remove Lock = Caps_Lock
+! add Control = Caps_Lock
+! keysym Caps_Lock = Control_L
+
+!! swap alt and super
+! remove mod1 = Alt_L
+! remove mod4 = Super_L
+! add mod1 = Super_L
+! add mod4 = Alt_L
