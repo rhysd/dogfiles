@@ -97,13 +97,14 @@ function! s:ExecuteMake()
   endif
 endfunction
 compiler ruby
-augroup rbsyntaxcheck
-  autocmd! BufWritePost <buffer> call s:ExecuteMake()
-augroup END
-
+" augroup rbsyntaxcheck
+"   autocmd! BufWritePost <buffer> call s:ExecuteMake()
+" augroup END
 " ステータスライン
 set ruf=%45(%12f%=\ %m%{'['.(&fenc!=''?&fenc:&enc).']'}\ %l-%v\ %p%%\ [%02B]%)
 set statusline=%f:\ %{substitute(getcwd(),'.*/','','')}\ %m%=%{(&fenc!=''?&fenc:&enc).':'.strpart(&ff,0,1)}\ %l-%v\ %p%%\ %02B
+" *.md で読み込む filetype を変更（デフォルトは modula2）
+autocmd BufRead *.md set ft=markdown
 
 " カーソル下のハイライトグループを取得
 " command! -nargs=0 GetHighlightingGroup echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<' . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<' . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
@@ -292,6 +293,8 @@ let g:neocomplcache_snippets_dir = $HOME.'/.vim/bundle/lindapp_cpp/snippets'
 " ; と : をスワップ
 nnoremap ; :
 nnoremap : ;
+vnoremap ; :
+vnoremap : ;
 "insertモードから抜ける
 inoremap jj <ESC>
 inoremap <C-j> j
@@ -387,6 +390,8 @@ nnoremap <Leader>tp :tabprevious<CR>
 nnoremap <Leader>tc :tabclose<CR>
 " Rubyのキーマップ
 autocmd FileType ruby inoremap <buffer><C-s> self.
+" 貼り付けはインデントを揃える
+nnoremap p ]p
 " }}}
 
 "VimShellの設定 {{{
@@ -518,6 +523,7 @@ Bundle 'kana/vim-textobj-indent'
 Bundle 'h1mesuke/textobj-wiw'
 Bundle 'rhysd/vim-accelerate'
 Bundle 'rhysd/lindapp_cpp'
+Bundle 'choplin/unite-spotlight'
 " Bundle 'Lokaltog/vim-powerline'
 " Bundle 'ujihisa/vimshell-ssh'
 " Bundle 'h1mesuke/vim-alignta'

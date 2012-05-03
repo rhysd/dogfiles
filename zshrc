@@ -26,10 +26,10 @@ alias -g V='Vim'
 alias -g c='cd'
 alias -g s='sudo'
 alias -g gr='grep -nl --color'
-alias -g g=git
+# alias -g g=git
+alias -g g=g++
 alias -g pg='ps aux | grep'
-alias -g md='mkdir'
-alias -g mdp='mkdir -pv'
+alias -g md='mkdir -pv'
 alias -g h='history 0'
 alias -g k='kill'
 alias rm='grm'
@@ -50,6 +50,7 @@ alias -g gitls='git ls-files'
 alias df='df -h'
 alias su='su -'
 alias be='bundle exec'
+alias quit=exit
 
 
 # suffix alias
