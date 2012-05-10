@@ -391,7 +391,12 @@ nnoremap <Leader>tc :tabclose<CR>
 " Rubyのキーマップ
 autocmd FileType ruby inoremap <buffer><C-s> self.
 " 貼り付けはインデントを揃える
-nnoremap p ]p
+" nnoremap p ]p
+" insert モードでもフレーム移動（<C-W> は直前のワード削除なので別に要らない）
+inoremap <C-w>l <Esc><C-w>li
+inoremap <C-w>h <Esc><C-w>hi
+inoremap <C-w>j <Esc><C-w>ji
+inoremap <C-w>k <Esc><C-w>ki
 " }}}
 
 "VimShellの設定 {{{
@@ -448,6 +453,10 @@ nnoremap <silent> <Leader>uf  :<C-u>Unite -no-start-insert find<CR>
 nnoremap <silent> <Leader>uh  :<C-u>UniteWithInput -no-start-insert help<CR>
 "Uniteバッファの復元
 nnoremap <silent> <Leader>ur  :<C-u>UniteResume<CR>
+"SpotLight の利用
+if has('mac')
+    nnoremap <silent> <Leader>us :<C-u>Unite spotlight<CR>
+endif
 " }}}
 
 "QuickRunのキーマップ {{{

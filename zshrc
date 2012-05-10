@@ -76,7 +76,7 @@ export HOMEBREW_EDITOR=vim
 eval "$(rbenv init -)"
 
 # Completion
-fpath=(~/.zsh/functions ${fpath})
+fpath=(~/.zsh/site-functions ${fpath})
 autoload -U compinit
 compinit -u
 zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'cd=43;34'
@@ -211,3 +211,6 @@ precmd(){
     _z --add "$(pwd -P)"
     ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb
 }
+
+# git uses hub (this is not dangerous)
+eval "$(hub alias -s)"
