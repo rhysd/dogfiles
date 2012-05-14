@@ -190,19 +190,19 @@ function gem(){
 }
 
 # auto-fu.zsh
-source $HOME/.zsh/auto-fu.zsh/auto-fu.zsh
-zle-line-init(){auto-fu-init;}; zle -N zle-line-init
-zstyle ':completion:*' completer _oldlist _complete _match
-# vi-cmd の場合
-# zle -N zle-keymap-select auto-fu-zle-keymap-select
-# '-azfu-' を消す
-zstyle ':auto-fu:var' postdisplay
-# git はオプション補完でバグるのでOFFにする
-# zstyle ':auto-fu:var' autoable-function/skipwords "^git *"
-# 最初の2文字の補完を無効に
-# zstyle ':auto-fu:var' autoable-function/skipwords "^((???)##)"
-# /が重複しないように unsetopt
-unsetopt noautoremoveslash
+# source $HOME/.zsh/auto-fu.zsh/auto-fu.zsh
+# zle-line-init(){auto-fu-init;}; zle -N zle-line-init
+# zstyle ':completion:*' completer _oldlist _complete _match
+# # vi-cmd の場合
+# # zle -N zle-keymap-select auto-fu-zle-keymap-select
+# # '-azfu-' を消す
+# zstyle ':auto-fu:var' postdisplay
+# # git はオプション補完でバグるのでOFFにする
+# # zstyle ':auto-fu:var' autoable-function/skipwords "^git *"
+# # 最初の2文字の補完を無効に
+# # zstyle ':auto-fu:var' autoable-function/skipwords "^((???)##)"
+# # /が重複しないように unsetopt
+# unsetopt noautoremoveslash
 
 # z
 _Z_CMD=j

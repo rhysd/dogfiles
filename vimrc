@@ -11,7 +11,8 @@ set nocompatible
 "自動インデント
 set autoindent
 "タブが対応する空白の数
-set tabstop=4 shiftwidth=4 softtabstop=4
+" set tabstop=4 shiftwidth=4 softtabstop=4
+set tabstop=2 shiftwidth=2 softtabstop=2
 "タブの代わりにスペースを使う
 set expandtab
 "長い行で折り返す
@@ -306,12 +307,14 @@ nnoremap k gk
 "Esc->Escで検索結果をクリア
 nnoremap <silent><ESC><ESC> :<C-u>nohlsearch<CR><ESC>
 "行頭・行末の移動
-nnoremap 0 $
-vnoremap 0 $
-nnoremap <TAB> ^
-vnoremap <TAB> ^
-nnoremap - 0
-vnoremap - 0
+nnoremap <TAB> G
+vnoremap <TAB> G
+nnoremap 0 ^
+vnoremap 0 ^
+nnoremap <C-0> 0
+vnoremap <C-0> 0
+nnoremap - $
+vnoremap - $
 " q:は誤爆しやすい
 nnoremap q; q:
 nnoremap <C-:> q:
@@ -392,11 +395,6 @@ nnoremap <Leader>tc :tabclose<CR>
 autocmd FileType ruby inoremap <buffer><C-s> self.
 " 貼り付けはインデントを揃える
 " nnoremap p ]p
-" insert モードでもフレーム移動（<C-W> は直前のワード削除なので別に要らない）
-inoremap <C-w>l <Esc><C-w>li
-inoremap <C-w>h <Esc><C-w>hi
-inoremap <C-w>j <Esc><C-w>ji
-inoremap <C-w>k <Esc><C-w>ki
 " }}}
 
 "VimShellの設定 {{{
