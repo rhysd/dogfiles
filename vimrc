@@ -1,3 +1,53 @@
+" vundle.vim の設定 {{{
+filetype off
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+Bundle 'gmarik/vundle'
+
+" GitHub上のリポジトリ
+Bundle 'Shougo/vimproc'
+Bundle 'Shougo/vimshell'
+Bundle 'Shougo/vimfiler'
+Bundle 'Shougo/neocomplcache'
+Bundle 'Shougo/neocomplcache-snippets-complete'
+Bundle 'Shougo/neocomplcache-clang'
+Bundle 'thinca/vim-quickrun'
+Bundle 'Shougo/unite.vim'
+Bundle 'tomtom/tcomment_vim'
+Bundle 'h1mesuke/unite-outline'
+Bundle 'tsukkee/unite-help'
+Bundle 'vim-jp/vimdoc-ja'
+Bundle 'jceb/vim-hier'
+Bundle 'rhysd/my-vimtoggle'
+Bundle 'rhysd/my-endwise'
+Bundle 'kana/vim-textobj-user'
+Bundle 'kana/vim-textobj-indent'
+" Bundle 'kana/vim-textobj-lastpat' これと同様の効果をキーマップに設定済み
+Bundle 'h1mesuke/textobj-wiw'
+Bundle 'rhysd/vim-accelerate'
+Bundle 'rhysd/lindapp_cpp'
+Bundle 'choplin/unite-spotlight'
+Bundle 'kana/vim-smartinput'
+Bundle 'kana/vim-filetype-haskell'
+" Bundle 'Lokaltog/vim-powerline'
+" Bundle 'ujihisa/vimshell-ssh'
+" Bundle 'h1mesuke/vim-alignta'
+" Bundle 'ujihisa/unite-colorscheme'
+" Bundle 'ujihisa/neco-look'
+" Bundle 'taku-o/vim-toggle'
+
+" vim-scripts上のリポジトリ
+Bundle 'Align'
+" Bundle 'errormarker.vim'
+" Bundle 'endwise.vim'
+
+" その他のgitリポジトリ
+" Bundle 'git://git.wincent.com/command-t.git'
+
+filetype plugin indent on     " required!
+" }}}
+
 " Base settings {{{
 let mapleader = ','
 
@@ -11,8 +61,8 @@ set nocompatible
 "自動インデント
 set autoindent
 "タブが対応する空白の数
-" set tabstop=4 shiftwidth=4 softtabstop=4
-set tabstop=2 shiftwidth=2 softtabstop=2
+set tabstop=4 shiftwidth=4 softtabstop=4
+" set tabstop=2 shiftwidth=2 softtabstop=2
 "タブの代わりにスペースを使う
 set expandtab
 "長い行で折り返す
@@ -213,6 +263,7 @@ let g:unite_split_rule = 'rightbelow'
 " VimShellの設定 {{{
 " 追加プロンプト
 let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
+let g:vimshell_right_prompt = 'fnamemodify(getcwd(), ":~")'
 " 右プロンプト ( vcs#info は deprecated )
 " let g:vimshell_right_prompt = 'vimshell#vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
 " 分割割合(%)
@@ -288,6 +339,109 @@ let g:neocomplcache_clang_user_options =
 " lindapp_cpp {{{
 let g:neocomplcache_snippets_dir = $HOME.'/.vim/bundle/lindapp_cpp/snippets'
 " }}}
+
+" vim-smartinput"{{{
+" call smartinput#define_default_rules()
+
+" 括弧内のスペース
+" call smartinput#map_to_trigger('i', '(', '(', '(')
+call smartinput#define_rule({
+\   'at':       '(\%#)',
+\   'char':     '<Space>',
+\   'input':    '<Space><Space><Left>',
+\   })
+
+call smartinput#map_to_trigger('i', '<Space>', '<Space>', '<Space>')
+call smartinput#define_rule({
+\   'at':       '( \%# )',
+\   'char':     '<BS>',
+\   'input':    '<Del><BS>',
+\   })
+
+call smartinput#define_rule({
+\   'at':       '{\%#}',
+\   'char':     '<Space>',
+\   'input':    '<Space><Space><Left>',
+\   })
+
+call smartinput#define_rule({
+\   'at':       '{ \%# }',
+\   'char':     '<BS>',
+\   'input':    '<Del><BS>',
+\   })
+
+call smartinput#define_rule({
+\   'at':       '[\%#]',
+\   'char':     '<Space>',
+\   'input':    '<Space><Space><Left>',
+\   })
+
+call smartinput#define_rule({
+\   'at':       '[ \%# ]',
+\   'char':     '<BS>',
+\   'input':    '<Del><BS>',
+\   })
+
+" Ruby 文字列内変数埋め込み
+call smartinput#map_to_trigger('i', '#', '#', '#')
+call smartinput#define_rule({
+\   'at': '\%#',
+\   'char': '#',
+\   'input': '#{}<Left>',
+\   'filetype': ['ruby'],
+\   'syntax': ['Constant', 'Special'],
+\   })
+
+" Ruby ブロック引数 ||
+call smartinput#map_to_trigger('i', '<Bar>', '<Bar>', '<Bar>')
+call smartinput#define_rule({
+\   'at': '\({\|\<do\>\)\s*\%#',
+\   'char': '<Bar>',
+\   'input': '<Bar><Bar><Left>',
+\   'filetype': ['ruby'],
+\    })
+
+" : で :: を一気に入力する．inoremap : :: だと次の2回押した場合の対処が効かなくなる．
+call smartinput#map_to_trigger('i', ':', ':', ':')
+call smartinput#define_rule({
+\   'at': '\%#',
+\   'char': ':',
+\   'input': '::',
+\   'filetype': ['cpp'],
+\   })
+
+" 癖で2回コロンを押しても大丈夫
+call smartinput#define_rule({
+\   'at': '::\%#',
+\   'char': ':',
+\   'input': '',
+\   'filetype': ['cpp'],
+\   })
+
+" テンプレート内のスペース
+call smartinput#map_to_trigger('i', '<', '<', '<')
+call smartinput#define_rule({
+\   'at':       '<\%#>',
+\   'char':     '<Space>',
+\   'input':    '<Space><Space><Left>',
+\   'filetype': ['cpp'],
+\   })
+call smartinput#define_rule({
+\   'at':       '< \%# >',
+\   'char':     '<BS>',
+\   'input':    '<Del><BS>',
+\   'filetype': ['cpp'],
+\   })
+
+" クラス定義の場合は末尾に;を付け忘れないようにする
+call smartinput#define_rule({
+\   'at': '\(\<struct\>\|\<class\>\)\s*\w*\s*{\%#}',
+\   'char': '<CR>',
+\   'input': '<Right>;<Left><CR><CR><Up>',
+\   'filetype': ['cpp'],
+\   })
+
+"}}}
 
 " キーマップの設定 {{{
 " Base Settings {{{
@@ -414,8 +568,8 @@ inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 "スニペットがあればそれを展開．なければ通常の挙動をするTABキー
 " imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
 " <C-h>, <BS>: close popup and delete backword char.
-inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
+" inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
+" inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
 inoremap <expr><C-y> neocomplcache#close_popup()
 " }}}
 
@@ -500,53 +654,3 @@ autocmd FileType cpp inoremap <silent><buffer><expr><CR> lindapp_cpp#expand_brac
 autocmd FileType cpp nmap <silent><buffer><leader>dt <Plug>lindapp_cpp_return_type
 " }}}
 " }}}
-
-" vundle.vim の設定 {{{
-filetype off
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
-
-Bundle 'gmarik/vundle'
-
-" GitHub上のリポジトリ
-Bundle 'Shougo/vimproc'
-Bundle 'Shougo/vimshell'
-Bundle 'Shougo/vimfiler'
-Bundle 'Shougo/neocomplcache'
-Bundle 'Shougo/neocomplcache-snippets-complete'
-Bundle 'Shougo/neocomplcache-clang'
-Bundle 'thinca/vim-quickrun'
-Bundle 'Shougo/unite.vim'
-Bundle 'tomtom/tcomment_vim'
-Bundle 'h1mesuke/unite-outline'
-Bundle 'tsukkee/unite-help'
-Bundle 'vim-jp/vimdoc-ja'
-Bundle 'jceb/vim-hier'
-Bundle 'rhysd/my-vimtoggle'
-Bundle 'rhysd/my-endwise'
-Bundle 'kana/vim-textobj-user'
-Bundle 'kana/vim-textobj-indent'
-" Bundle 'kana/vim-textobj-lastpat' これと同様の効果をキーマップに設定済み
-Bundle 'h1mesuke/textobj-wiw'
-Bundle 'rhysd/vim-accelerate'
-Bundle 'rhysd/lindapp_cpp'
-Bundle 'choplin/unite-spotlight'
-" Bundle 'Lokaltog/vim-powerline'
-" Bundle 'ujihisa/vimshell-ssh'
-" Bundle 'h1mesuke/vim-alignta'
-" Bundle 'ujihisa/unite-colorscheme'
-" Bundle 'ujihisa/neco-look'
-" Bundle 'taku-o/vim-toggle'
-
-" vim-scripts上のリポジトリ
-Bundle 'surround.vim'
-Bundle 'Align'
-" Bundle 'errormarker.vim'
-" Bundle 'endwise.vim'
-
-" その他のgitリポジトリ
-" Bundle 'git://git.wincent.com/command-t.git'
-
-filetype plugin indent on     " required!
-" }}}
-
