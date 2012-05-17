@@ -371,13 +371,13 @@ call smartinput#define_rule({
 \   })
 
 call smartinput#define_rule({
-\   'at':       '[\%#]',
+\   'at':       '\[\%#\]',
 \   'char':     '<Space>',
 \   'input':    '<Space><Space><Left>',
 \   })
 
 call smartinput#define_rule({
-\   'at':       '[ \%# ]',
+\   'at':       '\[ \%# \]',
 \   'char':     '<BS>',
 \   'input':    '<Del><BS>',
 \   })
