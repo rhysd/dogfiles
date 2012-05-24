@@ -450,208 +450,208 @@ call smartinput#define_rule({
 noremap ; :
 noremap : ;
 "insertモードから抜ける
-inoremap jj <esc>
-inoremap <c-j> j
-" yの挙動はy$のほうが自然な気がする
-nnoremap y y$
+inoremap jj <ESC>
+inoremap <C-j> j
+" Yの挙動はy$のほうが自然な気がする
+nnoremap Y y$
 " 縦方向は論理移動する
 nnoremap j gj
 nnoremap k gk
-"esc->escで検索結果をクリア
-nnoremap <silent><esc><esc> :<c-u>nohlsearch<cr><esc>
+"Esc->Escで検索結果をクリア
+nnoremap <silent><ESC><ESC> :<C-u>nohlsearch<CR><ESC>
 "行頭・行末の移動
-nnoremap <tab> g
-vnoremap <tab> g
+nnoremap <TAB> G
+vnoremap <TAB> G
 nnoremap 0 ^
 vnoremap 0 ^
-nnoremap <c-0> 0
-vnoremap <c-0> 0
+nnoremap <C--> 0
+vnoremap <C--> 0
 nnoremap - $
 vnoremap - $
 " q:は誤爆しやすい
 nnoremap q; q:
-nnoremap <c-:> q:
+nnoremap <C-:> q:
 nnoremap q: :q
 " insertモードでもquit
-inoremap <c-q><c-q> <esc>:wqa<cr>
+inoremap <C-q><C-q> <ESC>:wqa<CR>
 " insertモードでもcmdmode
-inoremap <c-:> <esc>:
+inoremap <C-:> <Esc>:
 " 空行挿入
-nnoremap <silent><space> :<c-u>call append(expand('.'), '')<cr>j
+nnoremap <silent><Space> :<C-u>call append(expand('.'), '')<CR>j
 "ヘルプ表示
-nnoremap <leader>vh :vert bo help<space>
-"insertモード時はemacsライクなバインディング．ポップアップが出ないように移動．
-inoremap <c-e> <end>
-vnoremap <c-e> <end>
-cnoremap <c-e> <end>
-inoremap <c-a> <home>
-vnoremap <c-a> <home>
-cnoremap <c-a> <home>
-inoremap <expr><c-n> pumvisible() ? "\<c-y>\<down>" : "\<down>"
-inoremap <expr><c-p> pumvisible() ? "\<c-y>\<up>" : "\<up>"
-inoremap <expr><c-b> pumvisible() ? "\<c-y>\<left>" : "\<left>"
-inoremap <expr><c-f> pumvisible() ? "\<c-y>\<right>" : "\<right>"
-" inoremap <c-n> <down>
-" inoremap <c-p> <up>
-" inoremap <c-b> <left>
-" inoremap <c-f> <right>
-inoremap <c-d> <del>
-cnoremap <c-d> <del>
-inoremap <c-k> <c-o>d
-cnoremap <c-k> <c-o>d
+nnoremap <Leader>vh :vert bo help<Space>
+"insertモード時はEmacsライクなバインディング．ポップアップが出ないように移動．
+inoremap <C-e> <END>
+vnoremap <C-e> <END>
+cnoremap <C-e> <END>
+inoremap <C-a> <HOME>
+vnoremap <C-a> <HOME>
+cnoremap <C-a> <HOME>
+inoremap <expr><C-n> pumvisible() ? "\<C-y>\<Down>" : "\<Down>"
+inoremap <expr><C-p> pumvisible() ? "\<C-y>\<Up>" : "\<Up>"
+inoremap <expr><C-b> pumvisible() ? "\<C-y>\<Left>" : "\<Left>"
+inoremap <expr><C-f> pumvisible() ? "\<C-y>\<Right>" : "\<Right>"
+" inoremap <C-n> <Down>
+" inoremap <C-p> <Up>
+" inoremap <C-b> <Left>
+" inoremap <C-f> <Right>
+inoremap <C-d> <Del>
+cnoremap <C-d> <Del>
+inoremap <C-k> <C-o>D
+cnoremap <C-k> <C-o>D
 "バッファ切り替え
-nnoremap <silent><c-n>   :<c-u>bnext<cr>
-nnoremap <silent><c-p>   :<c-u>bprevious<cr>
-"visualモード時にvで行末まで選択する
+nnoremap <silent><C-n>   :<C-u>bnext<CR>
+nnoremap <silent><C-p>   :<C-u>bprevious<CR>
+"Visualモード時にvで行末まで選択する
 vnoremap v $h
-"ctrl-hjklでウィンドウ移動．横幅が小さすぎる場合は自動でリサイズする．
+"CTRL-hjklでウィンドウ移動．横幅が小さすぎる場合は自動でリサイズする．
 function! s:good_width()
     if winwidth(0) < 84
         vertical resize 84
     endif
 endfunction
-nnoremap <silent><c-j> <c-w>j:call <sid>good_width()<cr>
-nnoremap <silent><c-h> <c-w>h:call <sid>good_width()<cr>
-nnoremap <silent><c-l> <c-w>l:call <sid>good_width()<cr>
-nnoremap <silent><c-k> <c-w>k:call <sid>good_width()<cr>
-"ruby新規ファイルを開いたときに書きこむ
-autocmd bufnewfile *.rb 0r ~/.vim/skeletons/ruby.skel
-"<cr>の挙動
-nnoremap <cr> i<cr><esc>
-"<bs>の挙動
-nnoremap <bs> i<bs><esc>
+nnoremap <silent><C-j> <C-w>j:call <SID>good_width()<CR>
+nnoremap <silent><C-h> <C-w>h:call <SID>good_width()<CR>
+nnoremap <silent><C-l> <C-w>l:call <SID>good_width()<CR>
+nnoremap <silent><C-k> <C-w>k:call <SID>good_width()<CR>
+"Ruby新規ファイルを開いたときに書きこむ
+autocmd BufNewFile *.rb 0r ~/.vim/skeletons/ruby.skel
+"<CR>の挙動
+nnoremap <CR> i<CR><ESC>
+"<BS>の挙動
+nnoremap <BS> i<BS><ESC>
 "コマンドラインモードでのカーソル移動
-cnoremap <c-f> <right>
-cnoremap <c-b> <left>
+cnoremap <C-f> <Right>
+cnoremap <C-b> <Left>
 "_で次の_の手前まで
 onoremap _ vf_h
 " カーソルキーでの上下移動
-nnoremap <silent><down>  <c-w>-
-nnoremap <silent><up>    <c-w>+
-nnoremap <silent><left>  <c-w><
-nnoremap <silent><right> <c-w>>
+nnoremap <silent><Down>  <C-w>-
+nnoremap <silent><Up>    <C-w>+
+nnoremap <silent><Left>  <C-w><
+nnoremap <silent><Right> <C-w>>
 " ペーストした文字列をビジュアルモードで選択
 nnoremap <expr>gp '`['.strpart(getregtype(),0,1).'`]'
 " 日付の挿入
-inoremap <c-x>date <c-r>=strftime('%y/%m/%d(%a) %h:%m')<cr>
-nnoremap <leader>date :r<space>!date<space>+'\%y/\%m/\%d(\%a)<space>\%h:\%m'<cr>
+inoremap <C-x>date <C-r>=strftime('%Y/%m/%d(%a) %H:%M')<CR>
+nnoremap <Leader>date :r<Space>!date<Space>+'\%Y/\%m/\%d(\%a)<Space>\%H:\%M'<CR>
 " text-obj-lastpat:sでマッチした部分をtextobjに
-nnoremap di/ d//e<cr>
-nnoremap ci/ c//e<cr>
-nnoremap yi/ y//e<cr>
+nnoremap di/ d//e<CR>
+nnoremap ci/ c//e<CR>
+nnoremap yi/ y//e<CR>
 " タブの設定
-nnoremap <leader>te :tabnew<cr>
-nnoremap <leader>tn :tabnext<cr>
-nnoremap <leader>tp :tabprevious<cr>
-nnoremap <leader>tc :tabclose<cr>
-" rubyのキーマップ
-autocmd filetype ruby inoremap <buffer><c-s> self.
+nnoremap <Leader>te :tabnew<CR>
+nnoremap <Leader>tn :tabnext<CR>
+nnoremap <Leader>tp :tabprevious<CR>
+nnoremap <Leader>tc :tabclose<CR>
+" Rubyのキーマップ
+autocmd FileType ruby inoremap <buffer><C-s> self.
 " 貼り付けはインデントを揃える
 " nnoremap p ]p
 " }}}
 
-"vimshellの設定 {{{
-nmap <expr><leader>vs "\<plug>(vimshell_split_switch)"
+"VimShellの設定 {{{
+nmap <expr><Leader>vs "\<Plug>(vimshell_split_switch)"
 
 "neocomplcacheの設定
-imap      <c-s>       <plug>(neocomplcache_snippets_expand)
-smap      <c-s>       <plug>(neocomplcache_snippets_expand)
-inoremap  <expr><c-g> neocomplcache#undo_completion()
-"inoremap <expr><c-l> neocomplcache#complete_common_string()
+imap      <C-s>       <Plug>(neocomplcache_snippets_expand)
+smap      <C-s>       <Plug>(neocomplcache_snippets_expand)
+inoremap  <expr><C-g> neocomplcache#undo_completion()
+"inoremap <expr><C-l> neocomplcache#complete_common_string()
 "スニペット展開候補があれば展開を，そうでなければbash風補完を．
-imap <expr><c-l> neocomplcache#sources#snippets_complete#expandable() ? "\<plug>(neocomplcache_snippets_expand)" : neocomplcache#complete_common_string()
-" <cr>: close popup and save indent.
-inoremap <expr><cr>  pumvisible() ? neocomplcache#smart_close_popup()."\<cr>" : "\<cr>"
-" <tab>: completion
-inoremap <expr><tab>  pumvisible() ? "\<c-n>" : "\<tab>"
-"スニペットがあればそれを展開．なければ通常の挙動をするtabキー
-" imap <expr><tab> neocomplcache#sources#snippets_complete#expandable() ? "\<plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<c-n>" : "\<tab>"
-" <c-h>, <bs>: close popup and delete backword char.
-" inoremap <expr><c-h> neocomplcache#smart_close_popup()."\<c-h>"
-" inoremap <expr><bs> neocomplcache#smart_close_popup()."\<c-h>"
-inoremap <expr><c-y> neocomplcache#close_popup()
+imap <expr><C-l> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : neocomplcache#complete_common_string()
+" <CR>: close popup and save indent.
+inoremap <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup()."\<CR>" : "\<CR>"
+" <TAB>: completion
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+"スニペットがあればそれを展開．なければ通常の挙動をするTABキー
+" imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
+" <C-h>, <BS>: close popup and delete backword char.
+" inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
+" inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
+inoremap <expr><C-y> neocomplcache#close_popup()
 " }}}
 
-"unite.vimのキーマップ {{{
-"insertモード時はc-gでいつでもバッファを閉じられる（絞り込み欄が空の時はc-hでもok）
-autocmd filetype unite imap <buffer> <c-g> <plug>(unite_exit)
+"Unite.vimのキーマップ {{{
+"insertモード時はC-gでいつでもバッファを閉じられる（絞り込み欄が空の時はC-hでもOK）
+autocmd FileType unite imap <buffer> <C-g> <Plug>(unite_exit)
 "ファイル上にカーソルがある時，pでプレビューを見る
-autocmd filetype unite inoremap <buffer><expr> p unite#smart_map("p", unite#do_action('preview'))
-"c-xでクイックマッチ
-autocmd filetype unite imap <buffer> <c-x> <plug>(unite_quick_match_default_action)
+autocmd FileType unite inoremap <buffer><expr> p unite#smart_map("p", unite#do_action('preview'))
+"C-xでクイックマッチ
+autocmd FileType unite imap <buffer> <C-x> <Plug>(unite_quick_match_default_action)
 "lでデフォルトアクションを実行
-autocmd filetype unite nmap <buffer> l <plug>(unite_do_default_action)
-autocmd filetype unite imap <buffer><expr> l unite#smart_map("l", unite#do_action(unite#get_current_unite().context.default_action))
-"増えすぎてアレなら <leader>ua などに置き換える．そのときはnnoremap <leader>u <nop>を忘れないようにする．
+autocmd FileType unite nmap <buffer> l <Plug>(unite_do_default_action)
+autocmd FileType unite imap <buffer><expr> l unite#smart_map("l", unite#do_action(unite#get_current_unite().context.default_action))
+"増えすぎてアレなら <Leader>ua などに置き換える．そのときはnnoremap <Leader>u <Nop>を忘れないようにする．
 "バッファを開いた時のパスを起点としたファイル検索
-" nnoremap <silent> <leader>f  :<c-u>unitewithbufferdir -buffer-name=files file<cr>
+" nnoremap <silent> <Leader>f  :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
 "バッファ一覧
-nnoremap <silent> <leader>ub  :<c-u>unite -no-start-insert buffer<cr>
+nnoremap <silent> <Leader>ub  :<C-u>Unite -no-start-insert buffer<CR>
 "ブックマークしたファイル/ディレクトリ
-nnoremap <silent> <leader>ub  :<c-u>unite -no-start-insert bookmark<cr>
+nnoremap <silent> <Leader>uB  :<C-u>Unite -no-start-insert bookmark<CR>
 "最近使用したファイル
-nnoremap <silent> <leader>um  :<c-u>unite -no-start-insert file_mru directory_mru<cr>
-nnoremap <silent> <leader>m  :<c-u>unite -no-start-insert file_mru directory_mru<cr>
+nnoremap <silent> <Leader>um  :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
+nnoremap <silent> <Leader>m  :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
 "プログラミングにおけるアウトラインの表示
-nnoremap <silent> <leader>uo  :<c-u>unite outline -vertical -no-start-insert<cr>
+nnoremap <silent> <Leader>uo  :<C-u>Unite outline -vertical -no-start-insert<CR>
 "grep検索．
-nnoremap <silent> <leader>ug  :<c-u>unite -no-start-insert grep<cr>
+nnoremap <silent> <Leader>ug  :<C-u>Unite -no-start-insert grep<CR>
 "yank履歴
-nnoremap <silent> <leader>uy  :<c-u>unite -no-start-insert history/yank<cr>
+nnoremap <silent> <Leader>uy  :<C-u>Unite -no-start-insert history/yank<CR>
 "find
-nnoremap <silent> <leader>uf  :<c-u>unite -no-start-insert find<cr>
+nnoremap <silent> <Leader>uf  :<C-u>Unite -no-start-insert find<CR>
 "helpを引く．絞り込み初期は候補が膨大になるのでワードを先に入力
-nnoremap <silent> <leader>uh  :<c-u>unitewithinput -no-start-insert help<cr>
-"uniteバッファの復元
-nnoremap <silent> <leader>ur  :<c-u>uniteresume<cr>
-"spotlight の利用
+nnoremap <silent> <Leader>uh  :<C-u>UniteWithInput -no-start-insert help<CR>
+"Uniteバッファの復元
+nnoremap <silent> <Leader>ur  :<C-u>UniteResume<CR>
+"SpotLight の利用
 if has('mac')
-    nnoremap <silent> <leader>us :<c-u>unite spotlight<cr>
+    nnoremap <silent> <Leader>us :<C-u>Unite spotlight<CR>
 endif
 " }}}
 
-"quickrunのキーマップ {{{
-nnoremap <leader>q  <nop>
-nmap     <silent><leader>qr <plug>(quickrun):<c-u>copen<cr>
-nnoremap <leader>qr :<c-u>quickrun<space>
-nnoremap <leader>qq :<c-u>cope<cr>
-"quickfixバッファを閉じると同時にエラー表示も消す
-" autocmd filetype qf nnoremap <buffer><silent> q :q<cr>:hierclear<cr>
-autocmd filetype qf nnoremap <buffer><silent> q :q<cr>
-autocmd filetype qf nnoremap <buffer><silent> j :cn<cr>
-autocmd filetype qf nnoremap <buffer><silent> k :cp<cr>
+"QuickRunのキーマップ {{{
+nnoremap <Leader>q  <Nop>
+nmap     <silent><Leader>qr <Plug>(quickrun):<C-u>copen<CR>
+nnoremap <Leader>qR :<C-u>QuickRun<Space>
+nnoremap <Leader>qq :<C-u>cope<CR>
+"QuickFixバッファを閉じると同時にエラー表示も消す
+" autocmd FileType qf nnoremap <buffer><silent> q :q<CR>:HierClear<CR>
+autocmd FileType qf nnoremap <buffer><silent> q :q<CR>
+autocmd FileType qf nnoremap <buffer><silent> j :cn<CR>
+autocmd FileType qf nnoremap <buffer><silent> k :cp<CR>
 " }}}
 
 "tcomment.vimのキーマップ {{{
-nnoremap <leader>c :tcomment<cr>
-vnoremap <leader>c :tcomment<cr>
-vnoremap <leader>c :tcommentblock<cr>
+nnoremap <Leader>c :TComment<CR>
+vnoremap <Leader>c :TComment<CR>
+vnoremap <Leader>C :TCommentBlock<CR>
 " }}}
 
 "endwise.vimのキーマップ {{{
-autocmd filetype ruby,vim imap <buffer> <expr><cr>  pumvisible() ? neocomplcache#smart_close_popup() . "\<cr>\<plug>discretionaryend" : "\<cr>\<plug>discretionaryend"
+autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"
 "
 " }}}
 
 "vim-toggleのキーマップ {{{
-" nmap <silent><c-t> <plug>mytogglen
+" nmap <silent><C-t> <Plug>MyToggleN
 " }}}
 
 " vimfiler.vim のキーマップ {{{
-nnoremap <leader>f :vimfiler<cr>
-nnoremap <leader>f :vimfiler<space>-no-quit<cr>
+nnoremap <Leader>f :VimFiler<CR>
+nnoremap <Leader>F :VimFiler<Space>-no-quit<CR>
 " }}}
 
 " textobj-wiw のキーマップ {{{
 let g:textobj_wiw_no_default_key_mappings = 1 " デフォルトキーマップの解除
-omap ac <plug>(textobj-wiw-a)
-omap ic <plug>(textobj-wiw-i)
+omap ac <Plug>(textobj-wiw-a)
+omap ic <Plug>(textobj-wiw-i)
 " }}}
 
 " lindapp_cpp の キーマップ {{{
-autocmd filetype cpp call lindapp_cpp#my_cpp_mapping()
-autocmd filetype cpp inoremap <silent><buffer><expr><cr> lindapp_cpp#expand_brace()."\<cr>"
-autocmd filetype cpp nmap <silent><buffer><leader>dt <plug>lindapp_cpp_return_type
+autocmd FileType cpp call lindapp_cpp#my_cpp_mapping()
+autocmd FileType cpp inoremap <silent><buffer><expr><CR> lindapp_cpp#expand_brace()."\<CR>"
+autocmd FileType cpp nmap <silent><buffer><leader>dt <Plug>lindapp_cpp_return_type
 " }}}
 " }}}
 

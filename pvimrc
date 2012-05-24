@@ -2,6 +2,10 @@
 "         Vim 最小構成用 vimrc             "
 """"""""""""""""""""""""""""""""""""""""""""
 
+"最低限欲しいプラグインだけをロード {{{
+set rtp+=$HOME/.vim/bundle/tcomment_vim
+" }}}
+
 " 基本設定 {{{
 
 let mapleader = ','
@@ -171,4 +175,8 @@ nnoremap <expr>gp '`['.strpart(getregtype(),0,1).'`]'
 " 日付の挿入
 inoremap <c-x>date <c-r>=strftime('%y/%m/%d(%a) %h:%m')<cr>
 nnoremap <leader>date :r<space>!date<space>+'\%y/\%m/\%d(\%a)<space>\%h:\%m'<cr>
+"tcomment.vimのキーマップ {{{
+nnoremap <Leader>c :TComment<CR>
+vnoremap <Leader>c :TComment<CR>
+vnoremap <Leader>C :TCommentBlock<CR>
 "}}}
