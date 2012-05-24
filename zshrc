@@ -10,6 +10,7 @@ export EDITOR=vim
 alias g++='g++ -std=c++0x -Wall -Wextra -O2'
 alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
 alias Vim='open -a /Applications/MacVim.app'
+alias vi='vim -u /Users/rhayasd/.pvimrc'
 alias emacs='/usr/local/bin/emacs -nw'
 alias Emacs='open -a /usr/local/bin/emacs'
 alias locate='/usr/bin/locate'
