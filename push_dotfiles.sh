@@ -21,5 +21,5 @@ done
 
 git add -A
 git commit -m "updated at `date`"
-git push -f origin master
+git push origin master
 
