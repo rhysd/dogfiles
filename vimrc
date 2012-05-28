@@ -11,7 +11,8 @@ Bundle 'Shougo/vimshell'
 Bundle 'Shougo/vimfiler'
 Bundle 'Shougo/neocomplcache'
 Bundle 'Shougo/neocomplcache-snippets-complete'
-Bundle 'Shougo/neocomplcache-clang'
+Bundle 'Rip-Rip/clang_complete'
+Bundle 'osyo-manga/neocomplcache-clang_complete'
 Bundle 'thinca/vim-quickrun'
 Bundle 'Shougo/unite.vim'
 Bundle 'tomtom/tcomment_vim'
@@ -19,8 +20,9 @@ Bundle 'h1mesuke/unite-outline'
 Bundle 'tsukkee/unite-help'
 Bundle 'vim-jp/vimdoc-ja'
 Bundle 'jceb/vim-hier'
-Bundle 'rhysd/my-vimtoggle'
-Bundle 'rhysd/my-endwise'
+" Bundle 'rhysd/my-vimtoggle'
+" Bundle 'rhysd/my-endwise'
+Bundle 'tpope/vim-endwise'
 Bundle 'kana/vim-textobj-user'
 Bundle 'kana/vim-textobj-indent'
 " Bundle 'kana/vim-textobj-lastpat' これと同様の効果をキーマップに設定済み
@@ -31,6 +33,7 @@ Bundle 'choplin/unite-spotlight'
 Bundle 'kana/vim-smartinput'
 " Bundle 'kana/vim-filetype-haskell'
 Bundle 'rhysd/vim-filetype-haskell'
+" Bundle 'ujihisa/unite-locate'
 " Bundle 'Lokaltog/vim-powerline'
 " Bundle 'ujihisa/vimshell-ssh'
 " Bundle 'h1mesuke/vim-alignta'
@@ -150,7 +153,7 @@ function! s:ExecuteMake()
 endfunction
 compiler ruby
 " augroup rbsyntaxcheck
-"   autocmd! BufWritePost <buffer> call s:ExecuteMake()
+"   autocmd BufWritePost <buffer> call s:ExecuteMake()
 " augroup END
 " ステータスライン
 set ruf=%45(%12f%=\ %m%{'['.(&fenc!=''?&fenc:&enc).']'}\ %l-%v\ %p%%\ [%02B]%)
@@ -202,7 +205,7 @@ let g:neocomplcache_dictionary_filetype_lists = {
 "リストの最大幅を指定
 "let g:neocomplcache_max_filename_width = 25
 "ctagsへのパス
-" let g:neocomplcache_ctags_program = '/opt/local/bin/ctags'
+let g:neocomplcache_ctags_program = '/usr/local/bin/ctags'
 "区切り文字パターンの定義
 if !exists('g:neocomplcache_delimiter_patterns')
 	let g:neocomplcache_delimiter_patterns= {}
@@ -213,7 +216,7 @@ let g:neocomplcache_delimiter_patterns.cpp = ['::']
 if !exists('g:neocomplcache_include_paths')
     let g:neocomplcache_include_paths = {}
 endif
-let g:neocomplcache_include_paths.cpp  = '.,/usr/local/include,/usr/local/Cellar/gcc/4.6.3/gcc/include/c++/4.6.3'
+let g:neocomplcache_include_paths.cpp  = '.,/usr/local/include,/usr/local/Cellar/gcc/4.7.0/gcc/include/c++/4.7.0'
 let g:neocomplcache_include_paths.c    = '.,/usr/include'
 let g:neocomplcache_include_paths.perl = '.,/System/Library/Perl,/Users/rhayasd/programs'
 "インクルード文のパターンを指定
@@ -323,18 +326,28 @@ let g:vimfiler_execute_file_list = { 'c' : 'vim',  'h' : 'vim',  'cpp' : 'vim', 
 
 " neocomplecache-clang {{{
 " libclangを使う
-let g:neocomplcache_clang_use_library = 1
-" ライブラリへのパス
-let g:neocomplcache_clang_library_path = '/Developer/usr/clang-ide/lib'
-" clangへのパス
-let g:neocomplcache_clang_executable_path = '/usr/bin'
-" let g:neocomplcache_clang_auto_options = ''
-" clangのコマンドオプション
-let g:neocomplcache_clang_user_options =
-    \'-I /usr/local/Cellar/gcc/4.6.3/gcc/include '.
-    \'-I /usr/include/c++/4.2.1 '.
-    \'-I /usr/include '.
-    \'-I /usr/local/Cellar/boost/1.48.0/include '
+" let g:neocomplcache_clang_use_library = 1
+" " ライブラリへのパス
+" let g:neocomplcache_clang_library_path = '/Developer/usr/clang-ide/lib'
+" " clangへのパス
+" let g:neocomplcache_clang_executable_path = '/usr/bin'
+" " let g:neocomplcache_clang_auto_options = ''
+" " clangのコマンドオプション
+" let g:neocomplcache_clang_user_options =
+"     \'-I /usr/local/Cellar/gcc/4.6.3/gcc/include '.
+"     \'-I /usr/include/c++/4.2.1 '.
+"     \'-I /usr/include '.
+"     \'-I /usr/local/Cellar/boost/1.48.0/include '
+" }}}
+
+" clang_complete {{{
+let g:neocomplcache_force_overwrite_completefunc=1
+let g:clang_complete_auto=1
+let g:clang_hl_errors=1
+let g:clang_conceal_snippets=1
+let g:clang_exec="/usr/bin/clang"
+" let g:clang_library_path="/Developer/usr/clang-ide/lib/libclang.dylib"
+let g:clang_user_options='-I /usr/local/include -I /usr/include/c++/4.2.1 -I /usr/include -I /usr/local/Cellar/gcc/4.7.0/gcc/include/c++/4.7.0 2>/dev/null || exit 0'
 " }}}
 
 " lindapp_cpp {{{
@@ -457,15 +470,15 @@ nnoremap Y y$
 " 縦方向は論理移動する
 nnoremap j gj
 nnoremap k gk
-"Esc->Escで検索結果をクリア
-nnoremap <silent><ESC><ESC> :<C-u>nohlsearch<CR><ESC>
+"Esc->Escで検索結果とエラーハイライトをクリア
+nnoremap <silent><ESC><ESC> :<C-u>nohlsearch<CR>:HierClear<CR><ESC>
 "行頭・行末の移動
 nnoremap <TAB> G
 vnoremap <TAB> G
 nnoremap 0 ^
 vnoremap 0 ^
-nnoremap <C--> 0
-vnoremap <C--> 0
+nnoremap ^ 0
+vnoremap ^ 0
 nnoremap - $
 vnoremap - $
 " q:は誤爆しやすい
@@ -505,15 +518,19 @@ nnoremap <silent><C-p>   :<C-u>bprevious<CR>
 "Visualモード時にvで行末まで選択する
 vnoremap v $h
 "CTRL-hjklでウィンドウ移動．横幅が小さすぎる場合は自動でリサイズする．
-function! s:good_width()
-    if winwidth(0) < 84
-        vertical resize 84
-    endif
-endfunction
-nnoremap <silent><C-j> <C-w>j:call <SID>good_width()<CR>
-nnoremap <silent><C-h> <C-w>h:call <SID>good_width()<CR>
-nnoremap <silent><C-l> <C-w>l:call <SID>good_width()<CR>
-nnoremap <silent><C-k> <C-w>k:call <SID>good_width()<CR>
+" function! s:good_width()
+"     if winwidth(0) < 84
+"         vertical resize 84
+"     endif
+" endfunction
+" nnoremap <silent><C-j> <C-w>j:call <SID>good_width()<CR>
+" nnoremap <silent><C-h> <C-w>h:call <SID>good_width()<CR>
+" nnoremap <silent><C-l> <C-w>l:call <SID>good_width()<CR>
+" nnoremap <silent><C-k> <C-w>k:call <SID>good_width()<CR>
+nnoremap <silent><C-j> <C-w>j
+nnoremap <silent><C-h> <C-w>h
+nnoremap <silent><C-l> <C-w>l
+nnoremap <silent><C-k> <C-w>k
 "Ruby新規ファイルを開いたときに書きこむ
 autocmd BufNewFile *.rb 0r ~/.vim/skeletons/ruby.skel
 "<CR>の挙動
@@ -533,7 +550,7 @@ nnoremap <silent><Right> <C-w>>
 " ペーストした文字列をビジュアルモードで選択
 nnoremap <expr>gp '`['.strpart(getregtype(),0,1).'`]'
 " 日付の挿入
-inoremap <C-x>date <C-r>=strftime('%Y/%m/%d(%a) %H:%M')<CR>
+" inoremap <C-x>date <C-r>=strftime('%Y/%m/%d(%a) %H:%M')<CR>
 nnoremap <Leader>date :r<Space>!date<Space>+'\%Y/\%m/\%d(\%a)<Space>\%H:\%M'<CR>
 " text-obj-lastpat:sでマッチした部分をtextobjに
 nnoremap di/ d//e<CR>
@@ -546,6 +563,7 @@ nnoremap <Leader>tp :tabprevious<CR>
 nnoremap <Leader>tc :tabclose<CR>
 " Rubyのキーマップ
 autocmd FileType ruby inoremap <buffer><C-s> self.
+" autocmd FileType ruby inoremap <buffer> ; |
 " 貼り付けはインデントを揃える
 " nnoremap p ]p
 " }}}
@@ -606,13 +624,17 @@ nnoremap <silent> <Leader>uh  :<C-u>UniteWithInput -no-start-insert help<CR>
 nnoremap <silent> <Leader>ur  :<C-u>UniteResume<CR>
 "SpotLight の利用
 if has('mac')
-    nnoremap <silent> <Leader>us :<C-u>Unite spotlight<CR>
+    nnoremap <silent> <Leader>ul :<C-u>Unite spotlight<CR>
+else
+    nnoremap <silent> <Leader>ul :<C-u>Unite locate<CR>
+
 endif
 " }}}
 
 "QuickRunのキーマップ {{{
 nnoremap <Leader>q  <Nop>
-nmap     <silent><Leader>qr <Plug>(quickrun):<C-u>copen<CR>
+nnoremap <silent><Leader>qr :<C-u>QuickRun<CR>:copen<CR>
+nnoremap <silent><Leader>qc :<C-u>QuickRun<CR>
 nnoremap <Leader>qR :<C-u>QuickRun<Space>
 nnoremap <Leader>qq :<C-u>cope<CR>
 "QuickFixバッファを閉じると同時にエラー表示も消す
@@ -629,7 +651,7 @@ vnoremap <Leader>C :TCommentBlock<CR>
 " }}}
 
 "endwise.vimのキーマップ {{{
-autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"
+" autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"
 "
 " }}}
 
@@ -638,8 +660,13 @@ autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache
 " }}}
 
 " vimfiler.vim のキーマップ {{{
-nnoremap <Leader>f :VimFiler<CR>
-nnoremap <Leader>F :VimFiler<Space>-no-quit<CR>
+nnoremap <Leader>ff :<C-u>VimFiler<CR>
+nnoremap <Leader>fn :<C-u>VimFiler<Space>-no-quit<CR>
+autocmd FileType vimfiler nmap <buffer><silent><expr> e vimfiler#smart_cursor_map(
+                                                    \   "\<Plug>(vimfiler_cd_file)",
+                                                    \   "\<Plug>(vimfiler_edit_file)")
+nnoremap <Leader>fh :<C-u>VimFiler<Space>~<CR>
+nnoremap <Leader>fc :<C-u>VimFilerCurrentDir<CR>
 " }}}
 
 " textobj-wiw のキーマップ {{{

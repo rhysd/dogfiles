@@ -12,9 +12,8 @@ alias sudo='sudo '
 alias g++='g++ -std=c++0x -Wall -Wextra -O2'
 alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
 alias Vim='open -a /Applications/MacVim.app'
-# alias pvim='vim -u /Users/rhayasd/.pvimrc'
 alias pvim='vim -u $HOME/.pvimrc'
-alias pv=pvim
+# alias pv=pvim
 alias vi=pvim
 alias emacs='/usr/local/bin/emacs -nw'
 alias Emacs='open -a /usr/local/bin/emacs'
