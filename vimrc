@@ -1,53 +1,59 @@
 " vundle.vim の設定 {{{
 filetype off
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+filetype plugin indent off
+if has('vim_starting')
+    set rtp+=~/.vim/bundle/neobundle.vim/
+    call neobundle#rc(expand('~/.vim/bundle'))
+endif
 
-Bundle 'gmarik/vundle'
+" Bundle 'gmarik/vundle'
 
 " GitHub上のリポジトリ
-Bundle 'Shougo/vimproc'
-Bundle 'Shougo/vimshell'
-Bundle 'Shougo/vimfiler'
-Bundle 'Shougo/neocomplcache'
-Bundle 'Shougo/neocomplcache-snippets-complete'
-Bundle 'Rip-Rip/clang_complete'
-Bundle 'osyo-manga/neocomplcache-clang_complete'
-Bundle 'thinca/vim-quickrun'
-Bundle 'Shougo/unite.vim'
-Bundle 'tomtom/tcomment_vim'
-Bundle 'h1mesuke/unite-outline'
-Bundle 'tsukkee/unite-help'
-Bundle 'vim-jp/vimdoc-ja'
-Bundle 'jceb/vim-hier'
-" Bundle 'rhysd/my-vimtoggle'
-" Bundle 'rhysd/my-endwise'
-Bundle 'tpope/vim-endwise'
-Bundle 'kana/vim-textobj-user'
-Bundle 'kana/vim-textobj-indent'
-" Bundle 'kana/vim-textobj-lastpat' これと同様の効果をキーマップに設定済み
-Bundle 'h1mesuke/textobj-wiw'
-Bundle 'rhysd/vim-accelerate'
-Bundle 'rhysd/lindapp_cpp'
-Bundle 'choplin/unite-spotlight'
-Bundle 'kana/vim-smartinput'
-" Bundle 'kana/vim-filetype-haskell'
-Bundle 'rhysd/vim-filetype-haskell'
-" Bundle 'ujihisa/unite-locate'
-" Bundle 'Lokaltog/vim-powerline'
-" Bundle 'ujihisa/vimshell-ssh'
-" Bundle 'h1mesuke/vim-alignta'
-" Bundle 'ujihisa/unite-colorscheme'
-" Bundle 'ujihisa/neco-look'
-" Bundle 'taku-o/vim-toggle'
+NeoBundle 'Shougo/vimproc'
+NeoBundle 'Shougo/vimshell'
+NeoBundle 'Shougo/vimfiler'
+NeoBundle 'Shougo/neocomplcache'
+NeoBundle 'Shougo/neocomplcache-snippets-complete'
+NeoBundle 'Rip-Rip/clang_complete'
+NeoBundle 'osyo-manga/neocomplcache-clang_complete'
+NeoBundle 'thinca/vim-quickrun'
+NeoBundle 'Shougo/unite.vim'
+NeoBundle 'tomtom/tcomment_vim'
+NeoBundle 'h1mesuke/unite-outline'
+NeoBundle 'tsukkee/unite-help'
+NeoBundle 'vim-jp/vimdoc-ja'
+NeoBundle 'jceb/vim-hier'
+" NeoBundle 'rhysd/my-vimtoggle'
+NeoBundle 'rhysd/my-endwise'
+" NeoBundle 'tpope/vim-endwise'
+NeoBundle 'kana/vim-textobj-user'
+NeoBundle 'kana/vim-textobj-indent'
+" NeoBundle 'kana/vim-textobj-lastpat' これと同様の効果をキーマップに設定済み
+NeoBundle 'h1mesuke/textobj-wiw'
+NeoBundle 'rhysd/vim-accelerate'
+NeoBundle 'rhysd/lindapp_cpp'
+NeoBundle 'choplin/unite-spotlight'
+NeoBundle 'kana/vim-smartinput'
+" NeoBundle 'kana/vim-filetype-haskell'
+NeoBundle 'rhysd/vim-filetype-haskell'
+NeoBundle 'thinca/vim-ref'
+NeoBundle 'ujihisa/ref-hoogle'
+" NeoBundle 'rhysd/ref-rurema'
+" NeoBundle 'ujihisa/unite-locate'
+" NeoBundle 'Lokaltog/vim-powerline'
+" NeoBundle 'ujihisa/vimshell-ssh'
+" NeoBundle 'h1mesuke/vim-alignta'
+" NeoBundle 'ujihisa/unite-colorscheme'
+" NeoBundle 'ujihisa/neco-look'
+" NeoBundle 'taku-o/vim-toggle'
 
 " vim-scripts上のリポジトリ
-Bundle 'Align'
-" Bundle 'errormarker.vim'
-" Bundle 'endwise.vim'
+NeoBundle 'Align'
+" NeoBundle 'errormarker.vim'
+" NeoBundle 'endwise.vim'
 
 " その他のgitリポジトリ
-" Bundle 'git://git.wincent.com/command-t.git'
+" NeoBundle 'git://git.wincent.com/command-t.git'
 
 filetype plugin indent on     " required!
 " }}}
@@ -160,19 +166,21 @@ set ruf=%45(%12f%=\ %m%{'['.(&fenc!=''?&fenc:&enc).']'}\ %l-%v\ %p%%\ [%02B]%)
 set statusline=%f:\ %{substitute(getcwd(),'.*/','','')}\ %m%=%{(&fenc!=''?&fenc:&enc).':'.strpart(&ff,0,1)}\ %l-%v\ %p%%\ %02B
 " *.md で読み込む filetype を変更（デフォルトは modula2）
 autocmd BufRead *.md set ft=markdown
+" 保存時に行末のスペースを除去する
+autocmd BufWritePre * call RemoveTailSpaces()
 
 " カーソル下のハイライトグループを取得
 " command! -nargs=0 GetHighlightingGroup echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<' . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<' . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
 "}}}
 
 " user defined commands {{{
-function! RemoveSpaces()
+function! RemoveTailSpaces()
     let s:cursor = getpos(".")
-    %s/\s\+$//g
+    %s/\s\+$//ge
     call setpos(".", s:cursor)
     unlet s:cursor
 endfunction
-command! RmDust :call RemoveSpaces()
+command! RmDust :call RemoveTailSpaces()
 command! EditVimrc :e $MYVIMRC $MYGVIMRC
 "}}}
 
@@ -282,9 +290,9 @@ if !has("g:quickrun_config")
 	let g:quickrun_config = {}
 endif
 "C++
-let g:quickrun_config.cpp = { 'command' : 'g++-4.7', 'cmdopt'  : '-std=c++11 -Wall -Wextra -O2 '}
+let g:quickrun_config.cpp = { 'command' : 'g++-4.7', 'cmdopt' : '-std=c++11 -Wall -Wextra -O2 ', 'runner' : 'vimproc' }
 "QuickRun 実行時のバッファの開き方
-let g:quickrun_config._ = { 'outputter' : 'quickfix', 'split'   : 'rightbelow 10sp'}
+let g:quickrun_config._ = { 'outputter' : 'quickfix', 'split' : 'rightbelow 10sp', 'runner' : 'vimproc' }
 " }}}
 
 " Hier.vim {{{
@@ -464,7 +472,6 @@ noremap ; :
 noremap : ;
 "insertモードから抜ける
 inoremap jj <ESC>
-inoremap <C-j> j
 " Yの挙動はy$のほうが自然な気がする
 nnoremap Y y$
 " 縦方向は論理移動する
@@ -528,13 +535,21 @@ vnoremap v $h
 " nnoremap <silent><C-l> <C-w>l:call <SID>good_width()<CR>
 " nnoremap <silent><C-k> <C-w>k:call <SID>good_width()<CR>
 nnoremap <silent><C-j> <C-w>j
+nnoremap <silent><C-k> <C-w>k
 nnoremap <silent><C-h> <C-w>h
 nnoremap <silent><C-l> <C-w>l
-nnoremap <silent><C-k> <C-w>k
+nnoremap <silent>qj <C-w>j
+nnoremap <silent>qk <C-w>k
+nnoremap <silent>qh <C-w>h
+nnoremap <silent>ql <C-w>l
+nnoremap <silent>qv <C-w>v
+nnoremap <silent>qs <C-w>s
 "Ruby新規ファイルを開いたときに書きこむ
 autocmd BufNewFile *.rb 0r ~/.vim/skeletons/ruby.skel
 "<CR>の挙動
 nnoremap <CR> i<CR><ESC>
+"インサートモードで次の行に直接改行
+inoremap <C-j> <Esc>o
 "<BS>の挙動
 nnoremap <BS> i<BS><ESC>
 "コマンドラインモードでのカーソル移動
@@ -568,6 +583,14 @@ autocmd FileType ruby inoremap <buffer><C-s> self.
 " nnoremap p ]p
 " }}}
 
+" NeoBundle のキーマップ{{{
+nnoremap <silent><Leader>nbu   :<C-u>NeoBundleUpdate<CR>
+nnoremap <silent><Leader>nbc   :<C-u>NeoBundleClean<CR>
+nnoremap <silent><Leader>nbi   :<C-u>NeoBundleInstall<CR>
+nnoremap <silent><Leader>nbl   :<C-u>NeoBundleList<CR>
+nnoremap <silent><Leader>nbd   :<C-u>NeoBundleDocs<CR>
+" }}}
+
 "VimShellの設定 {{{
 nmap <expr><Leader>vs "\<Plug>(vimshell_split_switch)"
 
@@ -579,7 +602,7 @@ inoremap  <expr><C-g> neocomplcache#undo_completion()
 "スニペット展開候補があれば展開を，そうでなければbash風補完を．
 imap <expr><C-l> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : neocomplcache#complete_common_string()
 " <CR>: close popup and save indent.
-inoremap <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup()."\<CR>" : "\<CR>"
+imap <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup()."\<CR>" : "\<CR>"
 " <TAB>: completion
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 "スニペットがあればそれを展開．なければ通常の挙動をするTABキー
@@ -627,18 +650,19 @@ if has('mac')
     nnoremap <silent> <Leader>ul :<C-u>Unite spotlight<CR>
 else
     nnoremap <silent> <Leader>ul :<C-u>Unite locate<CR>
-
 endif
+" NeoBundle
+nnoremap <silent><Leader>unb :<C-u>Unite neobundle/update<CR>
 " }}}
 
 "QuickRunのキーマップ {{{
 nnoremap <Leader>q  <Nop>
 nnoremap <silent><Leader>qr :<C-u>QuickRun<CR>:copen<CR>
 nnoremap <silent><Leader>qc :<C-u>QuickRun<CR>
-nnoremap <Leader>qR :<C-u>QuickRun<Space>
-nnoremap <Leader>qq :<C-u>cope<CR>
-"QuickFixバッファを閉じると同時にエラー表示も消す
-" autocmd FileType qf nnoremap <buffer><silent> q :q<CR>:HierClear<CR>
+vnoremap <silent><Leader>qr :<C-u>QuickRun<CR>:copen<CR>
+vnoremap <silent><Leader>qc :<C-u>QuickRun<CR>
+nnoremap <silent><Leader>qR :<C-u>QuickRun<Space>
+nnoremap <silent><Leader>qq :<C-u>cope<CR>
 autocmd FileType qf nnoremap <buffer><silent> q :q<CR>
 autocmd FileType qf nnoremap <buffer><silent> j :cn<CR>
 autocmd FileType qf nnoremap <buffer><silent> k :cp<CR>
@@ -651,7 +675,7 @@ vnoremap <Leader>C :TCommentBlock<CR>
 " }}}
 
 "endwise.vimのキーマップ {{{
-" autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"
+autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"
 "
 " }}}
 
@@ -667,6 +691,16 @@ autocmd FileType vimfiler nmap <buffer><silent><expr> e vimfiler#smart_cursor_ma
                                                     \   "\<Plug>(vimfiler_edit_file)")
 nnoremap <Leader>fh :<C-u>VimFiler<Space>~<CR>
 nnoremap <Leader>fc :<C-u>VimFilerCurrentDir<CR>
+
+" git のルートディレクトリを開く
+function! s:git_root_dir()
+    if(system('git rev-parse --is-inside-work-tree') == "true\n")
+        return ':VimFiler ' . system('git rev-parse --show-cdup') . '\<CR>'
+    else
+        echoerr '!!!current directory is outside git working tree!!!'
+    endif
+endfunction
+nnoremap <expr><Leader>fg <SID>git_root_dir()
 " }}}
 
 " textobj-wiw のキーマップ {{{
@@ -683,3 +717,6 @@ autocmd FileType cpp nmap <silent><buffer><leader>dt <Plug>lindapp_cpp_return_ty
 " }}}
 
 " autocmd Filetype haskell syntax match lambda /[[]]/ transparent conceal cchar=λ
+
+set rtp+=~/Github/ref-rurema
+

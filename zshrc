@@ -10,6 +10,13 @@ export EDITOR=vim
 alias sudo='sudo '
 
 alias g++='g++ -std=c++0x -Wall -Wextra -O2'
+alias -g g=g++
+function run-gcc(){
+    set -e
+    /usr/local/bin/g++-4.7 -g -O2 -Wall -Wextra -std=c++11 $* && ./a.out
+}
+alias -g rg=run-gcc
+
 alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
 alias Vim='open -a /Applications/MacVim.app'
 alias pvim='vim -u $HOME/.pvimrc'
@@ -32,7 +39,6 @@ alias -g c='cd'
 alias -g s='sudo'
 alias -g gr='grep -nl --color'
 # alias -g g=git
-alias -g g=g++
 alias -g pg='ps aux | grep'
 alias -g md='mkdir -pv'
 alias -g h='history 0'
