@@ -1,4 +1,4 @@
-" vundle.vim の設定 {{{
+" neobundle.vim の設定 {{{
 filetype off
 filetype plugin indent off
 if has('vim_starting')
@@ -38,6 +38,7 @@ NeoBundle 'kana/vim-smartinput'
 NeoBundle 'rhysd/vim-filetype-haskell'
 NeoBundle 'thinca/vim-ref'
 NeoBundle 'ujihisa/ref-hoogle'
+NeoBundle 'ujihisa/neco-ghc'
 " NeoBundle 'rhysd/ref-rurema'
 " NeoBundle 'ujihisa/unite-locate'
 " NeoBundle 'Lokaltog/vim-powerline'
@@ -354,7 +355,6 @@ let g:clang_complete_auto=1
 let g:clang_hl_errors=1
 let g:clang_conceal_snippets=1
 let g:clang_exec="/usr/bin/clang"
-" let g:clang_library_path="/Developer/usr/clang-ide/lib/libclang.dylib"
 let g:clang_user_options='-I /usr/local/include -I /usr/include/c++/4.2.1 -I /usr/include -I /usr/local/Cellar/gcc/4.7.0/gcc/include/c++/4.7.0 2>/dev/null || exit 0'
 " }}}
 

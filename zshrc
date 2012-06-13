@@ -4,6 +4,7 @@ export LANG=ja_JP.UTF-8
 export PATH=/usr/local/bin:$PATH
 export PATH=/usr/local/switcher.bin:$PATH
 export PATH=/usr/local/texlive/2011/bin/x86_64-darwin:$PATH
+export PATH=$HOME/.cabal/bin:$PATH
 
 export EDITOR=vim
 
@@ -62,6 +63,7 @@ alias df='df -h'
 alias su='su -'
 alias be='bundle exec'
 alias quit=exit
+alias clang='clang -O -std=c++11 -g'
 
 
 # suffix alias
@@ -70,6 +72,19 @@ alias -s html='open -a Google\ Chrome'
 
 # global alias
 # alias -g G='| grep'
+
+# parent
+function ..(){
+    if [ $# -eq 1 ] && expr "$1" : "^[0-9]\{1,\}$" > /dev/null; then
+        dist=""
+        for i in `seq 1 1 $1`; do
+            dist="../$dist"
+        done
+        cd $dist
+    else
+        cd .. $*
+    fi
+}
 
 #Homebrew
 export HOMEBREW_VERBOSE=true

@@ -6,6 +6,19 @@
 (setq load-path (cons "~/.emacs.d/elisp/company" load-path))
 (setq load-path (cons "~/.emacs.d/elisp/ruby" load-path))
 (setq load-path (cons "~/.emacs.d/elisp/yatex" load-path))
+(setq load-path (cons "~/.emacs.d/elisp/melpa" load-path))
+
+(require 'package)
+
+; Add package-archives
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+
+; Initialize
+(package-initialize)
+
+; melpa.el
+(require 'melpa)
 
 ;; C+/ にundoを割り当てる
 ;;(global-set-key "\C-/" 'advertised-undo)
@@ -178,7 +191,7 @@ and source-file directory for your debugger." t)
 (define-key ac-completing-map (kbd "C-p") 'ac-previous)
 (define-key ac-completing-map (kbd "M-/") 'ac-stop)
 ;; 補完が自動で起動するのを停止
-(setq ac-auto-start nil)
+(setq ac-auto-start t)
 ;; 起動キーの設定
 (ac-set-trigger-key "TAB")
 ;; 候補の最大件数 デフォルトは 10件
@@ -186,7 +199,7 @@ and source-file directory for your debugger." t)
 
 ;;; YaTeX
 ;; yatex-mode の起動
-(setq auto-mode-alist 
+(setq auto-mode-alist
       (cons (cons "\\.tex$" 'yatex-mode) auto-mode-alist))
 (autoload 'yatex-mode "yatex" "Yet Another LaTeX mode" t)
 ;; 文章作成時の日本語文字コード
