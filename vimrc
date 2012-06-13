@@ -684,13 +684,35 @@ autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache
 " }}}
 
 " vimfiler.vim のキーマップ {{{
-nnoremap <Leader>ff :<C-u>VimFiler<CR>
-nnoremap <Leader>fn :<C-u>VimFiler<Space>-no-quit<CR>
-autocmd FileType vimfiler nmap <buffer><silent><expr> e vimfiler#smart_cursor_map(
+" l をディレクトリなら開く，ファイルなら編集する という動作にする
+autocmd FileType vimfiler nmap <buffer><silent><expr> l vimfiler#smart_cursor_map(
                                                     \   "\<Plug>(vimfiler_cd_file)",
                                                     \   "\<Plug>(vimfiler_edit_file)")
+" とりあえず開く
+nnoremap <Leader>ff :<C-u>VimFiler<CR>
+" ファイルを開いても引っ込まないバッファで VimFiler を開く
+nnoremap <Leader>fn :<C-u>VimFiler<Space>-no-quit<CR>
+" ホームディレクトリを開く
 nnoremap <Leader>fh :<C-u>VimFiler<Space>~<CR>
-nnoremap <Leader>fc :<C-u>VimFilerCurrentDir<CR>
+" バッファと同じディレクトリを開く
+nnoremap <Leader>fc :<C-u>VimFilerBuffferDir<CR>
+" Dropbox のディレクトリを開く
+if isdirectory(expand('~').'/Dropbox')
+    nnoremap <Leader>fd :<C-u>VimFiler<Space>~/Dropbox<CR>
+endif
+" ファイルタイプに応じて開くディレクトリを変える
+let s:vimfiler_filetype_directories = { 'perl' : '~/programs/perl',
+                                      \ 'cpp' : '~/programs/c++',
+                                      \ 'haskell' : '~/programs/haskell', 
+                                      \ 'ruby' : '~/programs/ruby',
+                                      \ 'vim' : '~' }
+function! s:get_filetype_context_directory()
+    let ret = ":\<C-u>VimFiler ".
+                \ (has_key(s:vimfiler_filetype_directories, &filetype)?s:vimfiler_filetype_directories[&filetype]:"").
+                \ " \<CR>"
+    return ret
+endfunction
+nnoremap <expr><Leader>fl <SID>get_filetype_context_directory()
 
 " git のルートディレクトリを開く
 function! s:git_root_dir()
