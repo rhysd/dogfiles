@@ -111,6 +111,7 @@
 ;;; overrides mark-whole-buffer
 (global-set-key "\C-xh" 'help-command)
 
+;;改行
 (add-hook 'c-mode-common-hook
           '(lambda ()
              ;; RET キーで自動改行+インデント
@@ -127,6 +128,12 @@
 ;;(setq c-auto-newline t)
 ;; [TAB］キーでインデント実施
 (setq c-tab-always-indent t)
+
+;; 半ページスクロール
+(define-key global-map (kbd "M-n")
+  '(lambda () (interactive) (scroll-up (/ (window-height) 2))))
+(define-key global-map (kbd "M-p")
+  '(lambda () (interactive) (scroll-down (/ (window-height) 2))))
 
 ;; ruby-mode
 (autoload 'ruby-mode "ruby-mode"
@@ -209,31 +216,43 @@ and source-file directory for your debugger." t)
 ;; 3: EUC
 ;; 4: UTF-8
 (setq YaTeX-kanji-code 4);;; YaTeX
-;(setq tex-command "/opt/local/bin/platex")
-;(setq dvi2-command "/opt/local/bin/xdvi")
 (setq tex-command "/Users/rhayasd/.emacs.d/elisp/yatex/latex2pdf")
 (setq dvi2-command "open -a Preview")
 
+;;; anything.el
+(require 'anything-config)
+;; プレフィクスキー
+(custom-set-variables '(anything-command-map-prefix-key "C-j"))
+; (setq anything-command-map-prefix-key "C-j")
+;; 各anythingソース呼び出し割り当て
+(global-set-key "\C-ja" 'anything)
+(global-set-key "\C-jf" 'anything-find-file)
+(global-set-key "\C-jl" 'anything-locate)
+(global-set-key "\C-ji" 'anything-imenu)
+(global-set-key "\C-jb" 'anything-buffers+)
+(global-set-key "\C-jr" 'anything-recentf)
+;; ソース間移動
+(define-key anything-map "\M-p" 'anything-previous-source)
+(define-key anything-map "\M-n" 'anything-next-source)
 
-;    (while (> count 0)
-;      (when line-err-info-list
-;        (let* ((file (flymake-ler-file (nth (1- count) line-err-info-list)))
-;               (full-file (flymake-ler-full-file (nth (1- count) line-err-info-list)))
-;               (text (flymake-ler-text (nth (1- count) line-err-info-list)))
-;               (line (flymake-ler-line (nth (1- count) line-err-info-list))))
-;          (message "[%s] %s" line text)))
-;      (setq count (1- count)))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;                              OS X の設定                              ;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;(defadvice flymake-goto-next-error (after display-message activate compile)
-;  "次のエラーへ進む"
-;  (flymake-display-err-minibuffer))
+;; Command と option を切り替える(GUIのみ)
+(setq ns-command-modifier (quote meta))
+(setq ns-alternate-modifier (quote super))
 
-;(defadvice flymake-goto-prev-error (after display-message activate compile)
-;  "前のエラーへ戻る"
-;  (flymake-display-err-minibuffer))
+; クリップボード連携
+; http://blog.lathi.net/articles/2007/11/07/sharing-the-mac-clipboard-with-emacs
+(defun copy-from-osx ()
+ (shell-command-to-string "pbpaste"))
 
-;(defadvice flymake-mode (before post-command-stuff activate compile)
-;  "エラー行にカーソルが当ったら自動的にエラーが minibuffer に表示されるように
-;post command hook に機能追加"
-;  (set (make-local-variable 'post-command-hook)
-;       (add-hook 'post-command-hook 'flymake-display-err-minibuffer)))
+(defun paste-to-osx (text &optional push)
+ (let ((process-connection-type nil))
+     (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
+       (process-send-string proc text)
+       (process-send-eof proc))))
+
+(setq interprogram-cut-function 'paste-to-osx)
+(setq interprogram-paste-function 'copy-from-osx)

@@ -7,6 +7,7 @@ export PATH=/usr/local/texlive/2011/bin/x86_64-darwin:$PATH
 export PATH=$HOME/.cabal/bin:$PATH
 
 export EDITOR=vim
+export GREP_OPTIONS=--color=auto
 
 alias sudo='sudo '
 
@@ -17,6 +18,8 @@ function run-gcc(){
     /usr/local/bin/g++-4.7 -g -O2 -Wall -Wextra -std=c++11 $* && ./a.out
 }
 alias -g rg=run-gcc
+alias clang++='clang++ -O -std=c++11 -g'
+alias -g cl=clang++
 
 alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
 alias Vim='open -a /Applications/MacVim.app'
@@ -62,8 +65,8 @@ alias -g gitls='git ls-files'
 alias df='df -h'
 alias su='su -'
 alias be='bundle exec'
+alias diff=colordiff
 alias quit=exit
-alias clang='clang -O -std=c++11 -g'
 
 
 # suffix alias
