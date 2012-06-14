@@ -58,6 +58,15 @@ NeoBundle 'Align'
 " NeoBundle 'git://git.wincent.com/command-t.git'
 
 filetype plugin indent on     " required!
+
+" NeoBundle のキーマップ{{{
+nnoremap <silent><Leader>nbu   :<C-u>NeoBundleUpdate<CR>
+nnoremap <silent><Leader>nbc   :<C-u>NeoBundleClean<CR>
+nnoremap <silent><Leader>nbi   :<C-u>NeoBundleInstall<CR>
+nnoremap <silent><Leader>nbl   :<C-u>NeoBundleList<CR>
+nnoremap <silent><Leader>nbd   :<C-u>NeoBundleDocs<CR>
+" }}}
+
 " }}}
 
 " Base settings {{{
@@ -173,6 +182,131 @@ autocmd BufWritePre * call RemoveTailSpaces()
 
 " カーソル下のハイライトグループを取得
 " command! -nargs=0 GetHighlightingGroup echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<' . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<' . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
+
+" 基本マッピング {{{
+" ; と : をスワップ
+noremap ; :
+noremap : ;
+"insertモードから抜ける
+inoremap jj <ESC>
+" Yの挙動はy$のほうが自然な気がする
+nnoremap Y y$
+" 縦方向は論理移動する
+nnoremap j gj
+nnoremap k gk
+"Esc->Escで検索結果とエラーハイライトをクリア
+nnoremap <silent><ESC><ESC> :<C-u>nohlsearch<CR>:HierClear<CR><ESC>
+"行頭・行末の移動
+nnoremap <TAB> G
+vnoremap <TAB> G
+nnoremap 0 ^
+vnoremap 0 ^
+nnoremap ^ 0
+vnoremap ^ 0
+nnoremap - $
+vnoremap - $
+" q:は誤爆しやすい
+nnoremap q; q:
+nnoremap <C-:> q:
+nnoremap q: :q
+" insertモードでもquit
+inoremap <C-q><C-q> <ESC>:wqa<CR>
+" insertモードでもcmdmode
+inoremap <C-:> <Esc>:
+" 空行挿入
+nnoremap <silent><Space> :<C-u>call append(expand('.'), '')<CR>j
+"ヘルプ表示
+nnoremap <Leader>vh :vert bo help<Space>
+"insertモード時はEmacsライクなバインディング．ポップアップが出ないように移動．
+inoremap <C-e> <END>
+vnoremap <C-e> <END>
+cnoremap <C-e> <END>
+inoremap <C-a> <HOME>
+vnoremap <C-a> <HOME>
+cnoremap <C-a> <HOME>
+inoremap <expr><C-n> pumvisible() ? "\<C-y>\<Down>" : "\<Down>"
+inoremap <expr><C-p> pumvisible() ? "\<C-y>\<Up>" : "\<Up>"
+inoremap <expr><C-b> pumvisible() ? "\<C-y>\<Left>" : "\<Left>"
+inoremap <expr><C-f> pumvisible() ? "\<C-y>\<Right>" : "\<Right>"
+" inoremap <C-n> <Down>
+" inoremap <C-p> <Up>
+" inoremap <C-b> <Left>
+" inoremap <C-f> <Right>
+inoremap <C-d> <Del>
+cnoremap <C-d> <Del>
+inoremap <C-k> <C-o>D
+cnoremap <C-k> <C-o>D
+"バッファ切り替え
+nnoremap <silent><C-n>   :<C-u>bnext<CR>
+nnoremap <silent><C-p>   :<C-u>bprevious<CR>
+"Visualモード時にvで行末まで選択する
+vnoremap v $h
+"CTRL-hjklでウィンドウ移動．横幅が小さすぎる場合は自動でリサイズする．
+" function! s:good_width()
+"     if winwidth(0) < 84
+"         vertical resize 84
+"     endif
+" endfunction
+" nnoremap <silent><C-j> <C-w>j:call <SID>good_width()<CR>
+" nnoremap <silent><C-h> <C-w>h:call <SID>good_width()<CR>
+" nnoremap <silent><C-l> <C-w>l:call <SID>good_width()<CR>
+" nnoremap <silent><C-k> <C-w>k:call <SID>good_width()<CR>
+nnoremap <silent><C-j> <C-w>j
+nnoremap <silent><C-k> <C-w>k
+nnoremap <silent><C-h> <C-w>h
+nnoremap <silent><C-l> <C-w>l
+nnoremap <silent>qj <C-w>j
+nnoremap <silent>qk <C-w>k
+nnoremap <silent>qh <C-w>h
+nnoremap <silent>ql <C-w>l
+nnoremap <silent>qv <C-w>v
+nnoremap <silent>qs <C-w>s
+nnoremap <silent>q] <C-w>]
+nnoremap <silent>qc <C-w>c
+nnoremap <silent>qn <C-w>n
+nnoremap <silent>qo <C-w>o
+nnoremap <silent>qp <C-w>p
+nnoremap <silent>qr <C-w>r
+
+"Ruby新規ファイルを開いたときに書きこむ
+autocmd BufNewFile *.rb 0r ~/.vim/skeletons/ruby.skel
+"<CR>の挙動
+nnoremap <CR> i<CR><ESC>
+"インサートモードで次の行に直接改行
+inoremap <C-j> <Esc>o
+"<BS>の挙動
+nnoremap <BS> i<BS><ESC>
+"コマンドラインモードでのカーソル移動
+cnoremap <C-f> <Right>
+cnoremap <C-b> <Left>
+"_で次の_の手前まで
+onoremap _ vf_h
+" カーソルキーでの上下移動
+nnoremap <silent><Down>  <C-w>-
+nnoremap <silent><Up>    <C-w>+
+nnoremap <silent><Left>  <C-w><
+nnoremap <silent><Right> <C-w>>
+" ペーストした文字列をビジュアルモードで選択
+nnoremap <expr>gp '`['.strpart(getregtype(),0,1).'`]'
+" 日付の挿入
+" inoremap <C-x>date <C-r>=strftime('%Y/%m/%d(%a) %H:%M')<CR>
+nnoremap <Leader>date :r<Space>!date<Space>+'\%Y/\%m/\%d(\%a)<Space>\%H:\%M'<CR>
+" text-obj-lastpat:sでマッチした部分をtextobjに
+nnoremap di/ d//e<CR>
+nnoremap ci/ c//e<CR>
+nnoremap yi/ y//e<CR>
+" タブの設定
+nnoremap <Leader>te :tabnew<CR>
+nnoremap <Leader>tn :tabnext<CR>
+nnoremap <Leader>tp :tabprevious<CR>
+nnoremap <Leader>tc :tabclose<CR>
+" Rubyのキーマップ
+autocmd FileType ruby inoremap <buffer><C-s> self.
+" autocmd FileType ruby inoremap <buffer> ; |
+" 貼り付けはインデントを揃える
+" nnoremap p ]p
+" }}}
+
 "}}}
 
 " user defined commands {{{
@@ -272,6 +406,49 @@ let g:unite_cursor_line_highlight = 'TabLineSel'
 " let g:unite_abbr_highlight = 'TabLine'
 " Unite起動時のウィンドウ分割
 let g:unite_split_rule = 'rightbelow'
+
+"Unite.vimのキーマップ {{{
+"insertモード時はC-gでいつでもバッファを閉じられる（絞り込み欄が空の時はC-hでもOK）
+autocmd FileType unite imap <buffer> <C-g> <Plug>(unite_exit)
+"ファイル上にカーソルがある時，pでプレビューを見る
+autocmd FileType unite inoremap <buffer><expr> p unite#smart_map("p", unite#do_action('preview'))
+"C-xでクイックマッチ
+autocmd FileType unite imap <buffer> <C-x> <Plug>(unite_quick_match_default_action)
+"lでデフォルトアクションを実行
+autocmd FileType unite nmap <buffer> l <Plug>(unite_do_default_action)
+autocmd FileType unite imap <buffer><expr> l unite#smart_map("l", unite#do_action(unite#get_current_unite().context.default_action))
+"増えすぎてアレなら <Leader>ua などに置き換える．そのときはnnoremap <Leader>u <Nop>を忘れないようにする．
+"バッファを開いた時のパスを起点としたファイル検索
+" nnoremap <silent> <Leader>f  :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
+"バッファ一覧
+nnoremap <silent> <Leader>ub  :<C-u>Unite -no-start-insert buffer<CR>
+"ブックマークしたファイル/ディレクトリ
+nnoremap <silent> <Leader>uB  :<C-u>Unite -no-start-insert bookmark<CR>
+"最近使用したファイル
+nnoremap <silent> <Leader>um  :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
+nnoremap <silent> <Leader>m  :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
+"プログラミングにおけるアウトラインの表示
+nnoremap <silent> <Leader>uo  :<C-u>Unite outline -vertical -no-start-insert<CR>
+"grep検索．
+nnoremap <silent> <Leader>ug  :<C-u>Unite -no-start-insert grep<CR>
+"yank履歴
+nnoremap <silent> <Leader>uy  :<C-u>Unite -no-start-insert history/yank<CR>
+"find
+nnoremap <silent> <Leader>uf  :<C-u>Unite -no-start-insert find<CR>
+"helpを引く．絞り込み初期は候補が膨大になるのでワードを先に入力
+nnoremap <silent> <Leader>uh  :<C-u>UniteWithInput -no-start-insert help<CR>
+"Uniteバッファの復元
+nnoremap <silent> <Leader>ur  :<C-u>UniteResume<CR>
+"SpotLight の利用
+if has('mac')
+    nnoremap <silent> <Leader>ul :<C-u>Unite spotlight<CR>
+else
+    nnoremap <silent> <Leader>ul :<C-u>Unite locate<CR>
+endif
+" NeoBundle
+nnoremap <silent><Leader>unb :<C-u>Unite neobundle/update<CR>
+" }}}
+
 " }}}
 
 " VimShellの設定 {{{
@@ -282,6 +459,29 @@ let g:vimshell_right_prompt = 'fnamemodify(getcwd(), ":~")'
 " let g:vimshell_right_prompt = 'vimshell#vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
 " 分割割合(%)
 let g:vimshell_split_height = 25
+
+"VimShell のキーマッピング {{{
+nmap <expr><Leader>vs "\<Plug>(vimshell_split_switch)"
+
+"neocomplcacheの設定
+imap      <C-s>       <Plug>(neocomplcache_snippets_expand)
+smap      <C-s>       <Plug>(neocomplcache_snippets_expand)
+inoremap  <expr><C-g> neocomplcache#undo_completion()
+"inoremap <expr><C-l> neocomplcache#complete_common_string()
+"スニペット展開候補があれば展開を，そうでなければbash風補完を．
+imap <expr><C-l> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : neocomplcache#complete_common_string()
+" <CR>: close popup and save indent.
+imap <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup()."\<CR>" : "\<CR>"
+" <TAB>: completion
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+"スニペットがあればそれを展開．なければ通常の挙動をするTABキー
+" imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
+" <C-h>, <BS>: close popup and delete backword char.
+" inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
+" inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
+inoremap <expr><C-y> neocomplcache#close_popup()
+" }}}
+
 " }}}
 
 " vim-quickrunの設定 {{{
@@ -295,6 +495,20 @@ endif
 let g:quickrun_config.cpp = { 'command' : 'g++-4.7', 'cmdopt' : '-std=c++11 -Wall -Wextra -O2 ', 'runner' : 'vimproc' }
 "QuickRun 実行時のバッファの開き方
 let g:quickrun_config._ = { 'outputter' : 'quickfix', 'split' : 'rightbelow 10sp', 'runner' : 'vimproc' }
+
+"QuickRunのキーマップ {{{
+nnoremap <Leader>q  <Nop>
+nnoremap <silent><Leader>qr :<C-u>QuickRun<CR>:copen<CR>
+nnoremap <silent><Leader>qc :<C-u>QuickRun<CR>
+vnoremap <silent><Leader>qr :<C-u>QuickRun<CR>:copen<CR>
+vnoremap <silent><Leader>qc :<C-u>QuickRun<CR>
+nnoremap <silent><Leader>qR :<C-u>QuickRun<Space>
+nnoremap <silent><Leader>qq :<C-u>cope<CR>
+autocmd FileType qf nnoremap <buffer><silent> q :q<CR>
+autocmd FileType qf nnoremap <buffer><silent> j :cn<CR>
+autocmd FileType qf nnoremap <buffer><silent> k :cp<CR>
+" }}}
+
 " }}}
 
 " Hier.vim {{{
@@ -332,6 +546,28 @@ endif
 let g:vimfiler_as_default_explorer = 1
 let g:vimfiler_safe_mode_by_default = 0
 let g:vimfiler_execute_file_list = { 'c' : 'vim',  'h' : 'vim',  'cpp' : 'vim',  'hpp' : 'vim', 'cc' : 'vim',  'rb' : 'vim', 'txt' : 'vim', 'pdf' : 'open', 'vim' : 'vim' }
+
+" vimfiler.vim のキーマップ {{{
+nnoremap <Leader>f <Nop>
+nnoremap <Leader>ff :<C-u>VimFiler<CR>
+nnoremap <Leader>fn :<C-u>VimFiler<Space>-no-quit<CR>
+autocmd FileType vimfiler nmap <buffer><silent><expr> e vimfiler#smart_cursor_map(
+                                                    \   "\<Plug>(vimfiler_cd_file)",
+                                                    \   "\<Plug>(vimfiler_edit_file)")
+nnoremap <Leader>fh :<C-u>VimFiler<Space>~<CR>
+nnoremap <Leader>fc :<C-u>VimFilerCurrentDir<CR>
+
+" git のルートディレクトリを開く
+function! s:git_root_dir()
+    if(system('git rev-parse --is-inside-work-tree') == "true\n")
+        return ':VimFiler ' . system('git rev-parse --show-cdup') . '\<CR>'
+    else
+        echo 'current directory is outside git working tree'
+    endif
+endfunction
+nnoremap <expr><Leader>fg <SID>git_root_dir()
+" }}}
+
 " }}}
 
 " neocomplecache-clang {{{
@@ -361,6 +597,13 @@ let g:clang_user_options='-I /usr/local/include -I /usr/include/c++/4.2.1 -I /us
 
 " lindapp_cpp {{{
 let g:neocomplcache_snippets_dir = $HOME.'/.vim/bundle/lindapp_cpp/snippets'
+
+" lindapp_cpp の キーマップ {{{
+autocmd FileType cpp call lindapp_cpp#my_cpp_mapping()
+autocmd FileType cpp inoremap <silent><buffer><expr><CR> lindapp_cpp#expand_brace()."\<CR>"
+autocmd FileType cpp nmap <silent><buffer><leader>dt <Plug>lindapp_cpp_return_type
+" }}}
+
 " }}}
 
 " vim-smartinput"{{{
@@ -471,6 +714,8 @@ call smartinput#define_rule({
 let g:caw_no_default_keymappings = 1
 
 " キーマッピング {{{
+nmap <Leader>c <Nop>
+vmap <Leader>c <Nop>
 " 行コメント
 nmap <Leader>cc <Plug>(caw:i:toggle)
 vmap <Leader>cc <Plug>(caw:i:toggle)
@@ -492,252 +737,19 @@ vmap <Leader>cui <Plug>(caw:input:uncomment)
 
 "}}}
 
-" キーマップの設定 {{{
-" Base Settings {{{
-" ; と : をスワップ
-noremap ; :
-noremap : ;
-"insertモードから抜ける
-inoremap jj <ESC>
-" Yの挙動はy$のほうが自然な気がする
-nnoremap Y y$
-" 縦方向は論理移動する
-nnoremap j gj
-nnoremap k gk
-"Esc->Escで検索結果とエラーハイライトをクリア
-nnoremap <silent><ESC><ESC> :<C-u>nohlsearch<CR>:HierClear<CR><ESC>
-"行頭・行末の移動
-nnoremap <TAB> G
-vnoremap <TAB> G
-nnoremap 0 ^
-vnoremap 0 ^
-nnoremap ^ 0
-vnoremap ^ 0
-nnoremap - $
-vnoremap - $
-" q:は誤爆しやすい
-nnoremap q; q:
-nnoremap <C-:> q:
-nnoremap q: :q
-" insertモードでもquit
-inoremap <C-q><C-q> <ESC>:wqa<CR>
-" insertモードでもcmdmode
-inoremap <C-:> <Esc>:
-" 空行挿入
-nnoremap <silent><Space> :<C-u>call append(expand('.'), '')<CR>j
-"ヘルプ表示
-nnoremap <Leader>vh :vert bo help<Space>
-"insertモード時はEmacsライクなバインディング．ポップアップが出ないように移動．
-inoremap <C-e> <END>
-vnoremap <C-e> <END>
-cnoremap <C-e> <END>
-inoremap <C-a> <HOME>
-vnoremap <C-a> <HOME>
-cnoremap <C-a> <HOME>
-inoremap <expr><C-n> pumvisible() ? "\<C-y>\<Down>" : "\<Down>"
-inoremap <expr><C-p> pumvisible() ? "\<C-y>\<Up>" : "\<Up>"
-inoremap <expr><C-b> pumvisible() ? "\<C-y>\<Left>" : "\<Left>"
-inoremap <expr><C-f> pumvisible() ? "\<C-y>\<Right>" : "\<Right>"
-" inoremap <C-n> <Down>
-" inoremap <C-p> <Up>
-" inoremap <C-b> <Left>
-" inoremap <C-f> <Right>
-inoremap <C-d> <Del>
-cnoremap <C-d> <Del>
-inoremap <C-k> <C-o>D
-cnoremap <C-k> <C-o>D
-"バッファ切り替え
-nnoremap <silent><C-n>   :<C-u>bnext<CR>
-nnoremap <silent><C-p>   :<C-u>bprevious<CR>
-"Visualモード時にvで行末まで選択する
-vnoremap v $h
-"CTRL-hjklでウィンドウ移動．横幅が小さすぎる場合は自動でリサイズする．
-" function! s:good_width()
-"     if winwidth(0) < 84
-"         vertical resize 84
-"     endif
-" endfunction
-" nnoremap <silent><C-j> <C-w>j:call <SID>good_width()<CR>
-" nnoremap <silent><C-h> <C-w>h:call <SID>good_width()<CR>
-" nnoremap <silent><C-l> <C-w>l:call <SID>good_width()<CR>
-" nnoremap <silent><C-k> <C-w>k:call <SID>good_width()<CR>
-nnoremap <silent><C-j> <C-w>j
-nnoremap <silent><C-k> <C-w>k
-nnoremap <silent><C-h> <C-w>h
-nnoremap <silent><C-l> <C-w>l
-nnoremap <silent>qj <C-w>j
-nnoremap <silent>qk <C-w>k
-nnoremap <silent>qh <C-w>h
-nnoremap <silent>ql <C-w>l
-nnoremap <silent>qv <C-w>v
-nnoremap <silent>qs <C-w>s
-"Ruby新規ファイルを開いたときに書きこむ
-autocmd BufNewFile *.rb 0r ~/.vim/skeletons/ruby.skel
-"<CR>の挙動
-nnoremap <CR> i<CR><ESC>
-"インサートモードで次の行に直接改行
-inoremap <C-j> <Esc>o
-"<BS>の挙動
-nnoremap <BS> i<BS><ESC>
-"コマンドラインモードでのカーソル移動
-cnoremap <C-f> <Right>
-cnoremap <C-b> <Left>
-"_で次の_の手前まで
-onoremap _ vf_h
-" カーソルキーでの上下移動
-nnoremap <silent><Down>  <C-w>-
-nnoremap <silent><Up>    <C-w>+
-nnoremap <silent><Left>  <C-w><
-nnoremap <silent><Right> <C-w>>
-" ペーストした文字列をビジュアルモードで選択
-nnoremap <expr>gp '`['.strpart(getregtype(),0,1).'`]'
-" 日付の挿入
-" inoremap <C-x>date <C-r>=strftime('%Y/%m/%d(%a) %H:%M')<CR>
-nnoremap <Leader>date :r<Space>!date<Space>+'\%Y/\%m/\%d(\%a)<Space>\%H:\%M'<CR>
-" text-obj-lastpat:sでマッチした部分をtextobjに
-nnoremap di/ d//e<CR>
-nnoremap ci/ c//e<CR>
-nnoremap yi/ y//e<CR>
-" タブの設定
-nnoremap <Leader>te :tabnew<CR>
-nnoremap <Leader>tn :tabnext<CR>
-nnoremap <Leader>tp :tabprevious<CR>
-nnoremap <Leader>tc :tabclose<CR>
-" Rubyのキーマップ
-autocmd FileType ruby inoremap <buffer><C-s> self.
-" autocmd FileType ruby inoremap <buffer> ; |
-" 貼り付けはインデントを揃える
-" nnoremap p ]p
-" }}}
-
-" NeoBundle のキーマップ{{{
-nnoremap <silent><Leader>nbu   :<C-u>NeoBundleUpdate<CR>
-nnoremap <silent><Leader>nbc   :<C-u>NeoBundleClean<CR>
-nnoremap <silent><Leader>nbi   :<C-u>NeoBundleInstall<CR>
-nnoremap <silent><Leader>nbl   :<C-u>NeoBundleList<CR>
-nnoremap <silent><Leader>nbd   :<C-u>NeoBundleDocs<CR>
-" }}}
-
-"VimShellの設定 {{{
-nmap <expr><Leader>vs "\<Plug>(vimshell_split_switch)"
-
-"neocomplcacheの設定
-imap      <C-s>       <Plug>(neocomplcache_snippets_expand)
-smap      <C-s>       <Plug>(neocomplcache_snippets_expand)
-inoremap  <expr><C-g> neocomplcache#undo_completion()
-"inoremap <expr><C-l> neocomplcache#complete_common_string()
-"スニペット展開候補があれば展開を，そうでなければbash風補完を．
-imap <expr><C-l> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : neocomplcache#complete_common_string()
-" <CR>: close popup and save indent.
-imap <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup()."\<CR>" : "\<CR>"
-" <TAB>: completion
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-"スニペットがあればそれを展開．なければ通常の挙動をするTABキー
-" imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
-" <C-h>, <BS>: close popup and delete backword char.
-" inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
-" inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><C-y> neocomplcache#close_popup()
-" }}}
-
-"Unite.vimのキーマップ {{{
-"insertモード時はC-gでいつでもバッファを閉じられる（絞り込み欄が空の時はC-hでもOK）
-autocmd FileType unite imap <buffer> <C-g> <Plug>(unite_exit)
-"ファイル上にカーソルがある時，pでプレビューを見る
-autocmd FileType unite inoremap <buffer><expr> p unite#smart_map("p", unite#do_action('preview'))
-"C-xでクイックマッチ
-autocmd FileType unite imap <buffer> <C-x> <Plug>(unite_quick_match_default_action)
-"lでデフォルトアクションを実行
-autocmd FileType unite nmap <buffer> l <Plug>(unite_do_default_action)
-autocmd FileType unite imap <buffer><expr> l unite#smart_map("l", unite#do_action(unite#get_current_unite().context.default_action))
-"増えすぎてアレなら <Leader>ua などに置き換える．そのときはnnoremap <Leader>u <Nop>を忘れないようにする．
-"バッファを開いた時のパスを起点としたファイル検索
-" nnoremap <silent> <Leader>f  :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
-"バッファ一覧
-nnoremap <silent> <Leader>ub  :<C-u>Unite -no-start-insert buffer<CR>
-"ブックマークしたファイル/ディレクトリ
-nnoremap <silent> <Leader>uB  :<C-u>Unite -no-start-insert bookmark<CR>
-"最近使用したファイル
-nnoremap <silent> <Leader>um  :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
-nnoremap <silent> <Leader>m  :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
-"プログラミングにおけるアウトラインの表示
-nnoremap <silent> <Leader>uo  :<C-u>Unite outline -vertical -no-start-insert<CR>
-"grep検索．
-nnoremap <silent> <Leader>ug  :<C-u>Unite -no-start-insert grep<CR>
-"yank履歴
-nnoremap <silent> <Leader>uy  :<C-u>Unite -no-start-insert history/yank<CR>
-"find
-nnoremap <silent> <Leader>uf  :<C-u>Unite -no-start-insert find<CR>
-"helpを引く．絞り込み初期は候補が膨大になるのでワードを先に入力
-nnoremap <silent> <Leader>uh  :<C-u>UniteWithInput -no-start-insert help<CR>
-"Uniteバッファの復元
-nnoremap <silent> <Leader>ur  :<C-u>UniteResume<CR>
-"SpotLight の利用
-if has('mac')
-    nnoremap <silent> <Leader>ul :<C-u>Unite spotlight<CR>
-else
-    nnoremap <silent> <Leader>ul :<C-u>Unite locate<CR>
-endif
-" NeoBundle
-nnoremap <silent><Leader>unb :<C-u>Unite neobundle/update<CR>
-" }}}
-
-"QuickRunのキーマップ {{{
-nnoremap <Leader>q  <Nop>
-nnoremap <silent><Leader>qr :<C-u>QuickRun<CR>:copen<CR>
-nnoremap <silent><Leader>qc :<C-u>QuickRun<CR>
-vnoremap <silent><Leader>qr :<C-u>QuickRun<CR>:copen<CR>
-vnoremap <silent><Leader>qc :<C-u>QuickRun<CR>
-nnoremap <silent><Leader>qR :<C-u>QuickRun<Space>
-nnoremap <silent><Leader>qq :<C-u>cope<CR>
-autocmd FileType qf nnoremap <buffer><silent> q :q<CR>
-autocmd FileType qf nnoremap <buffer><silent> j :cn<CR>
-autocmd FileType qf nnoremap <buffer><silent> k :cp<CR>
-" }}}
-
-"endwise.vimのキーマップ {{{
-autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"
-"
-" }}}
-
-"vim-toggleのキーマップ {{{
-" nmap <silent><C-t> <Plug>MyToggleN
-" }}}
-
-" vimfiler.vim のキーマップ {{{
-nnoremap <Leader>ff :<C-u>VimFiler<CR>
-nnoremap <Leader>fn :<C-u>VimFiler<Space>-no-quit<CR>
-autocmd FileType vimfiler nmap <buffer><silent><expr> e vimfiler#smart_cursor_map(
-                                                    \   "\<Plug>(vimfiler_cd_file)",
-                                                    \   "\<Plug>(vimfiler_edit_file)")
-nnoremap <Leader>fh :<C-u>VimFiler<Space>~<CR>
-nnoremap <Leader>fc :<C-u>VimFilerCurrentDir<CR>
-
-" git のルートディレクトリを開く
-function! s:git_root_dir()
-    if(system('git rev-parse --is-inside-work-tree') == "true\n")
-        return ':VimFiler ' . system('git rev-parse --show-cdup') . '\<CR>'
-    else
-        echoerr '!!!current directory is outside git working tree!!!'
-    endif
-endfunction
-nnoremap <expr><Leader>fg <SID>git_root_dir()
-" }}}
-
-" textobj-wiw のキーマップ {{{
+" textobj-wiw {{{
 let g:textobj_wiw_no_default_key_mappings = 1 " デフォルトキーマップの解除
 omap ac <Plug>(textobj-wiw-a)
 omap ic <Plug>(textobj-wiw-i)
 " }}}
 
-" lindapp_cpp の キーマップ {{{
-autocmd FileType cpp call lindapp_cpp#my_cpp_mapping()
-autocmd FileType cpp inoremap <silent><buffer><expr><CR> lindapp_cpp#expand_brace()."\<CR>"
-autocmd FileType cpp nmap <silent><buffer><leader>dt <Plug>lindapp_cpp_return_type
-" }}}
+"endwise.vim {{{
+autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"
 " }}}
 
-" autocmd Filetype haskell syntax match lambda /[[]]/ transparent conceal cchar=λ
+"vim-toggle {{{
+" nmap <silent><C-t> <Plug>MyToggleN
+" }}}
 
 set rtp+=~/Github/ref-rurema
 
