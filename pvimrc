@@ -3,7 +3,7 @@
 """"""""""""""""""""""""""""""""""""""""""""
 
 "最低限欲しいプラグインだけをロード {{{
-set rtp+=$HOME/.vim/bundle/tcomment_vim
+set rtp+=$HOME/.vim/bundle/caw.vim
 " }}}
 
 " 基本設定 {{{
@@ -102,6 +102,8 @@ set ruf=%45(%12f%=\ %m%{'['.(&fenc!=''?&fenc:&enc).']'}\ %l-%v\ %p%%\ [%02B]%)
 set statusline=%f:\ %{substitute(getcwd(),'.*/','','')}\ %m%=%{(&fenc!=''?&fenc:&enc).':'.strpart(&ff,0,1)}\ %l-%v\ %p%%\ %02B
 " *.md で読み込む filetype を変更（デフォルトは modula2）
 autocmd BufRead *.md set ft=markdown"}}}
+" caw.vim
+let g:caw_no_default_keymappings = 1
 
 " キーマップ {{{
 " ; と : をスワップ
@@ -175,8 +177,7 @@ nnoremap <expr>gp '`['.strpart(getregtype(),0,1).'`]'
 " 日付の挿入
 inoremap <C-x>date <C-r>=strftime('%y/%m/%d(%a) %h:%m')<CR>
 nnoremap <Leader>date :r<Space>!date<Space>+'\%y/\%m/\%d(\%a)<Space>\%h:\%m'<CR>
-"tcomment.vimのキーマップ {{{
-nnoremap <Leader>c :TComment<CR>
-vnoremap <Leader>c :TComment<CR>
-vnoremap <Leader>C :TCommentBlock<CR>
+"caw.vimのキーマップ
+nmap <Leader>c <Plug>(caw:i:toggle)
+vmap <Leader>c <Plug>(caw:i:toggle)
 "}}}

@@ -14,11 +14,12 @@ NeoBundle 'Shougo/vimshell'
 NeoBundle 'Shougo/vimfiler'
 NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'Shougo/neocomplcache-snippets-complete'
-NeoBundle 'Rip-Rip/clang_complete'
+" NeoBundle 'Rip-Rip/clang_complete'
+NeoBundle 'rhysd/clang_complete'
 NeoBundle 'osyo-manga/neocomplcache-clang_complete'
 NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'Shougo/unite.vim'
-NeoBundle 'tomtom/tcomment_vim'
+NeoBundle 'tyru/caw.vim'
 NeoBundle 'h1mesuke/unite-outline'
 NeoBundle 'tsukkee/unite-help'
 NeoBundle 'vim-jp/vimdoc-ja'
@@ -465,6 +466,32 @@ call smartinput#define_rule({
 
 "}}}
 
+" caw.vim {{{
+" デフォルトマッピングを OFF
+let g:caw_no_default_keymappings = 1
+
+" キーマッピング {{{
+" 行コメント
+nmap <Leader>cc <Plug>(caw:i:toggle)
+vmap <Leader>cc <Plug>(caw:i:toggle)
+" 行末尾コメント
+nmap <Leader>ca <Plug>(caw:a:toggle)
+vmap <Leader>ca <Plug>(caw:a:toggle)
+" ブロックコメント
+nmap <Leader>cw <Plug>(caw:wrap:toggle)
+vmap <Leader>cw <Plug>(caw:wrap:toggle)
+" 改行後コメント
+nmap <Leader>co <Plug>(caw:jump:comment-next)
+nmap <Leader>cO <Plug>(caw:jump:comment-prev)
+" 注釈付きコメント
+nmap <Leader>ci <Plug>(caw:input:comment)
+vmap <Leader>ci <Plug>(caw:input:comment)
+nmap <Leader>cui <Plug>(caw:input:uncomment)
+vmap <Leader>cui <Plug>(caw:input:uncomment)
+"}}}
+
+"}}}
+
 " キーマップの設定 {{{
 " Base Settings {{{
 " ; と : をスワップ
@@ -666,12 +693,6 @@ nnoremap <silent><Leader>qq :<C-u>cope<CR>
 autocmd FileType qf nnoremap <buffer><silent> q :q<CR>
 autocmd FileType qf nnoremap <buffer><silent> j :cn<CR>
 autocmd FileType qf nnoremap <buffer><silent> k :cp<CR>
-" }}}
-
-"tcomment.vimのキーマップ {{{
-nnoremap <Leader>c :TComment<CR>
-vnoremap <Leader>c :TComment<CR>
-vnoremap <Leader>C :TCommentBlock<CR>
 " }}}
 
 "endwise.vimのキーマップ {{{
