@@ -1,6 +1,6 @@
 #!/bin/sh
 
-dotfiles="$HOME/.pvimrc $HOME/.vimrc $HOME/.vimshrc $HOME/.gvimrc $HOME/.bashrc $HOME/.zshrc $HOME/.emacs.d/init.el $HOME/.gemrc"
+dotfiles="$HOME/.vimrc $HOME/.vimshrc $HOME/.gvimrc $HOME/.bashrc $HOME/.zshrc $HOME/.emacs.d/init.el $HOME/.gemrc"
 directories=""
 
 for dotfile in $dotfiles

@@ -1,74 +1,3 @@
-" neobundle.vim の設定 {{{
-filetype off
-filetype plugin indent off
-if has('vim_starting')
-    set rtp+=~/.vim/bundle/neobundle.vim/
-    call neobundle#rc(expand('~/.vim/bundle'))
-endif
-
-" Bundle 'gmarik/vundle'
-
-" GitHub上のリポジトリ
-NeoBundle 'Shougo/vimproc'
-NeoBundle 'Shougo/vimshell'
-NeoBundle 'Shougo/vimfiler'
-NeoBundle 'Shougo/neocomplcache'
-NeoBundle 'Shougo/neocomplcache-snippets-complete'
-" NeoBundle 'Rip-Rip/clang_complete'
-NeoBundle 'rhysd/clang_complete'
-NeoBundle 'osyo-manga/neocomplcache-clang_complete'
-NeoBundle 'thinca/vim-quickrun'
-NeoBundle 'Shougo/unite.vim'
-NeoBundle 'tyru/caw.vim'
-NeoBundle 'h1mesuke/unite-outline'
-NeoBundle 'tsukkee/unite-help'
-NeoBundle 'vim-jp/vimdoc-ja'
-NeoBundle 'jceb/vim-hier'
-" NeoBundle 'rhysd/my-vimtoggle'
-NeoBundle 'rhysd/my-endwise'
-" NeoBundle 'tpope/vim-endwise'
-NeoBundle 'kana/vim-textobj-user'
-NeoBundle 'kana/vim-textobj-indent'
-" NeoBundle 'kana/vim-textobj-lastpat' これと同様の効果をキーマップに設定済み
-NeoBundle 'h1mesuke/textobj-wiw'
-NeoBundle 'rhysd/vim-accelerate'
-NeoBundle 'rhysd/lindapp_cpp'
-NeoBundle 'choplin/unite-spotlight'
-NeoBundle 'kana/vim-smartinput'
-" NeoBundle 'kana/vim-filetype-haskell'
-NeoBundle 'rhysd/vim-filetype-haskell'
-NeoBundle 'thinca/vim-ref'
-NeoBundle 'ujihisa/ref-hoogle'
-NeoBundle 'ujihisa/neco-ghc'
-" NeoBundle 'rhysd/ref-rurema'
-" NeoBundle 'ujihisa/unite-locate'
-" NeoBundle 'Lokaltog/vim-powerline'
-" NeoBundle 'ujihisa/vimshell-ssh'
-" NeoBundle 'h1mesuke/vim-alignta'
-" NeoBundle 'ujihisa/unite-colorscheme'
-" NeoBundle 'ujihisa/neco-look'
-" NeoBundle 'taku-o/vim-toggle'
-
-" vim-scripts上のリポジトリ
-NeoBundle 'Align'
-" NeoBundle 'errormarker.vim'
-" NeoBundle 'endwise.vim'
-
-" その他のgitリポジトリ
-" NeoBundle 'git://git.wincent.com/command-t.git'
-
-filetype plugin indent on     " required!
-
-" NeoBundle のキーマップ{{{
-nnoremap <silent><Leader>nbu   :<C-u>NeoBundleUpdate<CR>
-nnoremap <silent><Leader>nbc   :<C-u>NeoBundleClean<CR>
-nnoremap <silent><Leader>nbi   :<C-u>NeoBundleInstall<CR>
-nnoremap <silent><Leader>nbl   :<C-u>NeoBundleList<CR>
-nnoremap <silent><Leader>nbd   :<C-u>NeoBundleDocs<CR>
-" }}}
-
-" }}}
-
 " Base settings {{{
 let mapleader = ','
 
@@ -115,7 +44,7 @@ set vb t_vb=
 set list
 set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
 "Boostや自前ビルドgccをpathに追加
-set path=.,/usr/include,/usr/local/include,/usr/local/Cellar/gcc/4.6.3/gcc/include/c++/4.6.3,/Users/rhayasd/.rbenv/versions/1.9.3-p125/lib/ruby/1.9.1/,/Users/rhayasd/programs/**
+set path=.,/usr/include,/usr/local/include,/usr/local/Cellar/gcc/4.7.1/gcc/include/c++/4.7.1,/Users/rhayasd/.rbenv/versions/1.9.3-p194/lib/ruby/1.9.1/,/Users/rhayasd/programs/**
 "起動時のメッセージを消す
 set shortmess+=I
 "起動時IMEをOFFにする
@@ -135,13 +64,15 @@ set clipboard+=unnamed
 "矩形選択で自由に移動する
 set virtualedit+=block
 "改行コードの自動認識
-set fileformats=unix,dos,mac
+set fileformats=unix,mac,dos
 "コマンド実行中は再描画しない
 set lazyredraw
 "高速ターミナル接続を行う
 set ttyfast
 "MacVim Kaoriyaに標準で入っている辞書を無効化
-let g:plugin_dicwin_disable = 1
+if has('mac')
+    let g:plugin_dicwin_disable = 1
+endif
 "insertモードから抜けるときにIMをOFFにする（GUI(MacVim)は自動的にやってくれる
 "iminsert=2にすると，insertモードに戻ったときに自動的にIMの状態が復元される
 if !has("gui_running")
@@ -161,14 +92,14 @@ if has('persistent_undo')
     set undofile
 endif
 " command-line-window の縦幅
-set cmdwinheight=14
+" set cmdwinheight=14
 " Ruby シンタックスチェック
-function! s:ExecuteMake()
-  if &filetype == 'ruby' && expand('%:t') !~? '^pry\d\{8}.\+\.rb'
-    silent make! -c "%" | redraw!
-  endif
-endfunction
-compiler ruby
+" function! s:ExecuteMake()
+"   if &filetype == 'ruby' && expand('%:t') !~? '^pry\d\{8}.\+\.rb'
+"     silent make! -c "%" | redraw!
+"   endif
+" endfunction
+" compiler ruby
 " augroup rbsyntaxcheck
 "   autocmd BufWritePost <buffer> call s:ExecuteMake()
 " augroup END
@@ -319,6 +250,88 @@ endfunction
 command! RmDust :call RemoveTailSpaces()
 command! EditVimrc :e $MYVIMRC $MYGVIMRC
 "}}}
+
+" 最小限の設定と最小限のプラグインだけ読み込む {{{
+" vim --cmd "g:linda_pp_startup_with_tiny = 1" で起動した時
+if exists("g:linda_pp_startup_with_tiny")
+    let g:caw_no_default_keymappings = 1
+    set rtp+=~/.vim/bundle/caw.vim
+    nmap <Leader>c <Plug>(caw:i:toggle)
+    vmap <Leader>c <Plug>(caw:i:toggle)
+    finish
+endif
+"}}}
+
+" neobundle.vim の設定 {{{
+filetype off
+filetype plugin indent off
+if has('vim_starting')
+    set rtp+=~/.vim/bundle/neobundle.vim/
+    call neobundle#rc(expand('~/.vim/bundle'))
+endif
+
+" Bundle 'gmarik/vundle'
+
+" GitHub上のリポジトリ
+NeoBundle 'Shougo/vimproc'
+NeoBundle 'Shougo/vimshell'
+NeoBundle 'Shougo/vimfiler'
+NeoBundle 'Shougo/neocomplcache'
+NeoBundle 'Shougo/neocomplcache-snippets-complete'
+" NeoBundle 'Rip-Rip/clang_complete'
+NeoBundle 'rhysd/clang_complete'
+NeoBundle 'osyo-manga/neocomplcache-clang_complete'
+NeoBundle 'thinca/vim-quickrun'
+NeoBundle 'Shougo/unite.vim'
+NeoBundle 'tyru/caw.vim'
+NeoBundle 'h1mesuke/unite-outline'
+NeoBundle 'tsukkee/unite-help'
+NeoBundle 'vim-jp/vimdoc-ja'
+NeoBundle 'jceb/vim-hier'
+" NeoBundle 'rhysd/my-vimtoggle'
+NeoBundle 'rhysd/my-endwise'
+" NeoBundle 'tpope/vim-endwise'
+NeoBundle 'kana/vim-textobj-user'
+NeoBundle 'kana/vim-textobj-indent'
+" NeoBundle 'kana/vim-textobj-lastpat' これと同様の効果をキーマップに設定済み
+NeoBundle 'h1mesuke/textobj-wiw'
+NeoBundle 'rhysd/vim-accelerate'
+NeoBundle 'rhysd/lindapp_cpp'
+NeoBundle 'choplin/unite-spotlight'
+NeoBundle 'kana/vim-smartinput'
+" NeoBundle 'kana/vim-filetype-haskell'
+NeoBundle 'rhysd/vim-filetype-haskell'
+NeoBundle 'thinca/vim-ref'
+NeoBundle 'ujihisa/ref-hoogle'
+NeoBundle 'ujihisa/neco-ghc'
+" NeoBundle 'rhysd/ref-rurema'
+" NeoBundle 'ujihisa/unite-locate'
+" NeoBundle 'Lokaltog/vim-powerline'
+" NeoBundle 'ujihisa/vimshell-ssh'
+" NeoBundle 'h1mesuke/vim-alignta'
+" NeoBundle 'ujihisa/unite-colorscheme'
+" NeoBundle 'ujihisa/neco-look'
+" NeoBundle 'taku-o/vim-toggle'
+
+" vim-scripts上のリポジトリ
+NeoBundle 'Align'
+" NeoBundle 'errormarker.vim'
+" NeoBundle 'endwise.vim'
+
+" その他のgitリポジトリ
+" NeoBundle 'git://git.wincent.com/command-t.git'
+
+filetype plugin indent on     " required!
+
+" NeoBundle のキーマップ{{{
+nnoremap <silent><Leader>nbu   :<C-u>NeoBundleUpdate<CR>
+nnoremap <silent><Leader>nbc   :<C-u>NeoBundleClean<CR>
+nnoremap <silent><Leader>nbi   :<C-u>NeoBundleInstall<CR>
+nnoremap <silent><Leader>nbl   :<C-u>NeoBundleList<CR>
+nnoremap <silent><Leader>nbd   :<C-u>NeoBundleDocs<CR>
+" }}}
+
+" }}}
 
 " neocomplcacheの設定 {{{
 "AutoComplPopを無効にする
@@ -752,4 +765,3 @@ autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache
 " }}}
 
 set rtp+=~/Github/ref-rurema
-

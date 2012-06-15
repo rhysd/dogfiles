@@ -23,8 +23,7 @@ alias -g cl=clang++
 
 alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
 alias Vim='open -a /Applications/MacVim.app'
-alias pvim='vim -u $HOME/.pvimrc'
-# alias pv=pvim
+alias pvim="vim --cmd \"let g:linda_pp_startup_with_tiny = 1\""
 alias vi=pvim
 alias emacs='/usr/local/bin/emacs -nw'
 alias Emacs='open -a /usr/local/bin/emacs'
