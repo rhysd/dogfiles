@@ -262,6 +262,13 @@ if exists("g:linda_pp_startup_with_tiny")
 endif
 "}}}
 
+" Haskell {{{
+autocmd FileType haskell nnoremap <buffer><silent><Leader>t :<C-u>call <SID>ShowTypeHaskell(expand('<cword>'))<CR>
+function! s:ShowTypeHaskell(word)
+  echo join(split(system("ghc -isrc " . expand('%') . " -e ':t " . a:word . "'")))
+endfunction
+"}}}
+
 " neobundle.vim の設定 {{{
 filetype off
 filetype plugin indent off
@@ -299,11 +306,15 @@ NeoBundle 'rhysd/vim-accelerate'
 NeoBundle 'rhysd/lindapp_cpp'
 NeoBundle 'choplin/unite-spotlight'
 NeoBundle 'kana/vim-smartinput'
+NeoBundle 'thinca/vim-ref'
 " NeoBundle 'kana/vim-filetype-haskell'
 NeoBundle 'rhysd/vim-filetype-haskell'
-NeoBundle 'thinca/vim-ref'
 NeoBundle 'ujihisa/ref-hoogle'
 NeoBundle 'ujihisa/neco-ghc'
+NeoBundle 'eagletmt/ghcmod-vim'
+NeoBundle 'ujihisa/unite-haskellimport'
+NeoBundle 'rhysd/unite-qf'
+NeoBundle 'rhysd/quickrun-unite-qf-outputter'
 " NeoBundle 'rhysd/ref-rurema'
 " NeoBundle 'ujihisa/unite-locate'
 " NeoBundle 'Lokaltog/vim-powerline'
@@ -460,6 +471,8 @@ else
 endif
 " NeoBundle
 nnoremap <silent><Leader>unb :<C-u>Unite neobundle/update<CR>
+" Haskell Import
+autocmd FileType haskell nnoremap <buffer><Leader>uhi :<C-u>UniteWithCursorWord haskellimport -immediately<CR>
 " }}}
 
 " }}}
@@ -505,18 +518,18 @@ if !has("g:quickrun_config")
 	let g:quickrun_config = {}
 endif
 "C++
-let g:quickrun_config.cpp = { 'command' : 'g++-4.7', 'cmdopt' : '-std=c++11 -Wall -Wextra -O2 ', 'runner' : 'vimproc' }
+let g:quickrun_config.cpp = { 'command' : 'g++-4.7', 'cmdopt' : '-std=c++11 -Wall -Wextra -O2 ' }
 "QuickRun 実行時のバッファの開き方
-let g:quickrun_config._ = { 'outputter' : 'quickfix', 'split' : 'rightbelow 10sp', 'runner' : 'vimproc' }
+let g:quickrun_config._ = { 'outputter' : 'unite_qf', 'split' : 'rightbelow 10sp' }
 
 "QuickRunのキーマップ {{{
 nnoremap <Leader>q  <Nop>
-nnoremap <silent><Leader>qr :<C-u>QuickRun<CR>:copen<CR>
-nnoremap <silent><Leader>qc :<C-u>QuickRun<CR>
-vnoremap <silent><Leader>qr :<C-u>QuickRun<CR>:copen<CR>
-vnoremap <silent><Leader>qc :<C-u>QuickRun<CR>
+nnoremap <silent><Leader>qr :<C-u>QuickRun<CR>
+nnoremap <silent><Leader>qc :<C-u>QuickRun -outputter 'quickfix'<CR>
+vnoremap <silent><Leader>qr :<C-u>QuickRun<CR>
+vnoremap <silent><Leader>qc :<C-u>QuickRun -outputter 'quickfix'<CR>
 nnoremap <silent><Leader>qR :<C-u>QuickRun<Space>
-nnoremap <silent><Leader>qq :<C-u>cope<CR>
+nnoremap <silent><Leader>ql v:<C-u>'<,'>QuickRun -outputter 'quickfix'<CR>
 autocmd FileType qf nnoremap <buffer><silent> q :q<CR>
 autocmd FileType qf nnoremap <buffer><silent> j :cn<CR>
 autocmd FileType qf nnoremap <buffer><silent> k :cp<CR>
@@ -763,5 +776,3 @@ autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache
 "vim-toggle {{{
 " nmap <silent><C-t> <Plug>MyToggleN
 " }}}
-
-set rtp+=~/Github/ref-rurema

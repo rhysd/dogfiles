@@ -101,7 +101,9 @@ export HOMEBREW_EDITOR=vim
 # export DYLD_LIBRARY_PATH=/Users/rhayasd/gentoo/usr/lib:$DYLD_LIBRARY_PATH
 
 # rbenv
-eval "$(rbenv init -)"
+if which rbenv > /dev/null; then
+    eval "$(rbenv init -)"
+fi
 
 # Completion
 fpath=(~/.zsh/site-functions ${fpath})
@@ -123,9 +125,40 @@ local RED=$'%{\e[1;31m%}'
 # local YELLOW=$'%{\e[1;33m%}'
 # local BLUE=$'%{\e[1;34m%}'
 local DEFAULT=$'%{\e[1;m%}'
+
+setopt prompt_subst
+autoload -Uz VCS_INFO_get_data_git; VCS_INFO_get_data_git 2> /dev/null
+
+function current-git-branch() {
+  local name st color gitdir action
+
+  name=$(basename "`git symbolic-ref HEAD 2> /dev/null`")
+  if [[ -z $name ]]; then
+    return
+  fi
+  if [[ "$PWD" =~ '/¥.git(/.*)?$' ]]; then
+    return
+  fi
+
+  gitdir=`git rev-parse --git-dir 2> /dev/null`
+  action=`VCS_INFO_git_getaction "$gitdir"` && action="($action)"
+
+  st=`git status 2> /dev/null`
+  if [[ -n `echo "$st" | grep "^nothing to"` ]]; then
+    color=%F{green}
+  elif [[ -n `echo "$st" | grep "^nothing added"` ]]; then
+    color=%F{yellow}
+  elif [[ -n `echo "$st" | grep "^# Untracked"` ]]; then
+    color=%B%F{red}
+  else
+     color=%F{red}
+  fi
+  echo "[$color$name$action%f%b]"
+}
+
 # PROMPT="${RED}%D %T${DEFAULT} %# "
-PROMPT="${RED}%D{%m/%d %H:%M}${DEFAULT} %# "
-RPROMPT="[${GREEN}%~${DEFAULT}]"
+PROMPT="${GREEN}%~${DEFAULT} %# "
+RPROMPT='`current-git-branch` [${RED}%D{%m/%d %H:%M}${DEFAULT}]'
 
 # histroy setting
 HISTFILE=~/.zsh/zsh_history
@@ -233,11 +266,8 @@ function gem(){
 # unsetopt noautoremoveslash
 
 # z
-_Z_CMD=j
-source $HOME/.zsh/z/z.sh
 precmd(){
-    _z --add "$(pwd -P)"
-    ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb
+    # ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb
 }
 
 # git uses hub (this is not dangerous)
