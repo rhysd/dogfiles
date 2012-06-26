@@ -8,6 +8,9 @@ set number
 set nobackup
 "vi協調モードoff
 set nocompatible
+" 言語設定
+language message en_US
+language time en_US
 "自動インデント
 set autoindent
 "タブが対応する空白の数
@@ -248,7 +251,8 @@ function! RemoveTailSpaces()
     unlet s:cursor
 endfunction
 command! RmDust :call RemoveTailSpaces()
-command! EditVimrc :e $MYVIMRC $MYGVIMRC
+" command! Vimrc :e $MYVIMRC $MYGVIMRC
+command! Vimrc :e $MYVIMRC
 "}}}
 
 " 最小限の設定と最小限のプラグインだけ読み込む {{{
@@ -285,6 +289,7 @@ NeoBundle 'Shougo/vimshell'
 NeoBundle 'Shougo/vimfiler'
 NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'Shougo/neocomplcache-snippets-complete'
+NeoBundle 'vim-jp/cpp-vim'
 " NeoBundle 'Rip-Rip/clang_complete'
 NeoBundle 'rhysd/clang_complete'
 NeoBundle 'osyo-manga/neocomplcache-clang_complete'
@@ -313,7 +318,7 @@ NeoBundle 'ujihisa/ref-hoogle'
 NeoBundle 'ujihisa/neco-ghc'
 NeoBundle 'eagletmt/ghcmod-vim'
 NeoBundle 'ujihisa/unite-haskellimport'
-NeoBundle 'rhysd/unite-qf'
+NeoBundle 'sgur/unite-qf'
 NeoBundle 'rhysd/quickrun-unite-qf-outputter'
 " NeoBundle 'rhysd/ref-rurema'
 " NeoBundle 'ujihisa/unite-locate'

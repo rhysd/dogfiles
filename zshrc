@@ -267,7 +267,7 @@ function gem(){
 
 # z
 precmd(){
-    # ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb
+    ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb
 }
 
 # git uses hub (this is not dangerous)
