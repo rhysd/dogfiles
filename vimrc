@@ -222,6 +222,8 @@ nnoremap <silent><Left>  <C-w><
 nnoremap <silent><Right> <C-w>>
 " ペーストした文字列をビジュアルモードで選択
 nnoremap <expr>gp '`['.strpart(getregtype(),0,1).'`]'
+" 最後にヤンクしたテキストを貼り付け．
+nnoremap P "0P
 " 日付の挿入
 " inoremap <C-x>date <C-r>=strftime('%Y/%m/%d(%a) %H:%M')<CR>
 nnoremap <Leader>date :r<Space>!date<Space>+'\%Y/\%m/\%d(\%a)<Space>\%H:\%M'<CR>
@@ -307,6 +309,7 @@ NeoBundle 'kana/vim-textobj-user'
 NeoBundle 'kana/vim-textobj-indent'
 " NeoBundle 'kana/vim-textobj-lastpat' これと同様の効果をキーマップに設定済み
 NeoBundle 'h1mesuke/textobj-wiw'
+NeoBundle 'thinca/vim-textobj-between'
 NeoBundle 'rhysd/vim-accelerate'
 NeoBundle 'rhysd/lindapp_cpp'
 NeoBundle 'choplin/unite-spotlight'
@@ -781,3 +784,4 @@ autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache
 "vim-toggle {{{
 " nmap <silent><C-t> <Plug>MyToggleN
 " }}}
+
