@@ -79,7 +79,7 @@ endif
 "insertモードから抜けるときにIMをOFFにする（GUI(MacVim)は自動的にやってくれる
 "iminsert=2にすると，insertモードに戻ったときに自動的にIMの状態が復元される
 if !has("gui_running")
-	inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
+    inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
 endif
 " 補完でプレビューウィンドウを開かない
 set completeopt=longest,menu
@@ -112,7 +112,7 @@ set statusline=%f:\ %{substitute(getcwd(),'.*/','','')}\ %m%=%{(&fenc!=''?&fenc:
 " *.md で読み込む filetype を変更（デフォルトは modula2）
 autocmd BufRead *.md set ft=markdown
 " 保存時に行末のスペースを除去する
-autocmd BufWritePre * call RemoveTailSpaces()
+autocmd BufWritePre * call <SID>clean_whitespaces()
 
 " カーソル下のハイライトグループを取得
 " command! -nargs=0 GetHighlightingGroup echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<' . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<' . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
@@ -246,13 +246,14 @@ autocmd FileType ruby inoremap <buffer><C-s> self.
 "}}}
 
 " user defined commands {{{
-function! RemoveTailSpaces()
-    let s:cursor = getpos(".")
+function! s:clean_whitespaces()
+    retab!
+    let cursor = getpos(".")
     %s/\s\+$//ge
-    call setpos(".", s:cursor)
-    unlet s:cursor
+    call setpos(".", cursor)
+    unlet cursor
 endfunction
-command! RmDust :call RemoveTailSpaces()
+command! RmDust :call <SID>clean_whitespaces()
 " command! Vimrc :e $MYVIMRC $MYGVIMRC
 command! Vimrc :e $MYVIMRC
 "}}}
@@ -323,6 +324,7 @@ NeoBundle 'eagletmt/ghcmod-vim'
 NeoBundle 'ujihisa/unite-haskellimport'
 NeoBundle 'sgur/unite-qf'
 NeoBundle 'rhysd/quickrun-unite-qf-outputter'
+NeoBundle 'nathanaelkane/vim-indent-guides'
 " NeoBundle 'rhysd/ref-rurema'
 " NeoBundle 'ujihisa/unite-locate'
 " NeoBundle 'Lokaltog/vim-powerline'
@@ -367,7 +369,7 @@ let g:neocomplcache_enable_underbar_completion = 1
 let g:neocomplcache_min_syntax_length = 3
 "日本語を収集しないようにする
 if !exists('g:neocomplcache_keyword_patterns')
-	let g:neocomplcache_keyword_patterns = {}
+    let g:neocomplcache_keyword_patterns = {}
 endif
 let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
 "リスト表示
@@ -384,7 +386,7 @@ let g:neocomplcache_dictionary_filetype_lists = {
 let g:neocomplcache_ctags_program = '/usr/local/bin/ctags'
 "区切り文字パターンの定義
 if !exists('g:neocomplcache_delimiter_patterns')
-	let g:neocomplcache_delimiter_patterns= {}
+    let g:neocomplcache_delimiter_patterns= {}
 endif
 let g:neocomplcache_delimiter_patterns.vim = ['#']
 let g:neocomplcache_delimiter_patterns.cpp = ['::']
@@ -392,18 +394,18 @@ let g:neocomplcache_delimiter_patterns.cpp = ['::']
 if !exists('g:neocomplcache_include_paths')
     let g:neocomplcache_include_paths = {}
 endif
-let g:neocomplcache_include_paths.cpp  = '.,/usr/local/include,/usr/local/Cellar/gcc/4.7.0/gcc/include/c++/4.7.0'
+let g:neocomplcache_include_paths.cpp  = '.,/usr/local/include,/usr/local/Cellar/gcc/4.7.1/gcc/include/c++/4.7.1'
 let g:neocomplcache_include_paths.c    = '.,/usr/include'
 let g:neocomplcache_include_paths.perl = '.,/System/Library/Perl,/Users/rhayasd/programs'
 "インクルード文のパターンを指定
 let g:neocomplcache_include_patterns = { 'cpp' : '^\s*#\s*include', 'perl' : '^\s*use', }
 "インクルード先のファイル名の解析パターン
 " let g:neocomplcache_include_exprs = {
-" 	\ 'ruby' : substitute(substitute(v:fname,'::','/','g'),'$','.rb','')
-" 	\ }
+"   \ 'ruby' : substitute(substitute(v:fname,'::','/','g'),'$','.rb','')
+"   \ }
 if !has("gui_running")
-	"CUIのvimでの補完リストの色を調節する
-	highlight Pmenu ctermbg=8
+    "CUIのvimでの補完リストの色を調節する
+    highlight Pmenu ctermbg=8
 endif
 " Enable omni completion.
 autocmd FileType python set omnifunc=pythoncomplete#Complete
@@ -416,7 +418,7 @@ autocmd FileType c set omnifunc=ccomplete#Complete
 " autocmd FileType ruby set omnifunc=rubycomplete#Complete
 " Enable heavy omni completion.
 if !exists('g:neocomplcache_omni_patterns')
-	let g:neocomplcache_omni_patterns = {}
+    let g:neocomplcache_omni_patterns = {}
 endif
 " let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
 let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
@@ -523,7 +525,7 @@ inoremap <expr><C-y> neocomplcache#close_popup()
 let g:quickrun_no_default_key_mappings = 1
 " quickrun_configの初期化
 if !has("g:quickrun_config")
-	let g:quickrun_config = {}
+    let g:quickrun_config = {}
 endif
 "C++
 let g:quickrun_config.cpp = { 'command' : 'g++-4.7', 'cmdopt' : '-std=c++11 -Wall -Wextra -O2 ' }
@@ -549,31 +551,31 @@ autocmd FileType qf nnoremap <buffer><silent> k :cp<CR>
 "CUIだとエラーハイライトが見づらいので修正
 " let g:hier_enabled = 1
 if !has("gui_running")
-	highlight qf_error_ucurl ctermbg=9
-	let g:hier_highlight_group_qf = "qf_error_ucurl"
-	let g:hier_highlight_group_loc = "qf_error_ucurl"
-	highlight qf_warning_ucurl ctermbg=3
-	let g:hier_highlight_group_qfw = "qf_warning_ucurl"
-	let g:hier_highlight_group_locw = "qf_warning_ucurl"
-	" QuickFix選択中のエラー
-	highlight Search ctermbg=8
+    highlight qf_error_ucurl ctermbg=9
+    let g:hier_highlight_group_qf = "qf_error_ucurl"
+    let g:hier_highlight_group_loc = "qf_error_ucurl"
+    highlight qf_warning_ucurl ctermbg=3
+    let g:hier_highlight_group_qfw = "qf_warning_ucurl"
+    let g:hier_highlight_group_locw = "qf_warning_ucurl"
+    " QuickFix選択中のエラー
+    highlight Search ctermbg=8
 endif
 " }}}
 
 " vim-toggle.vim {{{
 " let g:my_toggle_pairs = {}
 " let g:my_toggle_pairs = {
-" 			\'and':'or', 'or':'and',
-" 			\'&&':'||', '||':'&&',
-" 			\'++':'--','--','++',
-" 			\'==':'!=','!=':'==',
-" 			\'<=':'>=','>=':'<=',
-" 			\'.':'->','->':'.',
-" 			\'const&':'&','&':'const&',
-" 			\'class':'struct','struct':'class',
-" 			\'boost':'std','std':'boost',
-" 			\'top':'right','right':'bottom','bottom':'left','left':'top'
-" 			\}
+"           \'and':'or', 'or':'and',
+"           \'&&':'||', '||':'&&',
+"           \'++':'--','--','++',
+"           \'==':'!=','!=':'==',
+"           \'<=':'>=','>=':'<=',
+"           \'.':'->','->':'.',
+"           \'const&':'&','&':'const&',
+"           \'class':'struct','struct':'class',
+"           \'boost':'std','std':'boost',
+"           \'top':'right','right':'bottom','bottom':'left','left':'top'
+"           \}
 " }}}
 
 " VimFilerの設定 {{{
@@ -776,6 +778,15 @@ let g:textobj_wiw_no_default_key_mappings = 1 " デフォルトキーマップ�
 omap ac <Plug>(textobj-wiw-a)
 omap ic <Plug>(textobj-wiw-i)
 " }}}
+
+" vim-indent-guides
+let g:indent_guides_guide_size = 1
+if !has('gui_running')
+    let g:indent_guides_auto_colors = 0
+    autocmd VimEnter,Colorscheme * hi IndentGuidesOdd  ctermbg=233
+    autocmd VimEnter,Colorscheme * hi IndentGuidesEven ctermbg=240
+endif
+autocmd FileType haskell,python,haml call indent_guides#enable()
 
 "endwise.vim {{{
 autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"

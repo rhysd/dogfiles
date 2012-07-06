@@ -265,6 +265,7 @@ function gem(){
 # # /が重複しないように unsetopt
 # unsetopt noautoremoveslash
 
+# source $HOME/.zsh/incr*.zsh
 # z
 precmd(){
     ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb
