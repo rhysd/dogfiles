@@ -246,6 +246,7 @@ autocmd FileType ruby inoremap <buffer><C-s> self.
 "}}}
 
 " user defined commands {{{
+" clean unnecessary whitespaces
 function! s:clean_whitespaces()
     retab!
     let cursor = getpos(".")
@@ -253,9 +254,39 @@ function! s:clean_whitespaces()
     call setpos(".", cursor)
     unlet cursor
 endfunction
-command! RmDust :call <SID>clean_whitespaces()
-" command! Vimrc :e $MYVIMRC $MYGVIMRC
+command! CleanSpaces :call <SID>clean_whitespaces()
+
+" open config file
 command! Vimrc :e $MYVIMRC
+
+" display all maps
+" :AllMaps
+" :AllMaps <buffer1> <buffer2> ...
+" http://vim-users.jp/2011/02/hack203/
+command! -nargs=* -complete=mapping
+\   AllMaps
+\   map <args> | map! <args> | lmap <args>
+
+" output result of Vim script to new buffer
+" :Capture <command>
+" http://vim-users.jp/2011/02/hack203/
+command! -nargs=+ -complete=command
+\   Capture
+\   call s:cmd_capture(<q-args>)
+
+function! s:cmd_capture(q_args)
+    redir => output
+    silent execute a:q_args
+    redir END
+    let output = substitute(output, '^\n\+', '', '')
+
+    belowright new
+
+    silent file `=printf('[Capture: %s]', a:q_args)`
+    setlocal buftype=nofile bufhidden=unload noswapfile nobuflisted
+    call setline(1, split(output, '\n'))
+endfunction
+
 "}}}
 
 " 最小限の設定と最小限のプラグインだけ読み込む {{{
@@ -779,7 +810,7 @@ omap ac <Plug>(textobj-wiw-a)
 omap ic <Plug>(textobj-wiw-i)
 " }}}
 
-" vim-indent-guides
+" vim-indent-guides {{{
 let g:indent_guides_guide_size = 1
 if !has('gui_running')
     let g:indent_guides_auto_colors = 0
@@ -787,6 +818,7 @@ if !has('gui_running')
     autocmd VimEnter,Colorscheme * hi IndentGuidesEven ctermbg=240
 endif
 autocmd FileType haskell,python,haml call indent_guides#enable()
+"}}}
 
 "endwise.vim {{{
 autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"

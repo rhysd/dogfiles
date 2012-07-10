@@ -86,7 +86,7 @@
 (setq scroll-step 1)
 
 ;;; ツールバーを消す
-;(tool-bar-mode 0)
+(tool-bar-mode 0)
 
 ;;;メニューバーを消す
 (menu-bar-mode 0)
