@@ -342,6 +342,7 @@ NeoBundle 'kana/vim-textobj-indent'
 " NeoBundle 'kana/vim-textobj-lastpat' これと同様の効果をキーマップに設定済み
 NeoBundle 'h1mesuke/textobj-wiw'
 NeoBundle 'thinca/vim-textobj-between'
+NeoBundle 'thinca/vim-prettyprint'
 NeoBundle 'rhysd/vim-accelerate'
 NeoBundle 'rhysd/lindapp_cpp'
 NeoBundle 'choplin/unite-spotlight'
@@ -734,23 +735,6 @@ call smartinput#define_rule({
 \   'filetype': ['ruby'],
 \    })
 
-" : で :: を一気に入力する．inoremap : :: だと次の2回押した場合の対処が効かなくなる．
-call smartinput#map_to_trigger('i', ':', ':', ':')
-call smartinput#define_rule({
-\   'at': '\%#',
-\   'char': ':',
-\   'input': '::',
-\   'filetype': ['cpp'],
-\   })
-
-" 癖で2回コロンを押しても大丈夫
-call smartinput#define_rule({
-\   'at': '::\%#',
-\   'char': ':',
-\   'input': '',
-\   'filetype': ['cpp'],
-\   })
-
 " テンプレート内のスペース
 call smartinput#map_to_trigger('i', '<', '<', '<')
 call smartinput#define_rule({
@@ -767,12 +751,12 @@ call smartinput#define_rule({
 \   })
 
 " クラス定義の場合は末尾に;を付け忘れないようにする
-call smartinput#define_rule({
-\   'at': '\(\<struct\>\|\<class\>\)\s*\w*\s*{\%#}',
-\   'char': '<CR>',
-\   'input': '<Right>;<Left><CR><CR><Up>',
-\   'filetype': ['cpp'],
-\   })
+" call smartinput#define_rule({
+" \   'at': '\(\<struct\>\|\<class\>\)\s*\w*\s*{\%#}',
+" \   'char': '<CR>',
+" \   'input': '<Right>;<Left><CR><CR><Up>',
+" \   'filetype': ['cpp'],
+" \   })
 
 "}}}
 
@@ -824,7 +808,7 @@ autocmd FileType haskell,python,haml call indent_guides#enable()
 autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"
 " }}}
 
-"vim-toggle {{{
+"my-vim-toggle {{{
 " nmap <silent><C-t> <Plug>MyToggleN
 " }}}
 
