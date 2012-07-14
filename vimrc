@@ -89,6 +89,8 @@ set foldmethod=marker
 " autocmd FileType cpp,c  set foldmethod=syntax
 " C++ ラベル字下げ設定
 set cinoptions+=:0,g0
+" マルチバイト文字があってもカーソルがずれないようにする
+set ambiwidth=double
 " 編集履歴を保存して終了する
 if has('persistent_undo')
     set undodir=~/.vim/undo
@@ -232,10 +234,12 @@ nnoremap di/ d//e<CR>
 nnoremap ci/ c//e<CR>
 nnoremap yi/ y//e<CR>
 " タブの設定
-nnoremap <Leader>te :tabnew<CR>
-nnoremap <Leader>tn :tabnext<CR>
-nnoremap <Leader>tp :tabprevious<CR>
-nnoremap <Leader>tc :tabclose<CR>
+nnoremap <Leader>te :<C-u>tabnew<CR>
+nnoremap <Leader>tn :<C-u>tabnext<CR>
+nnoremap <Leader>tp :<C-u>tabprevious<CR>
+nnoremap <Leader>tc :<C-u>tabclose<CR>
+" 行表示・非表示の切り替え．少しでも横幅が欲しい時は OFF に
+nnoremap <Leader>ln :<C-u>ToggleLineNumber<CR>
 " Rubyのキーマップ
 autocmd FileType ruby inoremap <buffer><C-s> self.
 " autocmd FileType ruby inoremap <buffer> ; |
@@ -247,14 +251,14 @@ autocmd FileType ruby inoremap <buffer><C-s> self.
 
 " user defined commands {{{
 " clean unnecessary whitespaces
+command! CleanSpaces :call <SID>clean_whitespaces()
 function! s:clean_whitespaces()
     retab!
     let cursor = getpos(".")
-    %s/\s\+$//ge
+    %s/[\s　]\+$//ge
     call setpos(".", cursor)
     unlet cursor
 endfunction
-command! CleanSpaces :call <SID>clean_whitespaces()
 
 " open config file
 command! Vimrc :e $MYVIMRC
@@ -287,6 +291,24 @@ function! s:cmd_capture(q_args)
     call setline(1, split(output, '\n'))
 endfunction
 
+command! CopyCurrentPath :call s:copy_current_path()
+function! s:copy_current_path()
+  if has('win32')
+    let @*=substitute(expand('%:p'), '\\/', '\\', 'g')
+  elseif has('unix')
+    let @*=expand('%:p')
+  endif
+endfunction
+
+command! ToggleLineNumber call s:toggle_number()
+function! s:toggle_number()
+    if &number
+        set nonumber
+    else
+        set number
+    endif
+endfunction
+
 "}}}
 
 " 最小限の設定と最小限のプラグインだけ読み込む {{{
@@ -305,6 +327,7 @@ autocmd FileType haskell nnoremap <buffer><silent><Leader>t :<C-u>call <SID>Show
 function! s:ShowTypeHaskell(word)
   echo join(split(system("ghc -isrc " . expand('%') . " -e ':t " . a:word . "'")))
 endfunction
+command! Ghci :<C-u>VimshellInteractive ghci<CR>
 "}}}
 
 " neobundle.vim の設定 {{{

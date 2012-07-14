@@ -66,6 +66,7 @@ alias su='su -'
 alias be='bundle exec'
 alias diff=colordiff
 alias quit=exit
+alias sshi='ssh -i $HOME/.ssh/id_rsa'
 
 
 # suffix alias
