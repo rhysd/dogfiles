@@ -196,7 +196,7 @@ nnoremap <silent>qk <C-w>k
 nnoremap <silent>qh <C-w>h
 nnoremap <silent>ql <C-w>l
 nnoremap <silent>qv <C-w>v
-nnoremap <silent>qs <C-w>s
+nnoremap <silent>qs <C-w>
 nnoremap <silent>q] <C-w>]
 nnoremap <silent>qc <C-w>c
 nnoremap <silent>qn <C-w>n
@@ -250,18 +250,29 @@ autocmd FileType ruby inoremap <buffer><C-s> self.
 "}}}
 
 " user defined commands {{{
-" clean unnecessary whitespaces
+" clean unnecessary whitespace
 command! CleanSpaces :call <SID>clean_whitespaces()
 function! s:clean_whitespaces()
     retab!
     let cursor = getpos(".")
-    %s/[\s　]\+$//ge
+    %s/\s\+$//ge
     call setpos(".", cursor)
     unlet cursor
 endfunction
 
 " open config file
-command! Vimrc :e $MYVIMRC
+command! Vimrc call s:edit_myvimrc()
+
+function! s:edit_myvimrc()
+    let files = ""
+    if !empty($MYVIMRC)
+        let files .= $MYVIMRC
+    endif
+    if !empty($MYGVIMRC)
+        let files .= " " . $MYGVIMRC
+    endif
+    execute "args " . files
+endfunction
 
 " display all maps
 " :AllMaps
@@ -312,12 +323,14 @@ endfunction
 "}}}
 
 " 最小限の設定と最小限のプラグインだけ読み込む {{{
-" vim --cmd "g:linda_pp_startup_with_tiny = 1" で起動した時
-if exists("g:linda_pp_startup_with_tiny")
+" % vim --cmd "g:linda_pp_startup_with_tiny = 1" で起動した時
+if exists("g:linda_pp_startup_with_tiny") && g:linda_pp_startup_with_tiny
     let g:caw_no_default_keymappings = 1
     set rtp+=~/.vim/bundle/caw.vim
     nmap <Leader>c <Plug>(caw:i:toggle)
     vmap <Leader>c <Plug>(caw:i:toggle)
+    nmap <Leader>C <Plug>(caw:wrap:toggle)
+    vmap <Leader>C <Plug>(caw:wrap:toggle)
     finish
 endif
 "}}}
@@ -466,7 +479,7 @@ endif
 autocmd FileType python set omnifunc=pythoncomplete#Complete
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
-autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+autocmd FileType css set omnifunc=csscomplete#CompleteCss
 autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
 autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 autocmd FileType c set omnifunc=ccomplete#Complete
@@ -490,7 +503,7 @@ let g:unite_enable_start_insert = 1
 let g:unite_source_file_mru_filename_format = ''
 " most recently used のリストサイズ
 let g:unite_source_file_mru_limit = 100
-" highlight settings
+" cursor highlight setting
 let g:unite_cursor_line_highlight = 'TabLineSel'
 " let g:unite_abbr_highlight = 'TabLine'
 " Unite起動時のウィンドウ分割
@@ -835,3 +848,6 @@ autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache
 " nmap <silent><C-t> <Plug>MyToggleN
 " }}}
 
+" 起動時メッセージ {{{
+autocmd VimEnter * echo "(U＾ω＾) enjoy vimming! "
+"}}}
