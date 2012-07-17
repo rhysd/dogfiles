@@ -68,7 +68,6 @@ alias diff=colordiff
 alias quit=exit
 alias sshi='ssh -i $HOME/.ssh/id_rsa'
 
-
 # suffix alias
 alias -s pdf='open -a Preview'
 alias -s html='open -a Google\ Chrome'
@@ -87,6 +86,18 @@ function ..(){
     else
         cd .. $*
     fi
+}
+
+function single-app(){
+    if [ $# -eq 1 ]; then
+        case "$1" in
+            "true" | "false" )
+                defaults write com.apple.dock single-app -bool $1
+                killall Dock
+                return
+        esac
+    fi
+    echo "usage: single-app (true|false)"
 }
 
 #Homebrew

@@ -111,6 +111,8 @@ endif
 " ステータスライン
 set ruf=%45(%12f%=\ %m%{'['.(&fenc!=''?&fenc:&enc).']'}\ %l-%v\ %p%%\ [%02B]%)
 set statusline=%f:\ %{substitute(getcwd(),'.*/','','')}\ %m%=%{(&fenc!=''?&fenc:&enc).':'.strpart(&ff,0,1)}\ %l-%v\ %p%%\ %02B
+" 起動時メッセージ．ｲﾇｩ…
+autocmd VimEnter * echo "(U＾ω＾) enjoy vimming!"
 " *.md で読み込む filetype を変更（デフォルトは modula2）
 autocmd BufRead *.md set ft=markdown
 " 保存時に行末のスペースを除去する
@@ -239,7 +241,11 @@ nnoremap <Leader>tn :<C-u>tabnext<CR>
 nnoremap <Leader>tp :<C-u>tabprevious<CR>
 nnoremap <Leader>tc :<C-u>tabclose<CR>
 " 行表示・非表示の切り替え．少しでも横幅が欲しい時は OFF に
-nnoremap <Leader>ln :<C-u>ToggleLineNumber<CR>
+nnoremap <Leader>n :<C-u>ToggleLineNumber<CR>
+" カーソルを中央に固定する
+nnoremap <Leader>cf :<C-u>ToggleCursorFixed<CR>
+" クリップボードから貼り付け
+inoremap <C-r>* <C-o>:set paste<CR><C-r>*<C-o>:set nopaste<CR>
 " Rubyのキーマップ
 autocmd FileType ruby inoremap <buffer><C-s> self.
 " autocmd FileType ruby inoremap <buffer> ; |
@@ -320,6 +326,13 @@ function! s:toggle_number()
     endif
 endfunction
 
+command! ToggleCursorFixed call s:toggle_cursor_fixed()
+function! s:toggle_cursor_fixed()
+    if !exists('s:scrolloff_save')
+        let s:scrolloff_save = &scrolloff
+    endif
+    let &scrolloff = &scrolloff == s:scrolloff_save ? 999 : s:scrolloff_save
+endfunction
 "}}}
 
 " 最小限の設定と最小限のプラグインだけ読み込む {{{
@@ -848,6 +861,3 @@ autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache
 " nmap <silent><C-t> <Plug>MyToggleN
 " }}}
 
-" 起動時メッセージ {{{
-autocmd VimEnter * echo "(U＾ω＾) enjoy vimming! "
-"}}}
