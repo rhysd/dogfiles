@@ -243,7 +243,7 @@ nnoremap <Leader>tc :<C-u>tabclose<CR>
 " 行表示・非表示の切り替え．少しでも横幅が欲しい時は OFF に
 nnoremap <Leader>n :<C-u>ToggleLineNumber<CR>
 " カーソルを中央に固定する
-nnoremap <Leader>cf :<C-u>ToggleCursorFixed<CR>
+nnoremap <Leader>fix :<C-u>ToggleCursorFixed<CR>
 " クリップボードから貼り付け
 inoremap <C-r>* <C-o>:set paste<CR><C-r>*<C-o>:set nopaste<CR>
 " Rubyのキーマップ
@@ -339,7 +339,9 @@ endfunction
 " % vim --cmd "g:linda_pp_startup_with_tiny = 1" で起動した時
 if exists("g:linda_pp_startup_with_tiny") && g:linda_pp_startup_with_tiny
     let g:caw_no_default_keymappings = 1
-    set rtp+=~/.vim/bundle/caw.vim
+    if has('vim_starting')
+        set rtp+=~/.vim/bundle/caw.vim
+    endif
     nmap <Leader>c <Plug>(caw:i:toggle)
     vmap <Leader>c <Plug>(caw:i:toggle)
     nmap <Leader>C <Plug>(caw:wrap:toggle)
