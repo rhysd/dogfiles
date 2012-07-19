@@ -350,6 +350,63 @@ if exists("g:linda_pp_startup_with_tiny") && g:linda_pp_startup_with_tiny
 endif
 "}}}
 
+" C++ {{{
+
+" {} の展開．cinoptions とかでできそうな気もする．
+function! s:cpp_expand_brace()
+    let cmd = ""
+    let curline = getline('.')
+    let target = strpart( curline, col('.')-2, 2 )
+    if target == "{}" || target == "<>"
+        if target == "{}" && curline =~# '^\s*\%(class\|struct\)'
+            let cmd = cmd."\<Right>;\<left>\<Left>"
+        endif
+        let cmd = cmd."\<CR>\<Up>\<C-o>$"
+    endif
+    unlet target
+    unlet curline
+    return cmd
+endfunction
+
+" -> decltype(expr) の補完
+function! s:return_type_completion()
+    let cur_line = getline('.')
+    if cur_line =~#
+                \ '^\s*return\s*\%(.*\);\s*$'
+        let ret_expr =
+                    \ substitute(cur_line, '^\s*return\s*\%((\|\)\(.*\)\%()\|\);\s*$', '\1', '')
+        let linum = line('.') - 1
+        while linum > 0
+            let cur_line = getline(linum)
+            if cur_line =~#
+                        \ '^\s*\%(constexpr\s\+\|\)\%(inline\s\+\|\)auto\s\+[A-Za-z][A-Za-z:0-9]*\s*(.*)\s*$'
+                call setline(linum, cur_line." -> decltype(".ret_expr.")")
+                echo "add return type at line ".linum
+                break
+            elseif cur_line =~#
+                        \ '^\s*\%(constexpr\s\+\|\)\%(inline\s\+\|\)[A-Za-z][A-Za-z:0-9\[\]]*\s\+[A-Za-z][A-Za-z:0-9]*\s*(.*)\s*$'
+                break
+            endif
+            let linum -= 1
+        endwhile
+        unlet linum
+        unlet ret_expr
+    endif
+    unlet cur_line
+endfunction
+
+augroup CppMapping
+    au!
+    autocmd FileType cpp inoremap <buffer>,  ,<Space>
+    autocmd FileType cpp inoremap <buffer>;; ::
+    autocmd FileType cpp inoremap <buffer><C-s>      std::
+    autocmd FileType cpp inoremap <buffer><C-x>      boost::
+    autocmd FileType cpp inoremap <silent><buffer><expr><CR> s:cpp_expand_brace()."\<CR>"
+    autocmd FileType cpp nnoremap <buffer><Leader>ret :<C-u>call <SID>return_type_completion()<CR>
+augroup END
+
+" }}}
+
 " Haskell {{{
 autocmd FileType haskell nnoremap <buffer><silent><Leader>t :<C-u>call <SID>ShowTypeHaskell(expand('<cword>'))<CR>
 function! s:ShowTypeHaskell(word)
@@ -374,13 +431,15 @@ NeoBundle 'Shougo/vimshell'
 NeoBundle 'Shougo/vimfiler'
 NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'Shougo/neocomplcache-snippets-complete'
+NeoBundle 'rhysd/home-made-snippets'
 NeoBundle 'vim-jp/cpp-vim'
 " NeoBundle 'Rip-Rip/clang_complete'
 NeoBundle 'rhysd/clang_complete'
 NeoBundle 'osyo-manga/neocomplcache-clang_complete'
 NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'Shougo/unite.vim'
-NeoBundle 'tyru/caw.vim'
+" NeoBundle 'tyru/caw.vim'
+NeoBundle 'rhysd/caw.vim'
 NeoBundle 'h1mesuke/unite-outline'
 NeoBundle 'tsukkee/unite-help'
 NeoBundle 'vim-jp/vimdoc-ja'
@@ -395,7 +454,6 @@ NeoBundle 'h1mesuke/textobj-wiw'
 NeoBundle 'thinca/vim-textobj-between'
 NeoBundle 'thinca/vim-prettyprint'
 NeoBundle 'rhysd/vim-accelerate'
-NeoBundle 'rhysd/lindapp_cpp'
 NeoBundle 'choplin/unite-spotlight'
 NeoBundle 'kana/vim-smartinput'
 NeoBundle 'thinca/vim-ref'
@@ -714,15 +772,8 @@ let g:clang_exec="/usr/bin/clang"
 let g:clang_user_options='-I /usr/local/include -I /usr/include/c++/4.2.1 -I /usr/include -I /usr/local/Cellar/gcc/4.7.0/gcc/include/c++/4.7.0 2>/dev/null || exit 0'
 " }}}
 
-" lindapp_cpp {{{
-let g:neocomplcache_snippets_dir = $HOME.'/.vim/bundle/lindapp_cpp/snippets'
-
-" lindapp_cpp の キーマップ {{{
-autocmd FileType cpp call lindapp_cpp#my_cpp_mapping()
-autocmd FileType cpp inoremap <silent><buffer><expr><CR> lindapp_cpp#expand_brace()."\<CR>"
-autocmd FileType cpp nmap <silent><buffer><leader>dt <Plug>lindapp_cpp_return_type
-" }}}
-
+" home-made-snippets {{{
+let g:neocomplcache_snippets_dir = $HOME.'/.vim/bundle/home-made-snippets/snippets'
 " }}}
 
 " vim-smartinput"{{{
