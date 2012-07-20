@@ -49,7 +49,7 @@ set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
 "Boostや自前ビルドgccをpathに追加
 set path=.,/usr/include,/usr/local/include,/usr/local/Cellar/gcc/4.7.1/gcc/include/c++/4.7.1,/Users/rhayasd/.rbenv/versions/1.9.3-p194/lib/ruby/1.9.1/,/Users/rhayasd/programs/**
 "起動時のメッセージを消す
-set shortmess+=I
+set shortmess& shortmess+=I
 "起動時IMEをOFFにする
 set iminsert=0 imsearch=0
 "IMを使う
@@ -63,9 +63,9 @@ set hidden
 "日本語ヘルプを優先的に検索
 set helplang=ja,en
 "OSのクリップボードを使う
-set clipboard+=unnamed
+set clipboard& clipboard+=unnamed
 "矩形選択で自由に移動する
-set virtualedit+=block
+set virtualedit& virtualedit+=block
 "改行コードの自動認識
 set fileformats=unix,mac,dos
 "コマンド実行中は再描画しない
@@ -88,7 +88,7 @@ set foldenable
 set foldmethod=marker
 " autocmd FileType cpp,c  set foldmethod=syntax
 " C++ ラベル字下げ設定
-set cinoptions+=:0,g0
+set cinoptions& cinoptions+=:0,g0
 " マルチバイト文字があってもカーソルがずれないようにする
 set ambiwidth=double
 " 編集履歴を保存して終了する
@@ -769,7 +769,7 @@ let g:clang_complete_auto=1
 let g:clang_hl_errors=1
 let g:clang_conceal_snippets=1
 let g:clang_exec="/usr/bin/clang"
-let g:clang_user_options='-I /usr/local/include -I /usr/include/c++/4.2.1 -I /usr/include -I /usr/local/Cellar/gcc/4.7.0/gcc/include/c++/4.7.0 2>/dev/null || exit 0'
+let g:clang_user_options='-I /usr/local/include -I /usr/include -I /usr/local/Cellar/gcc/4.7.1/gcc/include/c++/4.7.1 2>/dev/null || exit 0'
 " }}}
 
 " home-made-snippets {{{
