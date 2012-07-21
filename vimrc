@@ -219,11 +219,32 @@ cnoremap <C-f> <Right>
 cnoremap <C-b> <Left>
 "_で次の_の手前まで
 onoremap _ vf_h
-" カーソルキーでの上下移動
+" カーソルキーでのウィンドウサイズ変更
 nnoremap <silent><Down>  <C-w>-
 nnoremap <silent><Up>    <C-w>+
 nnoremap <silent><Left>  <C-w><
 nnoremap <silent><Right> <C-w>>
+" 検索で / をエスケープしなくて良くする（素の / を入力したくなったら<C-v>/）
+cnoremap <expr> / getcmdtype() == '/' ? '\/' : '/'
+cnoremap <expr> / getcmdtype() == '?' ? '\/' : '/'
+" help のマッピング
+augroup HelpMapping
+    autocmd!
+    " カーソル下のタグへ飛ぶ
+    autocmd FileType help nnoremap <buffer>t <C-]>
+    " 戻る
+    autocmd FileType help nnoremap <buffer>r <C-t>
+    " 履歴を戻る
+    autocmd FileType help nnoremap < :<C-u>pop<CR>
+    " 履歴を進む
+    autocmd FileType help nnoremap > :<C-u>tag<CR>
+    " 履歴一覧
+    autocmd FileType help nnoremap <Tab> :<C-u>tags<CR>
+    " そのた
+    autocmd FileType help nnoremap <buffer>u <C-u>
+    autocmd FileType help nnoremap <buffer>d <C-d>
+    autocmd FileType help nnoremap <buffer>q :<C-u>q<CR>
+augroup END
 " ペーストした文字列をビジュアルモードで選択
 nnoremap <expr>gp '`['.strpart(getregtype(),0,1).'`]'
 " 最後にヤンクしたテキストを貼り付け．
@@ -241,7 +262,7 @@ nnoremap <Leader>tn :<C-u>tabnext<CR>
 nnoremap <Leader>tp :<C-u>tabprevious<CR>
 nnoremap <Leader>tc :<C-u>tabclose<CR>
 " 行表示・非表示の切り替え．少しでも横幅が欲しい時は OFF に
-nnoremap <Leader>n :<C-u>ToggleLineNumber<CR>
+nnoremap <Leader>n :<C-u>set number! \| set number?<CR>
 " カーソルを中央に固定する
 nnoremap <Leader>fix :<C-u>ToggleCursorFixed<CR>
 " クリップボードから貼り付け
@@ -255,7 +276,7 @@ autocmd FileType ruby inoremap <buffer><C-s> self.
 
 "}}}
 
-" user defined commands {{{
+" user-defined commands {{{
 " clean unnecessary whitespace
 command! CleanSpaces :call <SID>clean_whitespaces()
 function! s:clean_whitespaces()
@@ -268,7 +289,6 @@ endfunction
 
 " open config file
 command! Vimrc call s:edit_myvimrc()
-
 function! s:edit_myvimrc()
     let files = ""
     if !empty($MYVIMRC)
@@ -308,6 +328,7 @@ function! s:cmd_capture(q_args)
     call setline(1, split(output, '\n'))
 endfunction
 
+" カレントパスをクリプボゥにコピー
 command! CopyCurrentPath :call s:copy_current_path()
 function! s:copy_current_path()
   if has('win32')
@@ -317,15 +338,7 @@ function! s:copy_current_path()
   endif
 endfunction
 
-command! ToggleLineNumber call s:toggle_number()
-function! s:toggle_number()
-    if &number
-        set nonumber
-    else
-        set number
-    endif
-endfunction
-
+" カーソルを画面中央に固定
 command! ToggleCursorFixed call s:toggle_cursor_fixed()
 function! s:toggle_cursor_fixed()
     if !exists('s:scrolloff_save')
@@ -333,6 +346,11 @@ function! s:toggle_cursor_fixed()
     endif
     let &scrolloff = &scrolloff == s:scrolloff_save ? 999 : s:scrolloff_save
 endfunction
+
+" エンコーディング指定オープン
+command! -bang -complete=file -nargs=? Utf8 edit<bang> ++enc=utf-8 <args>
+command! -bang -complete=file -nargs=? Sjis edit<bang> ++enc=cp932 <args>
+command! -bang -complete=file -nargs=? Euc edit<bang> ++enc=eucjp <args>
 "}}}
 
 " 最小限の設定と最小限のプラグインだけ読み込む {{{
