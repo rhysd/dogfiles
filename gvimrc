@@ -18,5 +18,7 @@ if has("gui_running")
         nnoremap <expr><F12> &transparency+40 > 100 ? ":set transparency=0\<CR>" : ":let &transparency=&transparency+40\<CR>"
         " au GUIEnter * set fullscreen "常にフルスクリーン
     endif
-    autocmd VimEnter * :VimFiler
+    if has('vim_starting')
+        autocmd VimEnter * :VimFiler
+    endif
 endif

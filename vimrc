@@ -235,11 +235,11 @@ augroup HelpMapping
     " 戻る
     autocmd FileType help nnoremap <buffer>r <C-t>
     " 履歴を戻る
-    autocmd FileType help nnoremap < :<C-u>pop<CR>
+    autocmd FileType help nnoremap <buffer>< :<C-u>pop<CR>
     " 履歴を進む
-    autocmd FileType help nnoremap > :<C-u>tag<CR>
+    autocmd FileType help nnoremap <buffer>> :<C-u>tag<CR>
     " 履歴一覧
-    autocmd FileType help nnoremap <Tab> :<C-u>tags<CR>
+    autocmd FileType help nnoremap <buffer><Tab> :<C-u>tags<CR>
     " そのた
     autocmd FileType help nnoremap <buffer>u <C-u>
     autocmd FileType help nnoremap <buffer>d <C-d>
@@ -601,16 +601,18 @@ let g:unite_cursor_line_highlight = 'TabLineSel'
 let g:unite_split_rule = 'rightbelow'
 
 "Unite.vimのキーマップ {{{
-"insertモード時はC-gでいつでもバッファを閉じられる（絞り込み欄が空の時はC-hでもOK）
-autocmd FileType unite imap <buffer> <C-g> <Plug>(unite_exit)
-"ファイル上にカーソルがある時，pでプレビューを見る
-autocmd FileType unite inoremap <buffer><expr> p unite#smart_map("p", unite#do_action('preview'))
-"C-xでクイックマッチ
-autocmd FileType unite imap <buffer> <C-x> <Plug>(unite_quick_match_default_action)
-"lでデフォルトアクションを実行
-autocmd FileType unite nmap <buffer> l <Plug>(unite_do_default_action)
-autocmd FileType unite imap <buffer><expr> l unite#smart_map("l", unite#do_action(unite#get_current_unite().context.default_action))
-"増えすぎてアレなら <Leader>ua などに置き換える．そのときはnnoremap <Leader>u <Nop>を忘れないようにする．
+augroup UniteMapping
+    autocmd!
+    "insertモード時はC-gでいつでもバッファを閉じられる（絞り込み欄が空の時はC-hでもOK）
+    autocmd FileType unite imap <buffer> <C-g> <Plug>(unite_exit)
+    "ファイル上にカーソルがある時，pでプレビューを見る
+    autocmd FileType unite inoremap <buffer><expr> p unite#smart_map("p", unite#do_action('preview'))
+    "C-xでクイックマッチ
+    autocmd FileType unite imap <buffer> <C-x> <Plug>(unite_quick_match_default_action)
+    "lでデフォルトアクションを実行
+    autocmd FileType unite nmap <buffer> l <Plug>(unite_do_default_action)
+    autocmd FileType unite imap <buffer><expr> l unite#smart_map("l", unite#do_action(unite#get_current_unite().context.default_action))
+augroup END
 "バッファを開いた時のパスを起点としたファイル検索
 " nnoremap <silent> <Leader>f  :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
 "バッファ一覧
@@ -619,7 +621,6 @@ nnoremap <silent> <Leader>ub  :<C-u>Unite -no-start-insert buffer<CR>
 nnoremap <silent> <Leader>uB  :<C-u>Unite -no-start-insert bookmark<CR>
 "最近使用したファイル
 nnoremap <silent> <Leader>um  :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
-nnoremap <silent> <Leader>m  :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
 "プログラミングにおけるアウトラインの表示
 nnoremap <silent> <Leader>uo  :<C-u>Unite outline -vertical -no-start-insert<CR>
 "grep検索．
@@ -634,14 +635,15 @@ nnoremap <silent> <Leader>uh  :<C-u>UniteWithInput -no-start-insert help<CR>
 nnoremap <silent> <Leader>ur  :<C-u>UniteResume<CR>
 "SpotLight の利用
 if has('mac')
-    nnoremap <silent> <Leader>ul :<C-u>Unite spotlight<CR>
+    nnoremap <silent> <Leader>uL :<C-u>Unite spotlight<CR>
 else
-    nnoremap <silent> <Leader>ul :<C-u>Unite locate<CR>
+    nnoremap <silent> <Leader>uL :<C-u>Unite locate<CR>
 endif
+nnoremap <silent> <Leader>ul :<C-u>Unite line<CR>
 " NeoBundle
 nnoremap <silent><Leader>unb :<C-u>Unite neobundle/update<CR>
 " Haskell Import
-autocmd FileType haskell nnoremap <buffer><Leader>uhi :<C-u>UniteWithCursorWord haskellimport -immediately<CR>
+autocmd UniteMapping FileType haskell nnoremap <buffer><Leader>uhi :<C-u>UniteWithCursorWord haskellimport -immediately<CR>
 " }}}
 
 " }}}
@@ -649,7 +651,9 @@ autocmd FileType haskell nnoremap <buffer><Leader>uhi :<C-u>UniteWithCursorWord 
 " VimShellの設定 {{{
 " 追加プロンプト
 let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
-let g:vimshell_right_prompt = 'fnamemodify(getcwd(), ":~")'
+let g:vimshell_right_prompt = 'system("date \"+%Y/%m/%d %H:%M\"")'
+" プロンプト．本当は (U'w') が良いけれど，シングルクォートでエラー出る…
+let g:vimshell_prompt = "(U^w^){ "
 " 右プロンプト ( vcs#info は deprecated )
 " let g:vimshell_right_prompt = 'vimshell#vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
 " 分割割合(%)
@@ -740,17 +744,23 @@ endif
 " VimFilerの設定 {{{
 let g:vimfiler_as_default_explorer = 1
 let g:vimfiler_safe_mode_by_default = 0
+let g:vimfiler_split_command = 'vertical rightbelow vsplit'
 let g:vimfiler_execute_file_list = { 'c' : 'vim',  'h' : 'vim',  'cpp' : 'vim',  'hpp' : 'vim', 'cc' : 'vim',  'rb' : 'vim', 'txt' : 'vim', 'pdf' : 'open', 'vim' : 'vim' }
 
 " vimfiler.vim のキーマップ {{{
+
+augroup VimFilerMapping
+    autocmd!
+    autocmd FileType vimfiler nmap <buffer><silent><expr> e vimfiler#smart_cursor_map(
+                                                        \   "\<Plug>(vimfiler_cd_file)",
+                                                        \   "\<Plug>(vimfiler_edit_file)")
+augroup END
 nnoremap <Leader>f <Nop>
 nnoremap <Leader>ff :<C-u>VimFiler<CR>
 nnoremap <Leader>fn :<C-u>VimFiler<Space>-no-quit<CR>
-autocmd FileType vimfiler nmap <buffer><silent><expr> e vimfiler#smart_cursor_map(
-                                                    \   "\<Plug>(vimfiler_cd_file)",
-                                                    \   "\<Plug>(vimfiler_edit_file)")
 nnoremap <Leader>fh :<C-u>VimFiler<Space>~<CR>
 nnoremap <Leader>fc :<C-u>VimFilerCurrentDir<CR>
+nnoremap <expr><Leader>fg <SID>git_root_dir()
 
 " git のルートディレクトリを開く
 function! s:git_root_dir()
@@ -760,7 +770,6 @@ function! s:git_root_dir()
         echo 'current directory is outside git working tree'
     endif
 endfunction
-nnoremap <expr><Leader>fg <SID>git_root_dir()
 " }}}
 
 " }}}
