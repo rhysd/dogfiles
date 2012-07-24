@@ -527,7 +527,6 @@ NeoBundle 'nathanaelkane/vim-indent-guides'
 " NeoBundle 'h1mesuke/vim-alignta'
 " NeoBundle 'ujihisa/unite-colorscheme'
 " NeoBundle 'ujihisa/neco-look'
-" NeoBundle 'taku-o/vim-toggle'
 
 " vim-scripts上のリポジトリ
 NeoBundle 'Align'
@@ -765,22 +764,6 @@ if !has("gui_running")
     " QuickFix選択中のエラー
     highlight Search ctermbg=8
 endif
-" }}}
-
-" vim-toggle.vim {{{
-" let g:my_toggle_pairs = {}
-" let g:my_toggle_pairs = {
-"           \'and':'or', 'or':'and',
-"           \'&&':'||', '||':'&&',
-"           \'++':'--','--','++',
-"           \'==':'!=','!=':'==',
-"           \'<=':'>=','>=':'<=',
-"           \'.':'->','->':'.',
-"           \'const&':'&','&':'const&',
-"           \'class':'struct','struct':'class',
-"           \'boost':'std','std':'boost',
-"           \'top':'right','right':'bottom','bottom':'left','left':'top'
-"           \}
 " }}}
 
 " VimFilerの設定 {{{
