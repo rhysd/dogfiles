@@ -111,12 +111,15 @@ endif
 " ステータスライン
 set ruf=%45(%12f%=\ %m%{'['.(&fenc!=''?&fenc:&enc).']'}\ %l-%v\ %p%%\ [%02B]%)
 set statusline=%f:\ %{substitute(getcwd(),'.*/','','')}\ %m%=%{(&fenc!=''?&fenc:&enc).':'.strpart(&ff,0,1)}\ %l-%v\ %p%%\ %02B
-" 起動時メッセージ．ｲﾇｩ…
-autocmd VimEnter * echo "(U＾ω＾) enjoy vimming!"
-" *.md で読み込む filetype を変更（デフォルトは modula2）
-autocmd BufRead *.md set ft=markdown
-" 保存時に行末のスペースを除去する
-autocmd BufWritePre * call <SID>clean_whitespaces()
+augroup Misc
+    autocmd!
+    " 起動時メッセージ．ｲﾇｩ…
+    autocmd VimEnter * echo "(U＾ω＾) enjoy vimming!"
+    " *.md で読み込む filetype を変更（デフォルトは modula2）
+    autocmd BufRead *.md set ft=markdown
+    " 保存時に行末のスペースを除去する
+    autocmd BufWritePre * call <SID>clean_whitespaces()
+augroup END
 
 " カーソル下のハイライトグループを取得
 " command! -nargs=0 GetHighlightingGroup echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<' . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<' . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
@@ -162,23 +165,21 @@ cnoremap <C-e> <END>
 inoremap <C-a> <HOME>
 vnoremap <C-a> <HOME>
 cnoremap <C-a> <HOME>
-inoremap <expr><C-n> pumvisible() ? "\<C-y>\<Down>" : "\<Down>"
-inoremap <expr><C-p> pumvisible() ? "\<C-y>\<Up>" : "\<Up>"
-inoremap <expr><C-b> pumvisible() ? "\<C-y>\<Left>" : "\<Left>"
-inoremap <expr><C-f> pumvisible() ? "\<C-y>\<Right>" : "\<Right>"
-" inoremap <C-n> <Down>
-" inoremap <C-p> <Up>
-" inoremap <C-b> <Left>
-" inoremap <C-f> <Right>
+inoremap <silent><expr><C-n> pumvisible() ? "\<C-y>\<Down>" : "\<Down>"
+inoremap <silent><expr><C-p> pumvisible() ? "\<C-y>\<Up>" : "\<Up>"
+inoremap <silent><expr><C-b> pumvisible() ? "\<C-y>\<Left>" : "\<Left>"
+inoremap <silent><expr><C-f> pumvisible() ? "\<C-y>\<Right>" : "\<Right>"
+cnoremap <C-f> <Right>
+cnoremap <C-b> <Left>
 inoremap <C-d> <Del>
 cnoremap <C-d> <Del>
-inoremap <C-k> <C-o>D
-cnoremap <C-k> <C-o>D
+" Emacsライク<C-k> http://vim.g.hatena.ne.jp/tyru/20100116
+inoremap <silent><expr><C-k> "\<C-g>u".(col('.') == col('$') ? '<C-o>gJ' : '<C-o>D')
+cnoremap <C-k> <C-\>e getcmdpos() == 1 ? '' : getcmdline()[:getcmdpos()-2]<CR>
+
 "バッファ切り替え
 nnoremap <silent><C-n>   :<C-u>bnext<CR>
 nnoremap <silent><C-p>   :<C-u>bprevious<CR>
-"Visualモード時にvで行末まで選択する
-vnoremap v $h
 "CTRL-hjklでウィンドウ移動．横幅が小さすぎる場合は自動でリサイズする．
 " function! s:good_width()
 "     if winwidth(0) < 84
@@ -206,19 +207,12 @@ nnoremap <silent>qo <C-w>o
 nnoremap <silent>qp <C-w>p
 nnoremap <silent>qr <C-w>r
 
-"Ruby新規ファイルを開いたときに書きこむ
-autocmd BufNewFile *.rb 0r ~/.vim/skeletons/ruby.skel
 "<CR>の挙動
 nnoremap <CR> i<CR><ESC>
 "インサートモードで次の行に直接改行
 inoremap <C-j> <Esc>o
 "<BS>の挙動
 nnoremap <BS> i<BS><ESC>
-"コマンドラインモードでのカーソル移動
-cnoremap <C-f> <Right>
-cnoremap <C-b> <Left>
-"_で次の_の手前まで
-onoremap _ vf_h
 " カーソルキーでのウィンドウサイズ変更
 nnoremap <silent><Down>  <C-w>-
 nnoremap <silent><Up>    <C-w>+
@@ -247,15 +241,13 @@ augroup HelpMapping
 augroup END
 " ペーストした文字列をビジュアルモードで選択
 nnoremap <expr>gp '`['.strpart(getregtype(),0,1).'`]'
+" 貼り付けは P のほうが好み
+nnoremap p P
 " 最後にヤンクしたテキストを貼り付け．
 nnoremap P "0P
 " 日付の挿入
 " inoremap <C-x>date <C-r>=strftime('%Y/%m/%d(%a) %H:%M')<CR>
 nnoremap <Leader>date :r<Space>!date<Space>+'\%Y/\%m/\%d(\%a)<Space>\%H:\%M'<CR>
-" text-obj-lastpat:sでマッチした部分をtextobjに
-nnoremap di/ d//e<CR>
-nnoremap ci/ c//e<CR>
-nnoremap yi/ y//e<CR>
 " タブの設定
 nnoremap <Leader>te :<C-u>tabnew<CR>
 nnoremap <Leader>tn :<C-u>tabnext<CR>
@@ -267,18 +259,17 @@ nnoremap <Leader>n :<C-u>set number! \| set number?<CR>
 nnoremap <Leader>fix :<C-u>ToggleCursorFixed<CR>
 " クリップボードから貼り付け
 inoremap <C-r>* <C-o>:set paste<CR><C-r>*<C-o>:set nopaste<CR>
-" Rubyのキーマップ
-autocmd FileType ruby inoremap <buffer><C-s> self.
-" autocmd FileType ruby inoremap <buffer> ; |
+" カーソル下の単語を help で調べる
+nnoremap K :<C-u>help <C-r><C-w><CR>
+" TODO v で選択した範囲を help
 " 貼り付けはインデントを揃える
 " nnoremap p ]p
 " }}}
 
 "}}}
 
-" user-defined commands {{{
-" clean unnecessary whitespace
-command! CleanSpaces :call <SID>clean_whitespaces()
+" 最小構成で必要な関数 "{{{
+" clean unnecessary whitespaces
 function! s:clean_whitespaces()
     retab!
     let cursor = getpos(".")
@@ -286,6 +277,26 @@ function! s:clean_whitespaces()
     call setpos(".", cursor)
     unlet cursor
 endfunction
+"}}}
+
+" 最小限の設定と最小限のプラグインだけ読み込む {{{
+" % vim --cmd "g:linda_pp_startup_with_tiny = 1" で起動した時
+if exists("g:linda_pp_startup_with_tiny") && g:linda_pp_startup_with_tiny
+    let g:caw_no_default_keymappings = 1
+    if has('vim_starting')
+        set rtp+=~/.vim/bundle/caw.vim
+    endif
+    nmap <Leader>c <Plug>(caw:i:toggle)
+    vmap <Leader>c <Plug>(caw:i:toggle)
+    nmap <Leader>C <Plug>(caw:wrap:toggle)
+    vmap <Leader>C <Plug>(caw:wrap:toggle)
+    finish
+endif
+"}}}
+
+" user-defined commands {{{
+" clean unnecessary whitespaces
+command! CleanSpaces :call <SID>clean_whitespaces()
 
 " open config file
 command! Vimrc call s:edit_myvimrc()
@@ -351,21 +362,44 @@ endfunction
 command! -bang -complete=file -nargs=? Utf8 edit<bang> ++enc=utf-8 <args>
 command! -bang -complete=file -nargs=? Sjis edit<bang> ++enc=cp932 <args>
 command! -bang -complete=file -nargs=? Euc edit<bang> ++enc=eucjp <args>
+
+" 適当なファイル名のファイルを開く
+" http://vim-users.jp/2010/11/hack181/
+command! -nargs=0 Sandbox call s:open_sandbox()
+function! s:open_sandbox()
+  let dir = $HOME . '/.vim_sandbox'
+  if !isdirectory(dir)
+    call mkdir(dir, 'p')
+  endif
+
+  let filename = input('New File: ', dir.strftime('/%Y-%m-%d-%H%M.'))
+  if filename != ''
+    execute 'edit ' . filename
+  endif
+endfunction
+
+" Vim 力を測る Scouter （thinca さん改良版）
+" http://d.hatena.ne.jp/thinca/20091031/1257001194
+function! Scouter(file, ...)
+  let pat = '^\s*$\|^\s*"'
+  let lines = readfile(a:file)
+  if !a:0 || !a:1
+    let lines = split(substitute(join(lines, "\n"), '\n\s*\\', '', 'g'), "\n")
+  endif
+  return len(filter(lines,'v:val !~ pat'))
+endfunction
+command! -bar -bang -nargs=? -complete=file Scouter
+\        echo Scouter(empty(<q-args>) ? $MYVIMRC : expand(<q-args>), <bang>0)
+
 "}}}
 
-" 最小限の設定と最小限のプラグインだけ読み込む {{{
-" % vim --cmd "g:linda_pp_startup_with_tiny = 1" で起動した時
-if exists("g:linda_pp_startup_with_tiny") && g:linda_pp_startup_with_tiny
-    let g:caw_no_default_keymappings = 1
-    if has('vim_starting')
-        set rtp+=~/.vim/bundle/caw.vim
-    endif
-    nmap <Leader>c <Plug>(caw:i:toggle)
-    vmap <Leader>c <Plug>(caw:i:toggle)
-    nmap <Leader>C <Plug>(caw:wrap:toggle)
-    vmap <Leader>C <Plug>(caw:wrap:toggle)
-    finish
-endif
+" Ruby {{{
+augroup RubyMapping
+    autocmd!
+    autocmd FileType ruby inoremap <buffer><C-s> self.
+    autocmd FileType ruby inoremap <buffer> ; <Bar>
+    autocmd BufNewFile *.rb 0r ~/.vim/skeletons/ruby.skel
+augroup END
 "}}}
 
 " C++ {{{
@@ -426,7 +460,10 @@ augroup END
 " }}}
 
 " Haskell {{{
-autocmd FileType haskell nnoremap <buffer><silent><Leader>t :<C-u>call <SID>ShowTypeHaskell(expand('<cword>'))<CR>
+augroup HaskellMapping
+    autocmd!
+    autocmd FileType haskell nnoremap <buffer><silent><Leader>t :<C-u>call <SID>ShowTypeHaskell(expand('<cword>'))<CR>
+augroup END
 function! s:ShowTypeHaskell(word)
   echo join(split(system("ghc -isrc " . expand('%') . " -e ':t " . a:word . "'")))
 endfunction
@@ -456,8 +493,7 @@ NeoBundle 'rhysd/clang_complete'
 NeoBundle 'osyo-manga/neocomplcache-clang_complete'
 NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'Shougo/unite.vim'
-" NeoBundle 'tyru/caw.vim'
-NeoBundle 'rhysd/caw.vim'
+NeoBundle 'tyru/caw.vim'
 NeoBundle 'h1mesuke/unite-outline'
 NeoBundle 'tsukkee/unite-help'
 NeoBundle 'vim-jp/vimdoc-ja'
@@ -467,7 +503,7 @@ NeoBundle 'rhysd/my-endwise'
 " NeoBundle 'tpope/vim-endwise'
 NeoBundle 'kana/vim-textobj-user'
 NeoBundle 'kana/vim-textobj-indent'
-" NeoBundle 'kana/vim-textobj-lastpat' これと同様の効果をキーマップに設定済み
+NeoBundle 'kana/vim-textobj-lastpat'
 NeoBundle 'h1mesuke/textobj-wiw'
 NeoBundle 'thinca/vim-textobj-between'
 NeoBundle 'thinca/vim-prettyprint'
@@ -537,7 +573,7 @@ let g:neocomplcache_max_keyword_width = 20
 " 辞書定義
 let g:neocomplcache_dictionary_filetype_lists = {
     \ 'default' : '',
-    \ 'vimshell' : $HOME.'/.vimshell/command-history',
+    \ 'vimshell' : expand('~/.vimshell/command-history'),
     \ }
 "リストの最大幅を指定
 "let g:neocomplcache_max_filename_width = 25
@@ -556,12 +592,13 @@ endif
 let g:neocomplcache_include_paths.cpp  = '.,/usr/local/include,/usr/local/Cellar/gcc/4.7.1/gcc/include/c++/4.7.1'
 let g:neocomplcache_include_paths.c    = '.,/usr/include'
 let g:neocomplcache_include_paths.perl = '.,/System/Library/Perl,/Users/rhayasd/programs'
+let g:neocomplcache_include_paths.ruby = expand('~/.rbenv/versions/1.9.3-p194/lib/ruby/1.9.1')
 "インクルード文のパターンを指定
-let g:neocomplcache_include_patterns = { 'cpp' : '^\s*#\s*include', 'perl' : '^\s*use', }
+let g:neocomplcache_include_patterns = { 'cpp' : '^\s*#\s*include', 'ruby' : '^\s*require', 'perl' : '^\s*use', }
 "インクルード先のファイル名の解析パターン
-" let g:neocomplcache_include_exprs = {
-"   \ 'ruby' : substitute(substitute(v:fname,'::','/','g'),'$','.rb','')
-"   \ }
+let g:neocomplcache_include_exprs = {
+  \ 'ruby' : "substitute(substitute(v:fname,'::','/','g'),'$','.rb','')"
+  \ }
 if !has("gui_running")
     "CUIのvimでの補完リストの色を調節する
     highlight Pmenu ctermbg=8
@@ -583,8 +620,6 @@ endif
 let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
 let g:neocomplcache_omni_patterns.c = '\%(\.\|->\)\h\w*'
 let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
-"スニペットファイルのパス
-" let g:neocomplcache_snippets_dir = $HOME.'/.vim/snippets'
 " }}}
 
 " Unite.vim {{{
@@ -604,35 +639,39 @@ let g:unite_split_rule = 'rightbelow'
 augroup UniteMapping
     autocmd!
     "insertモード時はC-gでいつでもバッファを閉じられる（絞り込み欄が空の時はC-hでもOK）
-    autocmd FileType unite imap <buffer> <C-g> <Plug>(unite_exit)
+    autocmd FileType unite imap <buffer><C-g> <Plug>(unite_exit)
+    "直前のパス削除
+    autocmd FileType unite imap <buffer><C-w>     <Plug>(unite_delete_backward_path)
     "ファイル上にカーソルがある時，pでプレビューを見る
-    autocmd FileType unite inoremap <buffer><expr> p unite#smart_map("p", unite#do_action('preview'))
+    autocmd FileType unite inoremap <buffer><expr>p unite#smart_map("p", unite#do_action('preview'))
     "C-xでクイックマッチ
-    autocmd FileType unite imap <buffer> <C-x> <Plug>(unite_quick_match_default_action)
+    autocmd FileType unite imap <buffer><C-x> <Plug>(unite_quick_match_default_action)
     "lでデフォルトアクションを実行
-    autocmd FileType unite nmap <buffer> l <Plug>(unite_do_default_action)
-    autocmd FileType unite imap <buffer><expr> l unite#smart_map("l", unite#do_action(unite#get_current_unite().context.default_action))
+    autocmd FileType unite nmap <buffer>l <Plug>(unite_do_default_action)
+    autocmd FileType unite imap <buffer><expr>l unite#smart_map("l", unite#do_action(unite#get_current_unite().context.default_action))
 augroup END
 "バッファを開いた時のパスを起点としたファイル検索
-" nnoremap <silent> <Leader>f  :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
-"バッファ一覧
-nnoremap <silent> <Leader>ub  :<C-u>Unite -no-start-insert buffer<CR>
-"ブックマークしたファイル/ディレクトリ
-nnoremap <silent> <Leader>uB  :<C-u>Unite -no-start-insert bookmark<CR>
+nnoremap <silent> <Leader>uf  :<C-u>UniteWithBufferDir -buffer-name=files file -vertical<CR>
 "最近使用したファイル
 nnoremap <silent> <Leader>um  :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
+"指定したディレクトリ以下を再帰的に開く
+nnoremap <silent> <Leader>ur  :<C-u>UniteWithBufferDir -no-start-insert file_rec/async -auto-resize<CR>
+"バッファ一覧
+nnoremap <silent> <Leader>ub  :<C-u>Unite -no-start-insert -auto-resize buffer<CR>
+"ブックマークしたファイル/ディレクトリ
+nnoremap <silent> <Leader>uB  :<C-u>Unite -no-start-insert bookmark<CR>
 "プログラミングにおけるアウトラインの表示
-nnoremap <silent> <Leader>uo  :<C-u>Unite outline -vertical -no-start-insert<CR>
+nnoremap <silent> <Leader>uo  :<C-u>Unite outline -vertical -no-start-insert -auto-resize<CR>
 "grep検索．
 nnoremap <silent> <Leader>ug  :<C-u>Unite -no-start-insert grep<CR>
 "yank履歴
 nnoremap <silent> <Leader>uy  :<C-u>Unite -no-start-insert history/yank<CR>
 "find
-nnoremap <silent> <Leader>uf  :<C-u>Unite -no-start-insert find<CR>
+nnoremap <silent> <Leader>uF  :<C-u>Unite -no-start-insert find<CR>
 "helpを引く．絞り込み初期は候補が膨大になるのでワードを先に入力
 nnoremap <silent> <Leader>uh  :<C-u>UniteWithInput -no-start-insert help<CR>
 "Uniteバッファの復元
-nnoremap <silent> <Leader>ur  :<C-u>UniteResume<CR>
+nnoremap <silent> <Leader>uR  :<C-u>UniteResume<CR>
 "SpotLight の利用
 if has('mac')
     nnoremap <silent> <Leader>uL :<C-u>Unite spotlight<CR>
@@ -643,7 +682,7 @@ nnoremap <silent> <Leader>ul :<C-u>Unite line<CR>
 " NeoBundle
 nnoremap <silent><Leader>unb :<C-u>Unite neobundle/update<CR>
 " Haskell Import
-autocmd UniteMapping FileType haskell nnoremap <buffer><Leader>uhi :<C-u>UniteWithCursorWord haskellimport -immediately<CR>
+autocmd HaskellMapping FileType haskell nnoremap <buffer><Leader>uhi :<C-u>UniteWithCursorWord haskellimport -immediately<CR>
 " }}}
 
 " }}}
@@ -652,8 +691,8 @@ autocmd UniteMapping FileType haskell nnoremap <buffer><Leader>uhi :<C-u>UniteWi
 " 追加プロンプト
 let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
 let g:vimshell_right_prompt = 'system("date \"+%Y/%m/%d %H:%M\"")'
-" プロンプト．本当は (U'w') が良いけれど，シングルクォートでエラー出る…
-let g:vimshell_prompt = "(U^w^){ "
+let g:vimshell_prompt = "(U'w'){ "
+" let g:vimshell_prompt = "(U^w^){ "
 " 右プロンプト ( vcs#info は deprecated )
 " let g:vimshell_right_prompt = 'vimshell#vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
 " 分割割合(%)
@@ -703,9 +742,12 @@ vnoremap <silent><Leader>qr :<C-u>QuickRun<CR>
 vnoremap <silent><Leader>qc :<C-u>QuickRun -outputter 'quickfix'<CR>
 nnoremap <silent><Leader>qR :<C-u>QuickRun<Space>
 nnoremap <silent><Leader>ql v:<C-u>'<,'>QuickRun -outputter 'quickfix'<CR>
-autocmd FileType qf nnoremap <buffer><silent> q :q<CR>
-autocmd FileType qf nnoremap <buffer><silent> j :cn<CR>
-autocmd FileType qf nnoremap <buffer><silent> k :cp<CR>
+augroup QFixMapping
+    autocmd!
+    autocmd FileType qf nnoremap <buffer><silent> q :q<CR>
+    autocmd FileType qf nnoremap <buffer><silent> j :cn<CR>
+    autocmd FileType qf nnoremap <buffer><silent> k :cp<CR>
+augroup END
 " }}}
 
 " }}}
@@ -774,22 +816,6 @@ endfunction
 
 " }}}
 
-" neocomplecache-clang {{{
-" libclangを使う
-" let g:neocomplcache_clang_use_library = 1
-" " ライブラリへのパス
-" let g:neocomplcache_clang_library_path = '/Developer/usr/clang-ide/lib'
-" " clangへのパス
-" let g:neocomplcache_clang_executable_path = '/usr/bin'
-" " let g:neocomplcache_clang_auto_options = ''
-" " clangのコマンドオプション
-" let g:neocomplcache_clang_user_options =
-"     \'-I /usr/local/Cellar/gcc/4.6.3/gcc/include '.
-"     \'-I /usr/include/c++/4.2.1 '.
-"     \'-I /usr/include '.
-"     \'-I /usr/local/Cellar/boost/1.48.0/include '
-" }}}
-
 " clang_complete {{{
 let g:neocomplcache_force_overwrite_completefunc=1
 let g:clang_complete_auto=1
@@ -797,10 +823,6 @@ let g:clang_hl_errors=1
 let g:clang_conceal_snippets=1
 let g:clang_exec="/usr/bin/clang"
 let g:clang_user_options='-I /usr/local/include -I /usr/include -I /usr/local/Cellar/gcc/4.7.1/gcc/include/c++/4.7.1 2>/dev/null || exit 0'
-" }}}
-
-" home-made-snippets {{{
-let g:neocomplcache_snippets_dir = $HOME.'/.vim/bundle/home-made-snippets/snippets'
 " }}}
 
 " vim-smartinput"{{{
@@ -925,16 +947,22 @@ omap ic <Plug>(textobj-wiw-i)
 
 " vim-indent-guides {{{
 let g:indent_guides_guide_size = 1
+augroup IndentGuidesAutoCmd
+    autocmd!
+augroup END
 if !has('gui_running')
     let g:indent_guides_auto_colors = 0
-    autocmd VimEnter,Colorscheme * hi IndentGuidesOdd  ctermbg=233
-    autocmd VimEnter,Colorscheme * hi IndentGuidesEven ctermbg=240
+    autocmd IndentGuidesAutoCmd VimEnter,Colorscheme * hi IndentGuidesOdd  ctermbg=233
+    autocmd IndentGuidesAutoCmd VimEnter,Colorscheme * hi IndentGuidesEven ctermbg=240
 endif
-autocmd FileType haskell,python,haml call indent_guides#enable()
+autocmd IndentGuidesAutoCmd FileType haskell,python,haml call indent_guides#enable()
 "}}}
 
 "endwise.vim {{{
-autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"
+augroup EndWiseMapping
+    autocmd!
+    autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"
+augroup END
 " }}}
 
 "my-vim-toggle {{{

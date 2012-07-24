@@ -176,7 +176,7 @@ PROMPT="${GREEN}%~${DEFAULT} %# "
 RPROMPT='`current-git-branch` [${RED}%D{%m/%d %H:%M}${DEFAULT}]'
 
 # histroy setting
-HISTFILE=~/.zsh/zsh_history
+HISTFILE=$HOME/.zsh/zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
 setopt hist_ignore_dups
