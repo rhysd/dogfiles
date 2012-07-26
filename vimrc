@@ -241,8 +241,8 @@ augroup HelpMapping
 augroup END
 " ペーストした文字列をビジュアルモードで選択
 nnoremap <expr>gp '`['.strpart(getregtype(),0,1).'`]'
-" 貼り付けは P のほうが好み
-nnoremap p P
+" 貼り付けは P のほうが好みかも
+" nnoremap p P
 " 最後にヤンクしたテキストを貼り付け．
 nnoremap P "0P
 " 日付の挿入
@@ -254,7 +254,7 @@ nnoremap <Leader>tn :<C-u>tabnext<CR>
 nnoremap <Leader>tp :<C-u>tabprevious<CR>
 nnoremap <Leader>tc :<C-u>tabclose<CR>
 " 行表示・非表示の切り替え．少しでも横幅が欲しい時は OFF に
-nnoremap <Leader>n :<C-u>set number! \| set number?<CR>
+nnoremap <Leader>nu :<C-u>set number! \| set number?<CR>
 " カーソルを中央に固定する
 nnoremap <Leader>fix :<C-u>ToggleCursorFixed<CR>
 " クリップボードから貼り付け
@@ -453,7 +453,7 @@ augroup CppMapping
     autocmd FileType cpp inoremap <buffer>;; ::
     autocmd FileType cpp inoremap <buffer><C-s>      std::
     autocmd FileType cpp inoremap <buffer><C-x>      boost::
-    autocmd FileType cpp inoremap <silent><buffer><expr><CR> s:cpp_expand_brace()."\<CR>"
+    autocmd FileType cpp inoremap <silent><buffer><expr><CR> <SID>cpp_expand_brace()."\<CR>"
     autocmd FileType cpp nnoremap <buffer><Leader>ret :<C-u>call <SID>return_type_completion()<CR>
 augroup END
 
@@ -520,6 +520,7 @@ NeoBundle 'ujihisa/unite-haskellimport'
 NeoBundle 'sgur/unite-qf'
 NeoBundle 'rhysd/quickrun-unite-qf-outputter'
 NeoBundle 'nathanaelkane/vim-indent-guides'
+NeoBundle 'basyura/unite-rails'
 " NeoBundle 'rhysd/ref-rurema'
 " NeoBundle 'ujihisa/unite-locate'
 " NeoBundle 'Lokaltog/vim-powerline'
@@ -649,6 +650,7 @@ augroup UniteMapping
     autocmd FileType unite nmap <buffer>l <Plug>(unite_do_default_action)
     autocmd FileType unite imap <buffer><expr>l unite#smart_map("l", unite#do_action(unite#get_current_unite().context.default_action))
 augroup END
+nnoremap <Leader>u <Nop>
 "バッファを開いた時のパスを起点としたファイル検索
 nnoremap <silent> <Leader>uf  :<C-u>UniteWithBufferDir -buffer-name=files file -vertical<CR>
 "最近使用したファイル
@@ -673,15 +675,29 @@ nnoremap <silent> <Leader>uh  :<C-u>UniteWithInput -no-start-insert help<CR>
 nnoremap <silent> <Leader>uR  :<C-u>UniteResume<CR>
 "SpotLight の利用
 if has('mac')
-    nnoremap <silent> <Leader>uL :<C-u>Unite spotlight<CR>
+    nnoremap <silent> <Leader>uL :<C-u>UniteWithInput spotlight<CR>
 else
-    nnoremap <silent> <Leader>uL :<C-u>Unite locate<CR>
+    nnoremap <silent> <Leader>uL :<C-u>UniteWithInput locate<CR>
 endif
 nnoremap <silent> <Leader>ul :<C-u>Unite line<CR>
 " NeoBundle
 nnoremap <silent><Leader>unb :<C-u>Unite neobundle/update<CR>
 " Haskell Import
 autocmd HaskellMapping FileType haskell nnoremap <buffer><Leader>uhi :<C-u>UniteWithCursorWord haskellimport -immediately<CR>
+" Rails
+command! RModels Unite rails/model -no-start-insert -auto-resize
+command! RControllers Unite rails/controller -no-start-insert -auto-resize
+command! RViews Unite rails/view -no-start-insert -auto-resize
+command! RHelpers Unite rails/helpers -no-start-insert -auto-resize
+command! RMailers Unite rails/mailers -no-start-insert -auto-resize
+command! RLib Unite rails/lib -no-start-insert -auto-resize
+command! RDb Unite rails/db -no-start-insert -auto-resize
+command! RConfig Unite rails/config -no-start-insert -auto-resize
+command! RLog Unite rails/log -no-start-insert -auto-resize
+command! RJapascripts Unite rails/javascripts -no-start-insert -auto-resize
+command! RStylesheets Unite rails/stylesheets -no-start-insert -auto-resize
+command! RBundle Unite rails/bundle -no-start-insert -auto-resize
+command! RGems Unite rails/bundled_gem -no-start-insert -auto-resize
 " }}}
 
 " }}}
