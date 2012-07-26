@@ -688,6 +688,7 @@ autocmd HaskellMapping FileType haskell nnoremap <buffer><Leader>uhi :<C-u>Unite
 command! RModels Unite rails/model -no-start-insert -auto-resize
 command! RControllers Unite rails/controller -no-start-insert -auto-resize
 command! RViews Unite rails/view -no-start-insert -auto-resize
+command! RMVC Unite rails/model rails/controller rails/view
 command! RHelpers Unite rails/helpers -no-start-insert -auto-resize
 command! RMailers Unite rails/mailers -no-start-insert -auto-resize
 command! RLib Unite rails/lib -no-start-insert -auto-resize
@@ -967,4 +968,3 @@ augroup END
 "my-vim-toggle {{{
 " nmap <silent><C-t> <Plug>MyToggleN
 " }}}
-
