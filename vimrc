@@ -316,15 +316,15 @@ endfunction
 " :AllMaps <buffer1> <buffer2> ...
 " http://vim-users.jp/2011/02/hack203/
 command! -nargs=* -complete=mapping
-\   AllMaps
-\   map <args> | map! <args> | lmap <args>
+            \   AllMaps
+            \   map <args> | map! <args> | lmap <args>
 
 " output result of Vim script to new buffer
 " :Capture <command>
 " http://vim-users.jp/2011/02/hack203/
 command! -nargs=+ -complete=command
-\   Capture
-\   call s:cmd_capture(<q-args>)
+            \   Capture
+            \   call s:cmd_capture(<q-args>)
 
 function! s:cmd_capture(q_args)
     redir => output
@@ -342,11 +342,11 @@ endfunction
 " カレントパスをクリプボゥにコピー
 command! CopyCurrentPath :call s:copy_current_path()
 function! s:copy_current_path()
-  if has('win32')
-    let @*=substitute(expand('%:p'), '\\/', '\\', 'g')
-  elseif has('unix')
-    let @*=expand('%:p')
-  endif
+    if has('win32')
+        let @*=substitute(expand('%:p'), '\\/', '\\', 'g')
+    elseif has('unix')
+        let @*=expand('%:p')
+    endif
 endfunction
 
 " カーソルを画面中央に固定
@@ -367,29 +367,29 @@ command! -bang -complete=file -nargs=? Euc edit<bang> ++enc=eucjp <args>
 " http://vim-users.jp/2010/11/hack181/
 command! -nargs=0 Sandbox call s:open_sandbox()
 function! s:open_sandbox()
-  let dir = $HOME . '/.vim_sandbox'
-  if !isdirectory(dir)
-    call mkdir(dir, 'p')
-  endif
+    let dir = $HOME . '/.vim_sandbox'
+    if !isdirectory(dir)
+        call mkdir(dir, 'p')
+    endif
 
-  let filename = input('New File: ', dir.strftime('/%Y-%m-%d-%H%M.'))
-  if filename != ''
-    execute 'edit ' . filename
-  endif
+    let filename = input('New File: ', dir.strftime('/%Y-%m-%d-%H%M.'))
+    if filename != ''
+        execute 'edit ' . filename
+    endif
 endfunction
 
 " Vim 力を測る Scouter （thinca さん改良版）
 " http://d.hatena.ne.jp/thinca/20091031/1257001194
 function! Scouter(file, ...)
-  let pat = '^\s*$\|^\s*"'
-  let lines = readfile(a:file)
-  if !a:0 || !a:1
-    let lines = split(substitute(join(lines, "\n"), '\n\s*\\', '', 'g'), "\n")
-  endif
-  return len(filter(lines,'v:val !~ pat'))
+    let pat = '^\s*$\|^\s*"'
+    let lines = readfile(a:file)
+    if !a:0 || !a:1
+        let lines = split(substitute(join(lines, "\n"), '\n\s*\\', '', 'g'), "\n")
+    endif
+    return len(filter(lines,'v:val !~ pat'))
 endfunction
 command! -bar -bang -nargs=? -complete=file Scouter
-\        echo Scouter(empty(<q-args>) ? $MYVIMRC : expand(<q-args>), <bang>0)
+            \        echo Scouter(empty(<q-args>) ? $MYVIMRC : expand(<q-args>), <bang>0)
 
 "}}}
 
@@ -465,7 +465,7 @@ augroup HaskellMapping
     autocmd FileType haskell nnoremap <buffer><silent><Leader>t :<C-u>call <SID>ShowTypeHaskell(expand('<cword>'))<CR>
 augroup END
 function! s:ShowTypeHaskell(word)
-  echo join(split(system("ghc -isrc " . expand('%') . " -e ':t " . a:word . "'")))
+    echo join(split(system("ghc -isrc " . expand('%') . " -e ':t " . a:word . "'")))
 endfunction
 command! Ghci :<C-u>VimshellInteractive ghci<CR>
 "}}}
@@ -572,9 +572,9 @@ let g:neocomplcache_max_list = 300
 let g:neocomplcache_max_keyword_width = 20
 " 辞書定義
 let g:neocomplcache_dictionary_filetype_lists = {
-    \ 'default' : '',
-    \ 'vimshell' : expand('~/.vimshell/command-history'),
-    \ }
+            \ 'default' : '',
+            \ 'vimshell' : expand('~/.vimshell/command-history'),
+            \ }
 "リストの最大幅を指定
 "let g:neocomplcache_max_filename_width = 25
 "ctagsへのパス
@@ -597,8 +597,8 @@ let g:neocomplcache_include_paths.ruby = expand('~/.rbenv/versions/1.9.3-p194/li
 let g:neocomplcache_include_patterns = { 'cpp' : '^\s*#\s*include', 'ruby' : '^\s*require', 'perl' : '^\s*use', }
 "インクルード先のファイル名の解析パターン
 let g:neocomplcache_include_exprs = {
-  \ 'ruby' : "substitute(substitute(v:fname,'::','/','g'),'$','.rb','')"
-  \ }
+            \ 'ruby' : "substitute(substitute(v:fname,'::','/','g'),'$','.rb','')"
+            \ }
 if !has("gui_running")
     "CUIのvimでの補完リストの色を調節する
     highlight Pmenu ctermbg=8
@@ -827,8 +827,8 @@ let g:vimfiler_execute_file_list = { 'c' : 'vim',  'h' : 'vim',  'cpp' : 'vim', 
 augroup VimFilerMapping
     autocmd!
     autocmd FileType vimfiler nmap <buffer><silent><expr> e vimfiler#smart_cursor_map(
-                                                        \   "\<Plug>(vimfiler_cd_file)",
-                                                        \   "\<Plug>(vimfiler_edit_file)")
+                \   "\<Plug>(vimfiler_cd_file)",
+                \   "\<Plug>(vimfiler_edit_file)")
 augroup END
 nnoremap <Leader>f <Nop>
 nnoremap <Leader>ff :<C-u>VimFiler<CR>
@@ -864,75 +864,75 @@ let g:clang_user_options='-I /usr/local/include -I /usr/include -I /usr/local/Ce
 " 括弧内のスペース
 " call smartinput#map_to_trigger('i', '(', '(', '(')
 call smartinput#define_rule({
-\   'at':       '(\%#)',
-\   'char':     '<Space>',
-\   'input':    '<Space><Space><Left>',
-\   })
+            \   'at':       '(\%#)',
+            \   'char':     '<Space>',
+            \   'input':    '<Space><Space><Left>',
+            \   })
 
 call smartinput#map_to_trigger('i', '<Space>', '<Space>', '<Space>')
 call smartinput#define_rule({
-\   'at':       '( \%# )',
-\   'char':     '<BS>',
-\   'input':    '<Del><BS>',
-\   })
+            \   'at':       '( \%# )',
+            \   'char':     '<BS>',
+            \   'input':    '<Del><BS>',
+            \   })
 
 call smartinput#define_rule({
-\   'at':       '{\%#}',
-\   'char':     '<Space>',
-\   'input':    '<Space><Space><Left>',
-\   })
+            \   'at':       '{\%#}',
+            \   'char':     '<Space>',
+            \   'input':    '<Space><Space><Left>',
+            \   })
 
 call smartinput#define_rule({
-\   'at':       '{ \%# }',
-\   'char':     '<BS>',
-\   'input':    '<Del><BS>',
-\   })
+            \   'at':       '{ \%# }',
+            \   'char':     '<BS>',
+            \   'input':    '<Del><BS>',
+            \   })
 
 call smartinput#define_rule({
-\   'at':       '\[\%#\]',
-\   'char':     '<Space>',
-\   'input':    '<Space><Space><Left>',
-\   })
+            \   'at':       '\[\%#\]',
+            \   'char':     '<Space>',
+            \   'input':    '<Space><Space><Left>',
+            \   })
 
 call smartinput#define_rule({
-\   'at':       '\[ \%# \]',
-\   'char':     '<BS>',
-\   'input':    '<Del><BS>',
-\   })
+            \   'at':       '\[ \%# \]',
+            \   'char':     '<BS>',
+            \   'input':    '<Del><BS>',
+            \   })
 
 " Ruby 文字列内変数埋め込み
 call smartinput#map_to_trigger('i', '#', '#', '#')
 call smartinput#define_rule({
-\   'at': '\%#',
-\   'char': '#',
-\   'input': '#{}<Left>',
-\   'filetype': ['ruby'],
-\   'syntax': ['Constant', 'Special'],
-\   })
+            \   'at': '\%#',
+            \   'char': '#',
+            \   'input': '#{}<Left>',
+            \   'filetype': ['ruby'],
+            \   'syntax': ['Constant', 'Special'],
+            \   })
 
 " Ruby ブロック引数 ||
 call smartinput#map_to_trigger('i', '<Bar>', '<Bar>', '<Bar>')
 call smartinput#define_rule({
-\   'at': '\({\|\<do\>\)\s*\%#',
-\   'char': '<Bar>',
-\   'input': '<Bar><Bar><Left>',
-\   'filetype': ['ruby'],
-\    })
+            \   'at': '\({\|\<do\>\)\s*\%#',
+            \   'char': '<Bar>',
+            \   'input': '<Bar><Bar><Left>',
+            \   'filetype': ['ruby'],
+            \    })
 
 " テンプレート内のスペース
 call smartinput#map_to_trigger('i', '<', '<', '<')
 call smartinput#define_rule({
-\   'at':       '<\%#>',
-\   'char':     '<Space>',
-\   'input':    '<Space><Space><Left>',
-\   'filetype': ['cpp'],
-\   })
+            \   'at':       '<\%#>',
+            \   'char':     '<Space>',
+            \   'input':    '<Space><Space><Left>',
+            \   'filetype': ['cpp'],
+            \   })
 call smartinput#define_rule({
-\   'at':       '< \%# >',
-\   'char':     '<BS>',
-\   'input':    '<Del><BS>',
-\   'filetype': ['cpp'],
-\   })
+            \   'at':       '< \%# >',
+            \   'char':     '<BS>',
+            \   'input':    '<Del><BS>',
+            \   'filetype': ['cpp'],
+            \   })
 
 " クラス定義の場合は末尾に;を付け忘れないようにする
 " call smartinput#define_rule({
@@ -993,8 +993,8 @@ autocmd IndentGuidesAutoCmd FileType haskell,python,haml call indent_guides#enab
 
 "endwise.vim {{{
 augroup EndWiseMapping
-    autocmd!
-    autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"
+autocmd!
+autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"
 augroup END
 " }}}
 
