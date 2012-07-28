@@ -635,6 +635,34 @@ let g:unite_cursor_line_highlight = 'TabLineSel'
 " Unite起動時のウィンドウ分割
 let g:unite_split_rule = 'rightbelow'
 
+function! s:rails_mvc_name()
+    let full_path = expand('%:p')
+    if  full_path !~# '\/app\/'
+        echoerr 'not rails MVC files'
+    endif
+
+    " controllers
+    let base_name = expand('%:r')
+    if base_name =~# '\w\+_controller'
+        if  full_path !~# '\/controllers\/'
+            echoerr 'not rails MVC files'
+        endif
+        return matchstr(base_name, '\w\+\ze_controller')
+    endif
+
+    " views
+    if expand('%:e:e') == 'html.erb'
+        return fnamemodify(full_path, ':h:t')
+    endif
+
+    " models
+    if fnamemodify(full_path, ':h:t') == 'models'
+        return base_name
+    endif
+
+    echoerr 'not rails MVC files'
+endfunction
+
 "Unite.vimのキーマップ {{{
 augroup UniteMapping
     autocmd!
@@ -684,7 +712,9 @@ nnoremap <silent> <Leader>ul :<C-u>Unite line<CR>
 nnoremap <silent><Leader>unb :<C-u>Unite neobundle/update<CR>
 " Haskell Import
 autocmd HaskellMapping FileType haskell nnoremap <buffer><Leader>uhi :<C-u>UniteWithCursorWord haskellimport -immediately<CR>
-" Rails
+" }}}
+
+" unite-rails コマンド
 command! RModels Unite rails/model -no-start-insert -auto-resize
 command! RControllers Unite rails/controller -no-start-insert -auto-resize
 command! RViews Unite rails/view -no-start-insert -auto-resize
@@ -699,8 +729,7 @@ command! RJapascripts Unite rails/javascripts -no-start-insert -auto-resize
 command! RStylesheets Unite rails/stylesheets -no-start-insert -auto-resize
 command! RBundle Unite rails/bundle -no-start-insert -auto-resize
 command! RGems Unite rails/bundled_gem -no-start-insert -auto-resize
-" }}}
-
+command! R execute 'Unite rails/model rails/controller rails/view -no-start-insert -autoresize -input=' . s:rails_mvc_name()
 " }}}
 
 " VimShellの設定 {{{
