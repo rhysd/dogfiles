@@ -620,6 +620,26 @@ endif
 let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
 let g:neocomplcache_omni_patterns.c = '\%(\.\|->\)\h\w*'
 let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
+
+"neocomplcacheのマッピング {{{
+imap      <C-s>       <Plug>(neocomplcache_snippets_expand)
+smap      <C-s>       <Plug>(neocomplcache_snippets_expand)
+inoremap  <expr><C-g> neocomplcache#undo_completion()
+"inoremap <expr><C-l> neocomplcache#complete_common_string()
+"スニペット展開候補があれば展開を，そうでなければbash風補完を．
+imap <expr><C-l> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : neocomplcache#complete_common_string()
+" <CR>: close popup and save indent.
+imap <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup()."\<CR>" : "\<CR>"
+" <TAB>: completion
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+"スニペットがあればそれを展開．なければ通常の挙動をするTABキー
+" imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
+" <C-h>, <BS>: close popup and delete backword char.
+" inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
+" inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
+inoremap <expr><C-y> neocomplcache#close_popup()
+"}}}
+
 " }}}
 
 " Unite.vim {{{
@@ -714,7 +734,7 @@ nnoremap <silent><Leader>unb :<C-u>Unite neobundle/update<CR>
 autocmd HaskellMapping FileType haskell nnoremap <buffer><Leader>uhi :<C-u>UniteWithCursorWord haskellimport -immediately<CR>
 " }}}
 
-" unite-rails コマンド
+" unite-rails コマンド {{{
 command! RModels Unite rails/model -no-start-insert -auto-resize
 command! RControllers Unite rails/controller -no-start-insert -auto-resize
 command! RViews Unite rails/view -no-start-insert -auto-resize
@@ -732,6 +752,8 @@ command! RGems Unite rails/bundled_gem -no-start-insert -auto-resize
 command! R execute 'Unite rails/model rails/controller rails/view -no-start-insert -autoresize -input=' . s:rails_mvc_name()
 " }}}
 
+" }}}
+
 " VimShellの設定 {{{
 " 追加プロンプト
 let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
@@ -745,24 +767,6 @@ let g:vimshell_split_height = 25
 
 "VimShell のキーマッピング {{{
 nmap <expr><Leader>vs "\<Plug>(vimshell_split_switch)"
-
-"neocomplcacheの設定
-imap      <C-s>       <Plug>(neocomplcache_snippets_expand)
-smap      <C-s>       <Plug>(neocomplcache_snippets_expand)
-inoremap  <expr><C-g> neocomplcache#undo_completion()
-"inoremap <expr><C-l> neocomplcache#complete_common_string()
-"スニペット展開候補があれば展開を，そうでなければbash風補完を．
-imap <expr><C-l> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : neocomplcache#complete_common_string()
-" <CR>: close popup and save indent.
-imap <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup()."\<CR>" : "\<CR>"
-" <TAB>: completion
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-"スニペットがあればそれを展開．なければ通常の挙動をするTABキー
-" imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
-" <C-h>, <BS>: close popup and delete backword char.
-" inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
-" inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><C-y> neocomplcache#close_popup()
 " }}}
 
 " }}}
