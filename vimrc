@@ -9,8 +9,8 @@ set nobackup
 "vi協調モードoff
 set nocompatible
 " 言語設定
-language message en_US
-language time en_US
+language message C
+language time C
 "自動インデント
 set autoindent
 "タブが対応する空白の数
@@ -404,6 +404,22 @@ function! s:git_root_dir()
     endif
 endfunction
 
+" Linux かどうか判定
+function! s:has_linux()
+    return !has('mac') && !has('win32') && !has('win64') && !has('win32unix')
+endfunction
+
+"}}}
+
+" Linux {{{
+if s:has_linux()
+    set background=dark
+    " カーソル位置の復元
+    autocmd Misc BufReadPost *
+        \ if line("'\"") > 1 && line("'\"") <= line("$") |
+        \   exe "normal! g`\"" |
+        \ endif
+endif
 "}}}
 
 " Ruby {{{
@@ -521,7 +537,6 @@ NeoBundle 'h1mesuke/textobj-wiw'
 NeoBundle 'thinca/vim-textobj-between'
 NeoBundle 'thinca/vim-prettyprint'
 NeoBundle 'rhysd/vim-accelerate'
-NeoBundle 'choplin/unite-spotlight'
 NeoBundle 'kana/vim-smartinput'
 NeoBundle 'thinca/vim-ref'
 " NeoBundle 'kana/vim-filetype-haskell'
@@ -534,9 +549,13 @@ NeoBundle 'sgur/unite-qf'
 NeoBundle 'rhysd/quickrun-unite-qf-outputter'
 NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'basyura/unite-rails'
+if has('mac')
+    NeoBundle 'choplin/unite-spotlight'
+elseif s:has_linux()
+    NeoBundle 'ujihisa/unite-locate'
+    NeoBundle 'Lokaltog/vim-powerline'
+endif
 " NeoBundle 'rhysd/ref-rurema'
-" NeoBundle 'ujihisa/unite-locate'
-" NeoBundle 'Lokaltog/vim-powerline'
 " NeoBundle 'ujihisa/vimshell-ssh'
 " NeoBundle 'h1mesuke/vim-alignta'
 " NeoBundle 'ujihisa/unite-colorscheme'
