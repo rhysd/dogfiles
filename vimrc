@@ -406,7 +406,7 @@ endfunction
 
 " Linux かどうか判定
 function! s:has_linux()
-    return !has('mac') && !has('win32') && !has('win64') && !has('win32unix')
+    return !has('mac') && has('unix')
 endfunction
 
 "}}}
@@ -419,6 +419,8 @@ if s:has_linux()
         \ if line("'\"") > 1 && line("'\"") <= line("$") |
         \   exe "normal! g`\"" |
         \ endif
+    " 256色使う
+    set t_Co=256
 endif
 "}}}
 
