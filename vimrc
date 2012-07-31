@@ -136,7 +136,7 @@ nnoremap Y y$
 nnoremap j gj
 nnoremap k gk
 "Esc->Escで検索結果とエラーハイライトをクリア
-nnoremap <silent><ESC><ESC> :<C-u>nohlsearch<CR>:HierClear<CR><ESC>
+nnoremap <silent><ESC><ESC> :<C-u>nohlsearch<CR><Esc>
 "行頭・行末の移動
 nnoremap <TAB> G
 vnoremap <TAB> G
@@ -390,6 +390,19 @@ function! Scouter(file, ...)
 endfunction
 command! -bar -bang -nargs=? -complete=file Scouter
             \        echo Scouter(empty(<q-args>) ? $MYVIMRC : expand(<q-args>), <bang>0)
+
+"}}}
+
+" helper functions {{{
+
+" git のルートディレクトリを開く
+function! s:git_root_dir()
+    if(system('git rev-parse --is-inside-work-tree') == "true\n")
+        return system('git rev-parse --show-cdup')
+    else
+        echoerr 'current directory is outside git working tree'
+    endif
+endfunction
 
 "}}}
 
@@ -700,7 +713,7 @@ augroup UniteMapping
 augroup END
 nnoremap <Leader>u <Nop>
 "バッファを開いた時のパスを起点としたファイル検索
-nnoremap <silent> <Leader>uf  :<C-u>UniteWithBufferDir -buffer-name=files file -vertical<CR>
+nnoremap <silent> <Leader>uff  :<C-u>UniteWithBufferDir -buffer-name=files file -vertical<CR>
 "最近使用したファイル
 nnoremap <silent> <Leader>um  :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
 "指定したディレクトリ以下を再帰的に開く
@@ -732,6 +745,8 @@ nnoremap <silent> <Leader>ul :<C-u>Unite line<CR>
 nnoremap <silent><Leader>unb :<C-u>Unite neobundle/update<CR>
 " Haskell Import
 autocmd HaskellMapping FileType haskell nnoremap <buffer><Leader>uhi :<C-u>UniteWithCursorWord haskellimport -immediately<CR>
+" Git のルートディレクトリを開く
+nnoremap <silent><expr><Leader>ufg ":\<C-u>Unite file:".<SID>git_root_dir()."\<CR>"
 " }}}
 
 " unite-rails コマンド {{{
@@ -814,6 +829,8 @@ if !has("gui_running")
     " QuickFix選択中のエラー
     highlight Search ctermbg=8
 endif
+
+nnoremap <silent><ESC><ESC> :<C-u>nohlsearch<CR>:HierClear<CR><ESC>
 " }}}
 
 " VimFilerの設定 {{{
@@ -835,16 +852,8 @@ nnoremap <Leader>ff :<C-u>VimFiler<CR>
 nnoremap <Leader>fn :<C-u>VimFiler<Space>-no-quit<CR>
 nnoremap <Leader>fh :<C-u>VimFiler<Space>~<CR>
 nnoremap <Leader>fc :<C-u>VimFilerCurrentDir<CR>
-nnoremap <expr><Leader>fg <SID>git_root_dir()
+nnoremap <expr><Leader>fg ":<C-u>VimFiler " . <SID>git_root_dir() . '\<CR>'
 
-" git のルートディレクトリを開く
-function! s:git_root_dir()
-    if(system('git rev-parse --is-inside-work-tree') == "true\n")
-        return ':VimFiler ' . system('git rev-parse --show-cdup') . '\<CR>'
-    else
-        echo 'current directory is outside git working tree'
-    endif
-endfunction
 " }}}
 
 " }}}
