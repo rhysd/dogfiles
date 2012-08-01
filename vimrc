@@ -523,10 +523,11 @@ NeoBundle 'vim-jp/cpp-vim'
 NeoBundle 'rhysd/clang_complete'
 NeoBundle 'osyo-manga/neocomplcache-clang_complete'
 NeoBundle 'thinca/vim-quickrun'
-NeoBundle 'Shougo/unite.vim'
 NeoBundle 'tyru/caw.vim'
+NeoBundle 'Shougo/unite.vim'
 NeoBundle 'h1mesuke/unite-outline'
 NeoBundle 'tsukkee/unite-help'
+NeoBundle 'osyo-manga/unite-fold'
 NeoBundle 'vim-jp/vimdoc-ja'
 NeoBundle 'jceb/vim-hier'
 " NeoBundle 'rhysd/my-vimtoggle'
@@ -723,7 +724,7 @@ augroup UniteMapping
     "insertモード時はC-gでいつでもバッファを閉じられる（絞り込み欄が空の時はC-hでもOK）
     autocmd FileType unite imap <buffer><C-g> <Plug>(unite_exit)
     "直前のパス削除
-    autocmd FileType unite imap <buffer><C-w>     <Plug>(unite_delete_backward_path)
+    autocmd FileType unite imap <buffer><C-w> <Plug>(unite_delete_backward_path)
     "ファイル上にカーソルがある時，pでプレビューを見る
     autocmd FileType unite inoremap <buffer><expr>p unite#smart_map("p", unite#do_action('preview'))
     "C-xでクイックマッチ
@@ -734,27 +735,27 @@ augroup UniteMapping
 augroup END
 nnoremap <Leader>u <Nop>
 "バッファを開いた時のパスを起点としたファイル検索
-nnoremap <silent> <Leader>uff  :<C-u>UniteWithBufferDir -buffer-name=files file -vertical<CR>
+nnoremap <silent> <Leader>uff :<C-u>UniteWithBufferDir -buffer-name=files file -vertical<CR>
 "最近使用したファイル
-nnoremap <silent> <Leader>um  :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
+nnoremap <silent> <Leader>um :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
 "指定したディレクトリ以下を再帰的に開く
-nnoremap <silent> <Leader>ur  :<C-u>UniteWithBufferDir -no-start-insert file_rec/async -auto-resize<CR>
+nnoremap <silent> <Leader>uR :<C-u>UniteWithBufferDir -no-start-insert file_rec/async -auto-resize<CR>
 "バッファ一覧
-nnoremap <silent> <Leader>ub  :<C-u>Unite -no-start-insert -auto-resize buffer<CR>
+nnoremap <silent> <Leader>ub :<C-u>Unite -no-start-insert -auto-resize buffer<CR>
 "ブックマークしたファイル/ディレクトリ
-nnoremap <silent> <Leader>uB  :<C-u>Unite -no-start-insert bookmark<CR>
+nnoremap <silent> <Leader>uB :<C-u>Unite -no-start-insert bookmark<CR>
 "プログラミングにおけるアウトラインの表示
-nnoremap <silent> <Leader>uo  :<C-u>Unite outline -vertical -no-start-insert -auto-resize<CR>
+nnoremap <silent> <Leader>uo :<C-u>Unite outline -vertical -no-start-insert<CR>
 "grep検索．
-nnoremap <silent> <Leader>ug  :<C-u>Unite -no-start-insert grep<CR>
+nnoremap <silent> <Leader>ug :<C-u>Unite -no-start-insert grep<CR>
 "yank履歴
-nnoremap <silent> <Leader>uy  :<C-u>Unite -no-start-insert history/yank<CR>
+nnoremap <silent> <Leader>uy :<C-u>Unite -no-start-insert history/yank<CR>
 "find
-nnoremap <silent> <Leader>uF  :<C-u>Unite -no-start-insert find<CR>
+nnoremap <silent> <Leader>uF :<C-u>Unite -no-start-insert find<CR>
 "helpを引く．絞り込み初期は候補が膨大になるのでワードを先に入力
-nnoremap <silent> <Leader>uh  :<C-u>UniteWithInput -no-start-insert help<CR>
+nnoremap <silent> <Leader>uh :<C-u>UniteWithInput -no-start-insert help<CR>
 "Uniteバッファの復元
-nnoremap <silent> <Leader>uR  :<C-u>UniteResume<CR>
+nnoremap <silent> <Leader>ur :<C-u>UniteResume<CR>
 "SpotLight の利用
 if has('mac')
     nnoremap <silent> <Leader>uL :<C-u>UniteWithInput spotlight<CR>
@@ -768,6 +769,8 @@ nnoremap <silent><Leader>unb :<C-u>Unite neobundle/update<CR>
 autocmd HaskellMapping FileType haskell nnoremap <buffer><Leader>uhi :<C-u>UniteWithCursorWord haskellimport -immediately<CR>
 " Git のルートディレクトリを開く
 nnoremap <silent><expr><Leader>ufg ":\<C-u>Unite file:".<SID>git_root_dir()."\<CR>"
+" fold
+nnoremap <silent><Leader>ufl :<C-u>Unite fold -no-start-insert<CR>
 " }}}
 
 " unite-rails コマンド {{{
@@ -830,8 +833,8 @@ nnoremap <silent><Leader>ql v:<C-u>'<,'>QuickRun -outputter 'quickfix'<CR>
 augroup QFixMapping
     autocmd!
     autocmd FileType qf nnoremap <buffer><silent> q :q<CR>
-    autocmd FileType qf nnoremap <buffer><silent> j :cn<CR>
-    autocmd FileType qf nnoremap <buffer><silent> k :cp<CR>
+    autocmd FileType qf nnoremap <buffer><silent> j :cn!<CR>
+    autocmd FileType qf nnoremap <buffer><silent> k :cp!<CR>
 augroup END
 " }}}
 
