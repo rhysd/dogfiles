@@ -58,6 +58,8 @@ set noimdisable
 set noimcmdline
 "バックスペースでなんでも消せるように
 set backspace=indent,eol,start
+" 改行時にコメントしない
+set formatoptions-=ro
 "ファイル切替時にファイルを隠す
 set hidden
 "日本語ヘルプを優先的に検索
@@ -73,7 +75,7 @@ set lazyredraw
 "高速ターミナル接続を行う
 set ttyfast
 "MacVim Kaoriyaに標準で入っている辞書を無効化
-if has('mac')
+if has('kaoriya')
     let g:plugin_dicwin_disable = 1
 endif
 "insertモードから抜けるときにIMをOFFにする（GUI(MacVim)は自動的にやってくれる
@@ -119,6 +121,15 @@ augroup Misc
     autocmd BufRead *.md setlocal ft=markdown
     " 保存時に行末のスペースを除去する
     autocmd BufWritePre * call <SID>clean_whitespaces()
+    " Hack #202: 自動的にディレクトリを作成する
+    " http://vim-users.jp/2011/02/hack202/
+    autocmd BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'), v:cmdbang)
+    function! s:auto_mkdir(dir, force)
+        if !isdirectory(a:dir) && (a:force ||
+                    \    input(printf('"%s" does not exist. Create? [y/N]', a:dir)) =~? '^y\%[es]$')
+            call mkdir(iconv(a:dir, &encoding, &termencoding), 'p')
+        endif
+    endfunction
 augroup END
 
 " カーソル下のハイライトグループを取得
@@ -150,6 +161,12 @@ vnoremap - $
 nnoremap q; q:
 nnoremap <C-:> q:
 nnoremap q: :q
+" q も誤爆しやすい
+nnoremap q <Nop>
+nnoremap qq q
+" 検索後画面の中心に。
+nnoremap n nzz
+nnoremap N Nzz
 " insertモードでもquit
 inoremap <C-q><C-q> <ESC>:wqa<CR>
 " insertモードでもcmdmode
@@ -157,7 +174,9 @@ inoremap <C-:> <Esc>:
 " 空行挿入
 nnoremap <silent><CR> :<C-u>call append(expand('.'), '')<CR>j
 "ヘルプ表示
-nnoremap <Leader>vh :vert bo help<Space>
+nnoremap <Leader>h :vert bo help<Space>
+" スペースを挿入
+nnoremap <C-Space> i <Esc><Right>
 "insertモード時はEmacsライクなバインディング．ポップアップが出ないように移動．
 inoremap <C-e> <END>
 vnoremap <C-e> <END>
@@ -190,10 +209,6 @@ nnoremap <silent><C-p>   :<C-u>bprevious<CR>
 " nnoremap <silent><C-h> <C-w>h:call <SID>good_width()<CR>
 " nnoremap <silent><C-l> <C-w>l:call <SID>good_width()<CR>
 " nnoremap <silent><C-k> <C-w>k:call <SID>good_width()<CR>
-nnoremap <silent><C-j> <C-w>j
-nnoremap <silent><C-k> <C-w>k
-nnoremap <silent><C-h> <C-w>h
-nnoremap <silent><C-l> <C-w>l
 nnoremap <silent>qj <C-w>j
 nnoremap <silent>qk <C-w>k
 nnoremap <silent>qh <C-w>h
@@ -206,7 +221,6 @@ nnoremap <silent>qn <C-w>n
 nnoremap <silent>qo <C-w>o
 nnoremap <silent>qp <C-w>p
 nnoremap <silent>qr <C-w>r
-
 "インサートモードで次の行に直接改行
 inoremap <C-j> <Esc>o
 "<BS>の挙動
@@ -293,7 +307,7 @@ if exists("g:linda_pp_startup_with_tiny") && g:linda_pp_startup_with_tiny
 endif
 "}}}
 
-" user-defined commands {{{
+" user-defined functions and commands {{{
 " clean unnecessary whitespaces
 command! CleanSpaces :call <SID>clean_whitespaces()
 
@@ -389,6 +403,57 @@ function! Scouter(file, ...)
 endfunction
 command! -bar -bang -nargs=? -complete=file Scouter
             \        echo Scouter(empty(<q-args>) ? $MYVIMRC : expand(<q-args>), <bang>0)
+
+" 縦に連番を入力する
+command! -count -nargs=1 ContinuousNumber let c = col('.')|for n in range(1, <count>?<count>-line('.'):1)|exec 'normal! j' . n . <q-args>|call cursor('.', c)|endfor
+
+"スクリプトローカルな関数を呼び出す
+" http://d.hatena.ne.jp/thinca/20111228/1325077104
+" Call a script local function.
+" Usage:
+" - S('local_func')
+"   -> call s:local_func() in current file.
+" - S('plugin/hoge.vim:local_func', 'string', 10)
+"   -> call s:local_func('string', 10) in *plugin/hoge.vim.
+" - S('plugin/hoge:local_func("string", 10)')
+"   -> call s:local_func("string", 10) in *plugin/hoge(.vim)?.
+function! S(f, ...)
+  let [file, func] =a:f =~# ':' ?  split(a:f, ':') : [expand('%:p'), a:f]
+  let fname = matchstr(func, '^\w*')
+
+  " Get sourced scripts.
+  redir =>slist
+  silent scriptnames
+  redir END
+
+  let filepat = '\V' . substitute(file, '\\', '/', 'g') . '\v%(\.vim)?$'
+  for s in split(slist, "\n")
+    let p = matchlist(s, '^\s*\(\d\+\):\s*\(.*\)$')
+    if empty(p)
+      continue
+    endif
+    let [nr, sfile] = p[1 : 2]
+    let sfile = fnamemodify(sfile, ':p:gs?\\?/?')
+    if sfile =~# filepat &&
+    \    exists(printf("*\<SNR>%d_%s", nr, fname))
+      let cfunc = printf("\<SNR>%d_%s", nr, func)
+      break
+    endif
+  endfor
+
+  if !exists('nr')
+    echoerr Not sourced: ' . file
+    return
+  elseif !exists('cfunc')
+    let file = fnamemodify(file, ':p')
+    echoerr printf(
+    \    'File found, but function is not defined: %s: %s()', file, fname)
+    return
+  endif
+
+  return 0 <= match(func, '^\w*\s*(.*)\s*$')
+  \      ? eval(cfunc) : call(cfunc, a:000)
+endfunction
 
 "}}}
 
@@ -492,7 +557,7 @@ augroup END
 " Haskell {{{
 augroup HaskellMapping
     autocmd!
-    autocmd FileType haskell nnoremap <buffer><silent><Leader>t :<C-u>call <SID>ShowTypeHaskell(expand('<cword>'))<CR>
+    autocmd FileType haskell nnoremap <buffer><silent><Leader>ht :<C-u>call <SID>ShowTypeHaskell(expand('<cword>'))<CR>
 augroup END
 function! s:ShowTypeHaskell(word)
     echo join(split(system("ghc -isrc " . expand('%') . " -e ':t " . a:word . "'")))
@@ -536,6 +601,9 @@ NeoBundle 'kana/vim-textobj-user'
 NeoBundle 'kana/vim-textobj-indent'
 NeoBundle 'kana/vim-textobj-lastpat'
 NeoBundle 'h1mesuke/textobj-wiw'
+NeoBundle 'kana/vim-operator-user'
+NeoBundle 'kana/vim-operator-replace'
+NeoBundle 'emonkak/vim-operator-sort'
 NeoBundle 'thinca/vim-textobj-between'
 NeoBundle 'thinca/vim-prettyprint'
 NeoBundle 'rhysd/vim-accelerate'
@@ -742,6 +810,8 @@ nnoremap <silent><Space>b :<C-u>Unite -quick-match -auto-resize -immediately -no
 nnoremap <silent><Space>B :<C-u>Unite -no-start-insert bookmark<CR>
 "プログラミングにおけるアウトラインの表示
 nnoremap <silent><Space>o :<C-u>Unite outline -vertical -no-start-insert<CR>
+"コマンドの出力
+nnoremap <silent><Space>cmd :<C-u>Unite output<CR>
 "grep検索．
 nnoremap <silent><Space>g :<C-u>Unite -no-start-insert grep<CR>
 "yank履歴
@@ -801,7 +871,7 @@ let g:vimshell_prompt = "(U'w'){ "
 let g:vimshell_split_height = 25
 
 "VimShell のキーマッピング {{{
-nmap <expr><Leader>vs "\<Plug>(vimshell_split_switch)"
+nmap <Leader>vs <Plug>(vimshell_split_switch)
 " }}}
 
 " }}}
@@ -1007,6 +1077,13 @@ let g:textobj_wiw_no_default_key_mappings = 1 " デフォルトキーマップ�
 omap ac <Plug>(textobj-wiw-a)
 omap ic <Plug>(textobj-wiw-i)
 " }}}
+
+" vim-operator {{{
+nmap <Leader>r <Plug>(operator-replace)
+vmap <Leader>r <Plug>(operator-replace)
+vmap <Leader>s <Plug>(operator-sort)
+"}}}
+
 
 " vim-indent-guides {{{
 let g:indent_guides_guide_size = 1
