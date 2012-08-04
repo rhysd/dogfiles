@@ -116,7 +116,7 @@ augroup Misc
     " 起動時メッセージ．ｲﾇｩ…
     autocmd VimEnter * echo "(U＾ω＾) enjoy vimming!"
     " *.md で読み込む filetype を変更（デフォルトは modula2）
-    autocmd BufRead *.md set ft=markdown
+    autocmd BufRead *.md setlocal ft=markdown
     " 保存時に行末のスペースを除去する
     autocmd BufWritePre * call <SID>clean_whitespaces()
 augroup END
@@ -155,7 +155,7 @@ inoremap <C-q><C-q> <ESC>:wqa<CR>
 " insertモードでもcmdmode
 inoremap <C-:> <Esc>:
 " 空行挿入
-nnoremap <silent><Space> :<C-u>call append(expand('.'), '')<CR>j
+nnoremap <silent><CR> :<C-u>call append(expand('.'), '')<CR>j
 "ヘルプ表示
 nnoremap <Leader>vh :vert bo help<Space>
 "insertモード時はEmacsライクなバインディング．ポップアップが出ないように移動．
@@ -207,8 +207,6 @@ nnoremap <silent>qo <C-w>o
 nnoremap <silent>qp <C-w>p
 nnoremap <silent>qr <C-w>r
 
-"<CR>の挙動
-nnoremap <CR> i<CR><ESC>
 "インサートモードで次の行に直接改行
 inoremap <C-j> <Esc>o
 "<BS>の挙動
@@ -238,6 +236,7 @@ augroup HelpMapping
     autocmd FileType help nnoremap <buffer>u <C-u>
     autocmd FileType help nnoremap <buffer>d <C-d>
     autocmd FileType help nnoremap <buffer>q :<C-u>q<CR>
+    autocmd FileType help nnoremap <buffer>x :<C-u>q<CR>
 augroup END
 " ペーストした文字列をビジュアルモードで選択
 nnoremap <expr>gp '`['.strpart(getregtype(),0,1).'`]'
@@ -684,9 +683,6 @@ let g:unite_enable_start_insert = 1
 let g:unite_source_file_mru_filename_format = ''
 " most recently used のリストサイズ
 let g:unite_source_file_mru_limit = 100
-" cursor highlight setting
-let g:unite_cursor_line_highlight = 'TabLineSel'
-" let g:unite_abbr_highlight = 'TabLine'
 " Unite起動時のウィンドウ分割
 let g:unite_split_rule = 'rightbelow'
 
@@ -733,44 +729,44 @@ augroup UniteMapping
     autocmd FileType unite nmap <buffer>l <Plug>(unite_do_default_action)
     autocmd FileType unite imap <buffer><expr>l unite#smart_map("l", unite#do_action(unite#get_current_unite().context.default_action))
 augroup END
-nnoremap <Leader>u <Nop>
+nnoremap <Space> <Nop>
 "バッファを開いた時のパスを起点としたファイル検索
-nnoremap <silent> <Leader>uff :<C-u>UniteWithBufferDir -buffer-name=files file -vertical<CR>
+nnoremap <silent><Space>ff :<C-u>UniteWithBufferDir -buffer-name=files file -vertical<CR>
 "最近使用したファイル
-nnoremap <silent> <Leader>um :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
+nnoremap <silent><Space>m :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
 "指定したディレクトリ以下を再帰的に開く
-nnoremap <silent> <Leader>uR :<C-u>UniteWithBufferDir -no-start-insert file_rec/async -auto-resize<CR>
+nnoremap <silent><Space>R :<C-u>UniteWithBufferDir -no-start-insert file_rec/async -auto-resize<CR>
 "バッファ一覧
-nnoremap <silent> <Leader>ub :<C-u>Unite -no-start-insert -auto-resize buffer<CR>
+nnoremap <silent><Space>b :<C-u>Unite -quick-match -auto-resize -immediately -no-empty -auto-preview buffer<CR>
 "ブックマークしたファイル/ディレクトリ
-nnoremap <silent> <Leader>uB :<C-u>Unite -no-start-insert bookmark<CR>
+nnoremap <silent><Space>B :<C-u>Unite -no-start-insert bookmark<CR>
 "プログラミングにおけるアウトラインの表示
-nnoremap <silent> <Leader>uo :<C-u>Unite outline -vertical -no-start-insert<CR>
+nnoremap <silent><Space>o :<C-u>Unite outline -vertical -no-start-insert<CR>
 "grep検索．
-nnoremap <silent> <Leader>ug :<C-u>Unite -no-start-insert grep<CR>
+nnoremap <silent><Space>g :<C-u>Unite -no-start-insert grep<CR>
 "yank履歴
-nnoremap <silent> <Leader>uy :<C-u>Unite -no-start-insert history/yank<CR>
+nnoremap <silent><Space>y :<C-u>Unite -no-start-insert history/yank<CR>
 "find
-nnoremap <silent> <Leader>uF :<C-u>Unite -no-start-insert find<CR>
+nnoremap <silent><Space>F :<C-u>Unite -no-start-insert find<CR>
 "helpを引く．絞り込み初期は候補が膨大になるのでワードを先に入力
-nnoremap <silent> <Leader>uh :<C-u>UniteWithInput -no-start-insert help<CR>
+nnoremap <silent><Space>h :<C-u>UniteWithInput -no-start-insert help<CR>
 "Uniteバッファの復元
-nnoremap <silent> <Leader>ur :<C-u>UniteResume<CR>
+nnoremap <silent><Space>r :<C-u>UniteResume<CR>
 "SpotLight の利用
 if has('mac')
-    nnoremap <silent> <Leader>uL :<C-u>UniteWithInput spotlight<CR>
+    nnoremap <silent><Space>L :<C-u>UniteWithInput spotlight<CR>
 else
-    nnoremap <silent> <Leader>uL :<C-u>UniteWithInput locate<CR>
+    nnoremap <silent><Space>L :<C-u>UniteWithInput locate<CR>
 endif
-nnoremap <silent> <Leader>ul :<C-u>Unite line<CR>
+nnoremap <silent><Space>l :<C-u>Unite line<CR>
 " NeoBundle
-nnoremap <silent><Leader>unb :<C-u>Unite neobundle/update<CR>
+nnoremap <silent><Space>nb :<C-u>Unite neobundle/update<CR>
 " Haskell Import
-autocmd HaskellMapping FileType haskell nnoremap <buffer><Leader>uhi :<C-u>UniteWithCursorWord haskellimport -immediately<CR>
+autocmd HaskellMapping FileType haskell nnoremap <buffer><Space>hi :<C-u>UniteWithCursorWord haskellimport -immediately<CR>
 " Git のルートディレクトリを開く
-nnoremap <silent><expr><Leader>ufg ":\<C-u>Unite file:".<SID>git_root_dir()."\<CR>"
+nnoremap <silent><expr><Space>fg ":\<C-u>Unite file -input=".fnamemodify(<SID>git_root_dir(),":p")
 " fold
-nnoremap <silent><Leader>ufl :<C-u>Unite fold -no-start-insert<CR>
+nnoremap <silent><Space>fl :<C-u>Unite fold -no-start-insert -no-empty<CR>
 " }}}
 
 " unite-rails コマンド {{{
@@ -876,6 +872,7 @@ nnoremap <Leader>ff :<C-u>VimFiler<CR>
 nnoremap <Leader>fn :<C-u>VimFiler<Space>-no-quit<CR>
 nnoremap <Leader>fh :<C-u>VimFiler<Space>~<CR>
 nnoremap <Leader>fc :<C-u>VimFilerCurrentDir<CR>
+nnoremap <Leader>fb :<C-u>VimFilerBufferDir<CR>
 nnoremap <expr><Leader>fg ":<C-u>VimFiler " . <SID>git_root_dir() . '\<CR>'
 
 " }}}
