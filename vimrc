@@ -87,7 +87,7 @@ endif
 "insertモードから抜けるときにIMをOFFにする（GUI(MacVim)は自動的にやってくれる
 "iminsert=2にすると，insertモードに戻ったときに自動的にIMの状態が復元される
 if !has("gui_running")
-    inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
+    inoremap <silent><ESC> <ESC>:set iminsert=0<CR>
 endif
 " 補完でプレビューウィンドウを開かない
 set completeopt=longest,menu
@@ -563,13 +563,13 @@ augroup END
 " }}}
 
 " Haskell {{{
-augroup HaskellMapping
-    autocmd!
-    autocmd FileType haskell nnoremap <buffer><silent><Leader>ht :<C-u>call <SID>ShowTypeHaskell(expand('<cword>'))<CR>
-augroup END
-function! s:ShowTypeHaskell(word)
-    echo join(split(system("ghc -isrc " . expand('%') . " -e ':t " . a:word . "'")))
-endfunction
+" augroup HaskellMapping
+"     autocmd!
+"     autocmd FileType haskell nnoremap <buffer><silent><Leader>ht :<C-u>call <SID>ShowTypeHaskell(expand('<cword>'))<CR>
+" augroup END
+" function! s:ShowTypeHaskell(word)
+"     echo join(split(system("ghc -isrc " . expand('%') . " -e ':t " . a:word . "'")))
+" endfunction
 command! Ghci :<C-u>VimshellInteractive ghci<CR>
 "}}}
 
@@ -929,7 +929,8 @@ vnoremap <silent><Leader>qr :QuickRun<CR>
 vnoremap <silent><Leader>qf :QuickRun >quickfix -runner vimproc<CR>
 nnoremap <silent><Leader>qR :<C-u>QuickRun<Space>
 if has('mac')
-    nnoremap <silent><Leader>qn :<C-u>call <SID>quickrun_notify()<CR>
+    nnoremap <silent><Leader>qn :<C-u>QuickRun >mac_notifier -runner vimproc<CR>
+    vnoremap <silent><Leader>qn :QuickRun >mac_notifier -runner vimproc<CR>
 end
 augroup QFixMapping
     autocmd!
@@ -1130,6 +1131,17 @@ if !has('gui_running')
     autocmd IndentGuidesAutoCmd VimEnter,Colorscheme * hi IndentGuidesEven ctermbg=240
 endif
 autocmd IndentGuidesAutoCmd FileType haskell,python,haml call indent_guides#enable()
+"}}}
+
+" ghcmod-vim {{{
+augroup GhcModSetting
+    autocmd!
+    autocmd FileType haskell nnoremap <buffer><silent><C-t> :<C-u>GhcModType<CR>
+    autocmd BufWritePost *.hs GhcModCheckAndLintAsync
+    autocmd FileType haskell let &l:statusline = '%{empty(getqflist()) ? "[No Errors] " : "[Errors Found] "}'
+                                               \ . (empty(&l:statusline) ? &statusline : &l:statusline)
+    autocmd FileType haskell nnoremap <buffer><silent><Esc><Esc> :<C-u>nohlsearch<CR>:HierClear<CR>:GhcModTypeClear<CR><Esc>
+augroup END
 "}}}
 
 "endwise.vim {{{
