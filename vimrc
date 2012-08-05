@@ -508,6 +508,7 @@ augroup END
 " C++ {{{
 
 " {} の展開．cinoptions とかでできそうな気もする．
+" smartinput でもできるはずだけれど，my-endwise で <CR> が設定済みのため反映されない
 function! s:cpp_expand_brace()
     let cmd = ""
     let curline = getline('.')
@@ -524,6 +525,7 @@ function! s:cpp_expand_brace()
 endfunction
 
 " -> decltype(expr) の補完
+" constexpr auto func_name(...) を仮定
 function! s:return_type_completion()
     let cur_line = getline('.')
     if cur_line =~#
