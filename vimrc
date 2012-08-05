@@ -1,13 +1,17 @@
 " Base settings {{{
-let mapleader = ','
 
+"エンコーディング
+set encoding=utf-8
+"vi協調モードoff
+set nocompatible
+" user-defined prefix
+let mapleader = ','
+" シンタックスハイライト
 syntax enable
 "行番号表示
 set number
 "バックアップファイルいらない
 set nobackup
-"vi協調モードoff
-set nocompatible
 " 言語設定
 language message C
 language time C
@@ -26,8 +30,6 @@ set wrapscan
 set showmatch
 "カーソルが何行何列目にあるか表示する
 set ruler
-"エンコーディング
-set encoding=utf-8
 "最下ウィンドウにステータス行が表示される時
 "1: ウィンドウの数が2以上 2:常
 set laststatus=2
@@ -54,6 +56,8 @@ set shortmess& shortmess+=I
 set iminsert=0 imsearch=0
 "IMを使う
 set noimdisable
+" 検索結果をハイライト
+set hlsearch
 "コマンドラインでのIM無効化
 set noimcmdline
 "バックスペースでなんでも消せるように
@@ -70,6 +74,8 @@ set clipboard& clipboard+=unnamed
 set virtualedit& virtualedit+=block
 "改行コードの自動認識
 set fileformats=unix,mac,dos
+"行を折り返さない
+set textwidth=0
 "コマンド実行中は再描画しない
 set lazyredraw
 "高速ターミナル接続を行う
@@ -119,6 +125,11 @@ augroup Misc
     autocmd VimEnter * echo "(U＾ω＾) enjoy vimming!"
     " *.md で読み込む filetype を変更（デフォルトは modula2）
     autocmd BufRead *.md setlocal ft=markdown
+    " カーソル位置の復元
+    autocmd BufReadPost *
+        \ if line("'\"") > 1 && line("'\"") <= line("$") |
+        \   exe "normal! g`\"" |
+        \ endif
     " 保存時に行末のスペースを除去する
     autocmd BufWritePre * call <SID>clean_whitespaces()
     " Hack #202: 自動的にディレクトリを作成する
@@ -157,11 +168,9 @@ nnoremap ^ 0
 vnoremap ^ 0
 nnoremap - $
 vnoremap - $
-" q:は誤爆しやすい
+" コマンドラインウィンドウ
 nnoremap q; q:
-nnoremap <C-:> q:
-nnoremap q: :q
-" q も誤爆しやすい
+" q 誤爆しやすい
 nnoremap q <Nop>
 nnoremap qq q
 " 検索後画面の中心に。
@@ -259,13 +268,14 @@ nnoremap <expr>gp '`['.strpart(getregtype(),0,1).'`]'
 " 最後にヤンクしたテキストを貼り付け．
 nnoremap P "0P
 " 日付の挿入
-" inoremap <C-x>date <C-r>=strftime('%Y/%m/%d(%a) %H:%M')<CR>
 nnoremap <Leader>date :r<Space>!date<Space>+'\%Y/\%m/\%d(\%a)<Space>\%H:\%M'<CR>
+
 " タブの設定
 nnoremap <Leader>te :<C-u>tabnew<CR>
 nnoremap <Leader>tn :<C-u>tabnext<CR>
 nnoremap <Leader>tp :<C-u>tabprevious<CR>
 nnoremap <Leader>tc :<C-u>tabclose<CR>
+nnoremap <S-Tab> :<C-u>tabnext<CR>
 " 行表示・非表示の切り替え．少しでも横幅が欲しい時は OFF に
 nnoremap <Leader>nu :<C-u>set number! \| set number?<CR>
 " カーソルを中央に固定する
@@ -284,8 +294,8 @@ nnoremap K :<C-u>help <C-r><C-w><CR>
 " 最小構成で必要な関数 "{{{
 " clean unnecessary whitespaces
 function! s:clean_whitespaces()
-    retab!
     let cursor = getpos(".")
+    retab!
     %s/\s\+$//ge
     call setpos(".", cursor)
     unlet cursor
@@ -294,7 +304,9 @@ endfunction
 
 " 最小限の設定と最小限のプラグインだけ読み込む {{{
 " % vim --cmd "g:linda_pp_startup_with_tiny = 1" で起動した時
-if exists("g:linda_pp_startup_with_tiny") && g:linda_pp_startup_with_tiny
+" または vi という名前の シンボリックリンク越しに vim を起動した時
+if (exists("g:linda_pp_startup_with_tiny") && g:linda_pp_startup_with_tiny)
+            \ || v:progname ==# 'vi'
     let g:caw_no_default_keymappings = 1
     if has('vim_starting')
         set rtp+=~/.vim/bundle/caw.vim
@@ -311,6 +323,7 @@ endif
 " clean unnecessary whitespaces
 command! CleanSpaces :call <SID>clean_whitespaces()
 
+command! Date :call setline('.', getline('.') . strftime('%Y/%m/%d (%a) %H:%M'))
 " open config file
 command! Vimrc call s:edit_myvimrc()
 function! s:edit_myvimrc()
@@ -478,11 +491,6 @@ endfunction
 " Linux {{{
 if s:has_linux()
     set background=dark
-    " カーソル位置の復元
-    autocmd Misc BufReadPost *
-        \ if line("'\"") > 1 && line("'\"") <= line("$") |
-        \   exe "normal! g`\"" |
-        \ endif
     " 256色使う
     set t_Co=256
 endif
@@ -590,7 +598,6 @@ NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'tyru/caw.vim'
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'h1mesuke/unite-outline'
-NeoBundle 'tsukkee/unite-help'
 NeoBundle 'osyo-manga/unite-fold'
 NeoBundle 'vim-jp/vimdoc-ja'
 NeoBundle 'jceb/vim-hier'
@@ -621,6 +628,7 @@ NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'basyura/unite-rails'
 if has('mac')
     NeoBundle 'choplin/unite-spotlight'
+    NeoBundle 'rhysd/quickrun-mac_notifier-outputter'
 elseif s:has_linux()
     NeoBundle 'ujihisa/unite-locate'
     NeoBundle 'Lokaltog/vim-powerline'
@@ -641,8 +649,21 @@ NeoBundle 'Align'
 
 filetype plugin indent on     " required!
 
+" NeoBundleUpdate はすべての更新をチェックしていて時間がかかるので，
+" 頻繁に更新されているものを登録してそれだけアップデートする
+let s:neobundle_busy_plugins = [ "vimproc", "vimshell", "vimfiler", "neocomplcache",
+                               \ "clang_complete", "vim-quickrun", "unite.vim",
+                               \ "vim-smartinput" ]
+function! s:update_busy_bundles()
+    for plugin in s:neobundle_busy_plugins
+        execute 'NeoBundleUpdate ' . plugin
+    endfor
+endfunction
+command! NeoBundleUpdateBusyPlugins :call <SID>update_busy_bundles()
+
 " NeoBundle のキーマップ{{{
-nnoremap <silent><Leader>nbu   :<C-u>NeoBundleUpdate<CR>
+nnoremap <silent><Leader>nbu   :<C-u>NeoBundleUpdateBusyPlugins<CR>
+nnoremap <silent><Leader>nbU   :<C-u>NeoBundleUpdate<CR>
 nnoremap <silent><Leader>nbc   :<C-u>NeoBundleClean<CR>
 nnoremap <silent><Leader>nbi   :<C-u>NeoBundleInstall<CR>
 nnoremap <silent><Leader>nbl   :<C-u>NeoBundleList<CR>
@@ -830,7 +851,10 @@ else
 endif
 nnoremap <silent><Space>l :<C-u>Unite line<CR>
 " NeoBundle
-nnoremap <silent><Space>nb :<C-u>Unite neobundle/update<CR>
+nnoremap <silent><Space>nbu :<C-u>Unite neobundle/update<CR>
+nnoremap <silent><Space>nbi :<C-u>Unite neobundle/install<CR>
+nnoremap <silent><Space>nbs :<C-u>Unite neobundle/search<CR>
+nnoremap <silent><Space>nbl :<C-u>Unite neobundle/log<CR>
 " Haskell Import
 autocmd HaskellMapping FileType haskell nnoremap <buffer><Space>hi :<C-u>UniteWithCursorWord haskellimport -immediately<CR>
 " Git のルートディレクトリを開く
@@ -862,10 +886,10 @@ command! R execute 'Unite rails/model rails/controller rails/view -no-start-inse
 " VimShellの設定 {{{
 " 追加プロンプト
 let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
-let g:vimshell_right_prompt = 'system("date \"+%Y/%m/%d %H:%M\"")'
+let g:vimshell_right_prompt = 'strftime("%Y/%m/%d %H:%M")'
 let g:vimshell_prompt = "(U'w'){ "
 " let g:vimshell_prompt = "(U^w^){ "
-" 右プロンプト ( vcs#info は deprecated )
+" 右プロンプト ( vimshell#vcs#info は deprecated )
 " let g:vimshell_right_prompt = 'vimshell#vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
 " 分割割合(%)
 let g:vimshell_split_height = 25
@@ -885,17 +909,28 @@ if !has("g:quickrun_config")
 endif
 "C++
 let g:quickrun_config.cpp = { 'command' : 'g++-4.7', 'cmdopt' : '-std=c++11 -Wall -Wextra -O2 ' }
-"QuickRun 実行時のバッファの開き方
+"QuickRun 結果の開き方
 let g:quickrun_config._ = { 'outputter' : 'unite_qf', 'split' : 'rightbelow 10sp' }
+
+" 実行結果を通知センターで通知
+if has('mac')
+    function! s:quickrun_notify()
+        let cmd = substitute(input("input command: "), '"', "'", 'g')
+        execute 'QuickRun >mac_notifier run/vimproc -exec "'.cmd.'"'
+    endfunction
+    command! CmdNotify :call <SID>quickrun_notify()
+end
 
 "QuickRunのキーマップ {{{
 nnoremap <Leader>q  <Nop>
 nnoremap <silent><Leader>qr :<C-u>QuickRun<CR>
-nnoremap <silent><Leader>qc :<C-u>QuickRun -outputter 'quickfix'<CR>
-vnoremap <silent><Leader>qr :<C-u>QuickRun<CR>
-vnoremap <silent><Leader>qc :<C-u>QuickRun -outputter 'quickfix'<CR>
+nnoremap <silent><Leader>qf :<C-u>QuickRun >quickfix -runner vimproc<CR>
+vnoremap <silent><Leader>qr :QuickRun<CR>
+vnoremap <silent><Leader>qf :QuickRun >quickfix -runner vimproc<CR>
 nnoremap <silent><Leader>qR :<C-u>QuickRun<Space>
-nnoremap <silent><Leader>ql v:<C-u>'<,'>QuickRun -outputter 'quickfix'<CR>
+if has('mac')
+    nnoremap <silent><Leader>qn :<C-u>call <SID>quickrun_notify()<CR>
+end
 augroup QFixMapping
     autocmd!
     autocmd FileType qf nnoremap <buffer><silent> q :q<CR>
@@ -1083,7 +1118,6 @@ nmap <Leader>r <Plug>(operator-replace)
 vmap <Leader>r <Plug>(operator-replace)
 vmap <Leader>s <Plug>(operator-sort)
 "}}}
-
 
 " vim-indent-guides {{{
 let g:indent_guides_guide_size = 1

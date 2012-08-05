@@ -2,7 +2,6 @@ export LANG=ja_JP.UTF-8
 
 # export PATH=/opt/local/bin:$PATH
 export PATH=/usr/local/bin:$PATH
-export PATH=/usr/local/switcher.bin:$PATH
 export PATH=/usr/local/texlive/2011/bin/x86_64-darwin:$PATH
 export PATH=$HOME/.cabal/bin:$PATH
 
@@ -11,7 +10,7 @@ export GREP_OPTIONS=--color=auto
 
 alias sudo='sudo '
 
-alias g++='g++ -std=c++0x -Wall -Wextra -O2'
+alias g++='g++-4.7 -std=c++0x -Wall -Wextra -O2'
 alias -g g=g++
 function run-gcc(){
     set -e
