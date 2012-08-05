@@ -79,6 +79,8 @@ set virtualedit& virtualedit+=block
 set fileformats=mac,unix,dos
 "行を折り返さない
 set textwidth=0
+"コマンド表示
+set showcmd
 "コマンド実行中は再描画しない
 set lazyredraw
 "高速ターミナル接続を行う
@@ -177,12 +179,14 @@ nnoremap q; q:
 nnoremap q <Nop>
 nnoremap qq q
 " 検索後画面の中心に。
-nnoremap n nzz
-nnoremap N Nzz
+nnoremap n nzzzv
+nnoremap N Nzzzv
 " insertモードでもquit
 inoremap <C-q><C-q> <ESC>:wqa<CR>
 " insertモードでもcmdmode
 inoremap <C-:> <Esc>:
+" Q で終了
+nnoremap Q :<C-u>q<CR>
 " 空行挿入
 nnoremap <silent><CR> :<C-u>call append(expand('.'), '')<CR>j
 "ヘルプ表示
@@ -207,7 +211,6 @@ cnoremap <C-d> <Del>
 " Emacsライク<C-k> http://vim.g.hatena.ne.jp/tyru/20100116
 inoremap <silent><expr><C-k> "\<C-g>u".(col('.') == col('$') ? '<C-o>gJ' : '<C-o>D')
 cnoremap <C-k> <C-\>e getcmdpos() == 1 ? '' : getcmdline()[:getcmdpos()-2]<CR>
-
 "バッファ切り替え
 nnoremap <silent><C-n>   :<C-u>bnext<CR>
 nnoremap <silent><C-p>   :<C-u>bprevious<CR>
@@ -661,7 +664,7 @@ filetype plugin indent on     " required!
 " 頻繁に更新されているものを手動で登録してそれだけアップデートする
 let s:neobundle_busy_plugins = [ "vimproc", "vimshell", "vimfiler", "neocomplcache",
                                \ "clang_complete", "vim-quickrun", "unite.vim",
-                               \ "vim-smartinput", "ghcmod-vim" ]
+                               \ "ghcmod-vim" ]
 function! s:update_busy_bundles()
     for plugin in s:neobundle_busy_plugins
         execute 'NeoBundleUpdate ' . plugin
@@ -781,6 +784,10 @@ let g:unite_source_file_mru_filename_format = ''
 let g:unite_source_file_mru_limit = 100
 " Unite起動時のウィンドウ分割
 let g:unite_split_rule = 'rightbelow'
+" 使わないデフォルト Unite ソースをロードしない
+let g:loaded_unite_source_bookmark = 1
+let g:loaded_unite_source_tab = 1
+let g:loaded_unite_source_window = 1
 
 function! s:rails_mvc_name()
     let full_path = expand('%:p')
@@ -834,8 +841,6 @@ nnoremap <silent><Space>m :<C-u>Unite -no-start-insert file_mru directory_mru<CR
 nnoremap <silent><Space>R :<C-u>UniteWithBufferDir -no-start-insert file_rec/async -auto-resize<CR>
 "バッファ一覧
 nnoremap <silent><Space>b :<C-u>Unite -quick-match -auto-resize -immediately -no-empty -auto-preview buffer<CR>
-"ブックマークしたファイル/ディレクトリ
-nnoremap <silent><Space>B :<C-u>Unite -no-start-insert bookmark<CR>
 "プログラミングにおけるアウトラインの表示
 nnoremap <silent><Space>o :<C-u>Unite outline -vertical -no-start-insert<CR>
 "コマンドの出力
