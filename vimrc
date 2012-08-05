@@ -856,7 +856,10 @@ nnoremap <silent><Space>nbi :<C-u>Unite neobundle/install<CR>
 nnoremap <silent><Space>nbs :<C-u>Unite neobundle/search<CR>
 nnoremap <silent><Space>nbl :<C-u>Unite neobundle/log<CR>
 " Haskell Import
-autocmd HaskellMapping FileType haskell nnoremap <buffer><Space>hi :<C-u>UniteWithCursorWord haskellimport -immediately<CR>
+augroup HaskellImport
+    autocmd!
+    autocmd FileType haskell nnoremap <buffer><Space>hi :<C-u>UniteWithCursorWord haskellimport -immediately<CR>
+augroup END
 " Git のルートディレクトリを開く
 nnoremap <silent><expr><Space>fg ":\<C-u>Unite file -input=".fnamemodify(<SID>git_root_dir(),":p")
 " fold
