@@ -2,6 +2,9 @@
 
 "エンコーディング
 set encoding=utf-8
+set termencoding=utf-8
+set fileencoding=utf-8
+set fileencodings=utf-8,euc-jp,cp932
 "vi協調モードoff
 set nocompatible
 " user-defined prefix
@@ -73,7 +76,7 @@ set clipboard& clipboard+=unnamed
 "矩形選択で自由に移動する
 set virtualedit& virtualedit+=block
 "改行コードの自動認識
-set fileformats=unix,mac,dos
+set fileformats=mac,unix,dos
 "行を折り返さない
 set textwidth=0
 "コマンド実行中は再描画しない
@@ -655,10 +658,10 @@ NeoBundle 'Align'
 filetype plugin indent on     " required!
 
 " NeoBundleUpdate はすべての更新をチェックしていて時間がかかるので，
-" 頻繁に更新されているものを登録してそれだけアップデートする
+" 頻繁に更新されているものを手動で登録してそれだけアップデートする
 let s:neobundle_busy_plugins = [ "vimproc", "vimshell", "vimfiler", "neocomplcache",
                                \ "clang_complete", "vim-quickrun", "unite.vim",
-                               \ "vim-smartinput" ]
+                               \ "vim-smartinput", "ghcmod-vim" ]
 function! s:update_busy_bundles()
     for plugin in s:neobundle_busy_plugins
         execute 'NeoBundleUpdate ' . plugin
@@ -668,11 +671,10 @@ command! NeoBundleUpdateBusyPlugins :call <SID>update_busy_bundles()
 
 " NeoBundle のキーマップ{{{
 nnoremap <silent><Leader>nbu   :<C-u>NeoBundleUpdateBusyPlugins<CR>
-nnoremap <silent><Leader>nbU   :<C-u>NeoBundleUpdate<CR>
+nnoremap <silent><Leader>nbU   :<C-u>NeoBundleUpdate<CR> "すべて更新するときは基本的に Unite で非同期に実行
 nnoremap <silent><Leader>nbc   :<C-u>NeoBundleClean<CR>
 nnoremap <silent><Leader>nbi   :<C-u>NeoBundleInstall<CR>
 nnoremap <silent><Leader>nbl   :<C-u>NeoBundleList<CR>
-nnoremap <silent><Leader>nbd   :<C-u>NeoBundleDocs<CR>
 " }}}
 
 " }}}
