@@ -554,10 +554,13 @@ augroup CppMapping
     au!
     autocmd FileType cpp inoremap <buffer>,  ,<Space>
     autocmd FileType cpp inoremap <buffer>;; ::
-    autocmd FileType cpp inoremap <buffer><C-s>      std::
-    autocmd FileType cpp inoremap <buffer><C-x>      boost::
+    autocmd FileType cpp inoremap <buffer><C-s>s      <C-o>Bstd::<End>
+    autocmd FileType cpp inoremap <buffer><C-s>b      <C-o>Bboost::<End>
     autocmd FileType cpp inoremap <silent><buffer><expr><CR> <SID>cpp_expand_brace()."\<CR>"
     autocmd FileType cpp nnoremap <buffer><Leader>ret :<C-u>call <SID>return_type_completion()<CR>
+    autocmd FileType cpp nnoremap <buffer><Leader>s Bistd::<Esc>
+    autocmd FileType cpp nnoremap <buffer><Leader>b Biboost::<Esc>
+    autocmd FileType cpp nnoremap <buffer><Leader>d Bidetail::<Esc>
 augroup END
 
 " }}}
