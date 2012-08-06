@@ -476,7 +476,7 @@ endfunction
 
 "}}}
 
-" helper functions {{{
+" helpers {{{
 
 " git のルートディレクトリを開く
 function! s:git_root_dir()
@@ -488,14 +488,16 @@ function! s:git_root_dir()
 endfunction
 
 " Linux かどうか判定
-function! s:has_linux()
-    return !has('mac') && has('unix')
-endfunction
+let s:has_linux = !has('mac') && has('unix')
+" 本当はこっちのほうが良いが，速度面で難あり
+" s:has_linux = executable('uname') && system('uname') == "Linux\n"
+" これは Arch Linux だと使えない
+" s:has_linux = executable('lsb_release')
 
 "}}}
 
 " Linux {{{
-if s:has_linux()
+if s:has_linux
     set background=dark
     " 256色使う
     set t_Co=256
@@ -558,6 +560,44 @@ function! s:return_type_completion()
     unlet cur_line
 endfunction
 
+" ヘッダファイルとソースファイルを入れ替える
+function! s:cpp_hpp()
+    let cpps = ['cpp', 'cc', 'cxx', 'c']
+    let hpps = ['hpp', 'h']
+    let ext = expand('%:e')
+    let base = expand('%:r')
+
+    " ソースファイルのとき
+    if count(cpps,ext) != 0
+        for hpp in hpps
+            if filereadable(base.'.'.hpp)
+                execute 'edit '.base.'.'.hpp
+                return
+            endif
+        endfor
+    endif
+
+    " ヘッダファイルのとき
+    if count(hpps,ext) != 0
+        for cpp in cpps
+            if filereadable(base.'.'.cpp)
+                execute 'edit '.base.'.'.cpp
+                return
+            endif
+        endfor
+    endif
+
+    " なければ Unite で検索
+    if has('mac')
+        execute "Unite spotlight -input=".base
+    elseif s:has_linux
+        execute "Unite locate -input=".base
+    endif
+
+endfunction
+
+command! CppHpp :call <SID>cpp_hpp()
+
 augroup CppMapping
     au!
     autocmd FileType cpp inoremap <buffer>,  ,<Space>
@@ -569,6 +609,7 @@ augroup CppMapping
     autocmd FileType cpp nnoremap <buffer><Leader>s Bistd::<Esc>
     autocmd FileType cpp nnoremap <buffer><Leader>b Biboost::<Esc>
     autocmd FileType cpp nnoremap <buffer><Leader>d Bidetail::<Esc>
+    autocmd FileType cpp nnoremap <silent><buffer><C-t> :<C-u>call <SID>cpp_hpp()<CR>
 augroup END
 
 " }}}
@@ -624,7 +665,7 @@ NeoBundle 'kana/vim-operator-replace'
 NeoBundle 'emonkak/vim-operator-sort'
 NeoBundle 'thinca/vim-textobj-between'
 NeoBundle 'thinca/vim-prettyprint'
-NeoBundle 'rhysd/vim-accelerate'
+NeoBundle 'rhysd/accelerated-jk'
 NeoBundle 'kana/vim-smartinput'
 NeoBundle 'thinca/vim-ref'
 " NeoBundle 'kana/vim-filetype-haskell'
@@ -640,7 +681,7 @@ NeoBundle 'basyura/unite-rails'
 if has('mac')
     NeoBundle 'choplin/unite-spotlight'
     NeoBundle 'rhysd/quickrun-mac_notifier-outputter'
-elseif s:has_linux()
+elseif s:has_linux
     NeoBundle 'ujihisa/unite-locate'
     NeoBundle 'Lokaltog/vim-powerline'
 endif
@@ -956,6 +997,11 @@ augroup END
 " }}}
 
 " }}}
+
+" accelerated-jk "{{{
+nmap <silent>j <Plug>(accelerated_jk_gj)
+nmap <silent>k <Plug>(accelerated_jk_gk)
+"}}}
 
 " Hier.vim {{{
 "CUIだとエラーハイライトが見づらいので修正
