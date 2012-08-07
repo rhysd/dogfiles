@@ -136,7 +136,7 @@ augroup Misc
         \   exe "normal! g`\"" |
         \ endif
     " 保存時に行末のスペースを除去する
-    autocmd BufWritePre * call <SID>clean_whitespaces()
+        " autocmd BufWritePre * call <SID>clean_whitespaces()
     " Hack #202: 自動的にディレクトリを作成する
     " http://vim-users.jp/2011/02/hack202/
     autocmd BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'), v:cmdbang)
@@ -1192,7 +1192,7 @@ let g:indent_guides_guide_size = 1
 augroup IndentGuidesAutoCmd
     autocmd!
 augroup END
-if !has('gui_running')
+if !has('gui_running') && &t_Co >= 256
     let g:indent_guides_auto_colors = 0
     autocmd IndentGuidesAutoCmd VimEnter,Colorscheme * hi IndentGuidesOdd  ctermbg=233
     autocmd IndentGuidesAutoCmd VimEnter,Colorscheme * hi IndentGuidesEven ctermbg=240
@@ -1213,7 +1213,7 @@ augroup END
 
 "endwise.vim {{{
 augroup EndWiseMapping
-autocmd!
-autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"
+    autocmd!
+    autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"
 augroup END
 " }}}
