@@ -110,17 +110,17 @@ if has('persistent_undo')
     set undofile
 endif
 " command-line-window の縦幅
-" set cmdwinheight=14
+    " set cmdwinheight=14
 " Ruby シンタックスチェック
-" function! s:ExecuteMake()
-"   if &filetype == 'ruby' && expand('%:t') !~? '^pry\d\{8}.\+\.rb'
-"     silent make! -c "%" | redraw!
-"   endif
-" endfunction
-" compiler ruby
-" augroup rbsyntaxcheck
-"   autocmd BufWritePost <buffer> call s:ExecuteMake()
-" augroup END
+    " function! s:ExecuteMake()
+    "   if &filetype == 'ruby' && expand('%:t') !~? '^pry\d\{8}.\+\.rb'
+    "     silent make! -c "%" | redraw!
+    "   endif
+    " endfunction
+    " compiler ruby
+    " augroup rbsyntaxcheck
+    "   autocmd BufWritePost <buffer> call s:ExecuteMake()
+    " augroup END
 " ステータスライン
 set ruf=%45(%12f%=\ %m%{'['.(&fenc!=''?&fenc:&enc).']'}\ %l-%v\ %p%%\ [%02B]%)
 set statusline=%f:\ %{substitute(getcwd(),'.*/','','')}\ %m%=%{(&fenc!=''?&fenc:&enc).':'.strpart(&ff,0,1)}\ %l-%v\ %p%%\ %02B
@@ -215,27 +215,29 @@ cnoremap <C-k> <C-\>e getcmdpos() == 1 ? '' : getcmdline()[:getcmdpos()-2]<CR>
 nnoremap <silent><C-n>   :<C-u>bnext<CR>
 nnoremap <silent><C-p>   :<C-u>bprevious<CR>
 "CTRL-hjklでウィンドウ移動．横幅が小さすぎる場合は自動でリサイズする．
-" function! s:good_width()
-"     if winwidth(0) < 84
-"         vertical resize 84
-"     endif
-" endfunction
-" nnoremap <silent><C-j> <C-w>j:call <SID>good_width()<CR>
-" nnoremap <silent><C-h> <C-w>h:call <SID>good_width()<CR>
-" nnoremap <silent><C-l> <C-w>l:call <SID>good_width()<CR>
-" nnoremap <silent><C-k> <C-w>k:call <SID>good_width()<CR>
+    " function! s:good_width()
+    "     if winwidth(0) < 84
+    "         vertical resize 84
+    "     endif
+    " endfunction
+    " nnoremap <silent><C-j> <C-w>j:call <SID>good_width()<CR>
+    " nnoremap <silent><C-h> <C-w>h:call <SID>good_width()<CR>
+    " nnoremap <silent><C-l> <C-w>l:call <SID>good_width()<CR>
+    " nnoremap <silent><C-k> <C-w>k:call <SID>good_width()<CR>
+" <C-w> -> q
 nnoremap <silent>qj <C-w>j
 nnoremap <silent>qk <C-w>k
 nnoremap <silent>qh <C-w>h
 nnoremap <silent>ql <C-w>l
 nnoremap <silent>qv <C-w>v
-nnoremap <silent>qs <C-w>
+nnoremap <silent>qs <C-w>s
 nnoremap <silent>q] <C-w>]
 nnoremap <silent>qc <C-w>c
 nnoremap <silent>qn <C-w>n
 nnoremap <silent>qo <C-w>o
 nnoremap <silent>qp <C-w>p
 nnoremap <silent>qr <C-w>r
+nnoremap <silent>qf <C-w>f
 "インサートモードで次の行に直接改行
 inoremap <C-j> <Esc>o
 "<BS>の挙動
@@ -270,7 +272,7 @@ augroup END
 " ペーストした文字列をビジュアルモードで選択
 nnoremap <expr>gp '`['.strpart(getregtype(),0,1).'`]'
 " 貼り付けは P のほうが好みかも
-" nnoremap p P
+    " nnoremap p P
 " 最後にヤンクしたテキストを貼り付け．
 nnoremap P "0P
 " 日付の挿入
@@ -292,7 +294,7 @@ inoremap <C-r>* <C-o>:set paste<CR><C-r>*<C-o>:set nopaste<CR>
 nnoremap K :<C-u>help <C-r><C-w><CR>
 " TODO v で選択した範囲を help
 " 貼り付けはインデントを揃える
-" nnoremap p ]p
+    " nnoremap p ]p
 " }}}
 
 "}}}
@@ -490,9 +492,9 @@ endfunction
 " Linux かどうか判定
 let s:has_linux = !has('mac') && has('unix')
 " 本当はこっちのほうが良いが，速度面で難あり
-" s:has_linux = executable('uname') && system('uname') == "Linux\n"
+    " s:has_linux = executable('uname') && system('uname') == "Linux\n"
 " これは Arch Linux だと使えない
-" s:has_linux = executable('lsb_release')
+    " s:has_linux = executable('lsb_release')
 
 "}}}
 
@@ -615,13 +617,13 @@ augroup END
 " }}}
 
 " Haskell {{{
-" augroup HaskellMapping
-"     autocmd!
-"     autocmd FileType haskell nnoremap <buffer><silent><Leader>ht :<C-u>call <SID>ShowTypeHaskell(expand('<cword>'))<CR>
-" augroup END
-" function! s:ShowTypeHaskell(word)
-"     echo join(split(system("ghc -isrc " . expand('%') . " -e ':t " . a:word . "'")))
-" endfunction
+    " augroup HaskellMapping
+    "     autocmd!
+    "     autocmd FileType haskell nnoremap <buffer><silent><Leader>ht :<C-u>call <SID>ShowTypeHaskell(expand('<cword>'))<CR>
+    " augroup END
+    " function! s:ShowTypeHaskell(word)
+    "     echo join(split(system("ghc -isrc " . expand('%') . " -e ':t " . a:word . "'")))
+    " endfunction
 command! Ghci :<C-u>VimshellInteractive ghci<CR>
 "}}}
 
@@ -633,8 +635,6 @@ if has('vim_starting')
     call neobundle#rc(expand('~/.vim/bundle'))
 endif
 
-" Bundle 'gmarik/vundle'
-
 " GitHub上のリポジトリ
 NeoBundle 'Shougo/vimproc'
 NeoBundle 'Shougo/vimshell'
@@ -642,7 +642,7 @@ NeoBundle 'Shougo/vimfiler'
 NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'Shougo/neocomplcache-snippets-complete'
 NeoBundle 'vim-jp/cpp-vim'
-" NeoBundle 'Rip-Rip/clang_complete'
+    " NeoBundle 'Rip-Rip/clang_complete'
 NeoBundle 'rhysd/clang_complete'
 NeoBundle 'osyo-manga/neocomplcache-clang_complete'
 NeoBundle 'rhysd/home-made-snippets'
@@ -653,9 +653,8 @@ NeoBundle 'h1mesuke/unite-outline'
 NeoBundle 'osyo-manga/unite-fold'
 NeoBundle 'vim-jp/vimdoc-ja'
 NeoBundle 'jceb/vim-hier'
-" NeoBundle 'rhysd/my-vimtoggle'
 NeoBundle 'rhysd/my-endwise'
-" NeoBundle 'tpope/vim-endwise'
+    " NeoBundle 'tpope/vim-endwise'
 NeoBundle 'kana/vim-textobj-user'
 NeoBundle 'kana/vim-textobj-indent'
 NeoBundle 'kana/vim-textobj-lastpat'
@@ -668,7 +667,7 @@ NeoBundle 'thinca/vim-prettyprint'
 NeoBundle 'rhysd/accelerated-jk'
 NeoBundle 'kana/vim-smartinput'
 NeoBundle 'thinca/vim-ref'
-" NeoBundle 'kana/vim-filetype-haskell'
+    " NeoBundle 'kana/vim-filetype-haskell'
 NeoBundle 'rhysd/vim-filetype-haskell'
 NeoBundle 'ujihisa/ref-hoogle'
 NeoBundle 'ujihisa/neco-ghc'
@@ -685,19 +684,19 @@ elseif s:has_linux
     NeoBundle 'ujihisa/unite-locate'
     NeoBundle 'Lokaltog/vim-powerline'
 endif
-" NeoBundle 'rhysd/ref-rurema'
-" NeoBundle 'ujihisa/vimshell-ssh'
-" NeoBundle 'h1mesuke/vim-alignta'
-" NeoBundle 'ujihisa/unite-colorscheme'
-" NeoBundle 'ujihisa/neco-look'
+    " NeoBundle 'rhysd/ref-rurema'
+    " NeoBundle 'ujihisa/vimshell-ssh'
+    " NeoBundle 'h1mesuke/vim-alignta'
+    " NeoBundle 'ujihisa/unite-colorscheme'
+    " NeoBundle 'ujihisa/neco-look'
 
 " vim-scripts上のリポジトリ
 NeoBundle 'Align'
-" NeoBundle 'errormarker.vim'
-" NeoBundle 'endwise.vim'
+    " NeoBundle 'errormarker.vim'
+    " NeoBundle 'endwise.vim'
 
 " その他のgitリポジトリ
-" NeoBundle 'git://git.wincent.com/command-t.git'
+    " NeoBundle 'git://git.wincent.com/command-t.git'
 
 filetype plugin indent on     " required!
 
@@ -731,7 +730,7 @@ let g:neocomplcache_enable_at_startup = 1
 "smart_caseを有効にする．大文字が入力されるまで大文字小文字の区別をなくす
 let g:neocomplcache_enable_smart_case = 1
 " CamelCase補完有効化
-"let g:neocomplcache_enable_camel_case_completion = 1
+    "let g:neocomplcache_enable_camel_case_completion = 1
 "_を区切りとした補完を有効にする
 let g:neocomplcache_enable_underbar_completion = 1
 "シンタックスをキャッシュするときの最小文字長を3に
@@ -750,7 +749,7 @@ let g:neocomplcache_dictionary_filetype_lists = {
             \ 'vimshell' : expand('~/.vimshell/command-history'),
             \ }
 "リストの最大幅を指定
-"let g:neocomplcache_max_filename_width = 25
+    "let g:neocomplcache_max_filename_width = 25
 "ctagsへのパス
 let g:neocomplcache_ctags_program = '/usr/local/bin/ctags'
 "区切り文字パターンの定義
@@ -785,12 +784,12 @@ autocmd FileType css set omnifunc=csscomplete#CompleteCss
 autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
 autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 autocmd FileType c set omnifunc=ccomplete#Complete
-" autocmd FileType ruby set omnifunc=rubycomplete#Complete
+    " autocmd FileType ruby set omnifunc=rubycomplete#Complete
 " Enable heavy omni completion.
 if !exists('g:neocomplcache_omni_patterns')
     let g:neocomplcache_omni_patterns = {}
 endif
-" let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
+    " let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
 let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
 let g:neocomplcache_omni_patterns.c = '\%(\.\|->\)\h\w*'
 let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
@@ -799,7 +798,7 @@ let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
 imap      <C-s>       <Plug>(neocomplcache_snippets_expand)
 smap      <C-s>       <Plug>(neocomplcache_snippets_expand)
 inoremap  <expr><C-g> neocomplcache#undo_completion()
-"inoremap <expr><C-l> neocomplcache#complete_common_string()
+    "inoremap <expr><C-l> neocomplcache#complete_common_string()
 "スニペット展開候補があれば展開を，そうでなければbash風補完を．
 imap <expr><C-l> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : neocomplcache#complete_common_string()
 " <CR>: close popup and save indent.
@@ -807,10 +806,10 @@ imap <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup()."\<CR>" : "\<C
 " <TAB>: completion
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 "スニペットがあればそれを展開．なければ通常の挙動をするTABキー
-" imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
+    " imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
 " <C-h>, <BS>: close popup and delete backword char.
-" inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
-" inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
+    " inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
+    " inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
 inoremap <expr><C-y> neocomplcache#close_popup()
 "}}}
 
@@ -940,13 +939,13 @@ command! R execute 'Unite rails/model rails/controller rails/view -no-start-inse
 " }}}
 
 " VimShellの設定 {{{
-" 追加プロンプト
+" プロンプト
 let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
 let g:vimshell_right_prompt = 'strftime("%Y/%m/%d %H:%M")'
 let g:vimshell_prompt = "(U'w'){ "
-" let g:vimshell_prompt = "(U^w^){ "
+    " let g:vimshell_prompt = "(U^w^){ "
 " 右プロンプト ( vimshell#vcs#info は deprecated )
-" let g:vimshell_right_prompt = 'vimshell#vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
+    " let g:vimshell_right_prompt = 'vimshell#vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
 " 分割割合(%)
 let g:vimshell_split_height = 25
 
@@ -964,15 +963,11 @@ if !has("g:quickrun_config")
     let g:quickrun_config = {}
 endif
 "C++
-let g:quickrun_config.cpp = { 'command' : 'g++-4.7', 'cmdopt' : '-std=c++11 -Wall -Wextra -O2 ' }
+let g:quickrun_config.cpp = { 'command' : has('mac') ? 'g++-4.7' : "g++", 'cmdopt' : '-std=c++11 -Wall -Wextra -O2' }
+" clang 用
+let g:quickrun_config['cpp/clang'] = { 'command' : 'clang++', 'cmdopt' : '-stdlib=libc++ -std=c++11 -Wall -Wextra -O2' }
 "QuickRun 結果の開き方
 let g:quickrun_config._ = { 'outputter' : 'unite_qf', 'split' : 'rightbelow 10sp' }
-
-" clang 用
-" augroup QuickRunClang
-"     autocmd!
-"     autocmd FileType cpp nnoremap <buffer><Leader>qc :<C-u>QuickRun -command clang++ -cmdopt "-stdlib=libc++ -std=c++11 -Wall -Wextra -O2"<CR>
-" augroup END
 
 " 実行結果を通知センターで通知
 if has('mac')
@@ -994,6 +989,12 @@ if has('mac')
     nnoremap <silent><Leader>qn :<C-u>QuickRun >mac_notifier -runner vimproc<CR>
     vnoremap <silent><Leader>qn :QuickRun >mac_notifier -runner vimproc<CR>
 end
+" clang で実行する
+augroup QuickRunClang
+    autocmd!
+    autocmd FileType cpp nnoremap <silent><Leader>qc :<C-u>QuickRun clang<CR>
+augroup END
+
 augroup QFixMapping
     autocmd!
     autocmd FileType qf nnoremap <buffer><silent> q :q<CR>
@@ -1011,7 +1012,6 @@ nmap <silent>k <Plug>(accelerated_jk_gk)
 
 " Hier.vim {{{
 "CUIだとエラーハイライトが見づらいので修正
-" let g:hier_enabled = 1
 if !has("gui_running")
     highlight qf_error_ucurl ctermbg=9
     let g:hier_highlight_group_qf = "qf_error_ucurl"
@@ -1062,10 +1062,10 @@ let g:clang_user_options='-I /usr/local/include -I /usr/include -I /usr/local/Ce
 " }}}
 
 " vim-smartinput"{{{
-" call smartinput#define_default_rules()
+    " call smartinput#define_default_rules()
 
 " 括弧内のスペース
-" call smartinput#map_to_trigger('i', '(', '(', '(')
+    " call smartinput#map_to_trigger('i', '(', '(', '(')
 call smartinput#define_rule({
             \   'at':       '(\%#)',
             \   'char':     '<Space>',
@@ -1138,12 +1138,12 @@ call smartinput#define_rule({
             \   })
 
 " クラス定義の場合は末尾に;を付け忘れないようにする
-" call smartinput#define_rule({
-" \   'at': '\(\<struct\>\|\<class\>\)\s*\w*\s*{\%#}',
-" \   'char': '<CR>',
-" \   'input': '<Right>;<Left><CR><CR><Up>',
-" \   'filetype': ['cpp'],
-" \   })
+    " call smartinput#define_rule({
+    " \   'at': '\(\<struct\>\|\<class\>\)\s*\w*\s*{\%#}',
+    " \   'char': '<CR>',
+    " \   'input': '<Right>;<Left><CR><CR><Up>',
+    " \   'filetype': ['cpp'],
+    " \   })
 
 "}}}
 
@@ -1216,8 +1216,4 @@ augroup EndWiseMapping
 autocmd!
 autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"
 augroup END
-" }}}
-
-"my-vim-toggle {{{
-" nmap <silent><C-t> <Plug>MyToggleN
 " }}}
