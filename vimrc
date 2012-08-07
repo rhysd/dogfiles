@@ -190,7 +190,7 @@ nnoremap Q :<C-u>q<CR>
 " 空行挿入
 nnoremap <silent><CR> :<C-u>call append(expand('.'), '')<CR>j
 "ヘルプ表示
-nnoremap <Leader>h :<C-u>vert bo help<Space>
+nnoremap <Leader>h :vert bo help<Space>
 " スペースを挿入
 nnoremap <C-Space> i <Esc><Right>
 "insertモード時はEmacsライクなバインディング．ポップアップが出ないように移動．
@@ -274,7 +274,7 @@ nnoremap <expr>gp '`['.strpart(getregtype(),0,1).'`]'
 " 最後にヤンクしたテキストを貼り付け．
 nnoremap P "0P
 " 日付の挿入
-nnoremap <Leader>date :<C-u>r<Space>!date<Space>+'\%Y/\%m/\%d(\%a)<Space>\%H:\%M'<CR>
+nnoremap <Leader>date :r<Space>!date<Space>+'\%Y/\%m/\%d(\%a)<Space>\%H:\%M'<CR>
 
 " タブの設定
 nnoremap <Leader>te :<C-u>tabnew<CR>
@@ -289,8 +289,8 @@ nnoremap <Leader>fix :<C-u>ToggleCursorFixed<CR>
 " クリップボードから貼り付け
 inoremap <C-r>* <C-o>:set paste<CR><C-r>*<C-o>:set nopaste<CR>
 " カーソル下の単語を help で調べる
-" TODO v で選択した範囲を help
 nnoremap K :<C-u>help <C-r><C-w><CR>
+" TODO v で選択した範囲を help
 " 貼り付けはインデントを揃える
 " nnoremap p ]p
 " }}}
@@ -609,7 +609,7 @@ augroup CppMapping
     autocmd FileType cpp nnoremap <buffer><Leader>s Bistd::<Esc>
     autocmd FileType cpp nnoremap <buffer><Leader>b Biboost::<Esc>
     autocmd FileType cpp nnoremap <buffer><Leader>d Bidetail::<Esc>
-    autocmd FileType cpp,c nnoremap <silent><buffer><C-t> :<C-u>call <SID>cpp_hpp()<CR>
+    autocmd FileType cpp nnoremap <silent><buffer><C-t> :<C-u>call <SID>cpp_hpp()<CR>
 augroup END
 
 " }}}
@@ -892,6 +892,8 @@ nnoremap <silent><Space>g :<C-u>Unite -no-start-insert grep<CR>
 nnoremap <silent><Space>y :<C-u>Unite -no-start-insert history/yank<CR>
 "find
 nnoremap <silent><Space>F :<C-u>Unite -no-start-insert find<CR>
+"helpを引く．絞り込み初期は候補が膨大になるのでワードを先に入力
+nnoremap <silent><Space>h :<C-u>UniteWithInput -no-start-insert help<CR>
 "Uniteバッファの復元
 nnoremap <silent><Space>r :<C-u>UniteResume<CR>
 "SpotLight の利用
@@ -967,10 +969,10 @@ let g:quickrun_config.cpp = { 'command' : 'g++-4.7', 'cmdopt' : '-std=c++11 -Wal
 let g:quickrun_config._ = { 'outputter' : 'unite_qf', 'split' : 'rightbelow 10sp' }
 
 " clang 用
-augroup QuickRunClang
-    autocmd!
-    autocmd FileType cpp nnoremap <buffer><Leader>qc :<C-u>QuickRun -command clang++ -cmdopt "-stdlib=libc++ -std=c++11 -Wall -Wextra -O2"<CR>
-augroup END
+" augroup QuickRunClang
+"     autocmd!
+"     autocmd FileType cpp nnoremap <buffer><Leader>qc :<C-u>QuickRun -command clang++ -cmdopt "-stdlib=libc++ -std=c++11 -Wall -Wextra -O2"<CR>
+" augroup END
 
 " 実行結果を通知センターで通知
 if has('mac')
@@ -994,9 +996,9 @@ if has('mac')
 end
 augroup QFixMapping
     autocmd!
-    autocmd FileType qf nnoremap <buffer><silent> q :<C-u>q<CR>
-    autocmd FileType qf nnoremap <buffer><silent> j :<C-u>cn!<CR>
-    autocmd FileType qf nnoremap <buffer><silent> k :<C-u>cp!<CR>
+    autocmd FileType qf nnoremap <buffer><silent> q :q<CR>
+    autocmd FileType qf nnoremap <buffer><silent> j :cn!<CR>
+    autocmd FileType qf nnoremap <buffer><silent> k :cp!<CR>
 augroup END
 " }}}
 
