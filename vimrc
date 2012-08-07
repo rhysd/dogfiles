@@ -76,7 +76,7 @@ set clipboard& clipboard+=unnamed
 "矩形選択で自由に移動する
 set virtualedit& virtualedit+=block
 "改行コードの自動認識
-set fileformats=mac,unix,dos
+set fileformats=unix,mac,dos
 "行を折り返さない
 set textwidth=0
 "コマンド表示
@@ -641,11 +641,11 @@ NeoBundle 'Shougo/vimshell'
 NeoBundle 'Shougo/vimfiler'
 NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'Shougo/neocomplcache-snippets-complete'
-NeoBundle 'rhysd/home-made-snippets'
 NeoBundle 'vim-jp/cpp-vim'
 " NeoBundle 'Rip-Rip/clang_complete'
 NeoBundle 'rhysd/clang_complete'
 NeoBundle 'osyo-manga/neocomplcache-clang_complete'
+NeoBundle 'rhysd/home-made-snippets'
 NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'tyru/caw.vim'
 NeoBundle 'Shougo/unite.vim'
@@ -968,13 +968,19 @@ let g:quickrun_config.cpp = { 'command' : 'g++-4.7', 'cmdopt' : '-std=c++11 -Wal
 "QuickRun 結果の開き方
 let g:quickrun_config._ = { 'outputter' : 'unite_qf', 'split' : 'rightbelow 10sp' }
 
+" clang 用
+augroup QuickRunClang
+    autocmd!
+    autocmd FileType cpp nnoremap <buffer><Leader>qc :<C-u>QuickRun -command clang++ -cmdopt "-stdlib=libc++ -std=c++11 -Wall -Wextra -O2"<CR>
+augroup END
+
 " 実行結果を通知センターで通知
 if has('mac')
-    function! s:quickrun_notify()
+    function! s:exec_and_notify()
         let cmd = substitute(input("input command: "), '"', "'", 'g')
         execute 'QuickRun >mac_notifier run/vimproc -exec "'.cmd.'"'
     endfunction
-    command! CmdNotify :call <SID>quickrun_notify()
+    command! CmdNotify :call <SID>exec_and_notify()
 end
 
 "QuickRunのキーマップ {{{

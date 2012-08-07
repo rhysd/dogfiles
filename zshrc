@@ -10,6 +10,7 @@ export GREP_OPTIONS=--color=auto
 
 alias sudo='sudo '
 
+alias clang++='clang++ -stdlib=libc++ -std=c++11 -O2 -g -Wall -Wextra'
 alias g++='g++-4.7 -std=c++0x -Wall -Wextra -O2'
 alias -g g=g++
 function run-gcc(){
@@ -282,7 +283,7 @@ function gem(){
 # source $HOME/.zsh/incr*.zsh
 # z
 precmd(){
-    ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb
+    # ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb
 }
 
 # git uses hub (this is not dangerous)
