@@ -164,9 +164,9 @@ nnoremap j gj
 nnoremap k gk
 "Esc->Escで検索結果とエラーハイライトをクリア
 nnoremap <silent><ESC><ESC> :<C-u>nohlsearch<CR><Esc>
+"{数値}<Tab>でその行へ移動．それ以外だと通常の<Tab>の動きに
+nnoremap <expr><Tab> v:count !=0 ? "G" : "\<Tab>"
 "行頭・行末の移動
-nnoremap <TAB> G
-vnoremap <TAB> G
 nnoremap 0 ^
 vnoremap 0 ^
 nnoremap ^ 0
@@ -910,7 +910,10 @@ nnoremap <silent><Space>nbl :<C-u>Unite neobundle/log<CR>
 " Haskell Import
 augroup HaskellImport
     autocmd!
-    autocmd FileType haskell nnoremap <buffer><Space>hi :<C-u>UniteWithCursorWord haskellimport -immediately<CR>
+    autocmd FileType haskell 
+                \ nnoremap <buffer><expr><Space>hi 
+                \ empty(expand("<cword>")) ? ":\<C-u>Unite haskellimport\<CR>"
+                \ : ":\<C-u>UniteWithCursorWord haskellimport -immediately<CR>"
 augroup END
 " Git のルートディレクトリを開く
 nnoremap <silent><expr><Space>fg ":\<C-u>Unite file -input=".fnamemodify(<SID>git_root_dir(),":p")
@@ -1208,7 +1211,12 @@ augroup GhcModSetting
     autocmd FileType haskell let &l:statusline = '%{empty(getqflist()) ? "[No Errors] " : "[Errors Found] "}'
                                                \ . (empty(&l:statusline) ? &statusline : &l:statusline)
     autocmd FileType haskell nnoremap <buffer><silent><Esc><Esc> :<C-u>nohlsearch<CR>:HierClear<CR>:GhcModTypeClear<CR><Esc>
+    autocmd FileType haskell nnoremap <buffer><silent>cqf :<C-u>cclose<CR>
 augroup END
+"}}}
+
+" 自作スニペット {{{
+let g:neocomplcache_snippets_dir=$HOME.'/.vim/bundle/home-made-snippets/snippets'
 "}}}
 
 "endwise.vim {{{
@@ -1217,3 +1225,4 @@ augroup EndWiseMapping
     autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"
 augroup END
 " }}}
+
