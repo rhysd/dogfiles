@@ -52,7 +52,10 @@ set vb t_vb=
 set list
 set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
 "Boostや自前ビルドgccをpathに追加
-set path=.,/usr/include,/usr/local/include,/usr/local/Cellar/gcc/4.7.1/gcc/include/c++/4.7.1,/Users/rhayasd/.rbenv/versions/1.9.3-p194/lib/ruby/1.9.1/,/Users/rhayasd/programs/**
+set path=.,/usr/include,/usr/local/include
+if has('mac')
+    set path+=/usr/local/Cellar/gcc/4.7.1/gcc/include/c++/4.7.1,/Users/rhayasd/.rbenv/versions/1.9.3-p194/lib/ruby/1.9.1/,/Users/rhayasd/programs/**
+endif
 "起動時のメッセージを消す
 set shortmess& shortmess+=I
 "起動時IMEをOFFにする
@@ -99,7 +102,6 @@ set completeopt=longest,menu
 " foldingの設定
 set foldenable
 set foldmethod=marker
-" autocmd FileType cpp,c  set foldmethod=syntax
 " C++ ラベル字下げ設定
 set cinoptions& cinoptions+=:0,g0
 " マルチバイト文字があってもカーソルがずれないようにする
@@ -248,8 +250,8 @@ nnoremap <silent><Up>    <C-w>+
 nnoremap <silent><Left>  <C-w><
 nnoremap <silent><Right> <C-w>>
 " 検索で / をエスケープしなくて良くする（素の / を入力したくなったら<C-v>/）
-cnoremap <expr> / getcmdtype() == '/' ? '\/' : '/'
-cnoremap <expr> / getcmdtype() == '?' ? '\/' : '/'
+cnoremap <expr>/ getcmdtype() == '/' ? '\/' : '/'
+cnoremap <expr>/ getcmdtype() == '?' ? '\/' : '/'
 " help のマッピング
 augroup HelpMapping
     autocmd!
@@ -275,8 +277,6 @@ nnoremap <expr>gp '`['.strpart(getregtype(),0,1).'`]'
     " nnoremap p P
 " 最後にヤンクしたテキストを貼り付け．
 nnoremap P "0P
-" 日付の挿入
-nnoremap <Leader>date :r<Space>!date<Space>+'\%Y/\%m/\%d(\%a)<Space>\%H:\%M'<CR>
 
 " タブの設定
 nnoremap <Leader>te :<C-u>tabnew<CR>
