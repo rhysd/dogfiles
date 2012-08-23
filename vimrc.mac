@@ -1,0 +1,23 @@
+" 不可視文字
+set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
+" brew の パスを追加
+if has('vim_starting')
+    set path+=/usr/local/Cellar/gcc/4.7.1/gcc/include/c++/4.7.1,/Users/rhayasd/.rbenv/versions/1.9.3-p194/lib/ruby/1.9.1/,/Users/rhayasd/Programs/**
+endif
+"MacVim Kaoriyaに標準で入っている辞書を無効化
+if has('kaoriya')
+    let g:plugin_dicwin_disable = 1
+endif
+
+filetype off
+filetype plugin indent off
+NeoBundle 'choplin/unite-spotlight'
+NeoBundleLazy 'altercation/vim-colors-solarized'
+filetype plugin indent on     " required!
+
+"ctagsへのパス
+let g:neocomplcache_ctags_program = '/usr/local/bin/ctags'
+nnoremap <silent><Space>l :<C-u>UniteWithInput spotlight<CR>
+let g:quickrun_config.cpp = { 'command' : 'g++-4.7' , 'cmdopt' : '-std=c++11 -Wall -Wextra -O2' }
+
+" vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8

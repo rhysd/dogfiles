@@ -1,0 +1,34 @@
+" GUI オンリーなプラグインのロード
+NeoBundleSource open-browser.vim
+NeoBundleSource twibill.vim
+NeoBundleSource webapi-vim
+NeoBundleSource TweetVim
+NeoBundleSource neco-tweetvim
+NeoBundleSource restart.vim
+NeoBundleSource molokai
+
+colorscheme molokai
+set guifont=Ricty\ 14
+
+let g:tweetvim_display_icon = 1
+
+nnoremap <Leader>tw :<C-u>TweetVimHomeTimeline<CR>
+nnoremap <Leader>say :<C-u>TweetVimSay<CR>
+
+augroup TweetVimMapping
+    autocmd!
+    autocmd FileType tweetvim_say nnoremap <buffer><silent><C-g> :<C-u>q!<CR>
+    autocmd FileType tweetvim_say inoremap <buffer><silent><C-g> <C-o>:<C-u>q!<CR><Esc>
+    autocmd FileType tweetvim_say imap <buffer><C-CR> <Esc><Plug>(tweetvim_action_enter)
+    autocmd FileType tweetvim nnoremap <buffer>s :<C-u>TweetVimSay<CR>
+    autocmd FileType tweetvim nnoremap <buffer>m :<C-u>TweetVimMentions<CR>
+    autocmd FileType tweetvim nmap <buffer>c <Plug>(tweetvim_action_in_reply_to)
+    autocmd FileType tweetvim nnoremap <buffer>t :<C-u>Unite tweetvim -no-start-insert<CR>
+    autocmd FileType tweetvim nmap <buffer><Space> <Plug>(tweetvim_action_reload)
+    autocmd FileType tweetvim nmap <buffer>f <Plug>(tweetvim_action_page_next)
+    autocmd FileType tweetvim nmap <buffer>b <Plug>(tweetvim_action_page_previous)
+    autocmd FileType tweetvim nunmap <buffer>ff
+    autocmd FileType tweetvim nunmap <buffer>bb
+augroup END
+
+" vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8

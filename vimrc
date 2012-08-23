@@ -50,14 +50,9 @@ set vb t_vb=
 "背景に合わせた色合い
 set background=light
 "256 bitカラーモード
-set t_Co=256
+" set t_Co=256
 "ホワイトスペース類を表示する
 set list
-if has('mac')
-    set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
-else
-    set listchars=tab:>-,trail:-,eol:$,extends:>,precedes:<,nbsp:%
-endif
 "起動時のメッセージを消す
 set shortmess& shortmess+=I
 "起動時IMEをOFFにする
@@ -92,18 +87,6 @@ set lazyredraw
 set ttyfast
 " 自前で用意したものへの path
 set path=.,/usr/include,/usr/local/include
-if has('mac') && has('vim_starting')
-    set path+=/usr/local/Cellar/gcc/4.7.1/gcc/include/c++/4.7.1,/Users/rhayasd/.rbenv/versions/1.9.3-p194/lib/ruby/1.9.1/,/Users/rhayasd/Programs/**
-endif
-"MacVim Kaoriyaに標準で入っている辞書を無効化
-if has('kaoriya')
-    let g:plugin_dicwin_disable = 1
-endif
-"insertモードから抜けるときにIMをOFFにする（GUI(MacVim)は自動的にやってくれる
-"iminsert=2にすると，insertモードに戻ったときに自動的にIMの状態が復元される
-if !has("gui_running")
-    inoremap <silent><Esc> <Esc>:set iminsert=0<CR>
-endif
 " 補完でプレビューウィンドウを開かない
 set completeopt=longest,menu
 " foldingの設定
@@ -511,20 +494,12 @@ function! s:git_root_dir()
 endfunction
 
 " Linux かどうか判定
-let s:has_linux = !has('mac') && has('unix')
+    " let s:has_linux = !has('mac') && has('unix')
 " 本当はこっちのほうが良いが，速度面で難あり
     " s:has_linux = executable('uname') && system('uname') == "Linux\n"
 " これは Arch Linux だと使えない
     " s:has_linux = executable('lsb_release')
 
-"}}}
-
-" Linux {{{
-if s:has_linux
-    set background=dark
-    " 256色使う
-    set t_Co=256
-endif
 "}}}
 
 " Ruby {{{
@@ -611,7 +586,7 @@ function! s:cpp_hpp()
     " なければ Unite で検索
     if has('mac')
         execute "Unite spotlight -input=".base
-    elseif s:has_linux
+    elseif !has('mac') && has('unix')
         execute "Unite locate -input=".base
     endif
 
@@ -675,7 +650,6 @@ NeoBundle 'osyo-manga/neocomplcache-clang_complete'
 NeoBundle 'rhysd/home-made-snippets'
 NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'tyru/caw.vim'
-NeoBundle 'tyru/restart.vim'
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'h1mesuke/unite-outline'
 NeoBundle 'osyo-manga/unite-fold'
@@ -705,12 +679,6 @@ NeoBundle 'ujihisa/neco-ghc'
 NeoBundle 'eagletmt/ghcmod-vim'
     " NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'rhysd/auto-neobundle'
-if has('mac')
-    NeoBundle 'choplin/unite-spotlight'
-elseif s:has_linux
-    NeoBundle 'ujihisa/unite-locate'
-    NeoBundle 'Lokaltog/vim-powerline'
-endif
     " NeoBundle 'rhysd/ref-rurema'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'h1mesuke/vim-alignta'
@@ -719,6 +687,7 @@ endif
 
 " vim-scripts上のリポジトリ
 NeoBundle 'Align'
+NeoBundle 'wombat256.vim'
     " NeoBundle 'errormarker.vim'
     " NeoBundle 'endwise.vim'
 
@@ -726,16 +695,13 @@ NeoBundle 'Align'
     " NeoBundle 'git://git.wincent.com/command-t.git'
 
 " GUI オンリーなプラグイン
-
 NeoBundleLazy 'ujihisa/unite-colorscheme'
-if s:has_linux
-    NeoBundleLazy 'tyru/open-browser.vim'
-    NeoBundleLazy 'basyura/twibill.vim'
-    NeoBundleLazy 'mattn/webapi-vim'
-    NeoBundleLazy 'basyura/TweetVim'
-    NeoBundleLazy 'yomi322/unite-tweetvim'
-endif
+
 filetype plugin indent on     " required!
+
+" カラースキーム "{{{
+colorscheme wombat256mod
+" }}}
 
 " auto_neobundle "{{{
 " augroup AutoUpdate
@@ -783,12 +749,6 @@ let g:neocomplcache_dictionary_filetype_lists = {
             \ }
 "リストの最大幅を指定
     "let g:neocomplcache_max_filename_width = 25
-"ctagsへのパス
-if has('mac')
-    let g:neocomplcache_ctags_program = '/usr/local/bin/ctags'
-elseif s:has_linux
-    let g:neocomplcache_ctags_program = '/usr/bin/ctags'
-endif
 "区切り文字パターンの定義
 if !exists('g:neocomplcache_delimiter_patterns')
     let g:neocomplcache_delimiter_patterns= {}
@@ -940,11 +900,6 @@ nnoremap <silent><Space>fi :<C-u>Unite -no-start-insert find<CR>
 "Uniteバッファの復元
 nnoremap <silent><Space>r :<C-u>UniteResume<CR>
 "SpotLight の利用
-if has('mac')
-    nnoremap <silent><Space>l :<C-u>UniteWithInput spotlight<CR>
-else
-    nnoremap <silent><Space>l :<C-u>UniteWithInput locate<CR>
-endif
 nnoremap <silent><Space>L :<C-u>Unite line<CR>
 " NeoBundle
 " nnoremap <silent><Space>nb :<C-u>AutoNeoBundleTimestamp<CR>:Unite neobundle/update -auto-quit<CR>
@@ -1008,7 +963,7 @@ if !has("g:quickrun_config")
     let g:quickrun_config = {}
 endif
 "C++
-let g:quickrun_config.cpp = { 'command' : has('mac') ? 'g++-4.7' : "g++", 'cmdopt' : '-std=c++11 -Wall -Wextra -O2' }
+let g:quickrun_config.cpp = { 'command' : "g++", 'cmdopt' : '-std=c++11 -Wall -Wextra -O2' }
 " clang 用
 let g:quickrun_config['cpp/clang'] = { 'command' : 'clang++', 'cmdopt' : '-stdlib=libc++ -std=c++11 -Wall -Wextra -O2' }
 "QuickRun 結果の開き方
@@ -1021,10 +976,6 @@ nnoremap <silent><Leader>qf :<C-u>QuickRun >quickfix -runner vimproc<CR>
 vnoremap <silent><Leader>qr :QuickRun<CR>
 vnoremap <silent><Leader>qf :QuickRun >quickfix -runner vimproc<CR>
 nnoremap <silent><Leader>qR :<C-u>QuickRun<Space>
-if has('mac')
-    nnoremap <silent><Leader>qn :<C-u>QuickRun >mac_notifier -runner vimproc<CR>
-    vnoremap <silent><Leader>qn :QuickRun >mac_notifier -runner vimproc<CR>
-end
 " clang で実行する
 augroup QuickRunClang
     autocmd!
@@ -1253,4 +1204,12 @@ augroup EndWiseMapping
 augroup END
 " }}}
 
-" vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8 :
+" プラットフォーム依存な設定をロードする "{{{
+if has('mac') && filereadable($HOME."/.vimrc.mac")
+    source $HOME/.vimrc.mac
+elseif has('unix') && filereadable($HOME.'/.vimrc.linux')
+    source $HOME/.vimrc.linux
+endif
+"}}}
+
+" vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8

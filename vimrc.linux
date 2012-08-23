@@ -1,0 +1,27 @@
+" 不可視文字
+set listchars=tab:>-,trail:-,eol:$,extends:>,precedes:<,nbsp:%
+" 暗い背景を利用
+set background=dark
+" 256色使う
+set t_Co=256
+
+" プラグインのロード
+filetype off
+filetype plugin indent off
+NeoBundle 'ujihisa/unite-locate'
+NeoBundle 'Lokaltog/vim-powerline'
+" GUI
+NeoBundleLazy 'tyru/open-browser.vim'
+NeoBundleLazy 'basyura/twibill.vim'
+NeoBundleLazy 'mattn/webapi-vim'
+NeoBundleLazy 'basyura/TweetVim'
+NeoBundleLazy 'yomi322/unite-tweetvim'
+NeoBundleLazy 'tyru/restart.vim'
+NeoBundleLazy 'tomasr/molokai'
+filetype plugin indent on     " required!
+
+" プラグインの設定
+let g:neocomplcache_ctags_program = '/usr/bin/ctags'
+nnoremap <silent><Space>l :<C-u>UniteWithInput locate<CR>
+
+" vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8 :
