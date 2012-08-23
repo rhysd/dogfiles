@@ -679,6 +679,7 @@ NeoBundle 'ujihisa/neco-ghc'
 NeoBundle 'eagletmt/ghcmod-vim'
     " NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'rhysd/auto-neobundle'
+NeoBundle 'rhysd/wombat256.vim'
     " NeoBundle 'rhysd/ref-rurema'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'h1mesuke/vim-alignta'
@@ -687,7 +688,6 @@ NeoBundle 'rhysd/auto-neobundle'
 
 " vim-scripts上のリポジトリ
 NeoBundle 'Align'
-NeoBundle 'wombat256.vim'
     " NeoBundle 'errormarker.vim'
     " NeoBundle 'endwise.vim'
 
