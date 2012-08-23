@@ -340,11 +340,20 @@ command! Date :call setline('.', getline('.') . strftime('%Y/%m/%d (%a) %H:%M'))
 command! Vimrc call s:edit_myvimrc()
 function! s:edit_myvimrc()
     let files = ""
-    if !empty($MYVIMRC)
-        let files .= $MYVIMRC
-    endif
-    if !empty($MYGVIMRC)
-        let files .= " " . $MYGVIMRC
+    if isdirectory($HOME.'/Github/dotfiles')
+        if !empty($MYVIMRC)
+            let files .= substitute(expand('~/Github/dotfiles/vimrc*'),'\n',' ','g')
+        endif
+        if !empty($MYGVIMRC)
+            let files .= " " . substitute(expand('~/Github/dotfiles/gvimrc*'),'\n',' ','g')
+        endif
+    else
+        if !empty($MYVIMRC)
+            let files .= $MYVIMRC
+        endif
+        if !empty($MYGVIMRC)
+            let files .= " " . $MYGVIMRC
+        endif
     endif
     execute "args " . files
 endfunction
@@ -978,6 +987,10 @@ nnoremap <silent><Leader>qf :<C-u>QuickRun >quickfix -runner vimproc<CR>
 vnoremap <silent><Leader>qr :QuickRun<CR>
 vnoremap <silent><Leader>qf :QuickRun >quickfix -runner vimproc<CR>
 nnoremap <silent><Leader>qR :<C-u>QuickRun<Space>
+if has('mac')
+    nnoremap <silent><Leader>qn :<C-u>QuickRun >mac_notifier -runner vimproc<CR>
+    vnoremap <silent><Leader>qn :QuickRun >mac_notifier -runner vimproc<CR>
+end
 " clang で実行する
 augroup QuickRunClang
     autocmd!
