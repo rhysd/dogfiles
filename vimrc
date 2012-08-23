@@ -77,7 +77,7 @@ set hidden
 "日本語ヘルプを優先的に検索
 set helplang=ja,en
 "OSのクリップボードを使う
-set clipboard& clipboard+=unnamed
+set clipboard=unnamed
 "矩形選択で自由に移動する
 set virtualedit& virtualedit+=block
 "改行コードの自動認識
@@ -725,6 +725,16 @@ NeoBundle 'Align'
 " その他のgitリポジトリ
     " NeoBundle 'git://git.wincent.com/command-t.git'
 
+" GUI オンリーなプラグイン
+
+NeoBundleLazy 'ujihisa/unite-colorscheme'
+if s:has_linux
+    NeoBundleLazy 'tyru/open-browser.vim'
+    NeoBundleLazy 'basyura/twibill.vim'
+    NeoBundleLazy 'mattn/webapi-vim'
+    NeoBundleLazy 'basyura/TweetVim'
+    NeoBundleLazy 'yomi322/unite-tweetvim'
+endif
 filetype plugin indent on     " required!
 
 " auto_neobundle "{{{
