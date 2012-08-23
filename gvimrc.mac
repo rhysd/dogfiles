@@ -1,5 +1,3 @@
-NeoBundleSource vim-colors-solarized
-
 set background=light
 colorscheme solarized "カラースキーマの指定
 set fuoptions=maxvert,maxhorz

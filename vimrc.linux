@@ -17,7 +17,6 @@ NeoBundleLazy 'mattn/webapi-vim'
 NeoBundleLazy 'basyura/TweetVim'
 NeoBundleLazy 'yomi322/unite-tweetvim'
 NeoBundleLazy 'tyru/restart.vim'
-NeoBundleLazy 'tomasr/molokai'
 filetype plugin indent on     " required!
 
 " プラグインの設定

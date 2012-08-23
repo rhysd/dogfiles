@@ -696,6 +696,8 @@ NeoBundle 'wombat256.vim'
 
 " GUI オンリーなプラグイン
 NeoBundleLazy 'ujihisa/unite-colorscheme'
+NeoBundleLazy 'tomasr/molokai'
+NeoBundleLazy 'altercation/vim-colors-solarized'
 
 filetype plugin indent on     " required!
 
@@ -864,8 +866,8 @@ augroup UniteMapping
     autocmd!
     "insertモード時はC-gでいつでもバッファを閉じられる（絞り込み欄が空の時はC-hでもOK）
     autocmd FileType unite imap <buffer><C-g> <Plug>(unite_exit)
-    " <Space> だと待ち時間が発生してしまうので mark の m
-    autocmd FileType unite nmap <buffer>m <Plug>(unite_toggle_mark_current_candidate)
+    " <Space> だと待ち時間が発生してしまうので <Space><Space> を割り当て
+    autocmd FileType unite nmap <buffer><Space><Space> <Plug>(unite_toggle_mark_current_candidate)
     " q だと待ち時間が発生してしまうので
     autocmd FileType unite nmap <buffer><C-g> <Plug>(unite_exit)
     "直前のパス削除

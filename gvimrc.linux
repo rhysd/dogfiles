@@ -5,7 +5,6 @@ NeoBundleSource webapi-vim
 NeoBundleSource TweetVim
 NeoBundleSource neco-tweetvim
 NeoBundleSource restart.vim
-NeoBundleSource molokai
 
 colorscheme molokai
 set guifont=Ricty\ 14

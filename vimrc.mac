@@ -12,7 +12,6 @@ endif
 filetype off
 filetype plugin indent off
 NeoBundle 'choplin/unite-spotlight'
-NeoBundleLazy 'altercation/vim-colors-solarized'
 filetype plugin indent on     " required!
 
 "ctagsへのパス

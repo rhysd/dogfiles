@@ -1,6 +1,8 @@
 " GUI のみで読み込むプラグイン
 
 NeoBundleSource unite-colorscheme
+NeoBundleSource molokai
+NeoBundleSource vim-colors-solarized
 
 " 基本設定
 "ツールバーの非表示
