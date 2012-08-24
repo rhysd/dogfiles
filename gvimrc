@@ -3,6 +3,7 @@
 NeoBundleSource unite-colorscheme
 NeoBundleSource molokai
 NeoBundleSource vim-colors-solarized
+NeoBundleSource earendel
 
 " 基本設定
 "ツールバーの非表示

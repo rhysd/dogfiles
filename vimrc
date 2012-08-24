@@ -137,8 +137,6 @@ augroup Misc
         \ if line("'\"") > 1 && line("'\"") <= line("$") |
         \   exe "normal! g`\"" |
         \ endif
-    " 保存時に行末のスペースを除去する
-        " autocmd BufWritePre * call <SID>clean_whitespaces()
     " Hack #202: 自動的にディレクトリを作成する
     " http://vim-users.jp/2011/02/hack202/
     autocmd BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'), v:cmdbang)
@@ -304,16 +302,6 @@ nnoremap K :<C-u>help <C-r><C-w><CR>
 
 "}}}
 
-" 最小構成で必要な関数 "{{{
-" clean unnecessary whitespaces
-function! s:clean_whitespaces()
-    let cursor = getpos(".")
-    retab!
-    %s/\s\+$//ge
-    call setpos(".", cursor)
-endfunction
-"}}}
-
 " 最小限の設定と最小限のプラグインだけ読み込む {{{
 " % vim --cmd "g:linda_pp_startup_with_tiny = 1" で起動した時
 " または vi という名前の シンボリックリンク越しに vim を起動した時
@@ -334,8 +322,15 @@ endif
 " user-defined functions and commands {{{
 " clean unnecessary whitespaces
 command! CleanSpaces call <SID>clean_whitespaces()
+function! s:clean_whitespaces()
+    let cursor = getpos(".")
+    retab!
+    %s/\s\+$//ge
+    call setpos(".", cursor)
+endfunction
 
 command! Date :call setline('.', getline('.') . strftime('%Y/%m/%d (%a) %H:%M'))
+
 " open config file
 command! Vimrc call s:edit_myvimrc()
 function! s:edit_myvimrc()
@@ -396,15 +391,6 @@ function! s:copy_current_path()
     endif
 endfunction
 
-" カーソルを画面中央に固定
-command! ToggleCursorFixed call s:toggle_cursor_fixed()
-function! s:toggle_cursor_fixed()
-    if !exists('s:scrolloff_save')
-        let s:scrolloff_save = &scrolloff
-    endif
-    let &scrolloff = &scrolloff == s:scrolloff_save ? 999 : s:scrolloff_save
-endfunction
-
 " エンコーディング指定オープン
 command! -bang -complete=file -nargs=? Utf8 edit<bang> ++enc=utf-8 <args>
 command! -bang -complete=file -nargs=? Sjis edit<bang> ++enc=cp932 <args>
@@ -437,9 +423,6 @@ function! Scouter(file, ...)
 endfunction
 command! -bar -bang -nargs=? -complete=file Scouter
             \        echo Scouter(empty(<q-args>) ? $MYVIMRC : expand(<q-args>), <bang>0)
-
-" 縦に連番を入力する
-command! -count -nargs=1 ContinuousNumber let c = col('.')|for n in range(1, <count>?<count>-line('.'):1)|exec 'normal! j' . n . <q-args>|call cursor('.', c)|endfor
 
 "スクリプトローカルな関数を呼び出す
 " http://d.hatena.ne.jp/thinca/20111228/1325077104
@@ -707,6 +690,7 @@ NeoBundle 'Align'
 NeoBundleLazy 'ujihisa/unite-colorscheme'
 NeoBundleLazy 'tomasr/molokai'
 NeoBundleLazy 'altercation/vim-colors-solarized'
+NeoBundleLazy 'earendel'
 
 filetype plugin indent on     " required!
 
