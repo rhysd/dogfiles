@@ -12,7 +12,7 @@ colorscheme molokai
 set iminsert=2
 set vb t_vb=
 " フォント設定
-set guifont=Migu\ 2M\ 14
+set guifont=Ricty\ 14
 set guioptions-=e
 
 let g:neocomplcache_enable_prefetch = 1
