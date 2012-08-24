@@ -47,18 +47,16 @@ set ignorecase
 set smartcase
 "ビープ音OFF
 set vb t_vb=
-"背景に合わせた色合い
-set background=light
 "256 bitカラーモード
 " set t_Co=256
 "ホワイトスペース類を表示する
 set list
 "起動時のメッセージを消す
 set shortmess& shortmess+=I
-"起動時IMEをOFFにする
-set iminsert=0 imsearch=0
 "IMを使う
 set noimdisable
+"起動時IMEをOFFにする
+set iminsert=0 imsearch=0
 " 検索結果をハイライト
 set hlsearch
 "コマンドラインでのIM無効化
@@ -119,7 +117,6 @@ set statusline=%f:\ %{substitute(getcwd(),'.*/','','')}\ %m%=%{(&fenc!=''?&fenc:
 " 一定時間カーソルを移動しないとカーソルラインを表示（ただし，ウィンドウ移動時
 " はなぜか切り替わらない
 " http://d.hatena.ne.jp/thinca/20090530/1243615055
-set cursorline
 augroup AutoCursorLine
   autocmd!
   autocmd CursorMoved,CursorMovedI,WinLeave * setlocal nocursorline
@@ -222,20 +219,16 @@ cnoremap <C-k> <C-\>e getcmdpos() == 1 ? '' : getcmdline()[:getcmdpos()-2]<CR>
 nnoremap <silent><C-n>   :<C-u>bnext<CR>
 nnoremap <silent><C-p>   :<C-u>bprevious<CR>
 "CTRL-hjklでウィンドウ移動．横幅が小さすぎる場合は自動でリサイズする．
-    " function! s:good_width()
-    "     if winwidth(0) < 84
-    "         vertical resize 84
-    "     endif
-    " endfunction
-    " nnoremap <silent><C-j> <C-w>j:call <SID>good_width()<CR>
-    " nnoremap <silent><C-h> <C-w>h:call <SID>good_width()<CR>
-    " nnoremap <silent><C-l> <C-w>l:call <SID>good_width()<CR>
-    " nnoremap <silent><C-k> <C-w>k:call <SID>good_width()<CR>
+function! s:good_width()
+    if winwidth(0) < 84
+        vertical resize 84
+    endif
+endfunction
 " <C-w> -> q
-nnoremap <silent>qj <C-w>j
-nnoremap <silent>qk <C-w>k
-nnoremap <silent>qh <C-w>h
-nnoremap <silent>ql <C-w>l
+nnoremap <silent>qh <C-w>h:<C-u>call <SID>good_width()<CR>
+nnoremap <silent>qj <C-w>j:<C-u>call <SID>good_width()<CR>
+nnoremap <silent>qk <C-w>k:<C-u>call <SID>good_width()<CR>
+nnoremap <silent>ql <C-w>l:<C-u>call <SID>good_width()<CR>
 nnoremap <silent>qv <C-w>v
 nnoremap <silent>qs <C-w>s
 nnoremap <silent>q] <C-w>]
