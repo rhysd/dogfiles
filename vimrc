@@ -129,6 +129,8 @@ augroup Misc
     autocmd VimEnter * echo "(U＾ω＾) enjoy vimming!"
     " *.md で読み込む filetype を変更（デフォルトは modula2）
     autocmd BufRead *.md,*.markdown setlocal ft=markdown
+    " Gnuplot のファイルタイプを設定
+    autocmd BufRead *.plt,*.plot,*.gnuplot setlocal ft=gnuplot
     " カーソル位置の復元
     autocmd BufReadPost *
         \ if line("'\"") > 1 && line("'\"") <= line("$") |
