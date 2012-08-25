@@ -1,8 +1,6 @@
 " GUI のみで読み込むプラグイン
 
 NeoBundleSource unite-colorscheme
-NeoBundleSource vim-indent-guides
-
 NeoBundleSource molokai
 NeoBundleSource vim-colors-solarized
 NeoBundleSource earendel
@@ -28,20 +26,32 @@ set guioptions-=a
 " GUI autocmds
 augroup GuiAtStart
     autocmd!
-    autocmd VimEnter * :VimFiler
+    autocmd VimEnter * VimFiler
 augroup END
 
-" vim-indent-guides {{{
-let g:indent_guides_guide_size = 1
+" IndentGuides はインデント指向言語を扱う時だけ読み込む "{{{
 augroup IndentGuidesAutoCmd
     autocmd!
 augroup END
-if !has('gui_running') && &t_Co >= 256
-    let g:indent_guides_auto_colors = 0
-    autocmd IndentGuidesAutoCmd VimEnter,Colorscheme * hi IndentGuidesOdd  ctermbg=233
-    autocmd IndentGuidesAutoCmd VimEnter,Colorscheme * hi IndentGuidesEven ctermbg=240
-endif
-autocmd IndentGuidesAutoCmd FileType haskell,python,haml call indent_guides#enable()
+autocmd IndentGuidesAutoCmd FileType haskell,python,haml call s:prepare_indent_guides()
+
+function! s:prepare_indent_guides()
+
+    " 一度読みこめばもういらないのでリセット
+    augroup IndentGuidesAutoCmd
+        autocmd!
+    augroup END
+
+    NeoBundleSource vim-indent-guides
+    let g:indent_guides_guide_size = 1
+    let g:indent_guides_auto_colors = 1
+    if !has('gui_running') && &t_Co >= 256
+        let g:indent_guides_auto_colors = 0
+        autocmd IndentGuidesAutoCmd VimEnter,Colorscheme * hi IndentGuidesOdd  ctermbg=233
+        autocmd IndentGuidesAutoCmd VimEnter,Colorscheme * hi IndentGuidesEven ctermbg=240
+    endif
+    call indent_guides#enable()
+endfunction
 "}}}
 
 nnoremap <Space>C :<C-u>Unite -auto-preview colorscheme<CR>
