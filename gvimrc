@@ -1,9 +1,11 @@
 " GUI のみで読み込むプラグイン
 
 NeoBundleSource unite-colorscheme
+NeoBundleSource vim-indent-guides
 NeoBundleSource molokai
 NeoBundleSource vim-colors-solarized
 NeoBundleSource earendel
+NeoBundleSource rdark
 
 " 基本設定
 "ツールバーの非表示
@@ -27,6 +29,19 @@ augroup GuiAtStart
     autocmd!
     autocmd VimEnter * :VimFiler
 augroup END
+
+" vim-indent-guides {{{
+let g:indent_guides_guide_size = 1
+augroup IndentGuidesAutoCmd
+    autocmd!
+augroup END
+if !has('gui_running') && &t_Co >= 256
+    let g:indent_guides_auto_colors = 0
+    autocmd IndentGuidesAutoCmd VimEnter,Colorscheme * hi IndentGuidesOdd  ctermbg=233
+    autocmd IndentGuidesAutoCmd VimEnter,Colorscheme * hi IndentGuidesEven ctermbg=240
+endif
+autocmd IndentGuidesAutoCmd FileType haskell,python,haml call indent_guides#enable()
+"}}}
 
 nnoremap <Space>C :<C-u>Unite -auto-preview colorscheme<CR>
 

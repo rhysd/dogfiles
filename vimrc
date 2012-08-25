@@ -65,6 +65,10 @@ set noimcmdline
 set backspace=indent,eol,start
 " 改行時にコメントしない
 set formatoptions-=ro
+" 行継続で勝手にインデントしない
+" let g:vim_indent_cont = 0
+" 8進数インクリメントをオフにする
+set nrformats-=octal
 "ファイル切替時にファイルを隠す
 set hidden
 "日本語ヘルプを優先的に検索
@@ -664,7 +668,6 @@ NeoBundle 'kana/vim-filetype-haskell'
 NeoBundle 'ujihisa/ref-hoogle'
 NeoBundle 'ujihisa/neco-ghc'
 NeoBundle 'eagletmt/ghcmod-vim'
-    " NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'rhysd/auto-neobundle'
 NeoBundle 'rhysd/wombat256.vim'
     " NeoBundle 'rhysd/ref-rurema'
@@ -683,9 +686,11 @@ NeoBundle 'Align'
 
 " GUI オンリーなプラグイン
 NeoBundleLazy 'ujihisa/unite-colorscheme'
+NeoBundleLazy 'nathanaelkane/vim-indent-guides'
 NeoBundleLazy 'tomasr/molokai'
 NeoBundleLazy 'altercation/vim-colors-solarized'
 NeoBundleLazy 'earendel'
+NeoBundleLazy 'rdark'
 
 filetype plugin indent on     " required!
 
@@ -1160,19 +1165,6 @@ omap ic <Plug>(textobj-wiw-i)
 " vim-operator {{{
 nmap <Leader>r <Plug>(operator-replace)
 vmap <Leader>r <Plug>(operator-replace)
-"}}}
-
-" vim-indent-guides {{{
-" let g:indent_guides_guide_size = 1
-" augroup IndentGuidesAutoCmd
-"     autocmd!
-" augroup END
-" if !has('gui_running') && &t_Co >= 256
-"     let g:indent_guides_auto_colors = 0
-"     autocmd IndentGuidesAutoCmd VimEnter,Colorscheme * hi IndentGuidesOdd  ctermbg=233
-"     autocmd IndentGuidesAutoCmd VimEnter,Colorscheme * hi IndentGuidesEven ctermbg=240
-" endif
-" autocmd IndentGuidesAutoCmd FileType haskell,python,haml call indent_guides#enable()
 "}}}
 
 " ghcmod-vim {{{
