@@ -12,7 +12,7 @@ colorscheme molokai
 set iminsert=2
 set vb t_vb=
 " フォント設定
-set guifont=Ricty\ 14
+set guifont=Mig\ 2M\ 14
 set guioptions-=e
 
 let g:neocomplcache_enable_prefetch = 1
@@ -37,10 +37,11 @@ augroup TweetVimMapping
     autocmd FileType tweetvim nmap <buffer>b <Plug>(tweetvim_action_page_previous)
     autocmd FileType tweetvim nunmap <buffer>ff
     autocmd FileType tweetvim nunmap <buffer>bb
-    autocmd TabEnter * call <SID>tweetvim_enter()
+    autocmd TabEnter * call <SID>tweetvim_reload()
+    autocmd BufEnter * call <SID>tweetvim_reload()
 augroup END
 
-function! s:tweetvim_enter()
+function! s:tweetvim_reload()
     if &filetype ==# "tweetvim"
         call feedkeys("\<Plug>(tweetvim_action_reload)")
     endif

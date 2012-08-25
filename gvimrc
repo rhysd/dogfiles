@@ -28,7 +28,7 @@ augroup GuiAtStart
     autocmd VimEnter * :VimFiler
 augroup END
 
-nnoremap <Space>C :<C-u>Unite -auto-preview colorscheme<CR>
+nnoremap <Space>C :<C-u>Unite -auto-preview -quick-match colorscheme<CR>
 
 " プラットフォーム依存な設定の読み込み
 if has('mac') && filereadable($HOME.'/.gvimrc.mac')
