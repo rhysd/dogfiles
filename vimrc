@@ -639,6 +639,7 @@ augroup END
 " neobundle.vim の設定 {{{
 filetype off
 filetype plugin indent off
+
 if has('vim_starting')
     set rtp+=~/.vim/bundle/neobundle.vim/
     call neobundle#rc(expand('~/.vim/bundle'))
@@ -663,7 +664,7 @@ NeoBundle 'osyo-manga/unite-fold'
 NeoBundle 'ujihisa/unite-haskellimport'
 NeoBundle 'sgur/unite-qf'
 NeoBundle 'osyo-manga/unite-quickfix'
-NeoBundle 'rhysd/quickrun-unite-qf-outputter'
+NeoBundle 'rhysd/quickrun-unite-quickfix-outputter'
 NeoBundle 'basyura/unite-rails'
 NeoBundle 'vim-jp/vimdoc-ja'
 NeoBundle 'jceb/vim-hier'
@@ -978,7 +979,7 @@ let g:quickrun_config.cpp = { 'command' : "g++", 'cmdopt' : '-std=c++11 -Wall -W
 " clang 用
 let g:quickrun_config['cpp/clang'] = { 'command' : 'clang++', 'cmdopt' : '-stdlib=libc++ -std=c++11 -Wall -Wextra -O2' }
 "QuickRun 結果の開き方
-let g:quickrun_config._ = { 'outputter' : 'unite_qf', 'split' : 'rightbelow 10sp' }
+let g:quickrun_config._ = { 'outputter' : 'unite_quickfix', 'split' : 'rightbelow 10sp' }
 
 "QuickRunのキーマップ {{{
 nnoremap <Leader>q  <Nop>
@@ -1213,4 +1214,4 @@ elseif has('unix') && filereadable($HOME.'/.vimrc.linux')
 endif
 "}}}
 
-" vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8
+" vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8 :
