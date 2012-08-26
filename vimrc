@@ -297,6 +297,26 @@ nnoremap K :<C-u>help <C-r><C-w><CR>
 " TODO v で選択した範囲を help
 " 貼り付けはインデントを揃える
     " nnoremap p ]p
+" 行頭 → 非空白行頭 → 行 をローテートする
+function! s:toggle_head_last()
+    let c = col('.')
+    let cmd = '$'
+
+    if c == 1
+        let cmd = '^'
+    elseif c == len(getline('.'))
+        let cmd = '0'
+    endif
+
+    execute "normal! ".cmd
+
+    " 行頭にスペースがなかったときは行頭と行末をトグル
+    if c == col('.')
+        normal! $
+    endif
+
+endfunction
+nnoremap <silent>t :<C-u>call <SID>toggle_head_last()<CR>
 " }}}
 
 "}}}
