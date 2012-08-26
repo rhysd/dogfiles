@@ -662,10 +662,10 @@ NeoBundle 'Shougo/unite.vim'
 NeoBundle 'h1mesuke/unite-outline'
 NeoBundle 'osyo-manga/unite-fold'
 NeoBundle 'ujihisa/unite-haskellimport'
-NeoBundle 'sgur/unite-qf'
 NeoBundle 'osyo-manga/unite-quickfix'
 NeoBundle 'rhysd/quickrun-unite-quickfix-outputter'
 NeoBundle 'basyura/unite-rails'
+NeoBundle 'kmnk/vim-unite-giti'
 NeoBundle 'vim-jp/vimdoc-ja'
 NeoBundle 'jceb/vim-hier'
 NeoBundle 'rhysd/my-endwise'
@@ -906,12 +906,10 @@ nnoremap <silent><Space>o :<C-u>Unite outline -vertical -no-start-insert<CR>
 "コマンドの出力
 nnoremap <silent><Space>c :<C-u>Unite output<CR>
 "grep検索．
-nnoremap <silent><Space>g :<C-u>Unite -no-start-insert grep<CR>
-"find
-nnoremap <silent><Space>fi :<C-u>Unite -no-start-insert find<CR>
+nnoremap <silent><Space>G :<C-u>Unite -no-start-insert grep<CR>
 "Uniteバッファの復元
 nnoremap <silent><Space>r :<C-u>UniteResume<CR>
-"SpotLight の利用
+"バッファ全体
 nnoremap <silent><Space>L :<C-u>Unite line<CR>
 " NeoBundle
 " nnoremap <silent><Space>nb :<C-u>AutoNeoBundleTimestamp<CR>:Unite neobundle/update -auto-quit<CR>
@@ -928,6 +926,8 @@ augroup END
 nnoremap <silent><expr><Space>fg ":\<C-u>Unite file -input=".fnamemodify(<SID>git_root_dir(),":p")
 " fold
 nnoremap <silent><Space>fl :<C-u>Unite fold -no-start-insert -no-empty<CR>
+" git
+nnoremap <silent><Space>g :<C-u>Unite giti -nostart-insert -quick-match<CR>
 " }}}
 
 " unite-rails コマンド {{{
