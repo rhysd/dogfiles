@@ -298,21 +298,24 @@ nnoremap K :<C-u>help <C-r><C-w><CR>
 " 貼り付けはインデントを揃える
     " nnoremap p ]p
 " 行頭 → 非空白行頭 → 行 をローテートする
-function! s:roteta_in_line()
+function! s:rotate_in_line()
     let c = col('.')
-    let cmd = '$'
 
     if c == 1
         let cmd = '^'
-    elseif c == len(getline('.'))
-        let cmd = '0'
+    else
+        let cmd = '$'
     endif
 
     execute "normal! ".cmd
 
     " 行頭にスペースがなかったときは行頭と行末をトグル
     if c == col('.')
-        normal! $
+        if cmd == '^'
+            normal! $
+        else
+            normal! 0
+        endif
     endif
 
 endfunction
