@@ -287,9 +287,7 @@ nnoremap ge :<C-u>tabedit<Space>
 nnoremap gn :<C-u>tabnew<CR>
 nnoremap <silent>gc :<C-u>tabclose<CR>
 " 行表示・非表示の切り替え．少しでも横幅が欲しい時は OFF に
-nnoremap <Leader>nu :<C-u>set number! number?<CR>
-" カーソルを中央に固定する
-nnoremap <Leader>fix :<C-u>ToggleCursorFixed<CR>
+nnoremap <Leader><Leader> :<C-u>set number! number?<CR>
 " クリップボードから貼り付け
 inoremap <C-r>* <C-o>:set paste<CR><C-r>*<C-o>:set nopaste<CR>
 " カーソル下の単語を help で調べる
@@ -301,12 +299,7 @@ nnoremap K :<C-u>help <C-r><C-w><CR>
 function! s:rotate_in_line()
     let c = col('.')
 
-    if c == 1
-        let cmd = '^'
-    else
-        let cmd = '$'
-    endif
-
+    let cmd = c == 1 ? '^' : '$'
     execute "normal! ".cmd
 
     " 行頭にスペースがなかったときは行頭と行末をトグル
@@ -1056,7 +1049,6 @@ nnoremap <Leader>fh       :<C-u>VimFiler<Space>~<CR>
 nnoremap <Leader>fc       :<C-u>VimFilerCurrentDir<CR>
 nnoremap <Leader>fb       :<C-u>VimFilerBufferDir<CR>
 nnoremap <expr><Leader>fg ":\<C-u>VimFiler " . <SID>git_root_dir() . '\<CR>'
-nnoremap <Leader><Leader> :<C-u>VimFiler<CR>
 "        }}}
 
 " }}}
