@@ -927,7 +927,7 @@ nnoremap <silent><expr><Space>fg ":\<C-u>Unite file -input=".fnamemodify(<SID>gi
 " fold
 nnoremap <silent><Space>fl :<C-u>Unite fold -no-start-insert -no-empty<CR>
 " git
-nnoremap <silent><Space>g :<C-u>Unite giti -nostart-insert -quick-match<CR>
+nnoremap <silent><Space>g :<C-u>Unite giti -no-start-insert -quick-match<CR>
 " }}}
 
 " unite-rails コマンド {{{
