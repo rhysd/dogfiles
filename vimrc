@@ -298,7 +298,7 @@ nnoremap K :<C-u>help <C-r><C-w><CR>
 " 貼り付けはインデントを揃える
     " nnoremap p ]p
 " 行頭 → 非空白行頭 → 行 をローテートする
-function! s:toggle_head_last()
+function! s:roteta_in_line()
     let c = col('.')
     let cmd = '$'
 
@@ -316,7 +316,7 @@ function! s:toggle_head_last()
     endif
 
 endfunction
-nnoremap <silent>t :<C-u>call <SID>toggle_head_last()<CR>
+nnoremap <silent>t :<C-u>call <SID>rotate_in_line()<CR>
 " }}}
 
 "}}}
