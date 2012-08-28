@@ -269,6 +269,8 @@ augroup HelpMapping
     autocmd FileType help nnoremap <buffer>> :<C-u>tag<CR>
     " 履歴一覧
     autocmd FileType help nnoremap <buffer><Tab> :<C-u>tags<CR>
+    " help ウィンドウを広げる
+    autocmd FileType help nnoremap <buffer>+ 999<C-w>+999<C-w>>
     " そのた
     autocmd FileType help nnoremap <buffer>u <C-u>
     autocmd FileType help nnoremap <buffer>d <C-d>
@@ -486,6 +488,11 @@ function! S(f, ...)
   return 0 <= match(func, '^\w*\s*(.*)\s*$')
   \      ? eval(cfunc) : call(cfunc, a:000)
 endfunction
+
+" pdf を読む
+if executable('pdftotext')
+    command! -complete=file -nargs=1 Pdf :r !pdftotext -nopgbrk -layout <q-args> -
+endif
 
 "}}}
 
@@ -893,6 +900,8 @@ augroup UniteMapping
 augroup END
 
 nnoremap <Space> <Nop>
+" コマンドラインウィンドウで Unite コマンドを入力
+nnoremap <Space>u q:iUnite<Space>
 "バッファを開いた時のパスを起点としたファイル検索
 nnoremap <silent><Space><Space> :<C-u>UniteWithBufferDir -buffer-name=files file -vertical<CR>
 "最近使用したファイル

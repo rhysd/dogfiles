@@ -12,10 +12,14 @@ colorscheme molokai
 set iminsert=2
 set vb t_vb=
 " フォント設定
-set guifont=Mig\ 2M\ 14
+set guifont=Migu\ 2M\ 14
 set guioptions-=e
 
-let g:neocomplcache_enable_prefetch = 1
+let g:openbrowser_open_commands = ['google-chrome', 'xdg-open', 'w3m']
+if !exists('g:openbrowser_open_rules')
+    let g:openbrowser_open_rules = {}
+endif
+let g:openbrowser_open_rules['google-chrome'] = "{browser} {shellescape(uri)}"
 
 let g:tweetvim_display_icon = 1
 let g:tweetvim_display_separator = 0
@@ -35,10 +39,13 @@ augroup TweetVimMapping
     autocmd FileType tweetvim nmap <buffer><Tab> <Plug>(tweetvim_action_reload)
     autocmd FileType tweetvim nmap <buffer>f <Plug>(tweetvim_action_page_next)
     autocmd FileType tweetvim nmap <buffer>b <Plug>(tweetvim_action_page_previous)
+    autocmd FileType tweetvim nmap <buffer><Leader>F <Plug>(tweetvim_action_remove_favorite)
+    autocmd FileType tweetvim nmap <buffer><Leader>d <Plug>(tweetvim_action_remove_status)
+    autocmd FileType tweetvim nnoremap <buffer><Leader><Leader> :<C-u>call <SID>tweetvim_favstar()<CR>
     autocmd FileType tweetvim nunmap <buffer>ff
     autocmd FileType tweetvim nunmap <buffer>bb
     autocmd TabEnter * call <SID>tweetvim_reload()
-    autocmd BufEnter * call <SID>tweetvim_reload()
+    autocmd BufLeave * call <SID>tweetvim_say_leave()
 augroup END
 
 function! s:tweetvim_reload()
@@ -46,4 +53,27 @@ function! s:tweetvim_reload()
         call feedkeys("\<Plug>(tweetvim_action_reload)")
     endif
 endfunction
+
+function! s:tweetvim_say_leave()
+    if &filetype ==# "tweetvim_say"
+        call feedkeys("\<Plug>(tweetvim_action_reload)")
+    endif
+endfunction
+
+function! s:tweetvim_favstar()
+    let screen_name = matchstr(getline('.'),'^\s\zs\w\+')
+    let path = empty(screen_name) ? "/me" : "/users/" . screen_name
+
+    execute "OpenBrowser http://ja.favstar.fm" . path
+endfunction
+
+function! s:open_favstar()
+    let username = expand('<cword>')
+    if empty(username)
+        OpenBrowser http://ja.favstar.fm/me
+    else
+        execute "OpenBrowser http://ja.favstar.fm/users/" . username
+    endif
+endfunction
+command! Favstar call <SID>open_favstar()
 " vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8
