@@ -1,10 +1,9 @@
 " 不可視文字
 set listchars=tab:>-,trail:-,eol:$,extends:>,precedes:<,nbsp:%
-" 暗い背景を利用
-set background=dark
 " 256色使う
 set t_Co=256
 
+colorscheme wombat256mod
 " プラグインのロード
 filetype off
 filetype plugin indent off
