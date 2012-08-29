@@ -491,7 +491,7 @@ endfunction
 
 " pdf を読む
 if executable('pdftotext')
-    command! -complete=file -nargs=1 Pdf setl nowrap <Bar> read !pdftotext -nopgbrk -layout <q-args> -
+    command! -complete=file -nargs=1 Pdf read !pdftotext -nopgbrk -layout <q-args> - <Bar> setl nowrap
 endif
 
 if filereadable($HOME."/Documents/C++/n3337.txt")

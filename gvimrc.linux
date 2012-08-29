@@ -39,6 +39,7 @@ augroup TweetVimMapping
     autocmd FileType tweetvim nmap <buffer>c <Plug>(tweetvim_action_in_reply_to)
     autocmd FileType tweetvim nnoremap <buffer>t :<C-u>Unite tweetvim -no-start-insert -quick-match<CR>
     autocmd FileType tweetvim nmap <buffer><Tab> <Plug>(tweetvim_action_reload)
+    autocmd FileType tweetvim nmap <buffer><silent>gg gg<Plug>(tweetvim_action_reload)
     autocmd FileType tweetvim nmap <buffer>f <Plug>(tweetvim_action_page_next)
     autocmd FileType tweetvim nmap <buffer>b <Plug>(tweetvim_action_page_previous)
     autocmd FileType tweetvim nmap <buffer><Leader>F <Plug>(tweetvim_action_remove_favorite)
