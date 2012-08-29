@@ -24,7 +24,9 @@ let g:openbrowser_open_rules['google-chrome'] = "{browser} {shellescape(uri)}"
 let g:tweetvim_display_icon = 1
 let g:tweetvim_display_separator = 0
 
-nnoremap <Leader>tw :<C-u>tabnew<CR>:TweetVimHomeTimeline<CR>
+nnoremap <silent><Leader>tw :<C-u>tabnew <Bar> TweetVimHomeTimeline<CR>
+nnoremap <silent><Leader>tl :<C-u>TweetVimHomeTimeline<CR>
+nnoremap <silent><Leader>tm :<C-u>TweetVimMentions<CR>
 nnoremap <Leader>say :<C-u>TweetVimSay<CR>
 
 augroup TweetVimMapping
@@ -76,4 +78,8 @@ function! s:open_favstar()
     endif
 endfunction
 command! Favstar call <SID>open_favstar()
+
+nmap <Leader>u <Plug>(openbrowser-open)
+vmap <Leader>u <Plug>(openbrowser-open)
+
 " vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8

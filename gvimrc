@@ -26,7 +26,7 @@ set guioptions-=a
 " GUI autocmds
 augroup GuiAtStart
     autocmd!
-    autocmd VimEnter * VimFiler
+    autocmd VimEnter * VimFilerCurrentDir
 augroup END
 
 " IndentGuides はインデント指向言語を扱う時だけ読み込む "{{{
