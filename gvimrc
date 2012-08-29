@@ -5,6 +5,7 @@ NeoBundleSource molokai
 NeoBundleSource vim-colors-solarized
 NeoBundleSource earendel
 NeoBundleSource rdark
+NeoBundleSource vim-color-github
 
 " 基本設定
 "ツールバーの非表示

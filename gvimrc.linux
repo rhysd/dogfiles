@@ -22,7 +22,7 @@ endif
 let g:openbrowser_open_rules['google-chrome'] = "{browser} {shellescape(uri)}"
 
 let g:tweetvim_display_icon = 1
-let g:tweetvim_display_separator = 0
+let g:tweetvim_tweet_per_page = 40
 
 nnoremap <silent><Leader>tw :<C-u>tabnew <Bar> TweetVimHomeTimeline<CR>
 nnoremap <silent><Leader>tl :<C-u>TweetVimHomeTimeline<CR>
@@ -44,6 +44,7 @@ augroup TweetVimMapping
     autocmd FileType tweetvim nmap <buffer><Leader>F <Plug>(tweetvim_action_remove_favorite)
     autocmd FileType tweetvim nmap <buffer><Leader>d <Plug>(tweetvim_action_remove_status)
     autocmd FileType tweetvim nnoremap <buffer><Leader><Leader> :<C-u>call <SID>tweetvim_favstar()<CR>
+    autocmd FileType tweetvim nnoremap <buffer><Leader>u :<C-u>call <SID>tweetvim_open_home()<CR>
     autocmd FileType tweetvim nunmap <buffer>ff
     autocmd FileType tweetvim nunmap <buffer>bb
     autocmd TabEnter * call <SID>tweetvim_reload()
@@ -78,6 +79,13 @@ function! s:open_favstar()
     endif
 endfunction
 command! Favstar call <SID>open_favstar()
+
+function! s:tweetvim_open_home()
+    let username = expand('<cword>')
+    if username =~# '^[a-zA-Z0-9_]\+$'
+        execute "OpenBrowser https://twitter.com/" . username
+    endif
+endfunction
 
 nmap <Leader>u <Plug>(openbrowser-open)
 vmap <Leader>u <Plug>(openbrowser-open)

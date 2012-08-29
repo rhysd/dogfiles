@@ -491,11 +491,11 @@ endfunction
 
 " pdf を読む
 if executable('pdftotext')
-    command! -complete=file -nargs=1 Pdf r !pdftotext -nopgbrk -layout <q-args> -
+    command! -complete=file -nargs=1 Pdf setl nowrap <Bar> read !pdftotext -nopgbrk -layout <q-args> -
 endif
 
 if filereadable($HOME."/Documents/C++/n3337.txt")
-    command! -nargs=1 CxxDraft view $HOME/Documents/C++/n<args>.txt
+    command! -nargs=1 CxxDraft setl nowrap <Bar> view $HOME/Documents/C++/n<args>.txt
 endif
 "}}}
 
@@ -718,6 +718,7 @@ NeoBundleLazy 'tomasr/molokai'
 NeoBundleLazy 'altercation/vim-colors-solarized'
 NeoBundleLazy 'earendel'
 NeoBundleLazy 'rdark'
+NeoBundleLazy 'telamon/vim-color-github'
 
 filetype plugin indent on     " required!
 
