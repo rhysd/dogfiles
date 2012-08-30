@@ -878,7 +878,7 @@ augroup END
 
 nnoremap <Space> <Nop>
 " コマンドラインウィンドウで Unite コマンドを入力
-nnoremap <Space>u q:iUnite<Space>
+nnoremap <Space>u :<C-u>Unite<Space>
 "バッファを開いた時のパスを起点としたファイル検索
 nnoremap <silent><Space><Space> :<C-u>UniteWithBufferDir -buffer-name=files file -vertical<CR>
 "最近使用したファイル
@@ -886,7 +886,7 @@ nnoremap <silent><Space>m :<C-u>Unite -no-start-insert file_mru directory_mru<CR
 "指定したディレクトリ以下を再帰的に開く
 " nnoremap <silent><Space>R :<C-u>UniteWithBufferDir -no-start-insert file_rec/async -auto-resize<CR>
 "バッファ一覧
-nnoremap <silent><Space>b :<C-u>Unite -quick-match -auto-resize -immediately -no-empty -auto-preview buffer<CR>
+nnoremap <silent><Space>b :<C-u>Unite -quick-match -immediately -no-empty -auto-preview buffer<CR>
 "プログラミングにおけるアウトラインの表示
 nnoremap <silent><Space>o :<C-u>Unite outline -vertical -no-start-insert<CR>
 "コマンドの出力

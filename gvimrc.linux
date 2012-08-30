@@ -4,7 +4,6 @@ NeoBundleSource twibill.vim
 NeoBundleSource webapi-vim
 NeoBundleSource TweetVim
 NeoBundleSource neco-tweetvim
-NeoBundleSource restart.vim
 
 colorscheme molokai
 " IM の起動キーを gVim に教える
@@ -22,44 +21,58 @@ endif
 let g:openbrowser_open_rules['google-chrome'] = "{browser} {shellescape(uri)}"
 
 let g:tweetvim_display_icon = 1
-let g:tweetvim_tweet_per_page = 40
+let g:tweetvim_tweet_per_page = 60
 
 nnoremap <silent><Leader>tw :<C-u>tabnew <Bar> TweetVimHomeTimeline<CR>
 nnoremap <silent><Leader>tl :<C-u>TweetVimHomeTimeline<CR>
 nnoremap <silent><Leader>tm :<C-u>TweetVimMentions<CR>
-nnoremap <Leader>say :<C-u>TweetVimSay<CR>
+nnoremap <Leader>ts :<C-u>TweetVimSay<CR>
 
-augroup TweetVimMapping
+augroup TweetVimSetting
     autocmd!
-    autocmd FileType tweetvim_say nnoremap <buffer><silent><C-g> :<C-u>q!<CR>
-    autocmd FileType tweetvim_say inoremap <buffer><silent><C-g> <C-o>:<C-u>q!<CR><Esc>
-    autocmd FileType tweetvim_say imap <buffer><C-CR> <Esc><Plug>(tweetvim_action_enter)
-    autocmd FileType tweetvim nnoremap <buffer>s :<C-u>TweetVimSay<CR>
-    autocmd FileType tweetvim nnoremap <buffer>m :<C-u>TweetVimMentions<CR>
-    autocmd FileType tweetvim nmap <buffer>c <Plug>(tweetvim_action_in_reply_to)
-    autocmd FileType tweetvim nnoremap <buffer>t :<C-u>Unite tweetvim -no-start-insert -quick-match<CR>
-    autocmd FileType tweetvim nmap <buffer><Tab> <Plug>(tweetvim_action_reload)
-    autocmd FileType tweetvim nmap <buffer><silent>gg gg<Plug>(tweetvim_action_reload)
-    autocmd FileType tweetvim nmap <buffer>f <Plug>(tweetvim_action_page_next)
-    autocmd FileType tweetvim nmap <buffer>b <Plug>(tweetvim_action_page_previous)
-    autocmd FileType tweetvim nmap <buffer><Leader>F <Plug>(tweetvim_action_remove_favorite)
-    autocmd FileType tweetvim nmap <buffer><Leader>d <Plug>(tweetvim_action_remove_status)
-    autocmd FileType tweetvim nnoremap <buffer><Leader><Leader> :<C-u>call <SID>tweetvim_favstar()<CR>
-    autocmd FileType tweetvim nnoremap <buffer><Leader>u :<C-u>call <SID>tweetvim_open_home()<CR>
-    autocmd FileType tweetvim nunmap <buffer>ff
-    autocmd FileType tweetvim nunmap <buffer>bb
-    autocmd TabEnter * call <SID>tweetvim_reload()
-    autocmd BufLeave * call <SID>tweetvim_say_leave()
+    " マッピング
+    " 挿入・通常モードで閉じる
+    autocmd FileType tweetvim_say nnoremap <buffer><silent><C-g>    :<C-u>q!<CR>
+    autocmd FileType tweetvim_say inoremap <buffer><silent><C-g>    <C-o>:<C-u>q!<CR><Esc>
+    " 挿入モードで投稿．うまく動かない．
+    autocmd FileType tweetvim_say imap     <buffer><C-CR>           <Esc>:<C-u>call feedkeys("\<Plug>(tweetvim_action_enter)")<CR>
+    " 各種アクション
+    autocmd FileType tweetvim     nnoremap <buffer>s                :<C-u>TweetVimSay<CR>
+    autocmd FileType tweetvim     nnoremap <buffer>m                :<C-u>TweetVimMentions<CR>
+    autocmd FileType tweetvim     nmap     <buffer>c                <Plug>(tweetvim_action_in_reply_to)
+    autocmd FileType tweetvim     nnoremap <buffer>t                :<C-u>Unite tweetvim -no-start-insert -quick-match<CR>
+    autocmd FileType tweetvim     nmap     <buffer><Leader>F        <Plug>(tweetvim_action_remove_favorite)
+    autocmd FileType tweetvim     nmap     <buffer><Leader>d        <Plug>(tweetvim_action_remove_status)
+    " リロード後はカーソルを画面の中央に
+    autocmd FileType tweetvim     nmap     <buffer><Tab>            <Plug>(tweetvim_action_reload)
+    autocmd FileType tweetvim     nmap     <buffer><silent>gg       gg<Plug>(tweetvim_action_reload)
+    " ページ移動を ff/bb から f/b に
+    autocmd FileType tweetvim     nmap     <buffer>f                <Plug>(tweetvim_action_page_next)
+    autocmd FileType tweetvim     nmap     <buffer>b                <Plug>(tweetvim_action_page_previous)
+    " favstar や web UI で表示
+    autocmd FileType tweetvim     nnoremap <buffer><Leader><Leader> :<C-u>call <SID>tweetvim_favstar()<CR>
+    autocmd FileType tweetvim     nnoremap <buffer><Leader>u        :<C-u>call <SID>tweetvim_open_home()<CR>
+    " 縦移動
+    autocmd FileType tweetvim     nnoremap <buffer><silent>j        :<C-u>call <SID>tweetvim_vertical_move("gj")<CR>zz
+    autocmd FileType tweetvim     nnoremap <buffer><silent>k        :<C-u>call <SID>tweetvim_vertical_move("gk")<CR>zz
+    " 不要なマップを除去
+    autocmd FileType tweetvim     nunmap   <buffer>ff
+    autocmd FileType tweetvim     nunmap   <buffer>bb
+    " その他設定値
+    autocmd BufEnter * call <SID>tweetvim_reload()
 augroup END
 
-function! s:tweetvim_reload()
-    if &filetype ==# "tweetvim"
-        call feedkeys("\<Plug>(tweetvim_action_reload)")
-    endif
+" セパレータを飛ばして移動する
+function! s:tweetvim_vertical_move(cmd)
+    execute "normal! ".a:cmd
+    while getline('.') =~# '^[-~]\+$' && line('.') != line('$')
+        execute "normal! ".a:cmd
+    endwhile
 endfunction
 
-function! s:tweetvim_say_leave()
-    if &filetype ==# "tweetvim_say"
+" ツイートをリロード
+function! s:tweetvim_reload()
+    if &filetype ==# "tweetvim"
         call feedkeys("\<Plug>(tweetvim_action_reload)")
     endif
 endfunction
