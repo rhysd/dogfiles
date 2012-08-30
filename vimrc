@@ -676,6 +676,7 @@ NeoBundle 'osyo-manga/unite-quickfix'
 NeoBundle 'rhysd/quickrun-unite-quickfix-outputter'
 NeoBundle 'basyura/unite-rails'
 NeoBundle 'kmnk/vim-unite-giti'
+NeoBundle 'rhysd/unite-n3337'
 NeoBundle 'vim-jp/vimdoc-ja'
 NeoBundle 'jceb/vim-hier'
 NeoBundle 'rhysd/my-endwise'
@@ -854,34 +855,6 @@ let g:loaded_unite_source_window = 1
 " unite-grep で使うコマンド
 let g:unite_source_grep_default_opts = "-Hn --color=never"
 
-function! s:rails_mvc_name()
-    let full_path = expand('%:p')
-    if  full_path !~# '\/app\/'
-        echoerr 'not rails MVC files'
-    endif
-
-    " controllers
-    let base_name = expand('%:r')
-    if base_name =~# '\w\+_controller'
-        if  full_path !~# '\/controllers\/'
-            echoerr 'not rails MVC files'
-        endif
-        return matchstr(base_name, '\w\+\ze_controller')
-    endif
-
-    " views
-    if expand('%:e:e') == 'html.erb'
-        return fnamemodify(full_path, ':h:t')
-    endif
-
-    " models
-    if fnamemodify(full_path, ':h:t') == 'models'
-        return base_name
-    endif
-
-    echoerr 'not rails MVC files'
-endfunction
-
 "Unite.vimのキーマップ {{{
 augroup UniteMapping
     autocmd!
@@ -943,6 +916,37 @@ nnoremap <silent><Space>fl :<C-u>Unite fold -no-start-insert -no-empty<CR>
 nnoremap <silent><Space>g :<C-u>Unite giti -no-start-insert -quick-match<CR>
 " }}}
 
+" }}}
+
+" unite-rails "{{{
+function! s:rails_mvc_name()
+    let full_path = expand('%:p')
+    if  full_path !~# '\/app\/'
+        echoerr 'not rails MVC files'
+    endif
+
+    " controllers
+    let base_name = expand('%:r')
+    if base_name =~# '\w\+_controller'
+        if  full_path !~# '\/controllers\/'
+            echoerr 'not rails MVC files'
+        endif
+        return matchstr(base_name, '\w\+\ze_controller')
+    endif
+
+    " views
+    if expand('%:e:e') == 'html.erb'
+        return fnamemodify(full_path, ':h:t')
+    endif
+
+    " models
+    if fnamemodify(full_path, ':h:t') == 'models'
+        return base_name
+    endif
+
+    echoerr 'not rails MVC files'
+endfunction
+
 " unite-rails コマンド {{{
 command! RModels Unite rails/model -no-start-insert -auto-resize
 command! RControllers Unite rails/controller -no-start-insert -auto-resize
@@ -960,8 +964,15 @@ command! RBundle Unite rails/bundle -no-start-insert -auto-resize
 command! RGems Unite rails/bundled_gem -no-start-insert -auto-resize
 command! R execute 'Unite rails/model rails/controller rails/view -no-start-insert -autoresize -input=' . s:rails_mvc_name()
 " }}}
+"}}}
 
-" }}}
+" unite-n3337 "{{{
+let g:unite_n3337_pdf = $HOME.'/Documents/C++/n3337.pdf'
+augroup UniteN3337
+    autocmd!
+    autocmd FileType cpp nnoremap <buffer><Space>un :<C-u>Unite n3337<CR>
+augroup END
+"}}}
 
 " VimShellの設定 {{{
 " プロンプト
