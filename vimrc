@@ -626,6 +626,34 @@ augroup CppSetting
     autocmd FileType cpp nnoremap <silent><buffer><C-t> :<C-u>call <SID>cpp_hpp()<CR>
 augroup END
 
+command! -nargs=1 BoostDoc call <SID>boost_doc(<q-args>)
+function! s:boost_doc(name)
+    let boost_doc_dir = $HOME."/Documents/C++/boost_1_51_pdf"
+    let name = tolower(a:name)
+
+    if !isdirectory(boost_doc_dir)
+        echoerr "boost documents are not found!"
+        return
+    endif
+
+    let path = findfile(name.'.txt', boost_doc_dir)
+    if !empty(path)
+        execute "view ".path
+        return
+    endif
+
+    let path_pdf = findfile(name.'.pdf', boost_doc_dir)
+    if !empty(path_pdf) && executable('pdftotext')
+        echo "converting pdf to text..."
+        execute "!pdftotext -nopgbrk -layout ".path_pdf
+        execute "view ".boost_doc_dir."/".name.".txt"
+        return
+    endif
+
+    echo "reference not found!"
+    execute "Unite file:".boost_doc_dir
+
+endfunction
 " }}}
 
 " Haskell {{{
