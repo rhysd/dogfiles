@@ -4,7 +4,7 @@
 set encoding=utf-8
 set termencoding=utf-8
 set fileencoding=utf-8
-set fileencodings=utf-8,euc-jp,cp932
+set fileencodings=utf-8,cp932,euc-jp
 " This is vim, not vi.
 set nocompatible
 " user-defined prefix
@@ -94,8 +94,6 @@ set completeopt=longest,menu
 " foldingの設定
 set foldenable
 set foldmethod=marker
-" C++ ラベル字下げ設定
-set cinoptions& cinoptions+=:0,g0
 " マルチバイト文字があってもカーソルがずれないようにする
 set ambiwidth=double
 " 編集履歴を保存して終了する
@@ -183,9 +181,6 @@ nnoremap - $
 vnoremap - $
 " コマンドラインウィンドウ
 nnoremap q; q:
-" q 誤爆しやすい
-nnoremap q <Nop>
-nnoremap qq q
 " 検索後画面の中心に。
 nnoremap n nzvzz
 nnoremap N Nzvzz
@@ -231,19 +226,24 @@ function! s:good_width()
     endif
 endfunction
 " <C-w> -> q
-nnoremap <silent>qh <C-w>h:<C-u>call <SID>good_width()<CR>
-nnoremap <silent>qj <C-w>j:<C-u>call <SID>good_width()<CR>
-nnoremap <silent>qk <C-w>k:<C-u>call <SID>good_width()<CR>
-nnoremap <silent>ql <C-w>l:<C-u>call <SID>good_width()<CR>
-nnoremap <silent>qv <C-w>v
-nnoremap <silent>qs <C-w>s
-nnoremap <silent>q] <C-w>]
-nnoremap <silent>qc <C-w>c
-nnoremap <silent>qn <C-w>n
-nnoremap <silent>qo <C-w>o
-nnoremap <silent>qp <C-w>p
-nnoremap <silent>qr <C-w>r
-nnoremap <silent>qf <C-w>f
+" 本来の q は qq に退避
+nnoremap qq q
+nnoremap q <Nop>
+nnoremap [window] <Nop>
+nmap            q [window]
+nnoremap <silent>[window]h <C-w>h:<C-u>call <SID>good_width()<CR>
+nnoremap <silent>[window]j <C-w>j:<C-u>call <SID>good_width()<CR>
+nnoremap <silent>[window]k <C-w>k:<C-u>call <SID>good_width()<CR>
+nnoremap <silent>[window]l <C-w>l:<C-u>call <SID>good_width()<CR>
+nnoremap <silent>[window]v <C-w>v
+nnoremap <silent>[window]s <C-w>s
+nnoremap <silent>[window]] <C-w>]
+nnoremap <silent>[window]c <C-w>c
+nnoremap <silent>[window]n <C-w>n
+nnoremap <silent>[window]o <C-w>o
+nnoremap <silent>[window]p <C-w>p
+nnoremap <silent>[window]r <C-w>r
+nnoremap <silent>[window]f <C-w>f
 "インサートモードで次の行に直接改行
 inoremap <C-j> <Esc>o
 "<BS>の挙動
@@ -489,11 +489,6 @@ function! S(f, ...)
   \      ? eval(cfunc) : call(cfunc, a:000)
 endfunction
 
-" pdf を読む
-if executable('pdftotext')
-    command! -complete=file -nargs=1 Pdf read !pdftotext -nopgbrk -layout <q-args> - <Bar> setl nowrap
-endif
-
 if filereadable($HOME."/Documents/C++/n3337.txt")
     command! -nargs=1 CxxDraft setl nowrap <Bar> view $HOME/Documents/C++/n<args>.txt
 endif
@@ -532,6 +527,9 @@ augroup END
 "}}}
 
 " C++ {{{
+
+" C++ ラベル字下げ設定
+set cinoptions& cinoptions+=:0,g0
 
 " {} の展開．cinoptions とかでできそうな気もする．
 " smartinput でもできるはずだけれど，my-endwise で <CR> が設定済みのため反映されない
@@ -705,6 +703,7 @@ NeoBundle 'rhysd/quickrun-unite-quickfix-outputter'
 NeoBundle 'basyura/unite-rails'
 NeoBundle 'kmnk/vim-unite-giti'
 NeoBundle 'rhysd/unite-n3337'
+set rtp+=~/Github/pdf.vim
 NeoBundle 'vim-jp/vimdoc-ja'
 NeoBundle 'jceb/vim-hier'
 NeoBundle 'rhysd/my-endwise'
@@ -904,44 +903,45 @@ augroup UniteMapping
     autocmd FileType unite imap <buffer><expr>l unite#smart_map("l", unite#do_action(unite#get_current_unite().context.default_action))
 augroup END
 
-nnoremap <Space> <Nop>
+nnoremap [unite] <Nop>
+nmap     <Space> [unite]
 " コマンドラインウィンドウで Unite コマンドを入力
-nnoremap <Space>u :<C-u>Unite<Space>
+nnoremap [unite]u :<C-u>Unite<Space>
 "バッファを開いた時のパスを起点としたファイル検索
-nnoremap <silent><Space><Space> :<C-u>UniteWithBufferDir -buffer-name=files file -vertical<CR>
+nnoremap <silent>[unite]<Space> :<C-u>UniteWithBufferDir -buffer-name=files file -vertical<CR>
 "最近使用したファイル
-nnoremap <silent><Space>m :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
+nnoremap <silent>[unite]m :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
 "指定したディレクトリ以下を再帰的に開く
-" nnoremap <silent><Space>R :<C-u>UniteWithBufferDir -no-start-insert file_rec/async -auto-resize<CR>
+" nnoremap <silent>[unite]R :<C-u>UniteWithBufferDir -no-start-insert file_rec/async -auto-resize<CR>
 "バッファ一覧
-nnoremap <silent><Space>b :<C-u>Unite -quick-match -immediately -no-empty -auto-preview buffer<CR>
+nnoremap <silent>[unite]b :<C-u>Unite -quick-match -immediately -no-empty -auto-preview buffer<CR>
 "プログラミングにおけるアウトラインの表示
-nnoremap <silent><Space>o :<C-u>Unite outline -vertical -no-start-insert<CR>
+nnoremap <silent>[unite]o :<C-u>Unite outline -vertical -no-start-insert<CR>
 "コマンドの出力
-nnoremap <silent><Space>c :<C-u>Unite output<CR>
+nnoremap <silent>[unite]c :<C-u>Unite output<CR>
 "grep検索．
-nnoremap <silent><Space>G :<C-u>Unite -no-start-insert grep<CR>
+nnoremap <silent>[unite]G :<C-u>Unite -no-start-insert grep<CR>
 "Uniteバッファの復元
-nnoremap <silent><Space>r :<C-u>UniteResume<CR>
+nnoremap <silent>[unite]r :<C-u>UniteResume<CR>
 "バッファ全体
-nnoremap <silent><Space>L :<C-u>Unite line<CR>
+nnoremap <silent>[unite]L :<C-u>Unite line<CR>
 " NeoBundle
-" nnoremap <silent><Space>nb :<C-u>AutoNeoBundleTimestamp<CR>:Unite neobundle/update -auto-quit<CR>
-nnoremap <silent><Space>nb :<C-u>Unite neobundle/update -auto-quit<CR>
+" nnoremap <silent>[unite]nb :<C-u>AutoNeoBundleTimestamp<CR>:Unite neobundle/update -auto-quit<CR>
+nnoremap <silent>[unite]nb :<C-u>Unite neobundle/update -auto-quit<CR>
 " Haskell Import
 augroup HaskellImport
     autocmd!
     autocmd FileType haskell
-                \ nnoremap <buffer><expr><Space>hi
+                \ nnoremap <buffer><expr>[unite]hi
                 \ empty(expand("<cword>")) ? ":\<C-u>Unite haskellimport\<CR>"
                 \ : ":\<C-u>UniteWithCursorWord haskellimport -immediately<CR>"
 augroup END
 " Git のルートディレクトリを開く
-nnoremap <silent><expr><Space>fg ":\<C-u>Unite file -input=".fnamemodify(<SID>git_root_dir(),":p")
+nnoremap <silent><expr>[unite]fg ":\<C-u>Unite file -input=".fnamemodify(<SID>git_root_dir(),":p")
 " fold
-nnoremap <silent><Space>fl :<C-u>Unite fold -no-start-insert -no-empty<CR>
+nnoremap <silent>[unite]fl :<C-u>Unite fold -no-start-insert -no-empty<CR>
 " git
-nnoremap <silent><Space>g :<C-u>Unite giti -no-start-insert -quick-match<CR>
+nnoremap <silent>[unite]g :<C-u>Unite giti -no-start-insert -quick-match<CR>
 " }}}
 
 " }}}
@@ -998,7 +998,7 @@ command! R execute 'Unite rails/model rails/controller rails/view -no-start-inse
 let g:unite_n3337_pdf = $HOME.'/Documents/C++/n3337.pdf'
 augroup UniteN3337
     autocmd!
-    autocmd FileType cpp nnoremap <buffer><Space>un :<C-u>Unite n3337<CR>
+    autocmd FileType cpp nnoremap <buffer>[unite]un :<C-u>Unite n3337<CR>
 augroup END
 "}}}
 
