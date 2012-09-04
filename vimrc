@@ -150,6 +150,8 @@ augroup Misc
             call mkdir(a:dir, 'p')
         endif
     endfunction
+    " help は 80 行以上ないと読みにくい
+    autocmd FileType help  if winwidth(0) < 80 | setl winwidth=80 | endif
 augroup END
 
 " カーソル下のハイライトグループを取得
@@ -174,15 +176,7 @@ nnoremap gk k
 nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>
 "{数値}<Tab>でその行へ移動．それ以外だと通常の<Tab>の動きに
 nnoremap <expr><Tab> v:count !=0 ? "G" : "\<Tab>zvzz"
-"行頭・行末の移動
-nnoremap 0 ^
-vnoremap 0 ^
-nnoremap ^ 0
-vnoremap ^ 0
-nnoremap - $
-vnoremap - $
 " コマンドラインウィンドウ
-nnoremap q; q:
 " 検索後画面の中心に。
 nnoremap n nzvzz
 nnoremap N Nzvzz
@@ -227,25 +221,9 @@ function! s:good_width()
         vertical resize 84
     endif
 endfunction
-" <C-w> -> q
-" 本来の q は qq に退避
-nnoremap qq q
-nnoremap q <Nop>
-nnoremap [window] <Nop>
-nmap            q [window]
-nnoremap <silent>[window]h <C-w>h:<C-u>call <SID>good_width()<CR>
-nnoremap <silent>[window]j <C-w>j:<C-u>call <SID>good_width()<CR>
-nnoremap <silent>[window]k <C-w>k:<C-u>call <SID>good_width()<CR>
-nnoremap <silent>[window]l <C-w>l:<C-u>call <SID>good_width()<CR>
-nnoremap <silent>[window]v <C-w>v
-nnoremap <silent>[window]s <C-w>s
-nnoremap <silent>[window]] <C-w>]
-nnoremap <silent>[window]c <C-w>c
-nnoremap <silent>[window]n <C-w>n
-nnoremap <silent>[window]o <C-w>o
-nnoremap <silent>[window]p <C-w>p
-nnoremap <silent>[window]r <C-w>r
-nnoremap <silent>[window]f <C-w>f
+nnoremap t e
+" <C-w> → e
+nmap     e <C-w>
 "インサートモードで次の行に直接改行
 inoremap <C-j> <Esc>o
 "<BS>の挙動
@@ -277,7 +255,6 @@ augroup HelpMapping
     autocmd FileType help nnoremap <buffer>u <C-u>
     autocmd FileType help nnoremap <buffer>d <C-d>
     autocmd FileType help nnoremap <buffer>q :<C-u>q<CR>
-    autocmd FileType help nnoremap <buffer>x :<C-u>q<CR>
 augroup END
 " ペーストした文字列をビジュアルモードで選択
 nnoremap <expr>gp '`['.strpart(getregtype(),0,1).'`]'
@@ -299,22 +276,42 @@ nnoremap K :<C-u>help <C-r><C-w><CR>
 " TODO v で選択した範囲を help
 " 貼り付けはインデントを揃える
     " nnoremap p ]p
+
+" 賢く行頭・非空白行頭・行末の移動
+nnoremap 0 :<C-u>call <SID>smart_move('g^')<CR>
+vnoremap 0 :<C-u>call <SID>smart_move('g^')<CR>
+nnoremap ^ :<C-u>call <SID>smart_move('g0')<CR>
+vnoremap ^ :<C-u>call <SID>smart_move('g0')<CR>
+nnoremap - :<C-u>call <SID>smart_move('g$')<CR>
+vnoremap - :<C-u>call <SID>smart_move('g$')<CR>
+
+" 初回のみ a:cmd の動きをして，それ以降は行内をローテートする
+let s:smart_line_pos = -1
+function! s:smart_move(cmd)
+    let line = line('.')
+    if s:smart_line_pos == line . a:cmd
+        call <SID>rotate_in_line()
+    else
+        execute "normal! " . a:cmd
+    endif
+    let s:smart_line_pos = line . a:cmd
+endfunction
+
 " 行頭 → 非空白行頭 → 行 をローテートする
 function! s:rotate_in_line()
-    let c = col('.')
+    let c = virtcol('.')
 
-    let cmd = c == 1 ? '^' : '$'
+    let cmd = c == 1 ? 'g^' : 'g$'
     execute "normal! ".cmd
 
     " 行頭にスペースがなかったときは行頭と行末をトグル
-    if c == col('.')
-        if cmd == '^'
-            normal! $
+    if c == virtcol('.')
+        if cmd == 'g^'
+            normal! g$
         else
-            normal! 0
+            normal! g0
         endif
     endif
-
 endfunction
 nnoremap <silent>t :<C-u>call <SID>rotate_in_line()<CR>
 " }}}
@@ -1129,6 +1126,7 @@ augroup VimFilerMapping
     autocmd FileType vimfiler nmap <buffer><silent><expr> e vimfiler#smart_cursor_map(
                 \   "\<Plug>(vimfiler_cd_file)",
                 \   "\<Plug>(vimfiler_edit_file)")
+    autocmd FileType vimfiler nmap <buffer><silent>x <Plug>(vimfiler_hide)
 augroup END
 nnoremap <Leader>f        <Nop>
 nnoremap <Leader>ff       :<C-u>VimFiler<CR>
@@ -1136,8 +1134,8 @@ nnoremap <Leader>fnq      :<C-u>VimFiler -no-quit<CR>
 nnoremap <Leader>fh       :<C-u>VimFiler ~<CR>
 nnoremap <Leader>fc       :<C-u>VimFilerCurrentDir<CR>
 nnoremap <Leader>fb       :<C-u>VimFilerBufferDir<CR>
-nnoremap <Leader>fe       :<C-u>VimFilerExplorer ~<CR>
 nnoremap <silent><expr><Leader>fg ":\<C-u>VimFiler " . <SID>git_root_dir() . '\<CR>'
+nnoremap <silent><expr><Leader>fe ":\<C-u>VimFilerExplorer " . <SID>git_root_dir() . '\<CR>'
 "        }}}
 
 " }}}
