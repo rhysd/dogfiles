@@ -26,6 +26,8 @@ set tabstop=2 shiftwidth=2 softtabstop=2
 set expandtab
 "長い行で折り返す
 set wrap
+"ウィンドウの横幅をなるべく30文字以上に
+set winwidth=30
 "検索が末尾まで進んだら，ファイル先頭につなげる
 set wrapscan
 "対応する括弧にわずかの間ジャンプする
@@ -489,10 +491,42 @@ function! S(f, ...)
   \      ? eval(cfunc) : call(cfunc, a:000)
 endfunction
 
-if filereadable($HOME."/Documents/C++/n3337.txt")
-    command! -nargs=1 CxxDraft setl nowrap <Bar> view $HOME/Documents/C++/n<args>.txt
-endif
+" 横幅と縦幅を見て縦分割か横分割か決める
+command! -nargs=? -complete=command SmartSplit call <SID>smart_split(<q-args>)
+function! s:smart_split(cmd)
+    if winwidth(0) > winheight(0) * 2
+        vsplit
+    else
+        split
+    endif
+
+    if !empty(a:cmd)
+        execute a:cmd
+    endif
+endfunction
+
+" 縦幅と横幅を見て help の開き方を決める
+command! -nargs=* -complete=help SmartHelp call <SID>smart_help(<q-args>)
+function! s:smart_help(args)
+    if winwidth(0) > winheight(0) * 2
+        execute "vertical topleft help " . a:args
+    else
+        execute "aboveleft help " . a:args
+    endif
+endfunction
+
+" 隣のウィンドウでキー入力を行う
+function! ScrollOtherWindow(up)
+    execute 'wincmd' (winnr('#') == 0 ? 'w' : 'p')
+    execute 'normal!' a:up ? "\<C-u>" : "\<C-d>"
+    wincmd p
+endfunction
 "}}}
+
+" ユーザ定義コマンドへのマッピング
+nnoremap <silent><Leader>h :<C-u>SmartHelp<Space>
+nnoremap <silent><C-j>     :<C-u>call ScrollOtherWindow(0)<CR>
+nnoremap <silent><C-k>     :<C-u>call ScrollOtherWindow(1)<CR>
 
 " helpers {{{
 
@@ -703,7 +737,7 @@ NeoBundle 'rhysd/quickrun-unite-quickfix-outputter'
 NeoBundle 'basyura/unite-rails'
 NeoBundle 'kmnk/vim-unite-giti'
 NeoBundle 'rhysd/unite-n3337'
-set rtp+=~/Github/pdf.vim
+NeoBundle 'rhysd/open-pdf.vim'
 NeoBundle 'vim-jp/vimdoc-ja'
 NeoBundle 'jceb/vim-hier'
 NeoBundle 'rhysd/my-endwise'
