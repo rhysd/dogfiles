@@ -197,7 +197,7 @@ nnoremap <C-q> :<C-u>q<CR>
 " 空行挿入
 nnoremap <silent><CR> :<C-u>call append(expand('.'), '')<CR>j
 "ヘルプ表示
-nnoremap <Leader>h :vert to help<Space>
+nnoremap <Leader>h :<C-u>vert to help<Space>
 " スペースを挿入
 nnoremap <C-Space> i<Space><Esc><Right>
 "insertモード時はEmacsライクなバインディング．ポップアップが出ないように移動．
@@ -338,8 +338,8 @@ if (exists("g:linda_pp_startup_with_tiny") && g:linda_pp_startup_with_tiny)
 endif
 "}}}
 
-" user-defined functions and commands {{{
-" clean unnecessary whitespaces
+" ユーザ定義関数とコマンド{{{
+" 行末のホワイトスペースおよびタブ文字の除去
 command! CleanSpaces call <SID>clean_whitespaces()
 function! s:clean_whitespaces()
     let cursor = getpos(".")
@@ -350,7 +350,7 @@ endfunction
 
 command! Date :call setline('.', getline('.') . strftime('%Y/%m/%d (%a) %H:%M'))
 
-" open config file
+" vimrc を開く
 command! Vimrc call s:edit_myvimrc()
 function! s:edit_myvimrc()
     let files = ""
@@ -372,7 +372,7 @@ function! s:edit_myvimrc()
     execute "args " . files
 endfunction
 
-" display all maps
+" すべてのマッピングを表示
 " :AllMaps
 " :AllMaps <buffer1> <buffer2> ...
 " http://vim-users.jp/2011/02/hack203/
@@ -380,7 +380,7 @@ command! -nargs=* -complete=mapping
             \   AllMaps
             \   map <args> | map! <args> | lmap <args>
 
-" output result of Vim script to new buffer
+" Vim script の実行結果を新しいバッファで開く
 " :Capture <command>
 " http://vim-users.jp/2011/02/hack203/
 command! -nargs=+ -complete=command
@@ -523,10 +523,11 @@ function! ScrollOtherWindow(up)
 endfunction
 "}}}
 
-" ユーザ定義コマンドへのマッピング
+" ユーザ定義コマンドへのマッピング {{{
 nnoremap <silent><Leader>h :<C-u>SmartHelp<Space>
 nnoremap <silent><C-j>     :<C-u>call ScrollOtherWindow(0)<CR>
 nnoremap <silent><C-k>     :<C-u>call ScrollOtherWindow(1)<CR>
+"}}}
 
 " helpers {{{
 
