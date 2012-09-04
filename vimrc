@@ -278,12 +278,12 @@ nnoremap K :<C-u>help <C-r><C-w><CR>
     " nnoremap p ]p
 
 " 賢く行頭・非空白行頭・行末の移動
-nnoremap 0 :<C-u>call <SID>smart_move('g^')<CR>
-vnoremap 0 :<C-u>call <SID>smart_move('g^')<CR>
-nnoremap ^ :<C-u>call <SID>smart_move('g0')<CR>
-vnoremap ^ :<C-u>call <SID>smart_move('g0')<CR>
-nnoremap - :<C-u>call <SID>smart_move('g$')<CR>
-vnoremap - :<C-u>call <SID>smart_move('g$')<CR>
+nnoremap <silent>0 :<C-u>call <SID>smart_move('g^')<CR>
+vnoremap <silent>0 :<C-u>call <SID>smart_move('g^')<CR>
+nnoremap <silent>^ :<C-u>call <SID>smart_move('g0')<CR>
+vnoremap <silent>^ :<C-u>call <SID>smart_move('g0')<CR>
+nnoremap <silent>- :<C-u>call <SID>smart_move('g$')<CR>
+vnoremap <silent>- :<C-u>call <SID>smart_move('g$')<CR>
 
 " 初回のみ a:cmd の動きをして，それ以降は行内をローテートする
 let s:smart_line_pos = -1
@@ -313,7 +313,6 @@ function! s:rotate_in_line()
         endif
     endif
 endfunction
-nnoremap <silent>t :<C-u>call <SID>rotate_in_line()<CR>
 " }}}
 
 "}}}
