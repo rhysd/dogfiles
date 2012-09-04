@@ -927,7 +927,7 @@ nnoremap <silent>[unite]r :<C-u>UniteResume<CR>
 nnoremap <silent>[unite]L :<C-u>Unite line<CR>
 " NeoBundle
 " nnoremap <silent>[unite]nb :<C-u>AutoNeoBundleTimestamp<CR>:Unite neobundle/update -auto-quit<CR>
-nnoremap <silent>[unite]nb :<C-u>Unite neobundle/update -auto-quit<CR>
+nnoremap <silent>[unite]nb :<C-u>Unite neobundle/update -auto-quit -keep-focus<CR>
 " Haskell Import
 augroup HaskellImport
     autocmd!
