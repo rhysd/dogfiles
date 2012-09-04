@@ -703,7 +703,7 @@ NeoBundle 'rhysd/quickrun-unite-quickfix-outputter'
 NeoBundle 'basyura/unite-rails'
 NeoBundle 'kmnk/vim-unite-giti'
 NeoBundle 'rhysd/unite-n3337'
-set rtp+=~/Github/pdf.vim
+NeoBundle 'rhysd/open-pdf.vim'
 NeoBundle 'vim-jp/vimdoc-ja'
 NeoBundle 'jceb/vim-hier'
 NeoBundle 'rhysd/my-endwise'
@@ -941,7 +941,7 @@ nnoremap <silent><expr>[unite]fg ":\<C-u>Unite file -input=".fnamemodify(<SID>gi
 " fold
 nnoremap <silent>[unite]fl :<C-u>Unite fold -no-start-insert -no-empty<CR>
 " git
-nnoremap <silent>[unite]g :<C-u>Unite giti -no-start-insert -quick-match<CR>
+nnoremap <silent>[unite]g :<C-u>Unite giti -no-start-insert<CR>
 " }}}
 
 " }}}
@@ -1097,11 +1097,12 @@ augroup VimFilerMapping
 augroup END
 nnoremap <Leader>f        <Nop>
 nnoremap <Leader>ff       :<C-u>VimFiler<CR>
-nnoremap <Leader>fnq      :<C-u>VimFiler<Space>-no-quit<CR>
-nnoremap <Leader>fh       :<C-u>VimFiler<Space>~<CR>
+nnoremap <Leader>fnq      :<C-u>VimFiler -no-quit<CR>
+nnoremap <Leader>fh       :<C-u>VimFiler ~<CR>
 nnoremap <Leader>fc       :<C-u>VimFilerCurrentDir<CR>
 nnoremap <Leader>fb       :<C-u>VimFilerBufferDir<CR>
-nnoremap <expr><Leader>fg ":\<C-u>VimFiler " . <SID>git_root_dir() . '\<CR>'
+nnoremap <Leader>fe       :<C-u>VimFilerExplorer ~<CR>
+nnoremap <silent><expr><Leader>fg ":\<C-u>VimFiler " . <SID>git_root_dir() . '\<CR>'
 "        }}}
 
 " }}}
