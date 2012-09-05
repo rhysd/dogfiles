@@ -293,8 +293,9 @@ function! s:smart_move(cmd)
         call <SID>rotate_in_line()
     else
         execute "normal! " . a:cmd
+        " 最後に移動した行とマッピングを保持
+        let s:smart_line_pos = line . a:cmd
     endif
-    let s:smart_line_pos = line . a:cmd
 endfunction
 
 " 行頭 → 非空白行頭 → 行 をローテートする
