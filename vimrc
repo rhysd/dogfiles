@@ -521,6 +521,7 @@ endfunction
 "}}}
 
 " ユーザ定義コマンドへのマッピング {{{
+nnoremap <C-w><Space>      :<C-u>SmartSplit<CR>
 nnoremap <silent><Leader>h :<C-u>SmartHelp<Space>
 nnoremap <silent><C-j>     :<C-u>call ScrollOtherWindow(0)<CR>
 nnoremap <silent><C-k>     :<C-u>call ScrollOtherWindow(1)<CR>
