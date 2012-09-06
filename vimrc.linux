@@ -15,6 +15,7 @@ NeoBundleLazy 'basyura/twibill.vim'
 NeoBundleLazy 'mattn/webapi-vim'
 NeoBundleLazy 'basyura/TweetVim'
 NeoBundleLazy 'yomi322/unite-tweetvim'
+NeoBundleLazy 'rhysd/tweetvim-advanced-filter'
 filetype plugin indent on     " required!
 
 " プラグインの設定

@@ -4,6 +4,7 @@ NeoBundleSource twibill.vim
 NeoBundleSource webapi-vim
 NeoBundleSource TweetVim
 NeoBundleSource neco-tweetvim
+NeoBundleSource tweetvim-advanced-filter
 
 colorscheme molokai
 " IM の起動キーを gVim に教える
@@ -65,9 +66,17 @@ augroup END
 " セパレータを飛ばして移動する
 function! s:tweetvim_vertical_move(cmd)
     execute "normal! ".a:cmd
-    while getline('.') =~# '^[-~]\+$' && line('.') != line('$')
+    let end = line('$')
+    while getline('.') =~# '^[-~]\+$' && line('.') != end
         execute "normal! ".a:cmd
     endwhile
+    " 一番下まで来たら次のページに進む
+    let line = line('.')
+    if line == end
+        call feedkeys("\<Plug>(tweetvim_action_page_next)")
+    elseif line == 1
+        call feedkeys("\<Plug>(tweetvim_action_page_previous)")
+    endif
 endfunction
 
 " ツイートをリロード
@@ -104,4 +113,7 @@ endfunction
 nmap <Leader>u <Plug>(openbrowser-open)
 vmap <Leader>u <Plug>(openbrowser-open)
 
+if filereadable($HOME.'/.tweetvimrc')
+    source $HOME/.tweetvimrc
+endif
 " vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8
