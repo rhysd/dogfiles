@@ -276,14 +276,13 @@ nnoremap K :<C-u>help <C-r><C-w><CR>
 " TODO v で選択した範囲を help
 " 貼り付けはインデントを揃える
     " nnoremap p ]p
-
 " 賢く行頭・非空白行頭・行末の移動
 nnoremap <silent>0 :<C-u>call <SID>smart_move('g^')<CR>
-vnoremap <silent>0 :<C-u>call <SID>smart_move('g^')<CR>
 nnoremap <silent>^ :<C-u>call <SID>smart_move('g0')<CR>
-vnoremap <silent>^ :<C-u>call <SID>smart_move('g0')<CR>
 nnoremap <silent>- :<C-u>call <SID>smart_move('g$')<CR>
-vnoremap <silent>- :<C-u>call <SID>smart_move('g$')<CR>
+vnoremap 0 g^
+vnoremap ^ g0
+vnoremap - g$
 
 " 初回のみ a:cmd の動きをして，それ以降は行内をローテートする
 let s:smart_line_pos = -1
@@ -631,9 +630,9 @@ function! s:cpp_hpp()
     endif
 
     " なければ Unite で検索
-    if has('mac')
+    if executable('mdfind')
         execute "Unite spotlight -input=".base
-    elseif !has('mac') && has('unix')
+    elseif !executable('locate')
         execute "Unite locate -input=".base
     endif
 
@@ -656,34 +655,6 @@ augroup CppSetting
     autocmd FileType cpp nnoremap <silent><buffer><C-t> :<C-u>call <SID>cpp_hpp()<CR>
 augroup END
 
-command! -nargs=1 BoostDoc call <SID>boost_doc(<q-args>)
-function! s:boost_doc(name)
-    let boost_doc_dir = $HOME."/Documents/C++/boost_1_51_pdf"
-    let name = tolower(a:name)
-
-    if !isdirectory(boost_doc_dir)
-        echoerr "boost documents are not found!"
-        return
-    endif
-
-    let path = findfile(name.'.txt', boost_doc_dir)
-    if !empty(path)
-        execute "view ".path
-        return
-    endif
-
-    let path_pdf = findfile(name.'.pdf', boost_doc_dir)
-    if !empty(path_pdf) && executable('pdftotext')
-        echo "converting pdf to text..."
-        execute "!pdftotext -nopgbrk -layout ".path_pdf
-        execute "view ".boost_doc_dir."/".name.".txt"
-        return
-    endif
-
-    echo "reference not found!"
-    execute "Unite file:".boost_doc_dir
-
-endfunction
 " }}}
 
 " Haskell {{{
@@ -898,7 +869,7 @@ inoremap <expr><C-y> neocomplcache#close_popup()
 
 " }}}
 
-" Unite.vim {{{
+" unite.vim {{{
 "insertモードをデフォルトに
 let g:unite_enable_start_insert = 1
 " 無指定にすることで高速化
@@ -914,13 +885,11 @@ let g:loaded_unite_source_window = 1
 " unite-grep で使うコマンド
 let g:unite_source_grep_default_opts = "-Hn --color=never"
 
-"Unite.vimのキーマップ {{{
+"unite.vimのキーマップ {{{
 augroup UniteMapping
     autocmd!
     "insertモード時はC-gでいつでもバッファを閉じられる（絞り込み欄が空の時はC-hでもOK）
     autocmd FileType unite imap <buffer><C-g> <Plug>(unite_exit)
-    " <Space> だと待ち時間が発生してしまうので <Space><Space> を割り当て
-    autocmd FileType unite nmap <buffer><Space><Space> <Plug>(unite_toggle_mark_current_candidate)
     " q だと待ち時間が発生してしまうので
     autocmd FileType unite nmap <buffer><C-g> <Plug>(unite_exit)
     "直前のパス削除

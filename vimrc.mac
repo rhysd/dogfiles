@@ -16,7 +16,7 @@ filetype plugin indent on     " required!
 
 "ctagsへのパス
 let g:neocomplcache_ctags_program = '/usr/local/bin/ctags'
-nnoremap <silent><Space>l :<C-u>UniteWithInput spotlight<CR>
+nnoremap <silent>[unite]l :<C-u>UniteWithInput spotlight<CR>
 let g:quickrun_config.cpp = { 'command' : 'g++-4.7' , 'cmdopt' : '-std=c++11 -Wall -Wextra -O2' }
 
-" vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8
+" vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8:

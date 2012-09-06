@@ -19,6 +19,6 @@ filetype plugin indent on     " required!
 
 " プラグインの設定
 let g:neocomplcache_ctags_program = '/usr/bin/ctags'
-nnoremap <silent><Space>l :<C-u>UniteWithInput locate<CR>
+nnoremap <silent>[unite]l :<C-u>UniteWithInput locate<CR>
 
 " vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8 :
