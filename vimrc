@@ -1,4 +1,4 @@
-" Base settings {{{
+" 必須な基本設定 {{{
 
 "エンコーディング
 set encoding=utf-8
@@ -152,6 +152,13 @@ augroup Misc
     endfunction
     " help は 80 行以上ないと読みにくい
     autocmd FileType help  if winwidth(0) < 80 | setl winwidth=80 | endif
+    " ファイルタイプを書き込み時に自動判別
+    autocmd BufWritePost
+    \ * if &l:filetype ==# '' || exists('b:ftdetect')
+    \ |   unlet! b:ftdetect
+    \ |   filetype detect
+    \ | endif
+
 augroup END
 
 " カーソル下のハイライトグループを取得
@@ -162,7 +169,7 @@ augroup END
 noremap ; :
 noremap : ;
 "insertモードから抜ける
-inoremap jj <Esc>
+inoremap <expr> j getline('.')[col('.') - 2] ==# 'j' ? "\<BS>\<ESC>" : 'j'
 " <C-c> も Esc と抜け方にする
 inoremap <C-C> <Esc>
 " Yの挙動はy$のほうが自然な気がする
@@ -332,6 +339,126 @@ if (exists("g:linda_pp_startup_with_tiny") && g:linda_pp_startup_with_tiny)
     vmap <Leader>C <Plug>(caw:wrap:toggle)
     finish
 endif
+"}}}
+
+" neobundle.vim の設定 {{{
+filetype off
+filetype plugin indent off
+
+if has('vim_starting')
+    set rtp+=~/.vim/bundle/neobundle.vim/
+    call neobundle#rc(expand('~/.vim/bundle'))
+endif
+
+" GitHub上のリポジトリ
+NeoBundle 'Shougo/vimproc'
+NeoBundle 'Shougo/vimshell'
+NeoBundle 'Shougo/vimfiler'
+NeoBundle 'Shougo/neocomplcache'
+NeoBundle 'Shougo/neocomplcache-snippets-complete'
+NeoBundle 'vim-jp/cpp-vim'
+    " NeoBundle 'Rip-Rip/clang_complete'
+NeoBundle 'rhysd/clang_complete'
+NeoBundle 'osyo-manga/neocomplcache-clang_complete'
+NeoBundle 'rhysd/home-made-snippets'
+NeoBundle 'thinca/vim-quickrun'
+NeoBundle 'tyru/caw.vim'
+NeoBundle 'Shougo/unite.vim'
+NeoBundle 'h1mesuke/unite-outline'
+NeoBundle 'osyo-manga/unite-fold'
+NeoBundle 'ujihisa/unite-haskellimport'
+NeoBundle 'osyo-manga/unite-quickfix'
+NeoBundle 'rhysd/quickrun-unite-quickfix-outputter'
+NeoBundle 'basyura/unite-rails'
+NeoBundle 'kmnk/vim-unite-giti'
+" NeoBundle 'rhysd/unite-n3337'
+set rtp+=~/Github/unite-n3337
+NeoBundle 'rhysd/open-pdf.vim'
+NeoBundle 'vim-jp/vimdoc-ja'
+NeoBundle 'jceb/vim-hier'
+NeoBundle 'rhysd/my-endwise'
+    " NeoBundle 'tpope/vim-endwise'
+NeoBundle 'kana/vim-textobj-user'
+NeoBundle 'kana/vim-textobj-indent'
+NeoBundle 'kana/vim-textobj-lastpat'
+NeoBundle 'h1mesuke/textobj-wiw'
+NeoBundle 'kana/vim-operator-user'
+NeoBundle 'kana/vim-operator-replace'
+NeoBundle 'thinca/vim-textobj-between'
+NeoBundle 'thinca/vim-prettyprint'
+NeoBundle 'rhysd/accelerated-jk'
+NeoBundle 'kana/vim-smartinput'
+NeoBundle 'thinca/vim-ref'
+NeoBundle 'kana/vim-filetype-haskell'
+NeoBundle 'ujihisa/ref-hoogle'
+NeoBundle 'ujihisa/neco-ghc'
+NeoBundle 'eagletmt/ghcmod-vim'
+NeoBundle 'rhysd/auto-neobundle'
+NeoBundle 'rhysd/wombat256.vim'
+    " NeoBundle 'rhysd/ref-rurema'
+    " NeoBundle 'ujihisa/vimshell-ssh'
+    " NeoBundle 'h1mesuke/vim-alignta'
+    " NeoBundle 'ujihisa/unite-colorscheme'
+    " NeoBundle 'ujihisa/neco-look'
+
+" vim-scripts上のリポジトリ
+NeoBundle 'Align'
+    " NeoBundle 'errormarker.vim'
+    " NeoBundle 'endwise.vim'
+
+" その他のgitリポジトリ
+    " NeoBundle 'git://git.wincent.com/command-t.git'
+
+" GUI オンリーなプラグイン
+NeoBundleLazy 'ujihisa/unite-colorscheme'
+NeoBundleLazy 'nathanaelkane/vim-indent-guides'
+NeoBundleLazy 'tomasr/molokai'
+NeoBundleLazy 'altercation/vim-colors-solarized'
+NeoBundleLazy 'earendel'
+NeoBundleLazy 'rdark'
+NeoBundleLazy 'telamon/vim-color-github'
+
+filetype plugin indent on     " required!
+
+" カラースキーム "{{{
+colorscheme wombat256mod
+" }}}
+
+" auto_neobundle "{{{
+" augroup AutoUpdate
+"     autocmd!
+"     autocmd VimEnter * call auto_neobundle#update_every_3days()
+" augroup END
+"}}}
+
+" NeoBundle のキーマップ{{{
+" すべて更新するときは基本的に Unite で非同期に実行
+" nnoremap <silent><Leader>nbu   :<C-u>AutoNeoBundleTimestamp<CR>:NeoBundleUpdate<CR>
+nnoremap <silent><Leader>nbu   :<C-u>NeoBundleUpdate<CR>
+nnoremap <silent><Leader>nbc   :<C-u>NeoBundleClean<CR>
+nnoremap <silent><Leader>nbi   :<C-u>NeoBundleInstall<CR>
+nnoremap <silent><Leader>nbl   :<C-u>Unite output<CR>NeoBundleList<CR>
+" }}}
+
+" }}}
+
+" その他の雑多な設定 {{{
+
+" スクリプトに実行可能属性を自動で付ける
+if executable('chmod')
+  augroup vimrc-autoexecutable
+    autocmd!
+    autocmd BufWritePost * call s:add_permission_x()
+  augroup END
+
+  function! s:add_permission_x()
+    let file = expand('%:p')
+    if getline(1) =~# '^#!' && !executable(file)
+      silent! call vimproc#system('chmod a+x ' . shellescape(file))
+    endif
+  endfunction
+endif
+
 "}}}
 
 " ユーザ定義関数とコマンド{{{
@@ -644,6 +771,7 @@ command! CppHpp :call <SID>cpp_hpp()
 augroup CppSetting
     au!
     autocmd FileType cpp setlocal tabstop=4 shiftwidth=4 softtabstop=4
+    autocmd FileType cpp setlocal matchpairs+=<:>
     autocmd FileType cpp inoremap <buffer>,  ,<Space>
     autocmd FileType cpp inoremap <buffer>;; ::
     autocmd FileType cpp inoremap <buffer><C-s>s      <C-o>Bstd::<End>
@@ -675,106 +803,6 @@ augroup VimScriptSetting
     autocmd FileType vim setlocal tabstop=4 shiftwidth=4 softtabstop=4
 augroup END
 "}}}
-
-" neobundle.vim の設定 {{{
-filetype off
-filetype plugin indent off
-
-if has('vim_starting')
-    set rtp+=~/.vim/bundle/neobundle.vim/
-    call neobundle#rc(expand('~/.vim/bundle'))
-endif
-
-" GitHub上のリポジトリ
-NeoBundle 'Shougo/vimproc'
-NeoBundle 'Shougo/vimshell'
-NeoBundle 'Shougo/vimfiler'
-NeoBundle 'Shougo/neocomplcache'
-NeoBundle 'Shougo/neocomplcache-snippets-complete'
-NeoBundle 'vim-jp/cpp-vim'
-    " NeoBundle 'Rip-Rip/clang_complete'
-NeoBundle 'rhysd/clang_complete'
-NeoBundle 'osyo-manga/neocomplcache-clang_complete'
-NeoBundle 'rhysd/home-made-snippets'
-NeoBundle 'thinca/vim-quickrun'
-NeoBundle 'tyru/caw.vim'
-NeoBundle 'Shougo/unite.vim'
-NeoBundle 'h1mesuke/unite-outline'
-NeoBundle 'osyo-manga/unite-fold'
-NeoBundle 'ujihisa/unite-haskellimport'
-NeoBundle 'osyo-manga/unite-quickfix'
-NeoBundle 'rhysd/quickrun-unite-quickfix-outputter'
-NeoBundle 'basyura/unite-rails'
-NeoBundle 'kmnk/vim-unite-giti'
-NeoBundle 'rhysd/unite-n3337'
-NeoBundle 'rhysd/open-pdf.vim'
-NeoBundle 'vim-jp/vimdoc-ja'
-NeoBundle 'jceb/vim-hier'
-NeoBundle 'rhysd/my-endwise'
-    " NeoBundle 'tpope/vim-endwise'
-NeoBundle 'kana/vim-textobj-user'
-NeoBundle 'kana/vim-textobj-indent'
-NeoBundle 'kana/vim-textobj-lastpat'
-NeoBundle 'h1mesuke/textobj-wiw'
-NeoBundle 'kana/vim-operator-user'
-NeoBundle 'kana/vim-operator-replace'
-NeoBundle 'thinca/vim-textobj-between'
-NeoBundle 'thinca/vim-prettyprint'
-NeoBundle 'rhysd/accelerated-jk'
-NeoBundle 'kana/vim-smartinput'
-NeoBundle 'thinca/vim-ref'
-NeoBundle 'kana/vim-filetype-haskell'
-NeoBundle 'ujihisa/ref-hoogle'
-NeoBundle 'ujihisa/neco-ghc'
-NeoBundle 'eagletmt/ghcmod-vim'
-NeoBundle 'rhysd/auto-neobundle'
-NeoBundle 'rhysd/wombat256.vim'
-    " NeoBundle 'rhysd/ref-rurema'
-    " NeoBundle 'ujihisa/vimshell-ssh'
-    " NeoBundle 'h1mesuke/vim-alignta'
-    " NeoBundle 'ujihisa/unite-colorscheme'
-    " NeoBundle 'ujihisa/neco-look'
-
-" vim-scripts上のリポジトリ
-NeoBundle 'Align'
-    " NeoBundle 'errormarker.vim'
-    " NeoBundle 'endwise.vim'
-
-" その他のgitリポジトリ
-    " NeoBundle 'git://git.wincent.com/command-t.git'
-
-" GUI オンリーなプラグイン
-NeoBundleLazy 'ujihisa/unite-colorscheme'
-NeoBundleLazy 'nathanaelkane/vim-indent-guides'
-NeoBundleLazy 'tomasr/molokai'
-NeoBundleLazy 'altercation/vim-colors-solarized'
-NeoBundleLazy 'earendel'
-NeoBundleLazy 'rdark'
-NeoBundleLazy 'telamon/vim-color-github'
-
-filetype plugin indent on     " required!
-
-" カラースキーム "{{{
-colorscheme wombat256mod
-" }}}
-
-" auto_neobundle "{{{
-" augroup AutoUpdate
-"     autocmd!
-"     autocmd VimEnter * call auto_neobundle#update_every_3days()
-" augroup END
-"}}}
-
-" NeoBundle のキーマップ{{{
-" すべて更新するときは基本的に Unite で非同期に実行
-" nnoremap <silent><Leader>nbu   :<C-u>AutoNeoBundleTimestamp<CR>:NeoBundleUpdate<CR>
-nnoremap <silent><Leader>nbu   :<C-u>NeoBundleUpdate<CR>
-nnoremap <silent><Leader>nbc   :<C-u>NeoBundleClean<CR>
-nnoremap <silent><Leader>nbi   :<C-u>NeoBundleInstall<CR>
-nnoremap <silent><Leader>nbl   :<C-u>Unite output<CR>NeoBundleList<CR>
-" }}}
-
-" }}}
 
 " neocomplcacheの設定 {{{
 "AutoComplPopを無効にする
@@ -998,10 +1026,10 @@ command! R execute 'Unite rails/model rails/controller rails/view -no-start-inse
 
 " unite-n3337 "{{{
 let g:unite_n3337_pdf = $HOME.'/Documents/C++/n3337.pdf'
-augroup UniteN3337
-    autocmd!
-    autocmd FileType cpp nnoremap <buffer>[unite]un :<C-u>Unite n3337<CR>
-augroup END
+" augroup UniteN3337
+"     autocmd!
+"     autocmd FileType cpp nnoremap <buffer>[unite]un :<C-u>Unite n3337<CR>
+" augroup END
 "}}}
 
 " VimShellの設定 {{{
