@@ -169,7 +169,8 @@ augroup END
 noremap ; :
 noremap : ;
 "insertモードから抜ける
-inoremap <expr> j getline('.')[col('.') - 2] ==# 'j' ? "\<BS>\<ESC>" : 'j'
+" inoremap <expr> j getline('.')[col('.') - 2] ==# 'j' ? "\<BS>\<ESC>" : 'j'
+inoremap <silent>jj <Esc>
 " <C-c> も Esc と抜け方にする
 inoremap <C-C> <Esc>
 " Yの挙動はy$のほうが自然な気がする
@@ -371,8 +372,7 @@ NeoBundle 'osyo-manga/unite-quickfix'
 NeoBundle 'rhysd/quickrun-unite-quickfix-outputter'
 NeoBundle 'basyura/unite-rails'
 NeoBundle 'kmnk/vim-unite-giti'
-" NeoBundle 'rhysd/unite-n3337'
-set rtp+=~/Github/unite-n3337
+NeoBundle 'rhysd/unite-n3337'
 NeoBundle 'rhysd/open-pdf.vim'
 NeoBundle 'vim-jp/vimdoc-ja'
 NeoBundle 'jceb/vim-hier'
@@ -917,9 +917,8 @@ let g:unite_source_grep_default_opts = "-Hn --color=never"
 "unite.vimのキーマップ {{{
 augroup UniteMapping
     autocmd!
-    "insertモード時はC-gでいつでもバッファを閉じられる（絞り込み欄が空の時はC-hでもOK）
+    "C-gでいつでもバッファを閉じられる（絞り込み欄が空の時はC-hでもOK）
     autocmd FileType unite imap <buffer><C-g> <Plug>(unite_exit)
-    " q だと待ち時間が発生してしまうので
     autocmd FileType unite nmap <buffer><C-g> <Plug>(unite_exit)
     "直前のパス削除
     autocmd FileType unite imap <buffer><C-w> <Plug>(unite_delete_backward_path)
@@ -1026,10 +1025,10 @@ command! R execute 'Unite rails/model rails/controller rails/view -no-start-inse
 
 " unite-n3337 "{{{
 let g:unite_n3337_pdf = $HOME.'/Documents/C++/n3337.pdf'
-" augroup UniteN3337
-"     autocmd!
-"     autocmd FileType cpp nnoremap <buffer>[unite]un :<C-u>Unite n3337<CR>
-" augroup END
+augroup UniteN3337
+    autocmd!
+    autocmd FileType cpp nnoremap <buffer>[unite]un :<C-u>Unite n3337<CR>
+augroup END
 "}}}
 
 " VimShellの設定 {{{
