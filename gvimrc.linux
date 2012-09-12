@@ -54,8 +54,8 @@ augroup TweetVimSetting
     autocmd FileType tweetvim     nnoremap <buffer><Leader><Leader> :<C-u>call <SID>tweetvim_favstar()<CR>
     autocmd FileType tweetvim     nnoremap <buffer><Leader>u        :<C-u>call <SID>tweetvim_open_home()<CR>
     " 縦移動
-    autocmd FileType tweetvim     nnoremap <buffer><silent>j        :<C-u>call <SID>tweetvim_vertical_move("gj")<CR>zz
-    autocmd FileType tweetvim     nnoremap <buffer><silent>k        :<C-u>call <SID>tweetvim_vertical_move("gk")<CR>zz
+    autocmd FileType tweetvim     nnoremap <buffer><silent>j        :<C-u>call <SID>tweetvim_vertical_move("j")<CR>zz
+    autocmd FileType tweetvim     nnoremap <buffer><silent>k        :<C-u>call <SID>tweetvim_vertical_move("k")<CR>zz
     " 不要なマップを除去
     autocmd FileType tweetvim     nunmap   <buffer>ff
     autocmd FileType tweetvim     nunmap   <buffer>bb
@@ -70,7 +70,7 @@ function! s:tweetvim_vertical_move(cmd)
     while getline('.') =~# '^[-~]\+$' && line('.') != end
         execute "normal! ".a:cmd
     endwhile
-    " 一番下まで来たら次のページに進む
+    " 一番上/下まで来たら次のページに進む
     let line = line('.')
     if line == end
         call feedkeys("\<Plug>(tweetvim_action_page_next)")
@@ -109,9 +109,6 @@ function! s:tweetvim_open_home()
         execute "OpenBrowser https://twitter.com/" . username
     endif
 endfunction
-
-nmap <Leader>u <Plug>(openbrowser-open)
-vmap <Leader>u <Plug>(openbrowser-open)
 
 if filereadable($HOME.'/.tweetvimrc')
     source $HOME/.tweetvimrc

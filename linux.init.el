@@ -129,6 +129,8 @@
 (define-key global-map (kbd "M-p")
   '(lambda () (interactive) (scroll-down (/ (window-height) 2))))
 
+;; symlink でも開く
+(setq vc-follow-symlinks t)
 
 
 ;; auto-complete
@@ -155,7 +157,7 @@
 ;; 3: EUC
 ;; 4: UTF-8
 (setq YaTeX-kanji-code 4);;; YaTeX
-(setq tex-command "latex2pdf")
+(setq tex-command "platex")
 (setq dvi2-command "apvlv")
 
 ;;; anything.el
@@ -170,7 +172,7 @@
  '(ansi-color-names-vector ["#fdf6e3" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#657b83"])
  '(ansi-term-color-vector [unspecific "#586e75" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#002b36"])
  '(anything-command-map-prefix-key "C-j")
- '(custom-safe-themes (quote ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
+ '(custom-safe-themes (quote ("93815fc47d9324a7761b56754bc46cd8b8544a60fca513e634dfa16b8c761400" "6cfe5b2f818c7b52723f3e121d1157cf9d95ed8923dbc1b47f392da80ef7495d" "6615e5aefae7d222a0c252c81aac52c4efb2218d35dfbb93c023c4b94d3fa0db" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
  '(fci-rule-color "#eee8d5"))
 (setq anything-command-map-prefix-key "C-j")
 ;; 各anythingソース呼び出し割り当て
@@ -190,7 +192,47 @@
 (setq twittering-use-master-password t)
 (setq twittering-icon-mode t)
 (setq twittering-timer-interval 30)
-(setq twittering-status-format "%i %s\n  %t\n")
+(setq twittering-status-format "%i %s %@ from %f\n  %t\n")
+
+
+;; flymake 
+(require 'flymake)
+ ;; latex 
+(defun flymake-tex-init ()
+  (let* ((temp-file   (flymake-init-create-temp-buffer-copy
+                       'flymake-create-temp-inplace))
+         (local-dir   (file-name-directory buffer-file-name))
+         (local-file  (file-relative-name
+                       temp-file
+                       local-dir)))
+    (list "platex" (list "-file-line-error" "-interaction=nonstopmode" local-file))))
+(defun flymake-tex-cleanup-custom ()
+  (let* ((base-file-name (file-name-sans-extension (file-name-nondirectory flymake-temp-source-file-name)))
+          (regexp-base-file-name (concat "^" base-file-name "\\.")))
+    (mapcar '(lambda (filename)
+                      (when (string-match regexp-base-file-name filename)
+                         (flymake-safe-delete-file filename)))
+                (split-string (shell-command-to-string "ls"))))
+  (setq flymake-last-change-time nil))
+(push '("\\.tex$" flymake-tex-init flymake-tex-cleanup-custom) flymake-allowed-file-name-masks)
+(add-hook 'yatex-mode-hook 'flymake-mode-1)
+
+
+(defun flymake-mode-1 ()
+  (if (not (null buffer-file-name)) (flymake-mode))
+  (local-set-key "\C-cd" 'flymake-display-err-minibuf))
+
+(defun flymake-display-err-minibuf ()
+  "Displays the error/warning for the current line in the minibuffer"
+  (interactive)
+  (let* ((line-err-info-list (nth 0 (flymake-find-err-info flymake-err-info (flymake-current-line-no))))
+         (count (length line-err-info-list)))
+    (while (> count 0)
+      (when line-err-info-list
+        (let* ((text (flymake-ler-text (nth (1- count) line-err-info-list)))
+               (line (flymake-ler-line (nth (1- count) line-err-info-list))))
+          (message "[%s] %s" line text)))
+      (setq count (1- count)))))
 
 
 
@@ -215,9 +257,3 @@
 
 ;; (setq interprogram-cut-function 'paste-to-osx)
 ;; (setq interprogram-paste-function 'copy-from-osx)
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
