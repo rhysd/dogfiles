@@ -398,12 +398,10 @@ NeoBundle 'rhysd/wombat256.vim'
     " NeoBundle 'rhysd/ref-rurema'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'h1mesuke/vim-alignta'
-    " NeoBundle 'ujihisa/unite-colorscheme'
     " NeoBundle 'ujihisa/neco-look'
 
 " vim-scripts上のリポジトリ
 NeoBundle 'Align'
-    " NeoBundle 'errormarker.vim'
     " NeoBundle 'endwise.vim'
 
 " その他のgitリポジトリ
@@ -412,6 +410,7 @@ NeoBundle 'Align'
 " GUI オンリーなプラグイン
 NeoBundleLazy 'ujihisa/unite-colorscheme'
 NeoBundleLazy 'nathanaelkane/vim-indent-guides'
+NeoBundleLazy 'sudo.vim'
 NeoBundleLazy 'tomasr/molokai'
 NeoBundleLazy 'altercation/vim-colors-solarized'
 NeoBundleLazy 'earendel'
@@ -419,6 +418,14 @@ NeoBundleLazy 'rdark'
 NeoBundleLazy 'telamon/vim-color-github'
 
 filetype plugin indent on     " required!
+
+" 遅延読み込み {{{
+augroup NeoBundleLazySource
+    autocmd!
+    autocmd FileChangedRO * NeoBundleSource sudo.vim
+    autocmd FileChangedRO * exe "command! W SudoWrite" expand('%')
+augroup END
+"}}}
 
 " カラースキーム "{{{
 colorscheme wombat256mod

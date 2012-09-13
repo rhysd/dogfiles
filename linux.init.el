@@ -132,6 +132,26 @@
 ;; symlink でも開く
 (setq vc-follow-symlinks t)
 
+;; ミニバッファに入ると自動で IM OFF
+;; (defvar *ime-mode-into-minibuffer* nil)
+
+;; (defun ime-state-get-and-setoff (bef-buffer file-name)
+;;  (interactive)
+;;  (setq *ime-mode-into-minibuffer* (get-ime-mode)
+;;   )
+;;  (toggle-ime nil)
+;;   )
+
+;; (defun ime-state-set (bef-buffer file-name)
+;;  (interactive)
+;;  (toggle-ime *ime-mode-into-minibuffer*
+;;   )
+;;   )
+
+;; (add-hook '*enter-minibuffer-hook* 'ime-state-get-and-setoff)
+;; (add-hook '*exit-minibuffer-hook* 'ime-state-set)
+
+
 
 ;; auto-complete
 (require 'auto-complete)
