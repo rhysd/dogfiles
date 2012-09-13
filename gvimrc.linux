@@ -5,7 +5,6 @@ NeoBundleSource webapi-vim
 NeoBundleSource TweetVim
 NeoBundleSource neco-tweetvim
 NeoBundleSource tweetvim-advanced-filter
-NeoBundleSource favstar-vim
 
 colorscheme molokai
 " IM の起動キーを gVim に教える
@@ -21,8 +20,6 @@ if !exists('g:openbrowser_open_rules')
     let g:openbrowser_open_rules = {}
 endif
 let g:openbrowser_open_rules['google-chrome'] = "{browser} {shellescape(uri)}"
-
-let g:favstar_user = 'Linda_pp'
 
 let g:tweetvim_display_icon = 1
 let g:tweetvim_tweet_per_page = 60
@@ -91,8 +88,9 @@ endfunction
 
 function! s:tweetvim_favstar()
     let screen_name = matchstr(getline('.'),'^\s\zs\w\+')
+    let route = empty(screen_name) ? 'me' : 'users/'.screen_name
 
-    execute "FavStar ".screen_name
+    execute "OpenBrowser http://ja.favstar.fm/".route
 endfunction
 
 function! s:open_favstar()
