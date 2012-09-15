@@ -75,12 +75,14 @@ set nrformats-=octal
 set hidden
 "日本語ヘルプを優先的に検索
 set helplang=ja,en
+" カーソル下の単語を help で調べる
+set keywordprg=:help
 "OSのクリップボードを使う
 set clipboard=unnamed
 "矩形選択で自由に移動する
 set virtualedit& virtualedit+=block
 "改行コードの自動認識
-set fileformats=unix,mac,dos
+set fileformats=unix,dos,mac
 "行を折り返さない
 set textwidth=0
 "コマンド表示
@@ -99,7 +101,7 @@ set foldmethod=marker
 " マルチバイト文字があってもカーソルがずれないようにする
 set ambiwidth=double
 " 編集履歴を保存して終了する
-if has('persistent_undo')
+if has('persistent_undo') && isdirectory($HOME.'/.vim/undo')
     set undodir=~/.vim/undo
     set undofile
 endif
@@ -151,7 +153,7 @@ augroup Misc
         endif
     endfunction
     " help は 80 行以上ないと読みにくい
-    autocmd FileType help  if winwidth(0) < 80 | setl winwidth=80 | endif
+    autocmd FileType help  if winwidth(0) < 80 | vertical resize 80 | endif
     " ファイルタイプを書き込み時に自動判別
     autocmd BufWritePost
     \ * if &l:filetype ==# '' || exists('b:ftdetect')
@@ -169,8 +171,7 @@ augroup END
 noremap ; :
 noremap : ;
 "insertモードから抜ける
-" inoremap <expr> j getline('.')[col('.') - 2] ==# 'j' ? "\<BS>\<ESC>" : 'j'
-inoremap <silent>jj <Esc>
+inoremap <expr> j getline('.')[col('.') - 2] ==# 'j' ? "\<BS>\<ESC>" : 'j'
 " <C-c> も Esc と抜け方にする
 inoremap <C-C> <Esc>
 " Yの挙動はy$のほうが自然な気がする
@@ -178,22 +179,27 @@ nnoremap Y y$
 " 縦方向は論理移動する
 nnoremap j gj
 nnoremap k gk
-nnoremap gj j
-nnoremap gk k
+" 画面もスクロール
+nnoremap <C-j> <C-e>j
+nnoremap <C-k> <C-y>k
 "Esc->Escで検索結果とエラーハイライトをクリア
 nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>
 "{数値}<Tab>でその行へ移動．それ以外だと通常の<Tab>の動きに
 nnoremap <expr><Tab> v:count !=0 ? "G" : "\<Tab>zvzz"
+" リアルタイムマッチング
+nnoremap / /\v
+nnoremap ? ?\v
 " コマンドラインウィンドウ
 " 検索後画面の中心に。
 nnoremap n nzvzz
 nnoremap N Nzvzz
 nnoremap * *zvzz
 nnoremap # *zvzz
+" 検索で / をエスケープしなくて良くする（素の / を入力したくなったら<C-v>/）
+cnoremap <expr>/ getcmdtype() == '/' ? '\/' : '/'
+cnoremap <expr>/ getcmdtype() == '?' ? '\/' : '/'
 " insertモードでもquit
 inoremap <C-q><C-q> <Esc>:wq<CR>
-" insertモードでもcmdmode
-inoremap <C-:> <Esc>:
 " Q で終了
 nnoremap <C-q> :<C-u>q<CR>
 " 空行挿入
@@ -241,29 +247,6 @@ nnoremap <silent><Down>  <C-w>-
 nnoremap <silent><Up>    <C-w>+
 nnoremap <silent><Left>  <C-w><
 nnoremap <silent><Right> <C-w>>
-" 検索で / をエスケープしなくて良くする（素の / を入力したくなったら<C-v>/）
-cnoremap <expr>/ getcmdtype() == '/' ? '\/' : '/'
-cnoremap <expr>/ getcmdtype() == '?' ? '\/' : '/'
-" help のマッピング
-augroup HelpMapping
-    autocmd!
-    " カーソル下のタグへ飛ぶ
-    autocmd FileType help nnoremap <buffer>t <C-]>
-    " 戻る
-    autocmd FileType help nnoremap <buffer>r <C-t>
-    " 履歴を戻る
-    autocmd FileType help nnoremap <buffer>< :<C-u>pop<CR>
-    " 履歴を進む
-    autocmd FileType help nnoremap <buffer>> :<C-u>tag<CR>
-    " 履歴一覧
-    autocmd FileType help nnoremap <buffer><Tab> :<C-u>tags<CR>
-    " help ウィンドウを広げる
-    autocmd FileType help nnoremap <buffer>+ 999<C-w>+999<C-w>>
-    " そのた
-    autocmd FileType help nnoremap <buffer>u <C-u>
-    autocmd FileType help nnoremap <buffer>d <C-d>
-    autocmd FileType help nnoremap <buffer>q :<C-u>q<CR>
-augroup END
 " ペーストした文字列をビジュアルモードで選択
 nnoremap <expr>gp '`['.strpart(getregtype(),0,1).'`]'
 " 貼り付けは P のほうが好みかも
@@ -360,7 +343,6 @@ NeoBundle 'Shougo/neocomplcache-snippets-complete'
 NeoBundle 'vim-jp/cpp-vim'
     " NeoBundle 'Rip-Rip/clang_complete'
 NeoBundle 'rhysd/clang_complete'
-NeoBundle 'osyo-manga/neocomplcache-clang_complete'
 NeoBundle 'rhysd/home-made-snippets'
 NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'tyru/caw.vim'
@@ -373,7 +355,8 @@ NeoBundle 'rhysd/quickrun-unite-quickfix-outputter'
 NeoBundle 'basyura/unite-rails'
 NeoBundle 'kmnk/vim-unite-giti'
 NeoBundle 'rhysd/unite-n3337'
-NeoBundle 'rhysd/open-pdf.vim'
+" NeoBundle 'rhysd/open-pdf.vim'
+set rtp+=~/Github/open-pdf.vim
 NeoBundle 'vim-jp/vimdoc-ja'
 NeoBundle 'jceb/vim-hier'
 NeoBundle 'rhysd/my-endwise'
@@ -466,6 +449,26 @@ if executable('chmod')
   endfunction
 endif
 
+" help のマッピング
+augroup HelpMapping
+    autocmd!
+    " カーソル下のタグへ飛ぶ
+    autocmd FileType help nnoremap <buffer>t <C-]>
+    " 戻る
+    autocmd FileType help nnoremap <buffer>r <C-t>
+    " 履歴を戻る
+    autocmd FileType help nnoremap <buffer>< :<C-u>pop<CR>
+    " 履歴を進む
+    autocmd FileType help nnoremap <buffer>> :<C-u>tag<CR>
+    " 履歴一覧
+    autocmd FileType help nnoremap <buffer><Tab> :<C-u>tags<CR>
+    " help ウィンドウを広げる
+    autocmd FileType help nnoremap <buffer>+ 999<C-w>+999<C-w>>
+    " そのた
+    autocmd FileType help nnoremap <buffer>u <C-u>
+    autocmd FileType help nnoremap <buffer>d <C-d>
+    autocmd FileType help nnoremap <buffer>q :<C-u>q<CR>
+augroup END
 "}}}
 
 " ユーザ定義関数とコマンド{{{
@@ -645,7 +648,7 @@ function! s:smart_help(args)
     endif
 endfunction
 
-" 隣のウィンドウでキー入力を行う
+" 隣のウィンドウの上下移動
 function! ScrollOtherWindow(up)
     execute 'wincmd' (winnr('#') == 0 ? 'w' : 'p')
     execute 'normal!' a:up ? "\<C-u>" : "\<C-d>"
@@ -656,8 +659,9 @@ endfunction
 " ユーザ定義コマンドへのマッピング {{{
 nnoremap <C-w><Space>      :<C-u>SmartSplit<CR>
 nnoremap <silent><Leader>h :<C-u>SmartHelp<Space>
-nnoremap <silent><C-j>     :<C-u>call ScrollOtherWindow(0)<CR>
-nnoremap <silent><C-k>     :<C-u>call ScrollOtherWindow(1)<CR>
+set keywordprg=:SmartHelp
+nnoremap <silent>gj        :<C-u>call ScrollOtherWindow(0)<CR>
+nnoremap <silent>gk        :<C-u>call ScrollOtherWindow(1)<CR>
 "}}}
 
 " helpers {{{
@@ -1069,6 +1073,13 @@ let g:quickrun_config['cpp/clang'] = { 'command' : 'clang++', 'cmdopt' : '-stdli
 "QuickRun 結果の開き方
 let g:quickrun_config._ = { 'outputter' : 'unite_quickfix', 'split' : 'rightbelow 10sp' }
 
+augroup QuickRunRakefile
+  autocmd!
+  autocmd BufReadPost,BufNewFile [Rr]akefile{,.rb}
+              \ let b:quickrun_config = {'exec': 'rake -f %s'}
+augroup END
+
+
 "QuickRunのキーマップ {{{
 nnoremap <Leader>q  <Nop>
 nnoremap <silent><Leader>qr :<C-u>QuickRun<CR>
@@ -1099,6 +1110,18 @@ augroup END
 " accelerated-jk "{{{
 nmap <silent>j <Plug>(accelerated_jk_gj)
 nmap <silent>k <Plug>(accelerated_jk_gk)
+"}}}
+
+" open-pdf.vim の設定 "{{{
+let g:pdf_convert_buf_read = 1
+let g:pdf_convert_file_read = 1
+
+if !exists('g:pdf_hooks')
+    let g:pdf_hooks = {}
+endif
+function! g:pdf_hooks.on_opened()
+    setlocal nowrap nonumber nolist
+endfunction
 "}}}
 
 " Hier.vim {{{
@@ -1146,11 +1169,18 @@ nnoremap <silent><expr><Leader>fe ":\<C-u>VimFilerExplorer " . <SID>git_root_dir
 
 " clang_complete {{{
 let g:neocomplcache_force_overwrite_completefunc=1
-let g:clang_complete_auto=1
 let g:clang_hl_errors=1
 let g:clang_conceal_snippets=1
 let g:clang_exec="/usr/bin/clang"
-let g:clang_user_options='-I /usr/local/include -I /usr/include -I /usr/local/Cellar/gcc/4.7.1/gcc/include/c++/4.7.1 2>/dev/null || exit 0'
+let g:clang_user_options='-I /usr/local/include -I /usr/include  2>/dev/null || exit 0'
+" neocomplcache との共存設定
+let g:neocomplcache_force_overwrite_completefunc=1
+if !exists('g:neocomplcache_force_omni_patterns')
+    let g:neocomplcache_force_omni_patterns = {}
+endif
+let g:neocomplcache_force_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|::'
+
+let g:clang_complete_auto = 0
 " }}}
 
 " vim-smartinput"{{{
@@ -1304,4 +1334,4 @@ elseif has('unix') && filereadable($HOME.'/.vimrc.linux')
 endif
 "}}}
 
-" vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8 :
+" vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8:
