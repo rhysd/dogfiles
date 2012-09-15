@@ -85,8 +85,8 @@ set virtualedit& virtualedit+=block
 set fileformats=unix,dos,mac
 "行を折り返さない
 set textwidth=0
-"コマンド表示
-set showcmd
+"コマンド表示いらない
+set noshowcmd
 "コマンド実行中は再描画しない
 set lazyredraw
 "高速ターミナル接続を行う
@@ -160,6 +160,9 @@ augroup Misc
     \ |   unlet! b:ftdetect
     \ |   filetype detect
     \ | endif
+    " git commit message のときは折りたたまない(diff で中途半端な折りたたみになりがち)
+    autocmd FileType gitcommit setl nofoldenable
+    
 
 augroup END
 
@@ -941,6 +944,8 @@ augroup UniteMapping
     "lでデフォルトアクションを実行
     autocmd FileType unite nmap <buffer>l <Plug>(unite_do_default_action)
     autocmd FileType unite imap <buffer><expr>l unite#smart_map("l", unite#do_action(unite#get_current_unite().context.default_action))
+    "jjで待ち時間が発生しないようにしていると候補が見えなくなるので対処
+    autocmd FileType unite imap <buffer><silent>jj <Plug>(unite_insert_leave)
 augroup END
 
 nnoremap [unite] <Nop>
