@@ -1077,6 +1077,8 @@ let g:quickrun_config.cpp = { 'command' : "g++", 'cmdopt' : '-std=c++11 -Wall -W
 let g:quickrun_config['cpp/clang'] = { 'command' : 'clang++', 'cmdopt' : '-stdlib=libc++ -std=c++11 -Wall -Wextra -O2' }
 "QuickRun 結果の開き方
 let g:quickrun_config._ = { 'outputter' : 'unite_quickfix', 'split' : 'rightbelow 10sp' }
+"outputter
+let g:quickrun_unite_quickfix_outputter_unite_context = { 'no_empty' : 1 }
 
 augroup QuickRunRakefile
   autocmd!
