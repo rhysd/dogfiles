@@ -472,6 +472,15 @@ augroup HelpMapping
     autocmd FileType help nnoremap <buffer>d <C-d>
     autocmd FileType help nnoremap <buffer>q :<C-u>q<CR>
 augroup END
+
+" quickfix のマッピング
+augroup QFixMapping
+    autocmd!
+    autocmd FileType qf nnoremap <buffer><silent> q :q<CR>
+    autocmd FileType qf nnoremap <buffer><silent> j :cn!<CR>
+    autocmd FileType qf nnoremap <buffer><silent> k :cp!<CR>
+augroup END
+
 "}}}
 
 " ユーザ定義関数とコマンド{{{
@@ -1073,10 +1082,8 @@ if !has("g:quickrun_config")
 endif
 "C++
 let g:quickrun_config.cpp = { 'command' : "g++", 'cmdopt' : '-std=c++11 -Wall -Wextra -O2' }
-" clang 用
-let g:quickrun_config['cpp/clang'] = { 'command' : 'clang++', 'cmdopt' : '-stdlib=libc++ -std=c++11 -Wall -Wextra -O2' }
 "QuickRun 結果の開き方
-let g:quickrun_config._ = { 'outputter' : 'unite_quickfix', 'split' : 'rightbelow 10sp' }
+let g:quickrun_config._ = { 'outputter' : 'unite_quickfix', 'split' : 'rightbelow 10sp', 'hook/hier_update/enable' : 1 }
 "outputter
 let g:quickrun_unite_quickfix_outputter_unite_context = { 'no_empty' : 1 }
 
@@ -1086,6 +1093,23 @@ augroup QuickRunRakefile
               \ let b:quickrun_config = {'exec': 'rake -f %s'}
 augroup END
 
+" シンタックスチェック
+let g:quickrun_config['syntax/cpp'] = {
+            \ 'runner' : 'vimproc',
+            \ 'command' : 'g++',
+            \ 'cmdopt' : '-std=c++11 -Wall -Wextra -O2',
+            \ 'exec' : '%c %o -fsyntax-only %s:p'
+            \ }
+let g:quickrun_config['syntax/ruby'] = {
+            \ 'runner' : 'vimproc',
+            \ 'command' : 'ruby',
+            \ 'exec' : '%c -c %s:p %o',
+            \ }
+augroup QuickRunSyntax
+    autocmd!
+    autocmd BufWritePost *.cpp,*.cc,*.hpp,*.hh QuickRun -type syntax/cpp
+    autocmd BufWritePost *.rb                  QuickRun -outputter quickfix -type syntax/ruby
+augroup END
 
 "QuickRunのキーマップ {{{
 nnoremap <Leader>q  <Nop>
@@ -1094,22 +1118,13 @@ nnoremap <silent><Leader>qf :<C-u>QuickRun >quickfix -runner vimproc<CR>
 vnoremap <silent><Leader>qr :QuickRun<CR>
 vnoremap <silent><Leader>qf :QuickRun >quickfix -runner vimproc<CR>
 nnoremap <silent><Leader>qR :<C-u>QuickRun<Space>
-if has('mac')
-    nnoremap <silent><Leader>qn :<C-u>QuickRun >mac_notifier -runner vimproc<CR>
-    vnoremap <silent><Leader>qn :QuickRun >mac_notifier -runner vimproc<CR>
-end
 " clang で実行する
+let g:quickrun_config['cpp/clang'] = { 'command' : 'clang++', 'cmdopt' : '-stdlib=libc++ -std=c++11 -Wall -Wextra -O2' }
 augroup QuickRunClang
     autocmd!
-    autocmd FileType cpp nnoremap <silent><Leader>qc :<C-u>QuickRun clang<CR>
+    autocmd FileType cpp nnoremap <silent><buffer><Leader>qc :<C-u>QuickRun -type cpp/clang<CR>
 augroup END
 
-augroup QFixMapping
-    autocmd!
-    autocmd FileType qf nnoremap <buffer><silent> q :q<CR>
-    autocmd FileType qf nnoremap <buffer><silent> j :cn!<CR>
-    autocmd FileType qf nnoremap <buffer><silent> k :cp!<CR>
-augroup END
 " }}}
 
 " }}}
@@ -1120,8 +1135,8 @@ nmap <silent>k <Plug>(accelerated_jk_gk)
 "}}}
 
 " open-pdf.vim の設定 "{{{
-let g:pdf_convert_buf_read = 1
-let g:pdf_convert_file_read = 1
+let g:pdf_convert_on_edit = 1
+let g:pdf_convert_on_read = 1
 
 if !exists('g:pdf_hooks')
     let g:pdf_hooks = {}
