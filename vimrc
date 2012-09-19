@@ -162,7 +162,7 @@ augroup Misc
     \ | endif
     " git commit message のときは折りたたまない(diff で中途半端な折りたたみになりがち)
     autocmd FileType gitcommit setl nofoldenable
-    
+
 
 augroup END
 
@@ -368,12 +368,14 @@ NeoBundle 'kana/vim-textobj-user'
 NeoBundle 'kana/vim-textobj-indent'
 NeoBundle 'kana/vim-textobj-lastpat'
 NeoBundle 'h1mesuke/textobj-wiw'
+NeoBundle 'inkarkat/argtextobj.vim'
 NeoBundle 'kana/vim-operator-user'
 NeoBundle 'kana/vim-operator-replace'
 NeoBundle 'thinca/vim-textobj-between'
 NeoBundle 'thinca/vim-prettyprint'
 NeoBundle 'rhysd/accelerated-jk'
 NeoBundle 'kana/vim-smartinput'
+NeoBundle 'kana/vim-smartword'
 NeoBundle 'thinca/vim-ref'
 NeoBundle 'kana/vim-filetype-haskell'
 NeoBundle 'ujihisa/ref-hoogle'
@@ -1289,6 +1291,12 @@ call smartinput#define_rule({
     " \   'filetype': ['cpp'],
     " \   })
 
+"}}}
+
+" vim-smartword "{{{
+map w <Plug>(smartword-w)
+map b <Plug>(smartword-b)
+map t <Plug>(smartword-e)
 "}}}
 
 " caw.vim {{{
