@@ -24,6 +24,8 @@ let g:openbrowser_open_rules['google-chrome'] = "{browser} {shellescape(uri)}"
 let g:tweetvim_display_icon = 1
 let g:tweetvim_tweet_per_page = 60
 
+command -nargs=1 TweetVimFavorites call call('tweetvim#timeline',['favorites',<q-args>])
+
 nnoremap <silent><Leader>tw :<C-u>tabnew <Bar> TweetVimHomeTimeline<CR>
 nnoremap <silent><Leader>tl :<C-u>TweetVimHomeTimeline<CR>
 nnoremap <silent><Leader>tm :<C-u>TweetVimMentions<CR>
@@ -35,11 +37,12 @@ augroup TweetVimSetting
     " 挿入・通常モードで閉じる
     autocmd FileType tweetvim_say nnoremap <buffer><silent><C-g>    :<C-u>q!<CR>
     autocmd FileType tweetvim_say inoremap <buffer><silent><C-g>    <C-o>:<C-u>q!<CR><Esc>
-    " 挿入モードで投稿．うまく動かない．
-    autocmd FileType tweetvim_say imap     <buffer><C-CR>           <Esc>:<C-u>call feedkeys("\<Plug>(tweetvim_action_enter)")<CR>
+    " ツイート履歴を <C-l> に
+    autocmd FileType tweetvim_say inoremap <buffer><silent><C-l>    <C-o>:<C-u>call unite#sources#tweetvim_tweet_history#start()<CR>
+    " <Tab> は neocomplcache で使う
+    autocmd FileType tweetvim_say iunmap   <buffer><Tab>
     " 各種アクション
     autocmd FileType tweetvim     nnoremap <buffer>s                :<C-u>TweetVimSay<CR>
-    autocmd FileType tweetvim     nnoremap <buffer>m                :<C-u>TweetVimMentions<CR>
     autocmd FileType tweetvim     nmap     <buffer>c                <Plug>(tweetvim_action_in_reply_to)
     autocmd FileType tweetvim     nnoremap <buffer>t                :<C-u>Unite tweetvim -no-start-insert -quick-match<CR>
     autocmd FileType tweetvim     nmap     <buffer><Leader>F        <Plug>(tweetvim_action_remove_favorite)
@@ -56,10 +59,15 @@ augroup TweetVimSetting
     " 縦移動
     autocmd FileType tweetvim     nnoremap <buffer><silent>j        :<C-u>call <SID>tweetvim_vertical_move("j")<CR>zz
     autocmd FileType tweetvim     nnoremap <buffer><silent>k        :<C-u>call <SID>tweetvim_vertical_move("k")<CR>zz
+    " タイムライン各種
+    autocmd FileType tweetvim     nnoremap <silent><buffer>gm       :<C-u>TweetVimMentions<CR>
+    autocmd FileType tweetvim     nnoremap <silent><buffer>gh       :<C-u>TweetVimHomeTimeline<CR>
+    autocmd FileType tweetvim     nnoremap <silent><buffer>gu       :<C-u>TweetVimUserTimeline<Space>
+    autocmd FileType tweetvim     nnoremap <silent><buffer>gf       :<C-u>call call('tweetvim#timeline', ['favorites', 'Linda_pp'])<CR>
     " 不要なマップを除去
     autocmd FileType tweetvim     nunmap   <buffer>ff
     autocmd FileType tweetvim     nunmap   <buffer>bb
-    " その他設定値
+    " 半自動リロード
     autocmd BufEnter * call <SID>tweetvim_reload()
 augroup END
 
