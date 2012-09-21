@@ -1096,12 +1096,12 @@ augroup QuickRunRakefile
 augroup END
 
 " シンタックスチェック
-let g:quickrun_config['syntax/cpp'] = {
-            \ 'runner' : 'vimproc',
-            \ 'command' : 'g++',
-            \ 'cmdopt' : '-std=c++11 -Wall -Wextra -O2',
-            \ 'exec' : '%c %o -fsyntax-only %s:p'
-            \ }
+" let g:quickrun_config['syntax/cpp'] = {
+"             \ 'runner' : 'vimproc',
+"             \ 'command' : 'g++',
+"             \ 'cmdopt' : '-std=c++11 -Wall -Wextra -O2',
+"             \ 'exec' : '%c %o -fsyntax-only %s:p'
+"             \ }
 let g:quickrun_config['syntax/ruby'] = {
             \ 'runner' : 'vimproc',
             \ 'command' : 'ruby',
@@ -1109,7 +1109,7 @@ let g:quickrun_config['syntax/ruby'] = {
             \ }
 augroup QuickRunSyntax
     autocmd!
-    autocmd BufWritePost *.cpp,*.cc,*.hpp,*.hh QuickRun -type syntax/cpp
+    " autocmd BufWritePost *.cpp,*.cc,*.hpp,*.hh QuickRun -type syntax/cpp
     autocmd BufWritePost *.rb                  QuickRun -outputter quickfix -type syntax/ruby
 augroup END
 
