@@ -867,7 +867,7 @@ let g:neocomplcache_delimiter_patterns.cpp = ['::']
 if !exists('g:neocomplcache_include_paths')
     let g:neocomplcache_include_paths = {}
 endif
-let g:neocomplcache_include_paths.cpp  = '.,/usr/local/include,/usr/local/Cellar/gcc/4.7.1/gcc/include/c++/4.7.1'
+let g:neocomplcache_include_paths.cpp  = '.,/usr/local/include,/usr/local/Cellar/gcc/4.7.2/gcc/include/c++/4.7.2,/usr/include'
 let g:neocomplcache_include_paths.c    = '.,/usr/include'
 let g:neocomplcache_include_paths.perl = '.,/System/Library/Perl,/Users/rhayasd/Programs'
 let g:neocomplcache_include_paths.ruby = expand('~/.rbenv/versions/1.9.3-p194/lib/ruby/1.9.1')
@@ -877,10 +877,6 @@ let g:neocomplcache_include_patterns = { 'cpp' : '^\s*#\s*include', 'ruby' : '^\
 let g:neocomplcache_include_exprs = {
             \ 'ruby' : "substitute(substitute(v:fname,'::','/','g'),'$','.rb','')"
             \ }
-if !has("gui_running")
-    "CUIのvimでの補完リストの色を調節する
-    highlight Pmenu ctermbg=8
-endif
 " Enable omni completion.
 augroup NeocomplcacheOmniFunc
     autocmd!
