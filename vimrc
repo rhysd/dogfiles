@@ -129,10 +129,8 @@ augroup AutoCursorLine
   autocmd CursorHold,CursorHoldI,WinEnter * setlocal cursorline
 augroup END
 
-augroup Misc
+augroup MiscForTiny
     autocmd!
-    " 起動時メッセージ．ｲﾇｩ…
-    autocmd VimEnter * echo "(U＾ω＾) enjoy vimming!"
     " *.md で読み込む filetype を変更（デフォルトは modula2）
     autocmd BufRead *.md,*.markdown setlocal ft=markdown
     " Gnuplot のファイルタイプを設定
@@ -483,6 +481,11 @@ augroup QFixMapping
     autocmd FileType qf nnoremap <buffer><silent> k :cp!<CR>
 augroup END
 
+augroup Mics
+    autocmd!
+    " 起動時メッセージ．ｲﾇｩ…
+    autocmd VimEnter * echo "(U＾ω＾) enjoy vimming!"
+augroup END
 "}}}
 
 " ユーザ定義関数とコマンド{{{
