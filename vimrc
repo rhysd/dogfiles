@@ -695,6 +695,15 @@ endfunction
 " これは Arch Linux だと使えない
     " s:has_linux = executable('lsb_release')
 
+" 本体に同梱されている matchit.vim のロードと matchpair の追加
+function! s:matchit(pairs)
+    if !exists('g:matchit_loaded')
+        runtime macros/matchit.vim
+        let g:matchit_loaded = 1
+    endif
+    let b:match_words = &matchpairs . ',' . join(a:pairs, ',')
+endfunction
+
 "}}}
 
 " Ruby {{{
@@ -702,8 +711,7 @@ augroup RubyMapping
     autocmd!
     autocmd FileType ruby inoremap <buffer><C-s> self.
     autocmd FileType ruby inoremap <buffer>; <Bar>
-    autocmd FileType ruby inoremap <buffer><Bslash>
-    if isdirectory(expand('~').'/.vim/skeletons')
+    if filereadable(expand('~').'/.vim/skeletons/ruby.skel')
         autocmd BufNewFile *.rb 0r ~/.vim/skeletons/ruby.skel
     endif
 augroup END
@@ -825,6 +833,7 @@ command! Ghci :<C-u>VimshellInteractive ghci<CR>
 augroup VimScriptSetting
     autocmd!
     autocmd FileType vim setlocal tabstop=4 shiftwidth=4 softtabstop=4
+    autocmd FileType vim call <SID>matchit([])
 augroup END
 "}}}
 
