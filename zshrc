@@ -1,24 +1,13 @@
-set -e
-
 export LANG=ja_JP.UTF-8
+export EDITOR=vim
 
 export PATH=/usr/local/bin:$PATH
 export PATH=$HOME/.cabal/bin:$PATH
 
-export EDITOR=vim
 
-alias sudo='sudo '
-
-alias g++='g++ -std=c++11 -O2 -g -Wall -Wextra'
-alias g=g++
-function run-gcc(){
-    set -e
-    /usr/local/bin/g++-4.7 -g -O2 -Wall -Wextra -std=c++11 $* && ./a.out
-}
-alias rg=run-gcc
-alias clang++='clang++ -stdlib=libc++ -std=c++11 -O2 -g -Wall -Wextra'
-alias cl=clang++
-alias gvim='vim -g'
+###############
+#   Aliases   #
+###############
 
 alias ls='ls -G'
 alias lr='ls -R'
@@ -42,6 +31,8 @@ alias diff=colordiff
 alias quit=exit
 alias vimfiler='vim +VimFiler'
 alias vimshell='vim +VimShell'
+alias gvim='vim -g'
+alias sudo='sudo '
 
 alias l=ls
 alias pd=popd
@@ -60,76 +51,169 @@ function sshi(){
     ssh -i $HOME/.ssh/id_rsa r-hayashida@$1
 }
 
-# Completion
+# aliases for C++
+alias g++='g++ -std=c++11 -O2 -g -Wall -Wextra'
+alias g=g++
+function run-gcc(){
+    set -e
+    /usr/local/bin/g++-4.7 -g -O2 -Wall -Wextra -std=c++11 $* && ./a.out
+}
+alias rg=run-gcc
+alias clang++='clang++ -stdlib=libc++ -std=c++11 -O2 -g -Wall -Wextra'
+alias cl=clang++
+
+# aliase for git
+alias gst="git status"
+alias gco="git commit"
+alias gad="git add"
+alias gpu="git push"
+alias gbr="git branch"
+alias gch="git checkout"
+alias gme="git merge"
+alias gpu="git pull"
+alias gfe="git fetch"
+alias glo="git log"
+alias gdi="git diff"
+alias gre="git rebase"
+alias gbl="git blame"
+alias gcl="git clone"
+
+
+########################
+#   便利機能のロード   #
+########################
+
+autoload -Uz compinit; compinit -u
+autoload -Uz colors; colors
+autoload -Uz VCS_INFO_get_data_git; VCS_INFO_get_data_git 2> /dev/null
+autoload -Uz history-search-end
+autoload -Uz vcs_info
+autoload -Uz zmv
+autoload -Uz zcalc
+# autoload -Uz add-zsh-hook
+
+###############
+#   Options   #
+###############
+
+setopt \
+  always_last_prompt \
+  append_history \
+  auto_cd \
+  auto_list \
+  auto_menu \
+  auto_param_keys \
+  auto_param_slash \
+  auto_pushd \
+  brace_ccl \
+  complete_aliases \
+  complete_in_word \
+  csh_null_glob \
+  hist_expand \
+  hist_ignore_dups \
+  hist_ignore_space \
+  hist_no_store \
+  hist_reduce_blanks \
+  interactive_comments \
+  listambiguous \
+  long_list_jobs \
+  magic_equal_subst \
+  mark_dirs \
+  no_autoremoveslash \
+  no_beep \
+  no_flow_control \
+  nolistbeep \
+  print_eight_bit \
+  prompt_subst \
+  pushd_ignore_dups \
+  share_history \
+;
+
+
+##################
+#   Completion   #
+##################
+
+# ユーザ定義補完
 if [ -d ~/.zsh/site-functions ]; then
   fpath=(~/.zsh/site-functions ${fpath})
 fi
-autoload -U compinit
-compinit -u
+
+# 補完に使うソース
+zstyle ':completion:*' completer _complete _expand _list _match _prefix
+
+# 補完候補の色付け
 zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'cd=43;34'
-# SmartCase
+
+# スマートケースで補完
 zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' '+m:{A-Z}={a-z}'
-# =のあとも補完する
-setopt magic_equal_subst
-# 対応する括弧などを自動で補完
-setopt auto_param_keys
 
-# Prompt Setting
-local GREEN=$'%{\e[1;32m%}'
-local RED=$'%{\e[1;31m%}'
-# local YELLOW=$'%{\e[1;33m%}'
-# local BLUE=$'%{\e[1;34m%}'
-local DEFAULT=$'%{\e[1;m%}'
+# 補完を選択できるように
+zstyle ':completion:*' menu select=2
 
-setopt prompt_subst
-autoload -Uz VCS_INFO_get_data_git; VCS_INFO_get_data_git 2> /dev/null
+# sudo を含めても保管できるようにする
+zstyle ':completion:*:sudo:*' command-path $sudo_path $path
 
-function current-git-branch() {
-  local name st color gitdir action
+# キャッシュ
+zstyle ':completion:*' use-cache true
 
-  name=$(basename "`git symbolic-ref HEAD 2> /dev/null`")
-  if [[ -z $name ]]; then
-    return
+
+##############
+#   Prompt   #
+##############
+
+# 扱う VCS
+zstyle ':vcs_info:*' enable git hg svn
+
+# コミットしていない変更をチェックする
+zstyle ":vcs_info:*" check-for-changes true
+
+zstyle ':vcs_info:*' stagedstr "+"
+zstyle ':vcs_info:*' unstagedstr "?"
+
+# 通常時フォーマット
+zstyle ':vcs_info:*' formats '%u%c%b (%s)'
+
+# VCS で何かアクション中のフォーマット
+zstyle ':vcs_info:*' actionformats '%u%c%b (%s) !%a'
+
+function vcs_info_precmd(){
+  LANG=en_US.UTF-8 vcs_info
+  if [[ -n "$vcs_info_msg_0_" ]]; then
+    if [[ $vcs_info_msg_0_ =~ "^\?" ]]; then
+      color=%B%F{red}
+      msg=${vcs_info_msg_0_##\?\+(\+|)}
+    elif [[ $vcs_info_msg_0_ =~ "^\+" ]]; then
+      color=%B%F{yellow}
+      msg=${vcs_info_msg_0_#^\+}
+    else
+      color=%B%F{green}
+      msg=$vcs_info_msg_0_
+    fi
+    echo "$color$msg%f%b"
   fi
-  if [[ "$PWD" =~ '/¥.git(/.*)?$' ]]; then
-    return
-  fi
-
-  gitdir=`git rev-parse --git-dir 2> /dev/null`
-  action=`VCS_INFO_git_getaction "$gitdir"` && action="($action)"
-
-  st=`git status 2> /dev/null`
-  if [[ -n `echo "$st" | grep "^nothing to"` ]]; then
-    color=%F{green}
-  elif [[ -n `echo "$st" | grep "^nothing added"` ]]; then
-    color=%F{yellow}
-  elif [[ -n `echo "$st" | grep "^# Untracked"` ]]; then
-    color=%B%F{red}
-  else
-     color=%F{red}
-  fi
-  echo "[$color$name$action%f%b]"
 }
 
-PROMPT="${GREEN}%~${DEFAULT} %# "
-RPROMPT='`current-git-branch` [${RED}%D{%m/%d %H:%M}${DEFAULT}]'
+PROMPT="%{$fg_bold[green]%}%~%{$reset_color%} %# "
+RPROMPT="[`vcs_info_precmd`] [%{$fg_bold[red]%}%D{%m/%d %H:%M}%{$reset_color%}]"
 
-# histroy setting
+
+#######################
+#   histroy setting   #
+#######################
+
 HISTFILE=$HOME/.zsh/zsh_history
 HISTSIZE=1000000
 SAVEHIST=1000000
-setopt hist_ignore_dups
-setopt share_history
-setopt append_history
-# zstyle ':completion:*:default' menu select=1
-# 先頭がスペースの場合、ヒストリに追加しない
-setopt hist_ignore_space
+
+####################
+#   キーバインド   #
+####################
 
 # Emacs like keybind
 bindkey -e
 
 # <C-N>と<C-P>：複数行の処理と通常時で使い分る
-autoload history-search-end
 zle -N history-beginning-search-backward-end history-search-end
 zle -N history-beginning-search-forward-end history-search-end
 bindkey "^P" history-beginning-search-backward-end
@@ -141,29 +225,38 @@ bindkey '^[^i' reverse-menu-complete
 bindkey '^R' history-incremental-pattern-search-backward
 bindkey '^S' history-incremental-pattern-search-forward
 
-# cd
-setopt auto_cd
-setopt auto_pushd
-setopt pushd_ignore_dups
+# ^J で parent directory に移動
+function _parent() {
+  pushd .. > /dev/null
+  zle reset-prompt
+}
+zle -N _parent
+bindkey "^J" _parent
+
+# ^O で popd する
+function _pop_hist(){
+  popd > /dev/null
+  zle reset-prompt
+}
+zle -N _pop_hist
+bindkey "^O" _pop_hist
+
+# ^Q で git status を見る
+function _git_status(){
+  echo
+  git status -sb
+  zle reset-prompt
+}
+zle -N _git_status
+bindkey "^Q" _git_status
+
+
+##############
+#   その他   #
+##############
 
 # フロー制御の無効化
-unsetopt flow_control
-setopt no_flow_control
 stty -ixon
-
-# コマンド修正
-# setopt correct
-
-# 補完を詰めて表示
-setopt list_packed
-
-# ビープ音OFF
-setopt nolistbeep
-
-
-
-# 日本語表示
-setopt print_eight_bit
 
 # rbenv
 if which rbenv > /dev/null; then
@@ -185,7 +278,11 @@ if which hub > /dev/null; then
   eval "$(hub alias -s)"
 fi
 
-# source platform-dependant settings
+
+##########################################
+#   source platform-dependant settings   #
+##########################################
+
 case $OSTYPE in
   darwin*)
     # Mac OS
