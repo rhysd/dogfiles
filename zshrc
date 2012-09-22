@@ -176,6 +176,7 @@ zstyle ':vcs_info:*' formats '%u%c%b (%s)'
 # VCS で何かアクション中のフォーマット
 zstyle ':vcs_info:*' actionformats '%u%c%b (%s) !%a'
 
+
 function vcs_info_precmd(){
   LANG=en_US.UTF-8 vcs_info
   if [[ -n "$vcs_info_msg_0_" ]]; then
@@ -194,8 +195,7 @@ function vcs_info_precmd(){
 }
 
 PROMPT="%{$fg_bold[green]%}%~%{$reset_color%} %# "
-RPROMPT="`vcs_info_precmd` [%{$fg_bold[red]%}%D{%m/%d %H:%M}%{$reset_color%}]"
-
+RPROMPT='`vcs_info_precmd` [%{$fg_bold[red]%}%D{%m/%d %H:%M}%{$reset_color%}]'
 
 #######################
 #   histroy setting   #
