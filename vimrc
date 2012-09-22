@@ -100,6 +100,8 @@ set foldenable
 set foldmethod=marker
 " マルチバイト文字があってもカーソルがずれないようにする
 set ambiwidth=double
+" 読み込んでいるファイルが変更された時自動で読み直す
+set autoread
 " 編集履歴を保存して終了する
 if has('persistent_undo') && isdirectory($HOME.'/.vim/undo')
     set undodir=~/.vim/undo
@@ -373,7 +375,6 @@ NeoBundle 'thinca/vim-textobj-between'
 NeoBundle 'thinca/vim-prettyprint'
 NeoBundle 'rhysd/accelerated-jk'
 NeoBundle 'kana/vim-smartinput'
-NeoBundle 'kana/vim-smartword'
 NeoBundle 'thinca/vim-ref'
 NeoBundle 'kana/vim-filetype-haskell'
 NeoBundle 'ujihisa/ref-hoogle'
@@ -381,6 +382,7 @@ NeoBundle 'ujihisa/neco-ghc'
 NeoBundle 'eagletmt/ghcmod-vim'
 NeoBundle 'rhysd/auto-neobundle'
 NeoBundle 'rhysd/wombat256.vim'
+NeoBundle 'thinca/vim-scouter'
     " NeoBundle 'rhysd/ref-rurema'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'h1mesuke/vim-alignta'
@@ -580,19 +582,6 @@ function! s:open_sandbox()
     endif
 endfunction
 
-" Vim 力を測る Scouter （thinca さん改良版）
-" http://d.hatena.ne.jp/thinca/20091031/1257001194
-function! Scouter(file, ...)
-    let pat = '^\s*$\|^\s*"'
-    let lines = readfile(a:file)
-    if !a:0 || !a:1
-        let lines = split(substitute(join(lines, "\n"), '\n\s*\\', '', 'g'), "\n")
-    endif
-    return len(filter(lines,'v:val !~ pat'))
-endfunction
-command! -bar -bang -nargs=? -complete=file Scouter
-            \        echo Scouter(empty(<q-args>) ? $MYVIMRC : expand(<q-args>), <bang>0)
-
 "スクリプトローカルな関数を呼び出す
 " http://d.hatena.ne.jp/thinca/20111228/1325077104
 " Call a script local function.
@@ -658,6 +647,9 @@ endfunction
 " 縦幅と横幅を見て help の開き方を決める
 command! -nargs=* -complete=help SmartHelp call <SID>smart_help(<q-args>)
 function! s:smart_help(args)
+    if winwidth(0) < 80
+        execute "tab help ".a:args
+    endif
     if winwidth(0) > winheight(0) * 2
         execute "vertical topleft help " . a:args
     else
@@ -666,19 +658,23 @@ function! s:smart_help(args)
 endfunction
 
 " 隣のウィンドウの上下移動
-function! ScrollOtherWindow(up)
+function! ScrollOtherWindow(mapping)
     execute 'wincmd' (winnr('#') == 0 ? 'w' : 'p')
-    execute 'normal!' a:up ? "\<C-u>" : "\<C-d>"
+    execute 'normal!' a:mapping
     wincmd p
 endfunction
+
+" 行番号下2桁で移動する
+command! -count=1 -nargs=0 GoToTheLine silent execute getpos('.')[1][:-len(v:count)-1] . v:count
 "}}}
 
 " ユーザ定義コマンドへのマッピング {{{
 nnoremap <C-w><Space>      :<C-u>SmartSplit<CR>
 nnoremap <silent><Leader>h :<C-u>SmartHelp<Space>
 set keywordprg=:SmartHelp
-nnoremap <silent>gj        :<C-u>call ScrollOtherWindow(0)<CR>
-nnoremap <silent>gk        :<C-u>call ScrollOtherWindow(1)<CR>
+nnoremap <silent>gj        :<C-u>call ScrollOtherWindow("\<lt>C-d>")<CR>
+nnoremap <silent>gk        :<C-u>call ScrollOtherWindow("\<lt>C-u>")<CR>
+nnoremap <silent>gl        :<C-u>GoToTheLine<Cr>
 "}}}
 
 " helpers {{{
@@ -1290,12 +1286,6 @@ call smartinput#define_rule({
     " \   'filetype': ['cpp'],
     " \   })
 
-"}}}
-
-" vim-smartword "{{{
-map w <Plug>(smartword-w)
-map b <Plug>(smartword-b)
-map t <Plug>(smartword-e)
 "}}}
 
 " caw.vim {{{

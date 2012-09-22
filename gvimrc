@@ -24,6 +24,9 @@ set guioptions-=g
 " autoselect いらない
 set guioptions-=a
 
+" メニューにアクセスしない
+set winaltkeys=no
+
 " GUI autocmds
 augroup GuiAtStart
     autocmd!
