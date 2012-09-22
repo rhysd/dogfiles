@@ -33,6 +33,7 @@ alias vimfiler='vim +VimFiler'
 alias vimshell='vim +VimShell'
 alias gvim='vim -g'
 alias sudo='sudo '
+alias sshi='ssh -i $HOME/.ssh/id_rsa'
 
 alias l=ls
 alias pd=popd
@@ -46,10 +47,6 @@ alias k=kill
 # global alias
 alias -g G='| grep'
 alias -g L='| less'
-
-function sshi(){
-    ssh -i $HOME/.ssh/id_rsa r-hayashida@$1
-}
 
 # aliases for C++
 alias g++='g++ -std=c++11 -O2 -g -Wall -Wextra'
