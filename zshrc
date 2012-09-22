@@ -85,7 +85,6 @@ alias gcl="git clone"
 
 autoload -Uz compinit; compinit -u
 autoload -Uz colors; colors
-autoload -Uz VCS_INFO_get_data_git; VCS_INFO_get_data_git 2> /dev/null
 autoload -Uz history-search-end
 autoload -Uz vcs_info
 autoload -Uz zmv
@@ -182,10 +181,10 @@ function vcs_info_precmd(){
   if [[ -n "$vcs_info_msg_0_" ]]; then
     if [[ $vcs_info_msg_0_ =~ "^\?" ]]; then
       color=%B%F{red}
-      msg=${vcs_info_msg_0_##\?\+(\+|)}
+      msg=${vcs_info_msg_0_##\?(\+|)}
     elif [[ $vcs_info_msg_0_ =~ "^\+" ]]; then
       color=%B%F{yellow}
-      msg=${vcs_info_msg_0_#^\+}
+      msg=${vcs_info_msg_0_#\+}
     else
       color=%B%F{green}
       msg=$vcs_info_msg_0_
