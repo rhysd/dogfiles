@@ -60,20 +60,20 @@ alias clang++='clang++ -stdlib=libc++ -std=c++11 -O2 -g -Wall -Wextra'
 alias cl=clang++
 
 # aliase for git
-alias gst="git status"
-alias gco="git commit"
 alias gad="git add"
-alias gpu="git push"
+alias gbl="git blame"
 alias gbr="git branch"
 alias gch="git checkout"
-alias gme="git merge"
-alias gpu="git pull"
+alias gcl="git clone"
+alias gco="git commit"
+alias gdi="git diff"
 alias gfe="git fetch"
 alias glo="git log"
-alias gdi="git diff"
+alias gme="git merge"
+alias gpl="git pull"
+alias gps="git push"
 alias gre="git rebase"
-alias gbl="git blame"
-alias gcl="git clone"
+alias gst="git status"
 
 
 ########################
