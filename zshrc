@@ -189,12 +189,12 @@ function vcs_info_precmd(){
       color=%B%F{green}
       msg=$vcs_info_msg_0_
     fi
-    echo "$color$msg%f%b"
+    echo "[$color$msg%f%b]"
   fi
 }
 
 PROMPT="%{$fg_bold[green]%}%~%{$reset_color%} %# "
-RPROMPT="[`vcs_info_precmd`] [%{$fg_bold[red]%}%D{%m/%d %H:%M}%{$reset_color%}]"
+RPROMPT="`vcs_info_precmd` [%{$fg_bold[red]%}%D{%m/%d %H:%M}%{$reset_color%}]"
 
 
 #######################
