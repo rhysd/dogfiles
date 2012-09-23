@@ -8,7 +8,7 @@ export PATH=$HOME/.cabal/bin:$PATH
 ###############
 #   Aliases   #
 ###############
-
+# {{{
 alias ls='ls -G'
 alias lr='ls -R'
 alias ll='ls -lah'
@@ -74,12 +74,12 @@ alias gpl="git pull"
 alias gps="git push"
 alias gre="git rebase"
 alias gst="git status"
-
+# }}}
 
 ########################
 #   便利機能のロード   #
 ########################
-
+# {{{
 autoload -Uz compinit; compinit -u
 autoload -Uz colors; colors
 autoload -Uz history-search-end
@@ -87,11 +87,12 @@ autoload -Uz vcs_info
 autoload -Uz zmv
 autoload -Uz zcalc
 # autoload -Uz add-zsh-hook
+# }}}
 
 ###############
 #   Options   #
 ###############
-
+# {{{
 setopt \
   always_last_prompt \
   append_history \
@@ -124,12 +125,12 @@ setopt \
   pushd_ignore_dups \
   share_history \
 ;
-
+# }}}
 
 ##################
 #   Completion   #
 ##################
-
+# {{{
 # ユーザ定義補完
 if [ -d ~/.zsh/site-functions ]; then
   fpath=(~/.zsh/site-functions ${fpath})
@@ -152,12 +153,12 @@ zstyle ':completion:*:sudo:*' command-path $sudo_path $path
 
 # キャッシュ
 zstyle ':completion:*' use-cache true
-
+# }}}
 
 ##############
 #   Prompt   #
 ##############
-
+# {{{
 # 扱う VCS
 zstyle ':vcs_info:*' enable git hg svn
 
@@ -193,19 +194,21 @@ function vcs_info_precmd(){
 
 PROMPT="%{$fg_bold[green]%}%~%{$reset_color%} %# "
 RPROMPT='`vcs_info_precmd` [%{$fg_bold[red]%}%D{%m/%d %H:%M}%{$reset_color%}]'
+# }}}
 
 #######################
 #   histroy setting   #
 #######################
-
+# {{{
 HISTFILE=$HOME/.zsh/zsh_history
 HISTSIZE=1000000
 SAVEHIST=1000000
+# }}}
 
 ####################
 #   キーバインド   #
 ####################
-
+# {{{
 # Emacs like keybind
 bindkey -e
 
@@ -245,12 +248,12 @@ function _git_status(){
 }
 zle -N _git_status
 bindkey "^Q" _git_status
-
+# }}}
 
 ##############
 #   その他   #
 ##############
-
+# {{{
 # フロー制御の無効化
 stty -ixon
 
@@ -293,3 +296,5 @@ case $OSTYPE in
     fi
     ;;
 esac
+# }}}
+
