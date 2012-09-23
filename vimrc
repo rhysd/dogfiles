@@ -94,7 +94,7 @@ set ttyfast
 " 自前で用意したものへの path
 set path=.,/usr/include,/usr/local/include
 " 補完でプレビューウィンドウを開かない
-set completeopt=longest,menu
+set completeopt=menuone,menu
 " foldingの設定
 set foldenable
 set foldmethod=marker
@@ -152,8 +152,6 @@ augroup MiscForTiny
             call mkdir(a:dir, 'p')
         endif
     endfunction
-    " help は 80 行以上ないと読みにくい
-    autocmd FileType help  if winwidth(0) < 80 | vertical resize 80 | endif
     " ファイルタイプを書き込み時に自動判別
     autocmd BufWritePost
     \ * if &l:filetype ==# '' || exists('b:ftdetect')
@@ -316,6 +314,13 @@ endfunction
 " または vi という名前の シンボリックリンク越しに vim を起動した時
 if (exists("g:linda_pp_startup_with_tiny") && g:linda_pp_startup_with_tiny)
             \ || v:progname ==# 'vi'
+
+    " help は 80 行以上ないと読みにくい
+    augroup TinyMisc
+        autocmd!
+        autocmd FileType help if winwidth(0) < 80 | vertical resize 80 | endif
+    augroup END
+
     let g:caw_no_default_keymappings = 1
     if has('vim_starting')
         set rtp+=~/.vim/bundle/caw.vim
@@ -647,13 +652,16 @@ endfunction
 " 縦幅と横幅を見て help の開き方を決める
 command! -nargs=* -complete=help SmartHelp call <SID>smart_help(<q-args>)
 function! s:smart_help(args)
-    if winwidth(0) < 80
-        execute "tab help ".a:args
-    endif
     if winwidth(0) > winheight(0) * 2
-        execute "vertical topleft help " . a:args
+        " 縦分割
+        execute 'vertical topleft help ' . a:args
     else
-        execute "aboveleft help " . a:args
+        execute 'aboveleft help ' . a:args
+    endif
+    " 横幅を確保できないときはタブで開く
+    if winwidth(0) < 80
+        execute 'quit'
+        execute 'tab help ' . a:args
     endif
 endfunction
 
@@ -1068,13 +1076,33 @@ let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
 let g:vimshell_right_prompt = 'strftime("%Y/%m/%d %H:%M")'
 let g:vimshell_prompt = "(U'w'){ "
     " let g:vimshell_prompt = "(U^w^){ "
-" 右プロンプト ( vimshell#vcs#info は deprecated )
-    " let g:vimshell_right_prompt = 'vimshell#vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
-" 分割割合(%)
-let g:vimshell_split_height = 25
+" executable suffix
+let g:vimshell_execute_file_list = { 'rb' : 'ruby', 'pl' : 'perl', 'py' : 'python' }
+call vimshell#set_execute_file('txt,vim,c,h,cpp,hpp,cc,d,java', 'vim')
+call vimshell#set_execute_file('pdf,mp3,jpg,png', 'open')
 
 "VimShell のキーマッピング {{{
 nmap <Leader>vs <Plug>(vimshell_split_switch)
+
+augroup VimShellMapping
+    autocmd!
+    " コマンド履歴の移動
+    " バッファ移動の <C-n> <C-p> が潰されているので再マッピング
+    autocmd FileType vimshell nnoremap <buffer><silent><C-n> :<C-u>bn<CR>
+    autocmd FileType vimshell nnoremap <buffer><silent><C-p> :<C-u>bp<CR>
+    autocmd FileType vimshell nmap <buffer><silent>gn <Plug>(vimshell_next_prompt)
+    autocmd FileType vimshell nmap <buffer><silent>gp <Plug>(vimshell_previous_prompt)
+    " VimFiler 連携
+    autocmd FileType vimshell nnoremap <buffer><silent><Leader>ff :<C-u>VimFilerCurrentDir<CR>
+    autocmd FileType vimshell inoremap <buffer><silent><C-s> <Esc>:<C-u>VimFilerCurrentDir<CR>
+    " 親ディレクトリへ移動
+    autocmd FileType vimshell imap <buffer><silent><C-j> <C-u>..<Plug>(vimshell_enter)
+    " popd
+    autocmd FileType vimshell imap <buffer><silent><C-p> <C-u>popd<Plug>(vimshell_enter)
+    " git status
+    autocmd FileType vimshell imap <buffer><silent><C-q> <C-u>git status -sb<Plug>(vimshell_enter)
+augroup END
+
 " }}}
 
 " }}}
@@ -1171,17 +1199,22 @@ nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>:HierClear<CR>
 " VimFilerの設定 {{{
 let g:vimfiler_as_default_explorer = 1
 let g:vimfiler_safe_mode_by_default = 0
+let g:vimfiler_enable_auto_cd = 1
 let g:vimfiler_split_command = 'vertical rightbelow vsplit'
-let g:vimfiler_execute_file_list = { 'c' : 'vim',  'h' : 'vim',  'cpp' : 'vim',  'hpp' : 'vim', 'cc' : 'vim',  'rb' : 'vim', 'txt' : 'vim', 'pdf' : 'open', 'vim' : 'vim' }
+let g:vimfiler_execute_file_list = { '_' : 'vim' }
+call vimshell#set_execute_file('c,h,cpp,hpp,cc,rb,hs,py,txt,vim','vim')
+call vimshell#set_execute_file('pdf,mp3','open')
 
 " vimfiler.vim のキーマップ {{{
-
 augroup VimFilerMapping
     autocmd!
     autocmd FileType vimfiler nmap <buffer><silent><expr> e vimfiler#smart_cursor_map(
-                \   "\<Plug>(vimfiler_cd_file)",
-                \   "\<Plug>(vimfiler_edit_file)")
+                \ "\<Plug>(vimfiler_cd_file)",
+                \ "\<Plug>(vimfiler_edit_file)")
     autocmd FileType vimfiler nmap <buffer><silent>x <Plug>(vimfiler_hide)
+    autocmd FileType vimfiler nnoremap <buffer><silent><Leader>vs
+                \ :<C-u>VimShellCurrentDir<CR>
+    autocmd FileType vimfiler nmap <buffer>s <C-w>
 augroup END
 nnoremap <Leader>f        <Nop>
 nnoremap <Leader>ff       :<C-u>VimFiler<CR>
@@ -1192,7 +1225,6 @@ nnoremap <Leader>fb       :<C-u>VimFilerBufferDir<CR>
 nnoremap <silent><expr><Leader>fg ":\<C-u>VimFiler " . <SID>git_root_dir() . '\<CR>'
 nnoremap <silent><expr><Leader>fe ":\<C-u>VimFilerExplorer " . <SID>git_root_dir() . '\<CR>'
 "        }}}
-
 " }}}
 
 " clang_complete {{{
