@@ -86,6 +86,7 @@ autoload -Uz history-search-end
 autoload -Uz vcs_info
 autoload -Uz zmv
 autoload -Uz zcalc
+autoload -Uz predict-on; predict-on
 # autoload -Uz add-zsh-hook
 # }}}
 
@@ -116,7 +117,7 @@ setopt \
   long_list_jobs \
   magic_equal_subst \
   mark_dirs \
-  no_autoremoveslash \
+  autoremoveslash \
   no_beep \
   no_flow_control \
   nolistbeep \
