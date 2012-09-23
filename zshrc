@@ -9,7 +9,7 @@ export PATH=$HOME/.cabal/bin:$PATH
 #   Aliases   #
 ###############
 # {{{
-alias ls='ls -G'
+alias ls='ls --color=auto'
 alias lr='ls -R'
 alias ll='ls -lah'
 alias llr='ls -laRh'
@@ -43,6 +43,7 @@ alias c=cd
 alias s=sudo
 alias h='history 0'
 alias k=kill
+alias ng=noglob
 
 # global alias
 alias -g G='| grep'
@@ -76,9 +77,9 @@ alias gre="git rebase"
 alias gst="git status"
 # }}}
 
-########################
-#   便利機能のロード   #
-########################
+##########################
+#   モジュールのロード   #
+##########################
 # {{{
 autoload -Uz compinit; compinit -u
 autoload -Uz colors; colors
@@ -86,7 +87,6 @@ autoload -Uz history-search-end
 autoload -Uz vcs_info
 autoload -Uz zmv
 autoload -Uz zcalc
-autoload -Uz predict-on; predict-on
 # autoload -Uz add-zsh-hook
 # }}}
 
@@ -117,7 +117,7 @@ setopt \
   long_list_jobs \
   magic_equal_subst \
   mark_dirs \
-  autoremoveslash \
+  no_autoremoveslash \
   no_beep \
   no_flow_control \
   nolistbeep \
@@ -249,12 +249,25 @@ function _git_status(){
 }
 zle -N _git_status
 bindkey "^Q" _git_status
+
 # }}}
 
 ##############
 #   その他   #
 ##############
 # {{{
+# 入力が空なら ls を表示（alias 周りの問題でうまく動かない）
+# function _auto_ls(){
+#   if [[ $#BUFFER == 0 ]]; then
+#     echo
+#     ls -G
+#     zle redisplay
+#   else
+#     zle accept-line
+#   fi
+# }
+# zle -N accept-line _auto_ls
+
 # フロー制御の無効化
 stty -ixon
 

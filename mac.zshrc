@@ -1,6 +1,8 @@
 
 export PATH=/usr/local/texlive/2011/bin/x86_64-darwin:$PATH
 
+unalias ls
+alias ls='ls -G'
 alias g++='g++-4.7 -std=c++0x -Wall -Wextra -O2'
 alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
 alias gvim='open -n -a /Applications/MacVim.app'
