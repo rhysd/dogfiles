@@ -4,6 +4,11 @@ export EDITOR=vim
 export PATH=/usr/local/bin:$PATH
 export PATH=$HOME/.cabal/bin:$PATH
 
+############
+#   TODO   #
+############
+
+# コマンドラインが空行時に<Tab>でファイルの補完候補を出す
 
 ###############
 #   Aliases   #

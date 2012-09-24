@@ -380,6 +380,7 @@ NeoBundle 'thinca/vim-textobj-between'
 NeoBundle 'thinca/vim-prettyprint'
 NeoBundle 'rhysd/accelerated-jk'
 NeoBundle 'kana/vim-smartinput'
+NeoBundle 'kana/vim-smartword'
 NeoBundle 'thinca/vim-ref'
 NeoBundle 'kana/vim-filetype-haskell'
 NeoBundle 'ujihisa/ref-hoogle'
@@ -1202,8 +1203,8 @@ let g:vimfiler_safe_mode_by_default = 0
 let g:vimfiler_enable_auto_cd = 1
 let g:vimfiler_split_command = 'vertical rightbelow vsplit'
 let g:vimfiler_execute_file_list = { '_' : 'vim' }
-call vimshell#set_execute_file('c,h,cpp,hpp,cc,rb,hs,py,txt,vim','vim')
-call vimshell#set_execute_file('pdf,mp3','open')
+call vimfiler#set_execute_file('c,h,cpp,hpp,cc,rb,hs,py,txt,vim','vim')
+call vimfiler#set_execute_file('pdf,mp3','open')
 
 " vimfiler.vim のキーマップ {{{
 augroup VimFilerMapping
@@ -1327,6 +1328,15 @@ call smartinput#define_rule({
     " \   'filetype': ['cpp'],
     " \   })
 
+"}}}
+
+" vim-smartword "{{{
+nmap <silent>w <Plug>(smartword-w)
+vmap <silent>w <Plug>(smartword-w)
+nmap <silent>b <Plug>(smartword-b)
+vmap <silent>b <Plug>(smartword-b)
+nmap <silent>t <Plug>(smartword-e)
+vmap <silent>t <Plug>(smartword-e)
 "}}}
 
 " caw.vim {{{
