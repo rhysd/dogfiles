@@ -1209,16 +1209,23 @@ call vimfiler#set_execute_file('pdf,mp3','open')
 " vimfiler.vim のキーマップ {{{
 augroup VimFilerMapping
     autocmd!
+    " smart e mapping
     autocmd FileType vimfiler nmap <buffer><silent><expr> e vimfiler#smart_cursor_map(
                 \ "\<Plug>(vimfiler_cd_file)",
                 \ "\<Plug>(vimfiler_edit_file)")
-    autocmd FileType vimfiler nmap <buffer><silent>x <Plug>(vimfiler_hide)
+    " jump to VimShell
     autocmd FileType vimfiler nnoremap <buffer><silent><Leader>vs
                 \ :<C-u>VimShellCurrentDir<CR>
+    " instead of e
     autocmd FileType vimfiler nmap <buffer>s <C-w>
+    " 'a'nother
+    autocmd FileType vimfiler nmap <buffer><silent>a <Plug>(vimfiler_switch_to_another_vimfiler)
+    " unite.vim に合わせる
+    autocmd FileType vimfiler nmap <buffer><silent><Tab> <Plug>(vimfiler_choose_action)
 augroup END
 nnoremap <Leader>f        <Nop>
 nnoremap <Leader>ff       :<C-u>VimFiler<CR>
+nnoremap <Leader><Leader>       :<C-u>VimFiler<CR>
 nnoremap <Leader>fnq      :<C-u>VimFiler -no-quit<CR>
 nnoremap <Leader>fh       :<C-u>VimFiler ~<CR>
 nnoremap <Leader>fc       :<C-u>VimFilerCurrentDir<CR>
