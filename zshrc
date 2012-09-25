@@ -76,7 +76,6 @@ alias gps="git push"
 alias grb="git rebase"
 alias gst="git status"
 alias gre="git remote"
-alias grm="git rm"
 # }}}
 
 ##########################
@@ -271,17 +270,6 @@ bindkey "^I" _advanced_tab
 #   その他   #
 ##############
 # {{{
-# 入力が空なら ls を表示（alias 周りの問題でうまく動かない）
-# function _auto_ls(){
-#   if [[ $#BUFFER == 0 ]]; then
-#     echo
-#     ls -G
-#     zle redisplay
-#   else
-#     zle accept-line
-#   fi
-# }
-# zle -N accept-line _auto_ls
 
 # フロー制御の無効化
 stty -ixon
