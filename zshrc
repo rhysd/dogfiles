@@ -4,7 +4,6 @@ export EDITOR=vim
 export PATH=/usr/local/bin:$PATH
 export PATH=$HOME/.cabal/bin:$PATH
 
-
 ###############
 #   Aliases   #
 ###############
@@ -44,6 +43,7 @@ alias s=sudo
 alias h='history 0'
 alias k=kill
 alias ng=noglob
+alias d=dirs
 
 # global alias
 alias -g G='| grep'
@@ -249,6 +249,19 @@ function _git_status(){
 }
 zle -N _git_status
 bindkey "^Q" _git_status
+
+# 空行の状態で Tab を入れると ls する
+function _advanced_tab(){
+  if [[ $#BUFFER == 0 ]]; then
+    echo ""
+    eval ls
+    zle redisplay
+  else
+    zle expand-or-complete
+  fi
+}
+zle -N _advanced_tab
+bindkey "^I" _advanced_tab
 
 # }}}
 
