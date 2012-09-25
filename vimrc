@@ -161,11 +161,10 @@ augroup MiscForTiny
     " git commit message のときは折りたたまない(diff で中途半端な折りたたみになりがち)
     autocmd FileType gitcommit setl nofoldenable
 
-
 augroup END
 
 " カーソル下のハイライトグループを取得
-command! -nargs=0 GetHighlightingGroup echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<' . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<' . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
+" command! -nargs=0 GetHighlightingGroup echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<' . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<' . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
 
 " 基本マッピング {{{
 " ; と : をスワップ
