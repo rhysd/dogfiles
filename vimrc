@@ -382,7 +382,7 @@ NeoBundle 'rhysd/accelerated-jk'
 NeoBundle 'kana/vim-smartinput'
 NeoBundle 'kana/vim-smartword'
 NeoBundle 'thinca/vim-ref'
-NeoBundle 'kana/vim-filetype-haskell'
+NeoBundle 'rhysd/vim2hs'
 NeoBundle 'ujihisa/ref-hoogle'
 NeoBundle 'ujihisa/neco-ghc'
 NeoBundle 'eagletmt/ghcmod-vim'
@@ -1391,6 +1391,11 @@ augroup GhcModSetting
     autocmd FileType haskell nnoremap <buffer><silent>cqf :<C-u>cclose<CR>
 augroup END
 "}}}
+
+" vim2hs.vim {{{
+" disable conceal settings because multi-byte signs are broken in a console
+let g:haskell_conceal              = 0
+" }}}
 
 " 自作スニペット {{{
 let g:neocomplcache_snippets_dir=$HOME.'/.vim/bundle/home-made-snippets/snippets'

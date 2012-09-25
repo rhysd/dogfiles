@@ -66,6 +66,8 @@ endfunction
 
 nnoremap <Space>C :<C-u>Unite -auto-preview colorscheme<CR>
 
+let g:haskell_conceal = 1
+
 " プラットフォーム依存な設定の読み込み
 if has('mac') && filereadable($HOME.'/.gvimrc.mac')
     source $HOME/.gvimrc.mac
