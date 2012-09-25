@@ -73,8 +73,10 @@ alias glo="git log"
 alias gme="git merge"
 alias gpl="git pull"
 alias gps="git push"
-alias gre="git rebase"
+alias grb="git rebase"
 alias gst="git status"
+alias gre="git remote"
+alias grm="git rm"
 # }}}
 
 ##########################
