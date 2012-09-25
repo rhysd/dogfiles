@@ -165,14 +165,15 @@ augroup MiscForTiny
 augroup END
 
 " カーソル下のハイライトグループを取得
-" command! -nargs=0 GetHighlightingGroup echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<' . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<' . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
+command! -nargs=0 GetHighlightingGroup echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<' . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<' . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
 
 " 基本マッピング {{{
 " ; と : をスワップ
 noremap ; :
 noremap : ;
-"insertモードから抜ける
+"モードから抜ける
 inoremap <expr> j getline('.')[col('.') - 2] ==# 'j' ? "\<BS>\<ESC>" : 'j'
+cnoremap <expr> j getcmdline()[getcmdpos() - 2] ==# 'j' ? "\<BS>\<ESC>" : 'j'
 " <C-c> も Esc と抜け方にする
 inoremap <C-C> <Esc>
 " Yの挙動はy$のほうが自然な気がする
@@ -1128,12 +1129,12 @@ augroup QuickRunRakefile
 augroup END
 
 " シンタックスチェック
-" let g:quickrun_config['syntax/cpp'] = {
-"             \ 'runner' : 'vimproc',
-"             \ 'command' : 'g++',
-"             \ 'cmdopt' : '-std=c++11 -Wall -Wextra -O2',
-"             \ 'exec' : '%c %o -fsyntax-only %s:p'
-"             \ }
+let g:quickrun_config['syntax/cpp'] = {
+            \ 'runner' : 'vimproc',
+            \ 'command' : 'g++',
+            \ 'cmdopt' : '-std=c++11 -Wall -Wextra -O2',
+            \ 'exec' : '%c %o -fsyntax-only %s:p'
+            \ }
 let g:quickrun_config['syntax/ruby'] = {
             \ 'runner' : 'vimproc',
             \ 'command' : 'ruby',
