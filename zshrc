@@ -199,8 +199,8 @@ function vcs_info_precmd(){
 terminfo_down_sc=$terminfo[cud1]$terminfo[cuu1]$terminfo[sc]$terminfo[cud1]
 function _left_down_prompt_preexec () { print -rn -- $terminfo[el]; }
 add-zsh-hook preexec _left_down_prompt_preexec
-PS1_2='`vcs_info_precmd`'
-PS1="%{$terminfo_down_sc$PS1_2$terminfo[rc]%}%{$fg_bold[green]%}%~%{$reset_color%} %# "
+PROMPT_2='`vcs_info_precmd`'
+PROMPT="%{$terminfo_down_sc$PROMPT_2$terminfo[rc]%}%{$fg_bold[green]%}%~%{$reset_color%} %# "
 
 # 右プロンプト
 RPROMPT='[%{$fg_bold[red]%}${HOST}%{$reset_color%}][%{$fg_bold[red]%}%D{%m/%d %H:%M}%{$reset_color%}]'
