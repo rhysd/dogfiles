@@ -203,7 +203,7 @@ PS1_2='`vcs_info_precmd`'
 PS1="%{$terminfo_down_sc$PS1_2$terminfo[rc]%}%{$fg_bold[green]%}%~%{$reset_color%} %# "
 
 # 右プロンプト
-RPROMPT='[%{$fg_bold[red]%}%D{%m/%d %H:%M}%{$reset_color%}]'
+RPROMPT='[%{$fg_bold[red]%}${HOST}%{$reset_color%}][%{$fg_bold[red]%}%D{%m/%d %H:%M}%{$reset_color%}]'
 # }}}
 
 #######################
