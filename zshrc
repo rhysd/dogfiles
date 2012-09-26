@@ -86,9 +86,10 @@ autoload -Uz compinit; compinit -u
 autoload -Uz colors; colors
 autoload -Uz history-search-end
 autoload -Uz vcs_info
+autoload -Uz terminfo
 autoload -Uz zmv
 autoload -Uz zcalc
-# autoload -Uz add-zsh-hook
+autoload -Uz add-zsh-hook
 # }}}
 
 ###############
@@ -176,7 +177,7 @@ zstyle ':vcs_info:*' formats '%u%c%b (%s)'
 # VCS で何かアクション中のフォーマット
 zstyle ':vcs_info:*' actionformats '%u%c%b (%s) !%a'
 
-
+# VCS 情報（ブランチ名・VCS名・アクション名・状態（色））
 function vcs_info_precmd(){
   LANG=en_US.UTF-8 vcs_info
   if [[ -n "$vcs_info_msg_0_" ]]; then
@@ -194,8 +195,15 @@ function vcs_info_precmd(){
   fi
 }
 
-PROMPT="%{$fg_bold[green]%}%~%{$reset_color%} %# "
-RPROMPT='`vcs_info_precmd` [%{$fg_bold[red]%}%D{%m/%d %H:%M}%{$reset_color%}]'
+# 左プロンプト
+terminfo_down_sc=$terminfo[cud1]$terminfo[cuu1]$terminfo[sc]$terminfo[cud1]
+function _left_down_prompt_preexec () { print -rn -- $terminfo[el]; }
+add-zsh-hook preexec _left_down_prompt_preexec
+PS1_2='`vcs_info_precmd`'
+PS1="%{$terminfo_down_sc$PS1_2$terminfo[rc]%}%{$fg_bold[green]%}%~%{$reset_color%} %# "
+
+# 右プロンプト
+RPROMPT='[%{$fg_bold[red]%}%D{%m/%d %H:%M}%{$reset_color%}]'
 # }}}
 
 #######################
