@@ -49,9 +49,13 @@ alias d=dirs
 alias -g G='| grep'
 alias -g L='| less'
 
+# suffix alias
+alias -s cpp=g++
+alias -s cc=g++
+
 # aliases for C++
 alias g++='g++ -std=c++11 -O2 -g -Wall -Wextra'
-alias g=g++
+alias gpp=g++
 function run-gcc(){
     set -e
     /usr/local/bin/g++-4.7 -g -O2 -Wall -Wextra -std=c++11 $* && ./a.out
