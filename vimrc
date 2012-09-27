@@ -1392,8 +1392,15 @@ augroup END
 "}}}
 
 " vim2hs.vim {{{
+" buggy
+let g:haskell_quasi = 0
 " disable conceal settings because multi-byte signs are broken in a console
 let g:haskell_conceal              = 0
+" relieve load on highlighting
+let g:haskell_sql = 0
+let g:haskell_json = 0
+let g:haskell_xml = 0
+let g:haskell_hsp = 0
 " }}}
 
 " 自作スニペット {{{
