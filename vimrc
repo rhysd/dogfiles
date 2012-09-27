@@ -1,3 +1,5 @@
+" TODO: vim-visualstar を使う
+
 " 必須な基本設定 {{{
 
 "エンコーディング
@@ -21,7 +23,7 @@ language time C
 "自動インデント
 set autoindent
 "タブが対応する空白の数
-set tabstop=2 shiftwidth=2 softtabstop=2
+set tabstop=4 shiftwidth=4 softtabstop=4
 "タブの代わりにスペースを使う
 set expandtab
 "長い行で折り返す
@@ -383,6 +385,7 @@ NeoBundle 'kana/vim-smartinput'
 NeoBundle 'kana/vim-smartword'
 NeoBundle 'thinca/vim-ref'
 NeoBundle 'rhysd/vim2hs'
+NeoBundle 'rhysd/vim-filetype-haskell'
 NeoBundle 'ujihisa/ref-hoogle'
 NeoBundle 'ujihisa/neco-ghc'
 NeoBundle 'eagletmt/ghcmod-vim'
@@ -395,7 +398,7 @@ NeoBundle 'h1mesuke/vim-alignta'
     " NeoBundle 'ujihisa/neco-look'
 
 " vim-scripts上のリポジトリ
-    " NeoBundle 'endwise.vim'
+    " NeoBundle 'Align'
 
 " その他のgitリポジトリ
     " NeoBundle 'git://git.wincent.com/command-t.git'
@@ -433,11 +436,11 @@ colorscheme wombat256mod
 
 " NeoBundle のキーマップ{{{
 " すべて更新するときは基本的に Unite で非同期に実行
-" nnoremap <silent><Leader>nbu   :<C-u>AutoNeoBundleTimestamp<CR>:NeoBundleUpdate<CR>
-nnoremap <silent><Leader>nbu   :<C-u>NeoBundleUpdate<CR>
-nnoremap <silent><Leader>nbc   :<C-u>NeoBundleClean<CR>
-nnoremap <silent><Leader>nbi   :<C-u>NeoBundleInstall<CR>
-nnoremap <silent><Leader>nbl   :<C-u>Unite output<CR>NeoBundleList<CR>
+" nnoremap <silent><Leader>nbu :<C-u>AutoNeoBundleTimestamp<CR>:NeoBundleUpdate<CR>
+nnoremap <silent><Leader>nbu :<C-u>NeoBundleUpdate<CR>
+nnoremap <silent><Leader>nbc :<C-u>NeoBundleClean<CR>
+nnoremap <silent><Leader>nbi :<C-u>NeoBundleInstall<CR>
+nnoremap <silent><Leader>nbl :<C-u>Unite output<CR>NeoBundleList<CR>
 " }}}
 
 " }}}
@@ -650,6 +653,7 @@ function! s:smart_split(cmd)
 endfunction
 
 " 縦幅と横幅を見て help の開き方を決める
+set keywordprg=:SmartHelp
 command! -nargs=* -complete=help SmartHelp call <SID>smart_help(<q-args>)
 function! s:smart_help(args)
     if winwidth(0) > winheight(0) * 2
@@ -679,7 +683,6 @@ command! -count=1 -nargs=0 GoToTheLine silent execute getpos('.')[1][:-len(v:cou
 " ユーザ定義コマンドへのマッピング {{{
 nnoremap <C-w><Space>      :<C-u>SmartSplit<CR>
 nnoremap <silent><Leader>h :<C-u>SmartHelp<Space>
-set keywordprg=:SmartHelp
 nnoremap <silent>gj        :<C-u>call ScrollOtherWindow("\<lt>C-d>")<CR>
 nnoremap <silent>gk        :<C-u>call ScrollOtherWindow("\<lt>C-u>")<CR>
 nnoremap <silent>gl        :<C-u>GoToTheLine<Cr>
@@ -717,6 +720,7 @@ endfunction
 " Ruby {{{
 augroup RubyMapping
     autocmd!
+    autocmd FileType ruby setlocal tabstop=2 shiftwidth=2 softtabstop=2
     autocmd FileType ruby inoremap <buffer><C-s> self.
     autocmd FileType ruby inoremap <buffer>; <Bar>
     if filereadable(expand('~').'/.vim/skeletons/ruby.skel')
@@ -810,7 +814,6 @@ command! CppHpp :call <SID>cpp_hpp()
 
 augroup CppSetting
     au!
-    autocmd FileType cpp setlocal tabstop=4 shiftwidth=4 softtabstop=4
     autocmd FileType cpp setlocal matchpairs+=<:>
     autocmd FileType cpp inoremap <buffer>,  ,<Space>
     autocmd FileType cpp inoremap <buffer>;; ::
@@ -827,10 +830,11 @@ augroup END
 " }}}
 
 " Haskell {{{
-    " augroup HaskellMapping
-    "     autocmd!
-    "     autocmd FileType haskell nnoremap <buffer><silent><Leader>ht :<C-u>call <SID>ShowTypeHaskell(expand('<cword>'))<CR>
-    " augroup END
+augroup HaskellMapping
+    autocmd!
+    autocmd FileType haskell inoremap ;; ::
+augroup END
+    " autocmd FileType haskell nnoremap <buffer><silent><Leader>ht :<C-u>call <SID>ShowTypeHaskell(expand('<cword>'))<CR>
     " function! s:ShowTypeHaskell(word)
     "     echo join(split(system("ghc -isrc " . expand('%') . " -e ':t " . a:word . "'")))
     " endfunction
@@ -840,7 +844,6 @@ command! Ghci :<C-u>VimshellInteractive ghci<CR>
 " Vim script "{{{
 augroup VimScriptSetting
     autocmd!
-    autocmd FileType vim setlocal tabstop=4 shiftwidth=4 softtabstop=4
     autocmd FileType vim call <SID>matchit([])
 augroup END
 "}}}
@@ -875,7 +878,7 @@ let g:neocomplcache_dictionary_filetype_lists = {
     "let g:neocomplcache_max_filename_width = 25
 "区切り文字パターンの定義
 if !exists('g:neocomplcache_delimiter_patterns')
-    let g:neocomplcache_delimiter_patterns= {}
+    let g:neocomplcache_delimiter_patterns = {}
 endif
 let g:neocomplcache_delimiter_patterns.vim = ['#']
 let g:neocomplcache_delimiter_patterns.cpp = ['::']
@@ -896,13 +899,13 @@ let g:neocomplcache_include_exprs = {
 " Enable omni completion.
 augroup NeocomplcacheOmniFunc
     autocmd!
-    autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+    autocmd FileType python     setlocal omnifunc=pythoncomplete#Complete
     autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-    autocmd FileType html setlocal omnifunc=htmlcomplete#CompleteTags
-    autocmd FileType css setlocal omnifunc=csscomplete#CompleteCss
-    autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-    autocmd FileType php setlocal omnifunc=phpcomplete#CompletePHP
-    autocmd FileType c setlocal omnifunc=ccomplete#Complete
+    autocmd FileType html       setlocal omnifunc=htmlcomplete#CompleteTags
+    autocmd FileType css        setlocal omnifunc=csscomplete#CompleteCss
+    autocmd FileType xml        setlocal omnifunc=xmlcomplete#CompleteTags
+    autocmd FileType php        setlocal omnifunc=phpcomplete#CompletePHP
+    autocmd FileType c          setlocal omnifunc=ccomplete#Complete
     " autocmd FileType ruby set omnifunc=rubycomplete#Complete
 augroup END
 " Enable heavy omni completion.
@@ -911,26 +914,26 @@ if !exists('g:neocomplcache_omni_patterns')
 endif
     " let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
 let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-let g:neocomplcache_omni_patterns.c = '\%(\.\|->\)\h\w*'
+let g:neocomplcache_omni_patterns.c   = '\%(\.\|->\)\h\w*'
 let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
 
 "neocomplcacheのマッピング {{{
-imap      <C-s>       <Plug>(neocomplcache_snippets_expand)
-smap      <C-s>       <Plug>(neocomplcache_snippets_expand)
-inoremap  <expr><C-g> neocomplcache#undo_completion()
-    "inoremap <expr><C-l> neocomplcache#complete_common_string()
+imap                 <C-s>       <Plug>(neocomplcache_snippets_expand)
+smap                 <C-s>       <Plug>(neocomplcache_snippets_expand)
+inoremap             <expr><C-g> neocomplcache#undo_completion()
+                     "inoremap <expr><C-l> neocomplcache#complete_common_string()
 "スニペット展開候補があれば展開を，そうでなければbash風補完を．
-imap <expr><C-l> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : neocomplcache#complete_common_string()
+imap                 <expr><C-l> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : neocomplcache#complete_common_string()
 " <CR>: close popup and save indent.
-imap <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup()."\<CR>" : "\<CR>"
+imap                 <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup()."\<CR>" : "\<CR>"
 " <TAB>: completion
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+inoremap             <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 "スニペットがあればそれを展開．なければ通常の挙動をするTABキー
-    " imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
-" <C-h>, <BS>: close popup and delete backword char.
-    " inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
-    " inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><C-y> neocomplcache#close_popup()
+                     " imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
+"<C-h>, <BS>: close popup and delete backword char.
+                     " inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
+                     " inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
+inoremap             <expr><C-y> neocomplcache#close_popup()
 "}}}
 
 " }}}
@@ -974,42 +977,45 @@ augroup END
 nnoremap [unite] <Nop>
 nmap     <Space> [unite]
 " コマンドラインウィンドウで Unite コマンドを入力
-nnoremap [unite]u :<C-u>Unite<Space>
+nnoremap [unite]u                 :<C-u>Unite<Space>
 "バッファを開いた時のパスを起点としたファイル検索
-nnoremap <silent>[unite]<Space> :<C-u>UniteWithBufferDir -buffer-name=files file -vertical<CR>
+nnoremap <silent>[unite]<Space>   :<C-u>UniteWithBufferDir -buffer-name=files file -vertical<CR>
 "最近使用したファイル
-nnoremap <silent>[unite]m :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
+nnoremap <silent>[unite]m         :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
 "指定したディレクトリ以下を再帰的に開く
-" nnoremap <silent>[unite]R :<C-u>UniteWithBufferDir -no-start-insert file_rec/async -auto-resize<CR>
+" nnoremap <silent>[unite]R       :<C-u>UniteWithBufferDir -no-start-insert file_rec/async -auto-resize<CR>
 "バッファ一覧
-nnoremap <silent>[unite]b :<C-u>Unite -quick-match -immediately -no-empty -auto-preview buffer<CR>
+nnoremap <silent>[unite]b         :<C-u>Unite -quick-match -immediately -no-empty -auto-preview buffer<CR>
 "プログラミングにおけるアウトラインの表示
-nnoremap <silent>[unite]o :<C-u>Unite outline -vertical -no-start-insert<CR>
+nnoremap <silent>[unite]o         :<C-u>Unite outline -vertical -no-start-insert<CR>
 "コマンドの出力
-nnoremap <silent>[unite]c :<C-u>Unite output<CR>
+nnoremap <silent>[unite]c         :<C-u>Unite output<CR>
 "grep検索．
-nnoremap <silent>[unite]G :<C-u>Unite -no-start-insert grep<CR>
+nnoremap <silent>[unite]G         :<C-u>Unite -no-start-insert grep<CR>
 "Uniteバッファの復元
-nnoremap <silent>[unite]r :<C-u>UniteResume<CR>
+nnoremap <silent>[unite]r         :<C-u>UniteResume<CR>
 "バッファ全体
-nnoremap <silent>[unite]L :<C-u>Unite line<CR>
+nnoremap <silent>[unite]L         :<C-u>Unite line<CR>
 " NeoBundle
-" nnoremap <silent>[unite]nb :<C-u>AutoNeoBundleTimestamp<CR>:Unite neobundle/update -auto-quit<CR>
-nnoremap <silent>[unite]nb :<C-u>Unite neobundle/update -auto-quit -keep-focus<CR>
+" nnoremap <silent>[unite]nb      :<C-u>AutoNeoBundleTimestamp<CR>:Unite neobundle/update -auto-quit<CR>
+nnoremap <silent>[unite]nb        :<C-u>Unite neobundle/update -auto-quit -keep-focus<CR>
 " Haskell Import
-augroup HaskellImport
-    autocmd!
-    autocmd FileType haskell
-                \ nnoremap <buffer><expr>[unite]hi
-                \ empty(expand("<cword>")) ? ":\<C-u>Unite haskellimport\<CR>"
-                \ : ":\<C-u>UniteWithCursorWord haskellimport -immediately<CR>"
-augroup END
+augroup  HaskellImport
+                                  autocmd!
+                                  autocmd FileType haskell
+                                  \ nnoremap <buffer><expr>[unite]hi
+\        empty(expand("<cword>")) ? "    :\<C-u>Unite haskellimport\<CR>"
+\                                 :":\<C-u>UniteWithCursorWord haskellimport -immediately<CR>"
+augroup  END
 " Git のルートディレクトリを開く
-nnoremap <silent><expr>[unite]fg ":\<C-u>Unite file -input=".fnamemodify(<SID>git_root_dir(),":p")
+nnoremap <silent><expr>[unite]fg  ":\<C-u>Unite file -input=".fnamemodify(<SID>git_root_dir(),":p")
 " fold
-nnoremap <silent>[unite]fl :<C-u>Unite fold -no-start-insert -no-empty<CR>
+nnoremap <silent>[unite]fl        :<C-u>Unite fold -no-start-insert -no-empty<CR>
 " git
-nnoremap <silent>[unite]g :<C-u>Unite giti -no-start-insert<CR>
+nnoremap <silent>[unite]g         :<C-u>Unite giti -no-start-insert<CR>
+" alignta (visual)
+vnoremap <silent>[unite]aa        :<C-u>Unite alignta:arguments<CR>
+vnoremap <silent>[unite]ao        :<C-u>Unite alignta:options<CR>
 " }}}
 
 " }}}
@@ -1395,7 +1401,7 @@ augroup END
 " buggy
 let g:haskell_quasi = 0
 " disable conceal settings because multi-byte signs are broken in a console
-let g:haskell_conceal              = 0
+let g:haskell_conceal = 0
 " relieve load on highlighting
 let g:haskell_sql = 0
 let g:haskell_json = 0
@@ -1414,16 +1420,43 @@ augroup EndWiseMapping
 augroup END
 " }}}
 
-" vim-alignta
+" vim-alignta {{{
+let g:alignta_default_options   = '<<<0:0'
+let g:alignta_default_arguments = '\s'
 vnoremap <Leader>al :Alignta<Space>
 vnoremap <Leader>aa :Alignta<CR>
-vnoremap <Leader>ae :Alignta << =<CR>
-vnoremap <Leader>ai :call <SIC>align_char()<CR>
+vnoremap <Leader>ae :Alignta <<<1 =<CR>
 
-function! s:align_char()
-    let c = nr2char(getchar())
-    execute 'Align' c
-endfunction
+let g:unite_source_alignta_preset_arguments = [
+      \ ["Align at '='", '=>\='],
+      \ ["Align at ':'", '01 :'],
+      \ ["Align at '|'", '|'   ],
+      \ ["Align at ')'", '0 )' ],
+      \ ["Align at ']'", '0 ]' ],
+      \ ["Align at '}'", '}'   ],
+      \ ["Align at '>'", '0 >' ],
+      \ ["Align at '('", '0 (' ],
+      \ ["Align at '['", '0 [' ],
+      \ ["Align at '{'", '{'   ],
+      \ ["Align at '<'", '0 <' ],
+      \ ["Align first spaces", '0 \s/1' ],
+      \]
+
+let g:unite_source_alignta_preset_options = [
+      \ ["Justify Left",      '<<' ],
+      \ ["Justify Center",    '||' ],
+      \ ["Justify Right",     '>>' ],
+      \ ["Justify None",      '==' ],
+      \ ["Shift Left",        '<-' ],
+      \ ["Shift Right",       '->' ],
+      \ ["Shift Left  [Tab]", '<--'],
+      \ ["Shift Right [Tab]", '-->'],
+      \ ["Margin 0:0",        '0'  ],
+      \ ["Margin 0:1",        '01' ],
+      \ ["Margin 1:0",        '10' ],
+      \ ["Margin 1:1",        '1'  ],
+      \]
+" }}}
 
 " プラットフォーム依存な設定をロードする "{{{
 if has('mac') && filereadable($HOME."/.vimrc.mac")
