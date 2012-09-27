@@ -44,6 +44,7 @@ alias h='history 0'
 alias k=kill
 alias ng=noglob
 alias d=dirs
+alias g=git
 
 # global alias
 alias -g G='| grep'

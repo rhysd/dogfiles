@@ -389,13 +389,12 @@ NeoBundle 'eagletmt/ghcmod-vim'
 NeoBundle 'rhysd/auto-neobundle'
 NeoBundle 'rhysd/wombat256.vim'
 NeoBundle 'thinca/vim-scouter'
+NeoBundle 'h1mesuke/vim-alignta'
     " NeoBundle 'rhysd/ref-rurema'
     " NeoBundle 'ujihisa/vimshell-ssh'
-    " NeoBundle 'h1mesuke/vim-alignta'
     " NeoBundle 'ujihisa/neco-look'
 
 " vim-scripts上のリポジトリ
-NeoBundle 'Align'
     " NeoBundle 'endwise.vim'
 
 " その他のgitリポジトリ
@@ -775,7 +774,7 @@ endfunction
 function! s:cpp_hpp()
     let cpps = ['cpp', 'cc', 'cxx', 'c']
     let hpps = ['hpp', 'h']
-    let ext = expand('%:e')
+    let ext  = expand('%:e')
     let base = expand('%:r')
 
     " ソースファイルのとき
@@ -1407,6 +1406,17 @@ augroup EndWiseMapping
     autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"
 augroup END
 " }}}
+
+" vim-alignta
+vnoremap <Leader>al :Alignta<Space>
+vnoremap <Leader>aa :Alignta<CR>
+vnoremap <Leader>ae :Alignta << =<CR>
+vnoremap <Leader>ai :call <SIC>align_char()<CR>
+
+function! s:align_char()
+    let c = nr2char(getchar())
+    execute 'Align' c
+endfunction
 
 " プラットフォーム依存な設定をロードする "{{{
 if has('mac') && filereadable($HOME."/.vimrc.mac")
