@@ -17,6 +17,8 @@ alias Vim=gvim
 # suffix alias
 alias -s pdf='open -a Preview'
 alias -s html='open -a Google\ Chrome'
+alias -s cpp=g++-4.7
+alias -s cc=g++-4.7
 
 #Homebrew
 export HOMEBREW_VERBOSE=true
