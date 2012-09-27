@@ -66,7 +66,7 @@ fi
 
 alias x=startx
 alias gp=gnuplot
-alias scpi='scp -i $HOME/.ssh/id_rsa'
+alias tweetvim='gvim +TweetVimHomeTimeline'
 
 # suffix alias
 alias -s html='google-chrome'
