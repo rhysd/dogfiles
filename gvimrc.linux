@@ -30,6 +30,7 @@ nnoremap <silent><Leader>tw :<C-u>tabnew <Bar> TweetVimHomeTimeline<CR>
 nnoremap <silent><Leader>tl :<C-u>TweetVimHomeTimeline<CR>
 nnoremap <silent><Leader>tm :<C-u>TweetVimMentions<CR>
 nnoremap <Leader>ts :<C-u>TweetVimSay<CR>
+nnoremap <Leader>tu :<C-u>TweetVimUserTimeline<Space>
 
 augroup TweetVimSetting
     autocmd!

@@ -13,7 +13,7 @@ NeoBundle 'Lokaltog/vim-powerline'
 NeoBundleLazy 'tyru/open-browser.vim'
 NeoBundleLazy 'basyura/twibill.vim'
 NeoBundleLazy 'mattn/webapi-vim'
-NeoBundleLazy 'basyura/TweetVim'
+NeoBundleLazy 'rhysd/TweetVim'
 NeoBundleLazy 'yomi322/neco-tweetvim'
 NeoBundleLazy 'rhysd/tweetvim-advanced-filter'
 filetype plugin indent on     " required!

@@ -1,0 +1,27 @@
+[user]
+	name = rhysd
+	email = lin90162@yahoo.co.jp
+[core]
+	editor = vim
+[color]
+	ui = true
+[alias]
+	st  = status -sb
+	bl  = blame
+	br  = branch
+	cm  = commit
+	cl  = clone
+	di  = diff
+	fe  = fetch
+	lo  = log
+	mg  = merge
+	ps  = push
+	pl  = pull
+	rb  = rebase
+	re  = remote
+	ad  = add
+	co  = checkout
+	rbi = rebase -i
+	cma = commit --amend
+	lsf = ls-files
+	lst = ls-tree
