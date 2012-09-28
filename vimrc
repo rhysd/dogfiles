@@ -1,3 +1,4 @@
+" TODO: imap を使えば多重 <CR> マッピングは解決するのでは
 " TODO: vim-visualstar を使う
 
 " 必須な基本設定 {{{
@@ -270,6 +271,8 @@ nnoremap K :<C-u>help <C-r><C-w><CR>
 " TODO v で選択した範囲を help
 " 貼り付けはインデントを揃える
     " nnoremap p ]p
+" コンマ後には空白を入れる
+inoremap , ,<Space>
 " 賢く行頭・非空白行頭・行末の移動
 nnoremap <silent>0 :<C-u>call <SID>smart_move('g^')<CR>
 nnoremap <silent>^ :<C-u>call <SID>smart_move('g0')<CR>
@@ -815,7 +818,6 @@ command! CppHpp :call <SID>cpp_hpp()
 augroup CppSetting
     au!
     autocmd FileType cpp setlocal matchpairs+=<:>
-    autocmd FileType cpp inoremap <buffer>,  ,<Space>
     autocmd FileType cpp inoremap <buffer>;; ::
     autocmd FileType cpp inoremap <buffer><C-s>s      <C-o>Bstd::<End>
     autocmd FileType cpp inoremap <buffer><C-s>b      <C-o>Bboost::<End>
