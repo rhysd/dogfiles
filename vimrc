@@ -1,11 +1,10 @@
 " TODO: vim-visualstar を使う
-
-" 必須な基本設定 {{{
-
 " TODO: conflict marker のハイライト
 "<<<<<<< from
 "=======
 ">>>>>>> to
+
+" 必須な基本設定 {{{
 
 "エンコーディング
 set encoding=utf-8
@@ -449,6 +448,9 @@ nnoremap <silent><Leader>nbl :<C-u>Unite output<CR>NeoBundleList<CR>
 " }}}
 
 " }}}
+
+set rtp+=~/Github/warp.vim
+nmap m <Plug>(warp_lower2digits_trigger)
 
 " その他の雑多な設定 {{{
 

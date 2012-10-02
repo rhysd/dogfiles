@@ -1,0 +1,21 @@
+# Editors' backup files
+.\#*
+.*.swp
+
+# Platform-dependant data
+.DS_Store
+Thumbs.db
+
+# C and C++ compiled files
+*.o
+*.a
+*.lib
+*.so
+*.dylib
+*.dll
+*.pch
+a.out
+
+# Haskell compiled files
+*.o
+*.hi
