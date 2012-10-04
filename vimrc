@@ -1,4 +1,8 @@
 " TODO: vim-visualstar を使う
+" TODO: conflict marker のハイライト
+"<<<<<<< from
+"=======
+">>>>>>> to
 
 " 必須な基本設定 {{{
 
@@ -1217,15 +1221,15 @@ call vimfiler#set_execute_file('pdf,mp3','open')
 " vimfiler.vim のキーマップ {{{
 augroup VimFilerMapping
     autocmd!
-    " smart e mapping
-    autocmd FileType vimfiler nmap <buffer><silent><expr> e vimfiler#smart_cursor_map(
+    " smart s mapping for edit or cd
+    autocmd FileType vimfiler nmap <buffer><silent><expr> s vimfiler#smart_cursor_map(
                 \ "\<Plug>(vimfiler_cd_file)",
                 \ "\<Plug>(vimfiler_edit_file)")
     " jump to VimShell
     autocmd FileType vimfiler nnoremap <buffer><silent><Leader>vs
                 \ :<C-u>VimShellCurrentDir<CR>
-    " instead of e
-    autocmd FileType vimfiler nmap <buffer>s <C-w>
+    " e は元のまま使えるようにする
+    autocmd FileType vimfiler nmap <buffer>e <C-w>
     " 'a'nother
     autocmd FileType vimfiler nmap <buffer><silent>a <Plug>(vimfiler_switch_to_another_vimfiler)
     " unite.vim に合わせる
@@ -1401,7 +1405,7 @@ augroup END
 "}}}
 
 " vim2hs.vim {{{
-" buggy
+" quasi operator highlight is broken (2012/09/26 (Wed) 05:07)
 let g:haskell_quasi = 0
 " disable conceal settings because multi-byte signs are broken in a console
 let g:haskell_conceal = 0
