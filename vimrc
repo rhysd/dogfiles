@@ -445,6 +445,9 @@ nnoremap <silent><Leader>nbl :<C-u>Unite output<CR>NeoBundleList<CR>
 
 " }}}
 
+set rtp+=~/Github/warp.vim
+nmap m <Plug>(warp_lower2digits_trigger)
+
 " その他の雑多な設定 {{{
 
 " スクリプトに実行可能属性を自動で付ける
