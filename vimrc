@@ -386,7 +386,7 @@ NeoBundle 'thinca/vim-textobj-between'
 NeoBundle 'thinca/vim-prettyprint'
 NeoBundle 'rhysd/accelerated-jk'
 NeoBundle 'kana/vim-smartinput'
-NeoBundle 'kana/vim-smartword'
+NeoBundle 'kana/vim-niceblock'
 NeoBundle 'thinca/vim-ref'
 NeoBundle 'rhysd/vim2hs'
 NeoBundle 'rhysd/vim-filetype-haskell'
@@ -1349,15 +1349,6 @@ call smartinput#define_rule({
 
 "}}}
 
-" vim-smartword "{{{
-nmap <silent>w <Plug>(smartword-w)
-vmap <silent>w <Plug>(smartword-w)
-nmap <silent>b <Plug>(smartword-b)
-vmap <silent>b <Plug>(smartword-b)
-nmap <silent>t <Plug>(smartword-e)
-vmap <silent>t <Plug>(smartword-e)
-"}}}
-
 " caw.vim {{{
 " デフォルトマッピングを OFF
 let g:caw_no_default_keymappings = 1
@@ -1466,10 +1457,10 @@ let g:unite_source_alignta_preset_options = [
 " }}}
 
 " プラットフォーム依存な設定をロードする "{{{
-if has('mac') && filereadable($HOME."/.vimrc.mac")
-    source $HOME/.vimrc.mac
-elseif has('unix') && filereadable($HOME.'/.vimrc.linux')
-    source $HOME/.vimrc.linux
+if has('mac') && filereadable($HOME."/.mac.vimrc")
+    source $HOME/.mac.vimrc
+elseif has('unix') && filereadable($HOME.'/.linux.vimrc')
+    source $HOME/.linux.vimrc
 endif
 "}}}
 
