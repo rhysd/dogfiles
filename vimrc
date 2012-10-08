@@ -606,8 +606,8 @@ nnoremap <silent><Leader>c<Leader>
 "}}}
 
 " 行末のホワイトスペースおよびタブ文字の除去
-command! CleanSpaces call <SID>clean_whitespaces()
-function! s:clean_whitespaces()
+command! CleanTrailingSpaces call <SID>clean_trailing_spaces()
+function! s:clean_trailing_spaces()
     let cursor = getpos(".")
     retab!
     %s/\s\+$//ge
