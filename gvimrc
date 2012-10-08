@@ -9,18 +9,18 @@ NeoBundleSource vim-color-github
 
 " 基本設定
 "ツールバーの非表示
-set guioptions-=T 
+set guioptions-=T
 "スクロールバー無し
 set guioptions-=r
-set guioptions-=R 
-set guioptions-=l 
-set guioptions-=L 
-set guioptions-=t 
-set guioptions-=b 
+set guioptions-=R
+set guioptions-=l
+set guioptions-=L
+set guioptions-=t
+set guioptions-=b
 "メニューバー無し
-set guioptions-=m 
+set guioptions-=m
 "無効メニュー項目の灰色表示無し
-set guioptions-=g 
+set guioptions-=g
 " autoselect いらない
 set guioptions-=a
 

@@ -53,6 +53,9 @@ alias -g L='| less'
 # suffix alias
 alias -s cpp=g++
 alias -s cc=g++
+alias -s tex=platex
+alias -s dvi=dvipdfmx
+alias -s bib=bibtex
 
 # aliases for C++
 alias g++='g++ -std=c++11 -O2 -g -Wall -Wextra'
@@ -185,6 +188,8 @@ zstyle ':vcs_info:*' actionformats '%u%c%b (%s) !%a'
 # VCS 情報（ブランチ名・VCS名・アクション名・状態（色））
 function vcs_info_precmd(){
   LANG=en_US.UTF-8 vcs_info
+  local color
+  local msg
   if [[ -n "$vcs_info_msg_0_" ]]; then
     if [[ $vcs_info_msg_0_ =~ "^\?" ]]; then
       color=%B%F{red}
@@ -315,15 +320,11 @@ fi
 case $OSTYPE in
   darwin*)
     # Mac OS
-    if [ -f ~/.mac.zshrc ]; then
-      source ~/.mac.zshrc
-    fi
+    [ -f ~/.mac.zshrc ] && source ~/.mac.zshrc
     ;;
   linux*)
     # Linux
-    if [ -f ~/.linux.zshrc ]; then
-      source ~/.linux.zshrc
-    fi
+    [ -f ~/.linux.zshrc ] && source ~/.linux.zshrc
     ;;
 esac
 # }}}

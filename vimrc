@@ -29,6 +29,8 @@ language time C
 set autoindent
 "タブが対応する空白の数
 set tabstop=4 shiftwidth=4 softtabstop=4
+" インデントを shiftwidth の倍数に丸める
+set shiftround
 "タブの代わりにスペースを使う
 set expandtab
 "長い行で折り返す
@@ -70,6 +72,8 @@ set iminsert=0 imsearch=0
 set hlsearch
 "コマンドラインでのIM無効化
 set noimcmdline
+" コマンドラインで cmd window を出すキー
+set cedit=<C-z>
 "バックスペースでなんでも消せるように
 set backspace=indent,eol,start
 " 改行時にコメントしない
@@ -206,17 +210,13 @@ nnoremap # *zvzz
 " 検索で / をエスケープしなくて良くする（素の / を入力したくなったら<C-v>/）
 cnoremap <expr>/ getcmdtype() == '/' ? '\/' : '/'
 cnoremap <expr>/ getcmdtype() == '?' ? '\/' : '/'
-" insertモードでもquit
-inoremap <C-q><C-q> <Esc>:wq<CR>
-" Q で終了
-nnoremap <C-q> :<C-u>q<CR>
 " 空行挿入
 nnoremap <silent><CR> :<C-u>call append(expand('.'), '')<CR>j
 "ヘルプ表示
 nnoremap <Leader>h :<C-u>vert to help<Space>
 " スペースを挿入
 nnoremap <C-Space> i<Space><Esc><Right>
-"insertモード時はEmacsライクなバインディング．ポップアップが出ないように移動．
+"Emacsライクなバインディング．ポップアップが出ないように移動．
 inoremap <C-e> <END>
 vnoremap <C-e> <END>
 cnoremap <C-e> <END>
@@ -234,6 +234,8 @@ cnoremap <C-d> <Del>
 " Emacsライク<C-k> http//vim.g.hatena.ne.jp/tyru/20100116
 inoremap <silent><expr><C-k> "\<C-g>u".(col('.') == col('$') ? '<C-o>gJ' : '<C-o>D')
 cnoremap <C-k> <C-\>e getcmdpos() == 1 ? '' : getcmdline()[:getcmdpos()-2]<CR>
+" クリップボードから貼り付け
+cnoremap <C-y> <C-r>*
 "バッファ切り替え
 nnoremap <silent><C-n>   :<C-u>bnext<CR>
 nnoremap <silent><C-p>   :<C-u>bprevious<CR>
@@ -383,12 +385,14 @@ NeoBundle 'kana/vim-textobj-indent'
 NeoBundle 'kana/vim-textobj-lastpat'
 NeoBundle 'h1mesuke/textobj-wiw'
 NeoBundle 'inkarkat/argtextobj.vim'
+NeoBundle 'kana/vim-textobj-line'
+NeoBundle 'thinca/vim-textobj-between'
 NeoBundle 'kana/vim-operator-user'
 NeoBundle 'kana/vim-operator-replace'
-NeoBundle 'thinca/vim-textobj-between'
 NeoBundle 'thinca/vim-prettyprint'
 NeoBundle 'rhysd/accelerated-jk'
 NeoBundle 'kana/vim-smartinput'
+NeoBundle 'kana/vim-niceblock'
 NeoBundle 'thinca/vim-ref'
 NeoBundle 'rhysd/vim2hs'
 NeoBundle 'rhysd/vim-filetype-haskell'
@@ -454,6 +458,35 @@ nnoremap <silent><Leader>nbl :<C-u>Unite output<CR>NeoBundleList<CR>
 set rtp+=~/Github/warp.vim
 nmap m <Plug>(warp_lower2digits_trigger)
 
+" helpers {{{
+
+" git のルートディレクトリを開く
+function! s:git_root_dir()
+    if(system('git rev-parse --is-inside-work-tree') == "true\n")
+        return system('git rev-parse --show-cdup')
+    else
+        echoerr 'current directory is outside git working tree'
+    endif
+endfunction
+
+" Linux かどうか判定
+    " let s:has_linux = !has('mac') && has('unix')
+" 本当はこっちのほうが良いが，速度面で難あり
+    " s:has_linux = executable('uname') && system('uname') == "Linux\n"
+" これは Arch Linux だと使えない
+    " s:has_linux = executable('lsb_release')
+
+" 本体に同梱されている matchit.vim のロードと matchpair の追加
+function! s:matchit(pairs)
+    if !exists('g:matchit_loaded')
+        runtime macros/matchit.vim
+        let g:matchit_loaded = 1
+    endif
+    let b:match_words = &matchpairs . ',' . join(a:pairs, ',')
+endfunction
+
+"}}}
+
 " その他の雑多な設定 {{{
 
 " スクリプトに実行可能属性を自動で付ける
@@ -500,17 +533,84 @@ augroup QFixMapping
     autocmd FileType qf nnoremap <buffer><silent> k :cp!<CR>
 augroup END
 
-augroup Mics
+augroup Misc
     autocmd!
     " 起動時メッセージ．ｲﾇｩ…
     autocmd VimEnter * echo "(U＾ω＾) enjoy vimming!"
 augroup END
+
+" ウィンドウ周りのユーティリティ "{{{
+function! s:close_window(winnr)
+    if winbufnr(a:winnr) !=# -1
+        execute a:winnr . 'wincmd w'
+        execute 'wincmd c'
+        return 1
+    else
+        return 0
+    endif
+endfunction
+
+function! s:get_winnr_like(expr)
+    let ret = []
+    let winnr = 1
+    while winnr <= winnr('$')
+        let bufnr = winbufnr(winnr)
+        if eval(a:expr)
+            call add(ret, winnr)
+        endif
+        let winnr = winnr + 1
+    endwhile
+    return ret
+endfunction
+
+function! s:close_windows_like(expr, ...)
+    let winnr_list = s:get_winnr_like(a:expr)
+    " Close current window if current matches a:expr.
+    " let winnr_list = s:move_current_winnr_to_head(winnr_list)
+    if empty(winnr_list)
+        return
+    endif
+
+    let first_only = exists('a:1')
+    let prev_winnr = winnr()
+    try
+        for winnr in reverse(sort(winnr_list))
+            call s:close_window(winnr)
+            if first_only
+                return 1
+            endif
+        endfor
+        return 0
+    finally
+        " Back to previous window.
+        let cur_winnr = winnr()
+        if cur_winnr !=# prev_winnr && winbufnr(prev_winnr) !=# -1
+            execute prev_winnr . 'wincmd w'
+        endif
+    endtry
+endfunction
 "}}}
 
-" ユーザ定義関数とコマンド{{{
+" あるウィンドウを他のウィンドウから閉じる "{{{
+function! s:is_target_window(winnr)
+    let target_filetype = ['ref', 'unite', 'vimfiler']
+    let target_buftype  = ['help', 'quickfix']
+    let winbufnr = winbufnr(a:winnr)
+    return index(target_filetype, getbufvar(winbufnr, '&filetype')) >= 0 ||
+                \ index(target_buftype, getbufvar(winbufnr, '&buftype')) >= 0
+endfunction
+
+nnoremap <silent><C-q>
+            \ :<C-u>call <SID>close_windows_like('s:is_target_window(winnr)')<CR>
+nnoremap <silent><Leader>cp
+            \ :<C-u>call <SID>close_windows_like('s:is_target_window(winnr)', 'first_only')<CR>
+nnoremap <silent><Leader>c<Leader>
+            \ :<C-u>call <SID>close_windows_like('winnr != '.winnr())<CR>
+"}}}
+
 " 行末のホワイトスペースおよびタブ文字の除去
-command! CleanSpaces call <SID>clean_whitespaces()
-function! s:clean_whitespaces()
+command! CleanTrailingSpaces call <SID>clean_trailing_spaces()
+function! s:clean_trailing_spaces()
     let cursor = getpos(".")
     retab!
     %s/\s\+$//ge
@@ -539,34 +639,6 @@ function! s:edit_myvimrc()
         endif
     endif
     execute "args " . files
-endfunction
-
-" すべてのマッピングを表示
-" :AllMaps
-" :AllMaps <buffer1> <buffer2> ...
-" http://vim-users.jp/2011/02/hack203/
-command! -nargs=* -complete=mapping
-            \   AllMaps
-            \   map <args> | map! <args> | lmap <args>
-
-" Vim script の実行結果を新しいバッファで開く
-" :Capture <command>
-" http://vim-users.jp/2011/02/hack203/
-command! -nargs=+ -complete=command
-            \   Capture
-            \   call s:cmd_capture(<q-args>)
-
-function! s:cmd_capture(q_args)
-    redir => output
-    silent execute a:q_args
-    redir END
-    let output = substitute(output, '^\n\+', '', '')
-
-    belowright new
-
-    silent file `=printf('[Capture: %s]', a:q_args)`
-    setlocal buftype=nofile bufhidden=unload noswapfile nobuflisted
-    call setline(1, split(output, '\n'))
 endfunction
 
 " カレントパスをクリプボゥにコピー
@@ -649,6 +721,7 @@ endfunction
 
 " 横幅と縦幅を見て縦分割か横分割か決める
 command! -nargs=? -complete=command SmartSplit call <SID>smart_split(<q-args>)
+nnoremap <C-w><Space>      :<C-u>SmartSplit<CR>
 function! s:smart_split(cmd)
     if winwidth(0) > winheight(0) * 2
         vsplit
@@ -664,6 +737,7 @@ endfunction
 " 縦幅と横幅を見て help の開き方を決める
 set keywordprg=:SmartHelp
 command! -nargs=* -complete=help SmartHelp call <SID>smart_help(<q-args>)
+nnoremap <silent><Leader>h :<C-u>SmartHelp<Space>
 function! s:smart_help(args)
     if winwidth(0) > winheight(0) * 2
         " 縦分割
@@ -679,49 +753,12 @@ function! s:smart_help(args)
 endfunction
 
 " 隣のウィンドウの上下移動
+nnoremap <silent>gj        :<C-u>call ScrollOtherWindow("\<lt>C-d>")<CR>
+nnoremap <silent>gk        :<C-u>call ScrollOtherWindow("\<lt>C-u>")<CR>
 function! ScrollOtherWindow(mapping)
     execute 'wincmd' (winnr('#') == 0 ? 'w' : 'p')
     execute 'normal!' a:mapping
     wincmd p
-endfunction
-
-" 行番号下2桁で移動する
-command! -count=1 -nargs=0 GoToTheLine silent execute getpos('.')[1][:-len(v:count)-1] . v:count
-"}}}
-
-" ユーザ定義コマンドへのマッピング {{{
-nnoremap <C-w><Space>      :<C-u>SmartSplit<CR>
-nnoremap <silent><Leader>h :<C-u>SmartHelp<Space>
-nnoremap <silent>gj        :<C-u>call ScrollOtherWindow("\<lt>C-d>")<CR>
-nnoremap <silent>gk        :<C-u>call ScrollOtherWindow("\<lt>C-u>")<CR>
-nnoremap <silent>gl        :<C-u>GoToTheLine<Cr>
-"}}}
-
-" helpers {{{
-
-" git のルートディレクトリを開く
-function! s:git_root_dir()
-    if(system('git rev-parse --is-inside-work-tree') == "true\n")
-        return system('git rev-parse --show-cdup')
-    else
-        echoerr 'current directory is outside git working tree'
-    endif
-endfunction
-
-" Linux かどうか判定
-    " let s:has_linux = !has('mac') && has('unix')
-" 本当はこっちのほうが良いが，速度面で難あり
-    " s:has_linux = executable('uname') && system('uname') == "Linux\n"
-" これは Arch Linux だと使えない
-    " s:has_linux = executable('lsb_release')
-
-" 本体に同梱されている matchit.vim のロードと matchpair の追加
-function! s:matchit(pairs)
-    if !exists('g:matchit_loaded')
-        runtime macros/matchit.vim
-        let g:matchit_loaded = 1
-    endif
-    let b:match_words = &matchpairs . ',' . join(a:pairs, ',')
 endfunction
 
 "}}}
@@ -1235,7 +1272,12 @@ augroup VimFilerMapping
     autocmd FileType vimfiler nmap <buffer><silent>a <Plug>(vimfiler_switch_to_another_vimfiler)
     " unite.vim に合わせる
     autocmd FileType vimfiler nmap <buffer><silent><Tab> <Plug>(vimfiler_choose_action)
+    " <Space> の代わりに u を unite.vim のプレフィクスに使う
+    autocmd FileType vimfiler nmap <buffer><silent>u [unite]
+    " unite.vim の file_mru との連携
+    autocmd FileType vimfiler nnoremap <buffer><silent><C-h> :<C-u>Unite file_mru directory_mru<CR>
 augroup END
+
 nnoremap <Leader>f        <Nop>
 nnoremap <Leader>ff       :<C-u>VimFiler<CR>
 nnoremap <Leader><Leader>       :<C-u>VimFiler<CR>
@@ -1380,8 +1422,14 @@ omap ic <Plug>(textobj-wiw-i)
 " }}}
 
 " vim-operator {{{
+" replace
 nmap <Leader>r <Plug>(operator-replace)
 vmap <Leader>r <Plug>(operator-replace)
+
+" operator-blank-killer
+call operator#user#define_ex_command('blank-killer', 's/\s\+$//e')
+nmap <Leader>b <Plug>(operator-blank-killer)
+vmap <Leader>b <Plug>(operator-blank-killer)
 "}}}
 
 " ghcmod-vim {{{
@@ -1392,7 +1440,7 @@ augroup GhcModSetting
     autocmd FileType haskell let &l:statusline = '%{empty(getqflist()) ? "[No Errors] " : "[Errors Found] "}'
                                                \ . (empty(&l:statusline) ? &statusline : &l:statusline)
     autocmd FileType haskell nnoremap <buffer><silent><Esc><Esc> :<C-u>nohlsearch<CR>:HierClear<CR>:GhcModTypeClear<CR>
-    autocmd FileType haskell nnoremap <buffer><silent>cqf :<C-u>cclose<CR>
+    autocmd FileType haskell nnoremap <buffer><silent><Leader>cq :<C-u>cclose<CR>
 augroup END
 "}}}
 
@@ -1462,6 +1510,50 @@ if has('mac') && filereadable($HOME."/.mac.vimrc")
     source $HOME/.mac.vimrc
 elseif has('unix') && filereadable($HOME.'/.linux.vimrc')
     source $HOME/.linux.vimrc
+endif
+"}}}
+
+" お試し環境 "{{{
+" let s:into_doghouse = 1
+if exists('s:into_doghouse') && filereadable($HOME."/.doghouse.vimrc")
+    augroup DogHouse
+        autocmd!
+        autocmd! Misc
+        autocmd VimEnter * echohl Error | echo 'WARN: you are in a doghouse （°ω°U）' | echohl None
+    augroup END
+
+    try
+        source $HOME/.doghouse.vimrc
+    catch
+        " エラーメッセージの表示
+        echohl ErrorMsg
+        let msg =
+        \   "an error occurred... starting as debug mode.\n"
+        \   . "\n"
+        \   . 'v:exception = '.v:exception."\n"
+        \   . 'v:throwpoint = '.v:throwpoint
+        for l in split(msg, '\n', 1)
+            execute l !=# '' ? 'echomsg l' : 'echo "\n"'
+        endfor
+        echohl None
+
+        " エラー先の表示
+        let lnum = matchstr(v:throwpoint, '\C\%(line\|行\) \zs\d\+')
+        if ! empty(lnum)
+            call setqflist([{
+            \   'filename': expand('~/.doghouse.vimrc'),
+            \   'lnum': lnum,
+            \   'text': v:exception,
+            \   }])
+
+            silent execute 'edit '.expand('~/.doghouse.vimrc')
+            execute lnum
+
+            if exists('g:hier_enabled')
+                HierUpdate
+            endif
+        endif
+    endtry
 endif
 "}}}
 
