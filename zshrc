@@ -320,15 +320,11 @@ fi
 case $OSTYPE in
   darwin*)
     # Mac OS
-    if [ -f ~/.mac.zshrc ]; then
-      source ~/.mac.zshrc
-    fi
+    [ -f ~/.mac.zshrc ] && source ~/.mac.zshrc
     ;;
   linux*)
     # Linux
-    if [ -f ~/.linux.zshrc ]; then
-      source ~/.linux.zshrc
-    fi
+    [ -f ~/.linux.zshrc ] && source ~/.linux.zshrc
     ;;
 esac
 # }}}
