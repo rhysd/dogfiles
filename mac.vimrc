@@ -28,7 +28,7 @@ let g:clang_user_options='-I /usr/local/include -I /usr/include -I /usr/local/Ce
 " open-pdf で brew の findutils を使う
 let g:unite_pdf_search_cmd = '/usr/local/bin/locate -l 30 "*%s*.pdf"'
 
-" Tweet Buffer with Ruby interface "{{{
+" 非同期ツイート {{{
 " REQUIRE: gem install twitter
 "          write keys in ~/.credential.yml
 "
