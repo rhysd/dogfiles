@@ -313,6 +313,21 @@ function! s:rotate_in_line()
         endif
     endif
 endfunction
+
+" スマートな f
+nnoremap <expr>f <SID>smart_find('f')
+nnoremap <expr>F <SID>smart_find('F')
+let s:line_f = -1
+let s:line_F = -1
+function! s:smart_find(char)
+    let cur = line('.')
+    if s:line_{a:char} == cur
+        return ';'
+    else
+        let s:line_{a:char} = cur
+        return a:char
+    endif
+endfunction
 " }}}
 
 "}}}
@@ -1228,6 +1243,7 @@ let g:vimfiler_safe_mode_by_default = 0
 let g:vimfiler_enable_auto_cd = 1
 let g:vimfiler_split_command = 'vertical rightbelow vsplit'
 let g:vimfiler_execute_file_list = { '_' : 'vim' }
+let g:vimfiler_split_rule = 'botright'
 call vimfiler#set_execute_file('c,h,cpp,hpp,cc,rb,hs,py,txt,vim','vim')
 call vimfiler#set_execute_file('pdf,mp3','open')
 
@@ -1253,13 +1269,14 @@ augroup VimFilerMapping
     autocmd FileType vimfiler nnoremap <buffer><silent><C-h> :<C-u>Unite file_mru directory_mru<CR>
 augroup END
 
-nnoremap <Leader>f        <Nop>
-nnoremap <Leader>ff       :<C-u>VimFiler<CR>
-nnoremap <Leader><Leader>       :<C-u>VimFiler<CR>
-nnoremap <Leader>fnq      :<C-u>VimFiler -no-quit<CR>
-nnoremap <Leader>fh       :<C-u>VimFiler ~<CR>
-nnoremap <Leader>fc       :<C-u>VimFilerCurrentDir<CR>
-nnoremap <Leader>fb       :<C-u>VimFilerBufferDir<CR>
+nnoremap <Leader>f                <Nop>
+nnoremap <Leader>ff               :<C-u>VimFiler<CR>
+nnoremap <Leader>fs               :<C-u>VimFilerSplit<CR>
+nnoremap <Leader><Leader>         :<C-u>VimFiler<CR>
+nnoremap <Leader>fq               :<C-u>VimFiler -no-quit<CR>
+nnoremap <Leader>fh               :<C-u>VimFiler ~<CR>
+nnoremap <Leader>fc               :<C-u>VimFilerCurrentDir<CR>
+nnoremap <Leader>fb               :<C-u>VimFilerBufferDir<CR>
 nnoremap <silent><expr><Leader>fg ":\<C-u>VimFiler " . <SID>git_root_dir() . '\<CR>'
 nnoremap <silent><expr><Leader>fe ":\<C-u>VimFilerExplorer " . <SID>git_root_dir() . '\<CR>'
 "        }}}
@@ -1390,21 +1407,21 @@ call smartinput#define_rule({
             \   'input'    : '<BS>::',
             \   'filetype' : ['cpp'],
             \   })
-" namespace boost の補完
+" boost:: の補完
 call smartinput#define_rule({
-            \   'at'       : '\sb;\%#',
+            \   'at'       : '\<b;\%#',
             \   'char'     : ';',
             \   'input'    : '<BS>oost::',
             \   'filetype' : ['cpp'],
             \   })
-" namespace std の補完
+" std:: の補完
 call smartinput#define_rule({
-            \   'at'       : '\ss;\%#',
+            \   'at'       : '\<s;\%#',
             \   'char'     : ';',
             \   'input'    : '<BS>td::',
             \   'filetype' : ['cpp'],
             \   })
-" namespace detail の補完
+" detail:: の補完
 call smartinput#define_rule({
             \   'at'       : '\%(\s\|::\)d;\%#',
             \   'char'     : ';',
@@ -1435,7 +1452,7 @@ call smartinput#define_rule({
             \   'syntax'   : ['String'],
             \   })
 call smartinput#define_rule({
-            \   'at'       : '\\\%(%\|z\)(\%#\\)',
+            \   'at'       : '\\[%z](\%#\\)',
             \   'char'     : '<BS>',
             \   'input'    : '<Del><Del><BS><BS><BS>',
             \   'filetype' : ['vim'],
