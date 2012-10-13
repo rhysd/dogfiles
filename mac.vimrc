@@ -4,7 +4,7 @@
 set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
 " brew の パスを追加
 if has('vim_starting')
-    set path+=/usr/local/Cellar/gcc/4.7.2/gcc/include/c++/4.7.2,/Users/rhayasd/.rbenv/versions/1.9.3-p194/lib/ruby/1.9.1/,/Users/rhayasd/Programs/**
+    set path+=/usr/local/Cellar/gcc/4.7.2/gcc/include/c++/4.7.2,/Users/rhayasd/.rbenv/versions/1.9.3-p286/lib/ruby/1.9.1/,/Users/rhayasd/Programs/**
 endif
 "MacVim Kaoriyaに標準で入っている辞書を無効化
 if has('kaoriya')
