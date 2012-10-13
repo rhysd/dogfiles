@@ -83,11 +83,11 @@ endfunction
 "}}}
 
 function! Tweet() "{{{
-    let bufnr = bufwinnr('tweet')
+    let bufnr = bufwinnr('__tweet')
     if bufnr > 0
         execute bufnr.'wincmd w'
     else
-        botright split tweet
+        botright split __tweet
         resize 6
         setlocal bufhidden=wipe nobuflisted noswapfile modifiable
         setlocal statusline=Tweet\ Buffer
