@@ -34,10 +34,11 @@ let g:unite_pdf_search_cmd = '/usr/local/bin/locate -l 30 "*%s*.pdf"'
 "
 function! s:update_status() "{{{
     if ! has('ruby')
+        echoerr 'Ruby interface is disabled.'
         return
     endif
     if ! filereadable(expand('~/.credential.yml'))
-        echoerr "There are no keys to authenticate."
+        echoerr "There are no keys to authenticate: ~/.credential.yml"
         return
     endif
 
@@ -45,9 +46,15 @@ function! s:update_status() "{{{
     buffer = VIM::Buffer::current
 
     Process.fork do
-        require 'rubygems'
+        require 'rubygems' if RUBY_VERSION < '1.9'
         require 'twitter'
         require 'yaml'
+        has_terminal_notifier = true
+        begin
+            require 'terminal-notifier'
+        rescue LoadError
+            has_terminal_notifier = false
+        end
 
         lines = []
         (1..buffer.length).each do |lnum|
@@ -64,14 +71,22 @@ function! s:update_status() "{{{
                 config.oauth_token_secret = yaml['oauth_token_secret']
             end
             Twitter::update text
-            puts "success in tweet"
+            if has_terminal_notifier
+                TerminalNotifier::notify(text, :title => 'from vim')
+            else
+                puts "success in tweet"
+            end
         rescue => e
-            VIM::command <<-CMD.gsub(/^\s+/,'').gsub("\n", " | ")
-                echohl Error
-                echomsg 'fail to tweet!'
-                echomsg '#{e.to_s}'
-                echohl None
-            CMD
+            if has_terminal_notifier
+                TerminalNotifier::notify(e.to_s, :title => 'fail to tweet')
+            else
+                VIM::command <<-CMD.gsub(/^\s+/,'').gsub("\n", " | ")
+                    echohl Error
+                    echomsg 'fail to tweet!'
+                    echomsg '#{e.to_s}'
+                    echohl None
+                CMD
+            end
         end
     end
 EOF
