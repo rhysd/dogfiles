@@ -45,6 +45,9 @@ if which pacman > /dev/null; then
   }
   alias -g yaor='yaourt -Rsn'
   alias -s pdf='apvlv'
+  function sshi(){
+    ssh -i $HOME/.ssh/id_rsa r-hayashida@$1
+  }
 fi
 
 # Debian development
@@ -54,10 +57,10 @@ if which apt-get > /dev/null; then
   export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
   alias synergy='synergyc r-hysd-arch'
   alias -s pdf='acroread'
+  if [ -f ~/.zshrc.lab ]; then
+    source ~/.zshrc.lab
+  fi
 fi
-function sshi(){
-ssh -i $HOME/.ssh/id_rsa r-hayashida@$1
-}
 
 if which awesome > /dev/null; then
   alias configawesome='vim $HOME/.config/awesome/rc.lua'

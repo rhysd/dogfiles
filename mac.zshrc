@@ -11,6 +11,7 @@ alias locate='/usr/bin/locate'
 alias vi="vim --cmd \"let g:linda_pp_startup_with_tiny = 1\""
 alias rm=grm
 alias update='brew update && gem update && vim -N -V1 -e -s --cmd "source ~/.vimrc" --cmd NeoBundleUpdate --cmd qall!'
+alias sshi='ssh -i $HOME/.ssh/id_rsa'
 
 alias Vim=gvim
 
