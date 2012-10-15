@@ -1,6 +1,5 @@
-" TODO: imap を使えば多重 <CR> マッピングは解決するのでは
-" TODO: vim-visualstar を使う
 " TODO: conflict marker のハイライト
+" TODO: 直前が f{char} なら ff を f{char} の繰り返しコマンドにする
 "<<<<<<< from
 "=======
 ">>>>>>> to
@@ -185,7 +184,7 @@ noremap : ;
 inoremap <expr> j getline('.')[col('.') - 2] ==# 'j' ? "\<BS>\<ESC>" : 'j'
 cnoremap <expr> j getcmdline()[getcmdpos() - 2] ==# 'j' ? "\<BS>\<ESC>" : 'j'
 " <C-c> も Esc と抜け方にする
-inoremap <C-C> <Esc>
+inoremap <C-c> <Esc>
 " Yの挙動はy$のほうが自然な気がする
 nnoremap Y y$
 " 縦方向は論理移動する
@@ -316,6 +315,21 @@ function! s:rotate_in_line()
         endif
     endif
 endfunction
+
+" スマートな f
+nnoremap <expr>f <SID>smart_find('f')
+nnoremap <expr>F <SID>smart_find('F')
+let s:line_f = -1
+let s:line_F = -1
+function! s:smart_find(char)
+    let cur = line('.')
+    if s:line_{a:char} == cur
+        return ';'
+    else
+        let s:line_{a:char} = cur
+        return a:char
+    endif
+endfunction
 " }}}
 
 "}}}
@@ -402,7 +416,9 @@ NeoBundle 'eagletmt/ghcmod-vim'
 NeoBundle 'rhysd/auto-neobundle'
 NeoBundle 'rhysd/wombat256.vim'
 NeoBundle 'thinca/vim-scouter'
+NeoBundle 'thinca/vim-visualstar'
 NeoBundle 'h1mesuke/vim-alignta'
+NeoBundle 'Lokaltog/vim-easymotion'
     " NeoBundle 'rhysd/ref-rurema'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'ujihisa/neco-look'
@@ -454,9 +470,6 @@ nnoremap <silent><Leader>nbl :<C-u>Unite output<CR>NeoBundleList<CR>
 " }}}
 
 " }}}
-
-set rtp+=~/Github/warp.vim
-nmap m <Plug>(warp_lower2digits_trigger)
 
 " helpers {{{
 
@@ -602,6 +615,8 @@ endfunction
 
 nnoremap <silent><C-q>
             \ :<C-u>call <SID>close_windows_like('s:is_target_window(winnr)')<CR>
+inoremap <silent><C-q>
+            \ <Esc>:call <SID>close_windows_like('s:is_target_window(winnr)')<CR>
 nnoremap <silent><Leader>cp
             \ :<C-u>call <SID>close_windows_like('s:is_target_window(winnr)', 'first_only')<CR>
 nnoremap <silent><Leader>c<Leader>
@@ -761,6 +776,43 @@ function! ScrollOtherWindow(mapping)
     wincmd p
 endfunction
 
+" Gist への投稿
+function! Gist(file, private, open, description, ...)
+    if ! ( executable('gist') || executable('jist') )
+        echoerr "This command requires gist gem. Please do `gem install gist.` or `gem install jist`"
+        return
+    endif
+
+    if filereadable(a:file)
+        if executable('jist')
+            let cmd = join([
+                        \ 'jist',
+                        \ a:file,
+                        \ (a:private ? '' : '--public'),
+                        \ '--description', shellescape(a:description),
+                        \ (a:open ==# '!' ? '--open' : '')
+                        \ ], ' ')
+        elseif executable('gist')
+            let cmd = join([
+                        \ 'gist',
+                        \ a:file,
+                        \ (a:private ? '--private' : '--no-private'),
+                        \ '--description', shellescape(a:description),
+                        \ (a:open ==# '!' ? '--open' : '--no-open')
+                        \ ], ' ')
+        endif
+        let result = ''
+        try
+            let result = vimproc#system(cmd)
+        catch
+            let result = system(cmd)
+        finally
+            echo result
+        endtry
+    endif
+endfunction
+command! -nargs=* -bang Gist call Gist(expand('%:p'), 0, <q-bang>, <q-args>)
+command! -nargs=* -bang GistPrivate call Gist(expand('%:p'), 1, <q-bang>, <q-args>)
 "}}}
 
 " Ruby {{{
@@ -779,21 +831,6 @@ augroup END
 
 " C++ ラベル字下げ設定
 set cinoptions& cinoptions+=:0,g0
-
-" {} の展開．cinoptions とかでできそうな気もする．
-" smartinput でもできるはずだけれど，my-endwise で <CR> が設定済みのため反映されない
-function! s:cpp_expand_brace()
-    let cmd = ""
-    let curline = getline('.')
-    let target = strpart( curline, col('.')-2, 2 )
-    if target == "{}" || target == "<>"
-        if target == "{}" && curline =~# '^\s*\%(class\|struct\)'
-            let cmd = cmd."\<Right>;\<left>\<Left>"
-        endif
-        let cmd = cmd."\<CR>\<Up>\<C-o>$"
-    endif
-    return cmd
-endfunction
 
 " -> decltype(expr) の補完
 " constexpr auto func_name(...) を仮定
@@ -861,10 +898,10 @@ command! CppHpp :call <SID>cpp_hpp()
 augroup CppSetting
     au!
     autocmd FileType cpp setlocal matchpairs+=<:>
-    autocmd FileType cpp inoremap <buffer>;; ::
+    autocmd FileType cpp inoremap <buffer>,  ,<Space>
     autocmd FileType cpp inoremap <buffer><C-s>s      <C-o>Bstd::<End>
     autocmd FileType cpp inoremap <buffer><C-s>b      <C-o>Bboost::<End>
-    autocmd FileType cpp inoremap <silent><buffer><expr><CR> <SID>cpp_expand_brace()."\<CR>"
+    " autocmd FileType cpp inoremap <silent><buffer><expr><CR> <SID>cpp_expand_brace()."\<CR>"
     autocmd FileType cpp nnoremap <buffer><Leader>ret :<C-u>call <SID>return_type_completion()<CR>
     autocmd FileType cpp nnoremap <buffer><Leader>s Bistd::<Esc>
     autocmd FileType cpp nnoremap <buffer><Leader>b Biboost::<Esc>
@@ -889,6 +926,7 @@ command! Ghci :<C-u>VimshellInteractive ghci<CR>
 " Vim script "{{{
 augroup VimScriptSetting
     autocmd!
+    autocmd FileType vim inoremap , ,<Space>
     autocmd FileType vim call <SID>matchit([])
 augroup END
 "}}}
@@ -934,7 +972,7 @@ endif
 let g:neocomplcache_include_paths.cpp  = '.,/usr/local/include,/usr/local/Cellar/gcc/4.7.2/gcc/include/c++/4.7.2,/usr/include'
 let g:neocomplcache_include_paths.c    = '.,/usr/include'
 let g:neocomplcache_include_paths.perl = '.,/System/Library/Perl,/Users/rhayasd/Programs'
-let g:neocomplcache_include_paths.ruby = expand('~/.rbenv/versions/1.9.3-p194/lib/ruby/1.9.1')
+let g:neocomplcache_include_paths.ruby = expand('~/.rbenv/versions/1.9.3-p286/lib/ruby/1.9.1')
 "インクルード文のパターンを指定
 let g:neocomplcache_include_patterns = { 'cpp' : '^\s*#\s*include', 'ruby' : '^\s*require', 'perl' : '^\s*use', }
 "インクルード先のファイル名の解析パターン
@@ -970,7 +1008,8 @@ inoremap             <expr><C-g> neocomplcache#undo_completion()
 "スニペット展開候補があれば展開を，そうでなければbash風補完を．
 imap                 <expr><C-l> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : neocomplcache#complete_common_string()
 " <CR>: close popup and save indent.
-imap                 <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup()."\<CR>" : "\<CR>"
+" MEMO: disabled because of smartinput's <CR> mapping.
+" imap                 <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup()."\<CR>" : "\<CR>"
 " <TAB>: completion
 inoremap             <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 "スニペットがあればそれを展開．なければ通常の挙動をするTABキー
@@ -1017,6 +1056,8 @@ augroup UniteMapping
     autocmd FileType unite imap <buffer><expr>l unite#smart_map("l", unite#do_action(unite#get_current_unite().context.default_action))
     "jjで待ち時間が発生しないようにしていると候補が見えなくなるので対処
     autocmd FileType unite imap <buffer><silent>jj <Plug>(unite_insert_leave)
+    " s を wincmd リマップする
+    autocmd FileType unite nmap <buffer>s <C-w>
 augroup END
 
 nnoremap [unite] <Nop>
@@ -1232,18 +1273,6 @@ endfunction
 "}}}
 
 " Hier.vim {{{
-"CUIだとエラーハイライトが見づらいので修正
-if !has("gui_running")
-    highlight qf_error_ucurl ctermbg=9
-    let g:hier_highlight_group_qf = "qf_error_ucurl"
-    let g:hier_highlight_group_loc = "qf_error_ucurl"
-    highlight qf_warning_ucurl ctermbg=3
-    let g:hier_highlight_group_qfw = "qf_warning_ucurl"
-    let g:hier_highlight_group_locw = "qf_warning_ucurl"
-    " QuickFix選択中のエラー
-    highlight Search ctermbg=8
-endif
-
 nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>:HierClear<CR>
 " }}}
 
@@ -1253,6 +1282,7 @@ let g:vimfiler_safe_mode_by_default = 0
 let g:vimfiler_enable_auto_cd = 1
 let g:vimfiler_split_command = 'vertical rightbelow vsplit'
 let g:vimfiler_execute_file_list = { '_' : 'vim' }
+let g:vimfiler_split_rule = 'botright'
 call vimfiler#set_execute_file('c,h,cpp,hpp,cc,rb,hs,py,txt,vim','vim')
 call vimfiler#set_execute_file('pdf,mp3','open')
 
@@ -1278,13 +1308,14 @@ augroup VimFilerMapping
     autocmd FileType vimfiler nnoremap <buffer><silent><C-h> :<C-u>Unite file_mru directory_mru<CR>
 augroup END
 
-nnoremap <Leader>f        <Nop>
-nnoremap <Leader>ff       :<C-u>VimFiler<CR>
-nnoremap <Leader><Leader>       :<C-u>VimFiler<CR>
-nnoremap <Leader>fnq      :<C-u>VimFiler -no-quit<CR>
-nnoremap <Leader>fh       :<C-u>VimFiler ~<CR>
-nnoremap <Leader>fc       :<C-u>VimFilerCurrentDir<CR>
-nnoremap <Leader>fb       :<C-u>VimFilerBufferDir<CR>
+nnoremap <Leader>f                <Nop>
+nnoremap <Leader>ff               :<C-u>VimFiler<CR>
+nnoremap <Leader>fs               :<C-u>VimFilerSplit<CR>
+nnoremap <Leader><Leader>         :<C-u>VimFiler<CR>
+nnoremap <Leader>fq               :<C-u>VimFiler -no-quit<CR>
+nnoremap <Leader>fh               :<C-u>VimFiler ~<CR>
+nnoremap <Leader>fc               :<C-u>VimFilerCurrentDir<CR>
+nnoremap <Leader>fb               :<C-u>VimFilerBufferDir<CR>
 nnoremap <silent><expr><Leader>fg ":\<C-u>VimFiler " . <SID>git_root_dir() . '\<CR>'
 nnoremap <silent><expr><Leader>fe ":\<C-u>VimFilerExplorer " . <SID>git_root_dir() . '\<CR>'
 "        }}}
@@ -1307,88 +1338,172 @@ let g:clang_complete_auto = 0
 " }}}
 
 " vim-smartinput"{{{
-    " call smartinput#define_default_rules()
-
 " 括弧内のスペース
-    " call smartinput#map_to_trigger('i', '(', '(', '(')
-call smartinput#define_rule({
-            \   'at':       '(\%#)',
-            \   'char':     '<Space>',
-            \   'input':    '<Space><Space><Left>',
-            \   })
-
 call smartinput#map_to_trigger('i', '<Space>', '<Space>', '<Space>')
 call smartinput#define_rule({
-            \   'at':       '( \%# )',
-            \   'char':     '<BS>',
-            \   'input':    '<Del><BS>',
+            \   'at'    : '(\%#)',
+            \   'char'  : '<Space>',
+            \   'input' : '<Space><Space><Left>',
             \   })
 
 call smartinput#define_rule({
-            \   'at':       '{\%#}',
-            \   'char':     '<Space>',
-            \   'input':    '<Space><Space><Left>',
+            \   'at'    : '( \%# )',
+            \   'char'  : '<BS>',
+            \   'input' : '<Del><BS>',
             \   })
 
 call smartinput#define_rule({
-            \   'at':       '{ \%# }',
-            \   'char':     '<BS>',
-            \   'input':    '<Del><BS>',
+            \   'at'    : '{\%#}',
+            \   'char'  : '<Space>',
+            \   'input' : '<Space><Space><Left>',
             \   })
 
 call smartinput#define_rule({
-            \   'at':       '\[\%#\]',
-            \   'char':     '<Space>',
-            \   'input':    '<Space><Space><Left>',
+            \   'at'    : '{ \%# }',
+            \   'char'  : '<BS>',
+            \   'input' : '<Del><BS>',
             \   })
 
 call smartinput#define_rule({
-            \   'at':       '\[ \%# \]',
-            \   'char':     '<BS>',
-            \   'input':    '<Del><BS>',
+            \   'at'    : '\[\%#\]',
+            \   'char'  : '<Space>',
+            \   'input' : '<Space><Space><Left>',
+            \   })
+
+call smartinput#define_rule({
+            \   'at'    : '\[ \%# \]',
+            \   'char'  : '<BS>',
+            \   'input' : '<Del><BS>',
+            \   })
+
+" 行末のスペースを削除する
+call smartinput#define_rule({
+            \   'at'    : '\s\+\%#',
+            \   'char'  : '<CR>',
+            \   'input' : "<C-o>: call setline('.', substitute(getline('.'), '\\s\\+$', '', '')) <Bar> echo 'delete trailing spaces'<CR><CR>",
             \   })
 
 " Ruby 文字列内変数埋め込み
 call smartinput#map_to_trigger('i', '#', '#', '#')
 call smartinput#define_rule({
-            \   'at': '\%#',
-            \   'char': '#',
-            \   'input': '#{}<Left>',
-            \   'filetype': ['ruby'],
-            \   'syntax': ['Constant', 'Special'],
+            \   'at'       : '\%#',
+            \   'char'     : '#',
+            \   'input'    : '#{}<Left>',
+            \   'filetype' : ['ruby'],
+            \   'syntax'   : ['Constant', 'Special'],
             \   })
 
 " Ruby ブロック引数 ||
 call smartinput#map_to_trigger('i', '<Bar>', '<Bar>', '<Bar>')
 call smartinput#define_rule({
-            \   'at': '\({\|\<do\>\)\s*\%#',
-            \   'char': '<Bar>',
-            \   'input': '<Bar><Bar><Left>',
-            \   'filetype': ['ruby'],
+            \   'at' : '\({\|\<do\>\)\s*\%#',
+            \   'char' : '<Bar>',
+            \   'input' : '<Bar><Bar><Left>',
+            \   'filetype' : ['ruby'],
             \    })
 
 " テンプレート内のスペース
-call smartinput#map_to_trigger('i', '<', '<', '<')
 call smartinput#define_rule({
-            \   'at':       '<\%#>',
-            \   'char':     '<Space>',
-            \   'input':    '<Space><Space><Left>',
-            \   'filetype': ['cpp'],
+            \   'at' :       '<\%#>',
+            \   'char' :     '<Space>',
+            \   'input' :    '<Space><Space><Left>',
+            \   'filetype' : ['cpp'],
             \   })
 call smartinput#define_rule({
-            \   'at':       '< \%# >',
-            \   'char':     '<BS>',
-            \   'input':    '<Del><BS>',
-            \   'filetype': ['cpp'],
+            \   'at' :       '< \%# >',
+            \   'char' :     '<BS>',
+            \   'input' :    '<Del><BS>',
+            \   'filetype' : ['cpp'],
             \   })
 
-" クラス定義の場合は末尾に;を付け忘れないようにする
-    " call smartinput#define_rule({
-    " \   'at': '\(\<struct\>\|\<class\>\)\s*\w*\s*{\%#}',
-    " \   'char': '<CR>',
-    " \   'input': '<Right>;<Left><CR><CR><Up>',
-    " \   'filetype': ['cpp'],
-    " \   })
+" ブロックコメント
+call smartinput#map_to_trigger('i', '*', '*', '*')
+call smartinput#define_rule({
+            \   'at'       : '\/\%#',
+            \   'char'     : '*',
+            \   'input'    : '**/<Left><Left>',
+            \   'filetype' : ['c', 'cpp'],
+            \   })
+call smartinput#define_rule({
+            \   'at'       : '/\*\%#\*/',
+            \   'char'     : '<Space>',
+            \   'input'    : '<Space><Space><Left>',
+            \   'filetype' : ['c', 'cpp'],
+            \   })
+call smartinput#define_rule({
+            \   'at'       : '/* \%# */',
+            \   'char'     : '<BS>',
+            \   'input'    : '<Del><BS>',
+            \   'filetype' : ['c', 'cpp'],
+            \   })
+
+" セミコロンの挙動
+call smartinput#map_to_trigger('i', ';', ';', ';')
+" 2回押しで :: の代わり（待ち時間無し）
+call smartinput#define_rule({
+            \   'at'       : ';\%#',
+            \   'char'     : ';',
+            \   'input'    : '<BS>::',
+            \   'filetype' : ['cpp'],
+            \   })
+" boost:: の補完
+call smartinput#define_rule({
+            \   'at'       : '\<b;\%#',
+            \   'char'     : ';',
+            \   'input'    : '<BS>oost::',
+            \   'filetype' : ['cpp'],
+            \   })
+" std:: の補完
+call smartinput#define_rule({
+            \   'at'       : '\<s;\%#',
+            \   'char'     : ';',
+            \   'input'    : '<BS>td::',
+            \   'filetype' : ['cpp'],
+            \   })
+" detail:: の補完
+call smartinput#define_rule({
+            \   'at'       : '\%(\s\|::\)d;\%#',
+            \   'char'     : ';',
+            \   'input'    : '<BS>etail::',
+            \   'filetype' : ['cpp'],
+            \   })
+" クラス定義や enum 定義の場合は末尾に;を付け忘れないようにする
+call smartinput#define_rule({
+            \   'at'       : '\%(\<struct\>\|\<class\>\|\<enum\>\)\s*\w\+.*\%#',
+            \   'char'     : '{',
+            \   'input'    : '{};<Left><Left>',
+            \   'filetype' : ['cpp'],
+            \   })
+" template に続く <> を補完
+call smartinput#define_rule({
+            \   'at'       : '\<template\>\s*\%#',
+            \   'char'     : '<',
+            \   'input'    : '<><Left>',
+            \   'filetype' : ['cpp'],
+            \   })
+
+" Vim の正規表現内で \( が入力されたときの \) の補完
+call smartinput#define_rule({
+            \   'at'       : '\\\%(\|%\|z\)\%#',
+            \   'char'     : '(',
+            \   'input'    : '(\)<Left><Left>',
+            \   'filetype' : ['vim'],
+            \   'syntax'   : ['String'],
+            \   })
+call smartinput#define_rule({
+            \   'at'       : '\\[%z](\%#\\)',
+            \   'char'     : '<BS>',
+            \   'input'    : '<Del><Del><BS><BS><BS>',
+            \   'filetype' : ['vim'],
+            \   'syntax'   : ['String'],
+            \   })
+call smartinput#define_rule({
+            \   'at'       : '\\(\%#\\)',
+            \   'char'     : '<BS>',
+            \   'input'    : '<Del><Del><BS><BS>',
+            \   'filetype' : ['vim'],
+            \   'syntax'   : ['String'],
+            \   })
 
 "}}}
 
@@ -1428,7 +1543,7 @@ vmap <Leader>r <Plug>(operator-replace)
 
 " operator-blank-killer
 call operator#user#define_ex_command('blank-killer', 's/\s\+$//e')
-nmap <Leader>b <Plug>(operator-blank-killer)
+nnoremap <silent><Leader>b :<C-u>s/\s\+$//e<CR>
 vmap <Leader>b <Plug>(operator-blank-killer)
 "}}}
 
@@ -1458,6 +1573,22 @@ let g:haskell_hsp = 0
 
 " 自作スニペット {{{
 let g:neocomplcache_snippets_dir=$HOME.'/.vim/bundle/home-made-snippets/snippets'
+"}}}
+
+" EasyMotion {{{
+let g:EasyMotion_leader_key = 'm'
+nnoremap <silent>mn :<C-u>call <SID>easymotion_line_absolute(1)<CR>
+nnoremap <silent>mN :<C-u>call <SID>easymotion_line_absolute(0)<CR>
+
+" EasyMotion をカーソル行からでなく画面一番上/下から始める
+function! s:easymotion_line_absolute(down)
+    let scrolloff = &scrolloff
+    let &scrolloff=0
+    execute 'normal! '.(a:down ? 'H' : 'L')
+    " execute 'normal '.(a:down ? 'mj' : 'mk')
+    call feedkeys(a:down ? 'mj' : 'mk')
+    let &scrolloff = scrolloff
+endfunction
 "}}}
 
 "endwise.vim {{{

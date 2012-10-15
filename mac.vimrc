@@ -4,7 +4,7 @@
 set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
 " brew の パスを追加
 if has('vim_starting')
-    set path+=/usr/local/Cellar/gcc/4.7.2/gcc/include/c++/4.7.2,/Users/rhayasd/.rbenv/versions/1.9.3-p194/lib/ruby/1.9.1/,/Users/rhayasd/Programs/**
+    set path+=/usr/local/Cellar/gcc/4.7.2/gcc/include/c++/4.7.2,/Users/rhayasd/.rbenv/versions/1.9.3-p286/lib/ruby/1.9.1/,/Users/rhayasd/Programs/**
 endif
 "MacVim Kaoriyaに標準で入っている辞書を無効化
 if has('kaoriya')
@@ -34,10 +34,11 @@ let g:unite_pdf_search_cmd = '/usr/local/bin/locate -l 30 "*%s*.pdf"'
 "
 function! s:update_status() "{{{
     if ! has('ruby')
+        echoerr 'Ruby interface is disabled.'
         return
     endif
     if ! filereadable(expand('~/.credential.yml'))
-        echoerr "There are no keys to authenticate."
+        echoerr "There are no keys to authenticate: ~/.credential.yml"
         return
     endif
 
@@ -45,9 +46,15 @@ function! s:update_status() "{{{
     buffer = VIM::Buffer::current
 
     Process.fork do
-        require 'rubygems'
+        require 'rubygems' if RUBY_VERSION < '1.9'
         require 'twitter'
         require 'yaml'
+        has_terminal_notifier = true
+        begin
+            require 'terminal-notifier'
+        rescue LoadError
+            has_terminal_notifier = false
+        end
 
         lines = []
         (1..buffer.length).each do |lnum|
@@ -64,14 +71,22 @@ function! s:update_status() "{{{
                 config.oauth_token_secret = yaml['oauth_token_secret']
             end
             Twitter::update text
-            puts "success in tweet"
+            if has_terminal_notifier
+                TerminalNotifier::notify(text, :title => 'from vim')
+            else
+                puts "success in tweet"
+            end
         rescue => e
-            VIM::command <<-CMD.gsub(/^\s+/,'').gsub("\n", " | ")
-                echohl Error
-                echomsg 'fail to tweet!'
-                echomsg '#{e.to_s}'
-                echohl None
-            CMD
+            if has_terminal_notifier
+                TerminalNotifier::notify(e.to_s, :title => 'fail to tweet')
+            else
+                VIM::command <<-CMD.gsub(/^\s+/,'').gsub("\n", " | ")
+                    echohl Error
+                    echomsg 'fail to tweet!'
+                    echomsg '#{e.to_s}'
+                    echohl None
+                CMD
+            end
         end
     end
 EOF
@@ -83,11 +98,11 @@ endfunction
 "}}}
 
 function! Tweet() "{{{
-    let bufnr = bufwinnr('tweet')
+    let bufnr = bufwinnr('__tweet')
     if bufnr > 0
         execute bufnr.'wincmd w'
     else
-        botright split tweet
+        botright split __tweet
         resize 6
         setlocal bufhidden=wipe nobuflisted noswapfile modifiable
         setlocal statusline=Tweet\ Buffer
