@@ -11,6 +11,8 @@
 	bl  = blame
 	br  = branch
 	cm  = commit
+	cmv  = commit -v
+	cmm  = commit -m
 	cl  = clone
 	di  = diff
 	fe  = fetch
