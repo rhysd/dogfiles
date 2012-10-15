@@ -32,7 +32,6 @@ alias vimfiler='vim +VimFiler'
 alias vimshell='vim +VimShell'
 alias gvim='vim -g'
 alias sudo='sudo '
-alias sshi='ssh -i $HOME/.ssh/id_rsa'
 
 alias l=ls
 alias pd=popd
