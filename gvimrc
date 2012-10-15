@@ -69,10 +69,10 @@ nnoremap <Space>C :<C-u>Unite -auto-preview colorscheme<CR>
 let g:haskell_conceal = 1
 
 " プラットフォーム依存な設定の読み込み
-if has('mac') && filereadable($HOME.'/.gvimrc.mac')
-    source $HOME/.gvimrc.mac
-elseif has('unix') && filereadable($HOME.'/.gvimrc.linux')
-    source $HOME/.gvimrc.linux
+if has('mac') && filereadable($HOME.'/.mac.gvimrc')
+    source $HOME/.mac.gvimrc
+elseif has('unix') && filereadable($HOME.'/.linux.gvimrc')
+    source $HOME/.linux.gvimrc
 endif
 
 " vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8 :

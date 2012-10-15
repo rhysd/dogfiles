@@ -449,9 +449,6 @@ nnoremap <silent><Leader>nbl :<C-u>Unite output<CR>NeoBundleList<CR>
 
 " }}}
 
-set rtp+=~/Github/warp.vim
-nmap m <Plug>(warp_lower2digits_trigger)
-
 " その他の雑多な設定 {{{
 
 " スクリプトに実行可能属性を自動で付ける
@@ -1466,10 +1463,10 @@ let g:unite_source_alignta_preset_options = [
 " }}}
 
 " プラットフォーム依存な設定をロードする "{{{
-if has('mac') && filereadable($HOME."/.vimrc.mac")
-    source $HOME/.vimrc.mac
-elseif has('unix') && filereadable($HOME.'/.vimrc.linux')
-    source $HOME/.vimrc.linux
+if has('mac') && filereadable($HOME."/.mac.vimrc")
+    source $HOME/.mac.vimrc
+elseif has('unix') && filereadable($HOME.'/.linux.vimrc')
+    source $HOME/.linux.vimrc
 endif
 "}}}
 
