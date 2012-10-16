@@ -387,7 +387,7 @@ NeoBundle 'basyura/unite-rails'
 NeoBundle 'kmnk/vim-unite-giti'
 NeoBundle 'rhysd/unite-n3337'
 " NeoBundle 'rhysd/open-pdf.vim'
-set rtp+=~/Github/open-pdf.vim
+if has('vim_starting') | set rtp+=~/Github/open-pdf.vim | endif
 NeoBundle 'vim-jp/vimdoc-ja'
 NeoBundle 'jceb/vim-hier'
 NeoBundle 'rhysd/my-endwise'
@@ -526,10 +526,10 @@ augroup HelpMapping
     autocmd FileType help nnoremap <buffer>< :<C-u>pop<CR>
     " 履歴を進む
     autocmd FileType help nnoremap <buffer>> :<C-u>tag<CR>
-    " 履歴一覧
-    autocmd FileType help nnoremap <buffer><Tab> :<C-u>tags<CR>
     " help ウィンドウを広げる
     autocmd FileType help nnoremap <buffer>+ 999<C-w>+999<C-w>>
+    " リンクしている単語を選択する
+    autocmd FileType help nnoremap <buffer><silent><Tab> /\%(\_.\zs<Bar>[^ ]\+<Bar>\ze\_.\<Bar>CTRL-.\<Bar><[^ >]\+>\)<CR>
     " そのた
     autocmd FileType help nnoremap <buffer>u <C-u>
     autocmd FileType help nnoremap <buffer>d <C-d>
@@ -999,15 +999,13 @@ let g:neocomplcache_omni_patterns.c   = '\%(\.\|->\)\h\w*'
 let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
 
 "neocomplcacheのマッピング {{{
-imap                 <C-s>       <Plug>(neocomplcache_snippets_expand)
-smap                 <C-s>       <Plug>(neocomplcache_snippets_expand)
-inoremap             <expr><C-g> neocomplcache#undo_completion()
-                     "inoremap <expr><C-l> neocomplcache#complete_common_string()
+inoremap <expr><C-g> neocomplcache#undo_completion()
+inoremap <expr><C-s> neocomplcache#complete_common_string()
 "スニペット展開候補があれば展開を，そうでなければbash風補完を．
-imap                 <expr><C-l> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : neocomplcache#complete_common_string()
+imap <expr><C-l> neocomplcache#sources#snippets_complete#expandable() ?
+            \ "\<Plug>(neocomplcache_snippets_expand)" :
+            \ neocomplcache#complete_common_string()
 " <CR>: close popup and save indent.
-" MEMO: disabled because of smartinput's <CR> mapping.
-" imap                 <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup()."\<CR>" : "\<CR>"
 " <TAB>: completion
 inoremap             <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 "スニペットがあればそれを展開．なければ通常の挙動をするTABキー
@@ -1016,6 +1014,12 @@ inoremap             <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
                      " inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
                      " inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
 inoremap             <expr><C-y> neocomplcache#close_popup()
+" HACK: This hack needs because of using both vim-smartinput and neocomplcache
+" when <CR> is typed.
+"    A user types <CR> ->
+"    smart_close_popup() is called when pumvisible() ->
+"    <Plug>(physical_key_return) hooked by vim-smartinput is used
+imap <expr><CR> (pumvisible() ? neocomplcache#smart_close_popup() : "")."\<Plug>(physical_key_return)"
 "}}}
 
 " }}}
@@ -1374,6 +1378,7 @@ call smartinput#define_rule({
             \   'input' : '<Del><BS>',
             \   })
 
+call smartinput#map_to_trigger('i', '<Plug>(physical_key_return)', '<CR>', '<CR>')
 " 行末のスペースを削除する
 call smartinput#define_rule({
             \   'at'    : '\s\+\%#',
@@ -1503,6 +1508,19 @@ call smartinput#define_rule({
             \   'syntax'   : ['String'],
             \   })
 
+" my-endwise のための設定（手が焼ける…）
+call smartinput#define_rule({
+            \   'at'    : '\%#',
+            \   'char'  : '<CR>',
+            \   'input' : "<CR><C-r>=my_endwise#crend(0)<CR>",
+            \   'filetype' : ['vim', 'ruby'],
+            \   })
+call smartinput#define_rule({
+            \   'at'    : '\s\+\%#',
+            \   'char'  : '<CR>',
+            \   'input' : "<C-o>: call setline('.', substitute(getline('.'), '\\s\\+$', '', '')) <Bar> echo 'delete trailing spaces'<CR><CR><C-r>=my_endwise#crend(0)<CR>",
+            \   'filetype' : ['vim', 'ruby'],
+            \   })
 "}}}
 
 " caw.vim {{{
@@ -1589,13 +1607,6 @@ function! s:easymotion_line_absolute(down)
 endfunction
 "}}}
 
-"endwise.vim {{{
-augroup EndWiseMapping
-    autocmd!
-    autocmd FileType ruby,vim imap <buffer> <expr><CR>  pumvisible() ? neocomplcache#smart_close_popup() . "\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd"
-augroup END
-" }}}
-
 " vim-alignta {{{
 let g:alignta_default_options   = '<<<0:0'
 let g:alignta_default_arguments = '\s'
@@ -1642,7 +1653,7 @@ elseif has('unix') && filereadable($HOME.'/.linux.vimrc')
 endif
 "}}}
 
-" お試し環境 "{{{
+" 犬小屋 for experimental settings "{{{
 " let s:into_doghouse = 1
 if exists('s:into_doghouse') && filereadable($HOME."/.doghouse.vimrc")
     augroup DogHouse
