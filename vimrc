@@ -392,8 +392,7 @@ NeoBundle 'rhysd/unite-n3337'
 if has('vim_starting') | set rtp+=~/Github/open-pdf.vim | endif
 NeoBundle 'vim-jp/vimdoc-ja'
 NeoBundle 'jceb/vim-hier'
-NeoBundle 'rhysd/my-endwise'
-    " NeoBundle 'tpope/vim-endwise'
+NeoBundle 'rhysd/endwize.vim'
 NeoBundle 'kana/vim-textobj-user'
 NeoBundle 'kana/vim-textobj-indent'
 NeoBundle 'kana/vim-textobj-lastpat'
@@ -1512,18 +1511,18 @@ call smartinput#define_rule({
             \   })
 
 " my-endwise のための設定（手が焼ける…）
-" call smartinput#define_rule({
-"             \   'at'    : '\%#',
-"             \   'char'  : '<CR>',
-"             \   'input' : "<CR><C-r>=my_endwise#crend(0)<CR>",
-"             \   'filetype' : ['vim', 'ruby'],
-"             \   })
-" call smartinput#define_rule({
-"             \   'at'    : '\s\+\%#',
-"             \   'char'  : '<CR>',
-"             \   'input' : "<C-o>: call setline('.', substitute(getline('.'), '\\s\\+$', '', '')) <Bar> echo 'delete trailing spaces'<CR><CR><C-r>=my_endwise#crend(0)<CR>",
-"             \   'filetype' : ['vim', 'ruby'],
-"             \   })
+call smartinput#define_rule({
+            \   'at'    : '\%#',
+            \   'char'  : '<CR>',
+            \   'input' : "<CR><C-r>=endwize#crend()<CR>",
+            \   'filetype' : ['vim', 'ruby', 'sh', 'zsh'],
+            \   })
+call smartinput#define_rule({
+            \   'at'    : '\s\+\%#',
+            \   'char'  : '<CR>',
+            \   'input' : "<C-o>: call setline('.', substitute(getline('.'), '\\s\\+$', '', '')) <Bar> echo 'delete trailing spaces'<CR><CR><C-r>=endwize#crend()<CR>",
+            \   'filetype' : ['vim', 'ruby', 'sh', 'zsh'],
+            \   })
 "}}}
 
 " caw.vim {{{
