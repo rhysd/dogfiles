@@ -368,7 +368,14 @@ if has('vim_starting')
 endif
 
 " GitHub上のリポジトリ
-NeoBundle 'Shougo/vimproc'
+NeoBundle 'Shougo/vimproc', {
+            \ 'build' : {
+            \       'windows' : 'echo "Please build vimproc manually."',
+            \       'cygwin'  : 'make -f make_cygwin.mak',
+            \       'mac'     : 'make -f make_mac.mak',
+            \       'unix'    : 'make -f make_unix.mak',
+            \   }
+            \ }
 NeoBundle 'Shougo/vimshell'
 NeoBundle 'Shougo/vimfiler'
 NeoBundle 'Shougo/neocomplcache'
