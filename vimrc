@@ -404,7 +404,8 @@ NeoBundle 'thinca/vim-textobj-between'
 NeoBundle 'kana/vim-operator-user'
 NeoBundle 'kana/vim-operator-replace'
 NeoBundle 'thinca/vim-prettyprint'
-NeoBundle 'rhysd/accelerated-jk'
+" NeoBundle 'rhysd/accelerated-jk'
+set rtp+=~/Github/accelerated-jk
 NeoBundle 'kana/vim-smartinput'
 NeoBundle 'kana/vim-niceblock'
 NeoBundle 'thinca/vim-ref'
@@ -1260,8 +1261,8 @@ augroup END
 " }}}
 
 " accelerated-jk "{{{
-nmap <silent>j <Plug>(accelerated_jk_gj)
-nmap <silent>k <Plug>(accelerated_jk_gk)
+nmap j <Plug>(accelerated_jk_gj)
+nmap k <Plug>(accelerated_jk_gk)
 "}}}
 
 " open-pdf.vim の設定 "{{{
@@ -1511,18 +1512,18 @@ call smartinput#define_rule({
             \   })
 
 " my-endwise のための設定（手が焼ける…）
-call smartinput#define_rule({
-            \   'at'    : '\%#',
-            \   'char'  : '<CR>',
-            \   'input' : "<CR><C-r>=my_endwise#crend(0)<CR>",
-            \   'filetype' : ['vim', 'ruby'],
-            \   })
-call smartinput#define_rule({
-            \   'at'    : '\s\+\%#',
-            \   'char'  : '<CR>',
-            \   'input' : "<C-o>: call setline('.', substitute(getline('.'), '\\s\\+$', '', '')) <Bar> echo 'delete trailing spaces'<CR><CR><C-r>=my_endwise#crend(0)<CR>",
-            \   'filetype' : ['vim', 'ruby'],
-            \   })
+" call smartinput#define_rule({
+"             \   'at'    : '\%#',
+"             \   'char'  : '<CR>',
+"             \   'input' : "<CR><C-r>=my_endwise#crend(0)<CR>",
+"             \   'filetype' : ['vim', 'ruby'],
+"             \   })
+" call smartinput#define_rule({
+"             \   'at'    : '\s\+\%#',
+"             \   'char'  : '<CR>',
+"             \   'input' : "<C-o>: call setline('.', substitute(getline('.'), '\\s\\+$', '', '')) <Bar> echo 'delete trailing spaces'<CR><CR><C-r>=my_endwise#crend(0)<CR>",
+"             \   'filetype' : ['vim', 'ruby'],
+"             \   })
 "}}}
 
 " caw.vim {{{
