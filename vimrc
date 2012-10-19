@@ -553,7 +553,7 @@ augroup QFixMapping
     autocmd FileType qf nnoremap <buffer><silent> k :cp!<CR>
 augroup END
 
-augroup Misc
+augroup InitialMessage
     autocmd!
     " 起動時メッセージ．ｲﾇｩ…
     autocmd VimEnter * echo "(U＾ω＾) enjoy vimming!"
@@ -613,7 +613,7 @@ endfunction
 
 " あるウィンドウを他のウィンドウから閉じる "{{{
 function! s:is_target_window(winnr)
-    let target_filetype = ['ref', 'unite', 'vimfiler']
+    let target_filetype = ['ref', 'unite', 'vimfiler', 'vimshell']
     let target_buftype  = ['help', 'quickfix']
     let winbufnr = winbufnr(a:winnr)
     return index(target_filetype, getbufvar(winbufnr, '&filetype')) >= 0 ||
@@ -1667,7 +1667,7 @@ endif
 if exists('s:into_doghouse') && filereadable($HOME."/.doghouse.vimrc")
     augroup DogHouse
         autocmd!
-        autocmd! Misc
+        autocmd! InitialMessage
         autocmd VimEnter * echohl Error | echo 'WARN: you are in a doghouse （°ω°U）' | echohl None
     augroup END
 
