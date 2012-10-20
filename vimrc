@@ -1,6 +1,8 @@
 " TODO: conflict marker のハイライト
 " TODO: 直前が f{char} なら ff を f{char} の繰り返しコマンドにする
 " TODO: NeoBundle ''にカーソルを合わせるとそのディレクトリを vimfiler で開くコマンド
+" TODO: その時の天気でステータスバーの色を変える
+" TODO: \ で行継続している全体を1つのテキストオブジェクトとみなす textobj プラグイン
 "<<<<<<< from
 "=======
 ">>>>>>> to
@@ -380,7 +382,7 @@ NeoBundle 'Shougo/vimproc', {
 NeoBundle 'Shougo/vimshell'
 NeoBundle 'Shougo/vimfiler'
 NeoBundle 'Shougo/neocomplcache'
-NeoBundle 'Shougo/neocomplcache-snippets-complete'
+NeoBundle 'Shougo/neosnippet'
 NeoBundle 'vim-jp/cpp-vim'
     " NeoBundle 'Rip-Rip/clang_complete'
 NeoBundle 'rhysd/clang_complete'
@@ -1011,19 +1013,13 @@ let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
 "neocomplcacheのマッピング {{{
 inoremap <expr><C-g> neocomplcache#undo_completion()
 inoremap <expr><C-s> neocomplcache#complete_common_string()
-"スニペット展開候補があれば展開を，そうでなければbash風補完を．
-imap <expr><C-l> neocomplcache#sources#snippets_complete#expandable() ?
-            \ "\<Plug>(neocomplcache_snippets_expand)" :
-            \ neocomplcache#complete_common_string()
 " <CR>: close popup and save indent.
 " <TAB>: completion
-inoremap             <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
-"スニペットがあればそれを展開．なければ通常の挙動をするTABキー
-                     " imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
+inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 "<C-h>, <BS>: close popup and delete backword char.
                      " inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
                      " inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-inoremap             <expr><C-y> neocomplcache#close_popup()
+inoremap <expr><C-y> neocomplcache#close_popup()
 " HACK: This hack needs because of using both vim-smartinput and neocomplcache
 " when <CR> is typed.
 "    A user types <CR> ->
@@ -1033,6 +1029,24 @@ imap <expr><CR> (pumvisible() ? neocomplcache#smart_close_popup() : "")."\<Plug>
 "}}}
 
 " }}}
+
+" neosnippet {{{
+"スニペット展開候補があれば展開を，そうでなければbash風補完を．
+" プレースホルダ優先で展開
+imap <expr><C-l> neosnippet#expandable() ?
+            \ "\<Plug>(neosnippet_jump_or_expand)" :
+            \ neocomplcache#complete_common_string()
+smap <expr><C-l> neosnippet#expandable() ?
+            \ "\<Plug>(neosnippet_jump_or_expand)" :
+            \ neocomplcache#complete_common_string()
+" ネスト優先で展開
+imap <expr><C-S-l> neosnippet#expandable() ?
+            \ "\<Plug>(neosnippet_expand_or_jump)" :
+            \ neocomplcache#complete_common_string()
+smap <expr><C-S-l> neosnippet#expandable() ?
+            \ "\<Plug>(neosnippet_expand_or_jump)" :
+            \ neocomplcache#complete_common_string()
+"}}}
 
 " unite.vim {{{
 "insertモードをデフォルトに
@@ -1598,7 +1612,7 @@ let g:haskell_hsp = 0
 " }}}
 
 " 自作スニペット {{{
-let g:neocomplcache_snippets_dir=$HOME.'/.vim/bundle/home-made-snippets/snippets'
+let g:neosnippet#snippets_directory=$HOME.'/.vim/bundle/home-made-snippets/snippets'
 "}}}
 
 " EasyMotion {{{
