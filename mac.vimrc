@@ -28,6 +28,12 @@ let g:clang_user_options='-I /usr/local/include -I /usr/include -I /usr/local/Ce
 " open-pdf で brew の findutils を使う
 let g:unite_pdf_search_cmd = '/usr/local/bin/locate -l 30 "*%s*.pdf"'
 
+" VimShell で g++ のエイリアス
+augroup VimShellAlias
+    autocmd!
+    autocmd FileType vimshell call vimshell#altercmd#define('gpp', 'g++-4.7 -std=c++11 -O2 -g -Wall -Wextra')
+augroup END
+
 " 非同期ツイート {{{
 " REQUIRE: gem install twitter
 "          write keys in ~/.credential.yml
@@ -61,6 +67,8 @@ function! s:update_status() "{{{
             lines << buffer[lnum]
         end
         text = lines.join("\n")
+        # hooter = VIM::evaluate "exists('g:tweet_hooter') ? g:tweet_hooter : ''"
+        # text += hooter unless hooter.empty?
 
         begin
             yaml = YAML.load(File.open(File.expand_path('~/.credential.yml')).read)
@@ -123,4 +131,5 @@ endfunction
 
 command! -nargs=0 Tweet call Tweet()
 nnoremap <Leader>tw :<C-u>Tweet<CR>
+" let g:tweet_hooter = " #関西Emacs"
 "}}}

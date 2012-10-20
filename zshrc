@@ -48,6 +48,7 @@ alias g=git
 # global alias
 alias -g G='| grep'
 alias -g L='| less'
+alias -g V='| view -R -'
 
 # suffix alias
 alias -s cpp=g++
