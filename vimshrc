@@ -1,18 +1,35 @@
-alias ls='ls -G'
-alias l='ls'
-alias ll='ls -la'
+alias lr='ls -R'
+alias ll='ls -lah'
+alias llr='ls -laRh'
 alias la='ls -a'
-#alias grep='/opt/local/bin/grep'
-alias g++='g++-4.7 -std=c++11 -Wall -Wextra -O2'
-alias g='g++-4.7 -std=c++11 -Wall -Wextra -O2'
-alias Emacs='open -a /Applications/MacPorts/Emacs.app'
-alias Vim='open -a /Applications/MacVim.app'
+alias gr='grep -nl --color'
 alias pg='ps aux | grep'
-alias pd='popd'
-alias c='cd'
-alias locate='/usr/bin/locate'
-alias v='vim'
-alias gr='grep -l'
-alias x=exit
-alias :q=exit
-alias q=exit
+alias md='mkdir -pv'
+alias rmr='rm -R'
+alias rm!='rm -f'
+alias rmr!='rm -Rf'
+alias ja='LANG=ja_JP.UTF8 LC_ALL=ja_JP.UTF-8'
+alias en='LANG=en_US.UTF8 LC_ALL=en_US.UTF-8'
+alias cp='cp -p'
+alias cpr='cp -pR'
+alias df='df -h'
+alias su='su -'
+alias be='bundle exec'
+alias diff=colordiff
+alias quit=exit
+alias vimfiler='vim +VimFiler'
+alias vimshell='vim +VimShell'
+alias gvim='vim -g'
+alias l=ls
+alias pd=popd
+alias v=vim
+alias gv=gvim
+alias c=cd
+alias s=sudo
+alias h='history 0'
+alias k=kill
+alias ng=noglob
+alias d=dirs
+alias g=git
+alias cl=clang++
+alias i=iexe
