@@ -60,8 +60,10 @@ set ignorecase
 set smartcase
 "ビープ音OFF
 set vb t_vb=
-"256 bitカラーモード
-" set t_Co=256
+"256 bitカラーモード(for tmux)
+if $TERM ==# 'screen'
+    set t_Co=256
+endif
 "ホワイトスペース類を表示する
 set list
 "起動時のメッセージを消す
