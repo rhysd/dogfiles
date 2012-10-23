@@ -60,10 +60,6 @@ set ignorecase
 set smartcase
 "ビープ音OFF
 set vb t_vb=
-"256 bitカラーモード(for tmux)
-if $TERM ==# 'screen'
-    set t_Co=256
-endif
 "ホワイトスペース類を表示する
 set list
 "起動時のメッセージを消す
@@ -181,6 +177,15 @@ augroup END
 " カーソル下のハイライトグループを取得
 " command! -nargs=0 GetHighlightingGroup echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<' . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<' . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
 
+" tmux 用の設定
+"256 bitカラーモード(for tmux)
+if !has('gui_running') && $TERM ==# 'screen' && executable('tmux')
+    set t_Co=256
+    augroup Tmux
+        autocmd!
+        autocmd VimEnter,VimLeave * silent !tmux set status
+    augroup END
+endif
 " 基本マッピング {{{
 " ; と : をスワップ
 noremap ; :
