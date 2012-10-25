@@ -44,6 +44,7 @@ alias k=kill
 alias ng=noglob
 alias d=dirs
 alias g=git
+alias t=tmux
 
 # global alias
 alias -g G='| grep'
@@ -282,6 +283,12 @@ function _advanced_tab(){
 zle -N _advanced_tab
 bindkey "^I" _advanced_tab
 
+# tmux 起動
+# function _tmux(){
+#   tmux
+# }
+# zle -N _tmux
+# bindkey "^T" _tmux
 # }}}
 
 ##############

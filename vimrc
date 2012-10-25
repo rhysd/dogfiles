@@ -192,6 +192,7 @@ if !has('gui_running') && $TMUX !=# ''
         autocmd VimEnter,VimLeave * silent !tmux set status
     augroup END
 endif
+
 " 基本マッピング {{{
 " ; と : をスワップ
 noremap ; :
