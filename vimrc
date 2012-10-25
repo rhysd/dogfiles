@@ -142,10 +142,16 @@ augroup AutoCursorLine
   autocmd CursorHold,CursorHoldI,WinEnter * setlocal cursorline
 augroup END
 
-augroup MiscForTiny
+augroup FileTypeDetect
     autocmd!
     " *.md で読み込む filetype を変更（デフォルトは modula2）
-    autocmd BufRead *.md,*.markdown setlocal ft=markdown
+    autocmd BufRead,BufNew *.md,*.markdown setlocal ft=markdown
+    " tmux
+    autocmd BufRead,BufNew *tmux.conf setlocal ft=tmux
+augroup END
+
+augroup MiscForTiny
+    autocmd!
     " Gnuplot のファイルタイプを設定
     autocmd BufRead *.plt,*.plot,*.gnuplot setlocal ft=gnuplot
     " カーソル位置の復元
@@ -179,7 +185,7 @@ augroup END
 
 " tmux 用の設定
 "256 bitカラーモード(for tmux)
-if !has('gui_running') && $TERM ==# 'screen' && executable('tmux')
+if !has('gui_running') && $TMUX !=# ''
     set t_Co=256
     augroup Tmux
         autocmd!
@@ -390,21 +396,16 @@ NeoBundle 'Shougo/vimshell'
 NeoBundle 'Shougo/vimfiler'
 NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'Shougo/neosnippet'
-NeoBundle 'vim-jp/cpp-vim'
-    " NeoBundle 'Rip-Rip/clang_complete'
-NeoBundle 'rhysd/clang_complete'
 NeoBundle 'rhysd/home-made-snippets'
 NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'tyru/caw.vim'
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'h1mesuke/unite-outline'
 NeoBundle 'osyo-manga/unite-fold'
-NeoBundle 'ujihisa/unite-haskellimport'
 NeoBundle 'osyo-manga/unite-quickfix'
 NeoBundle 'rhysd/quickrun-unite-quickfix-outputter'
 NeoBundle 'basyura/unite-rails'
 NeoBundle 'kmnk/vim-unite-giti'
-NeoBundle 'rhysd/unite-n3337'
 " NeoBundle 'rhysd/open-pdf.vim'
 if has('vim_starting') | set rtp+=~/Github/open-pdf.vim | endif
 NeoBundle 'vim-jp/vimdoc-ja'
@@ -420,16 +421,10 @@ NeoBundle 'thinca/vim-textobj-between'
 NeoBundle 'kana/vim-operator-user'
 NeoBundle 'kana/vim-operator-replace'
 NeoBundle 'thinca/vim-prettyprint'
-" NeoBundle 'rhysd/accelerated-jk'
-set rtp+=~/Github/accelerated-jk
+NeoBundle 'rhysd/accelerated-jk'
 NeoBundle 'kana/vim-smartinput'
 NeoBundle 'kana/vim-niceblock'
 NeoBundle 'thinca/vim-ref'
-NeoBundle 'rhysd/vim2hs'
-NeoBundle 'rhysd/vim-filetype-haskell'
-NeoBundle 'ujihisa/ref-hoogle'
-NeoBundle 'ujihisa/neco-ghc'
-NeoBundle 'eagletmt/ghcmod-vim'
 NeoBundle 'rhysd/auto-neobundle'
 NeoBundle 'rhysd/wombat256.vim'
 NeoBundle 'thinca/vim-scouter'
@@ -449,16 +444,42 @@ NeoBundle 'Lokaltog/vim-easymotion'
 " GUI オンリーなプラグイン
 NeoBundleLazy 'ujihisa/unite-colorscheme'
 NeoBundleLazy 'nathanaelkane/vim-indent-guides'
-NeoBundleLazy 'sudo.vim'
 NeoBundleLazy 'tomasr/molokai'
 NeoBundleLazy 'altercation/vim-colors-solarized'
 NeoBundleLazy 'earendel'
 NeoBundleLazy 'rdark'
 NeoBundleLazy 'telamon/vim-color-github'
 
+" 特定の環境用のプラグイン
+NeoBundleLazy 'vim-jp/cpp-vim'
+NeoBundleLazy 'rhysd/clang_complete'
+NeoBundleLazy 'rhysd/unite-n3337'
+NeoBundleLazy 'ujihisa/unite-haskellimport'
+NeoBundleLazy 'rhysd/vim2hs'
+NeoBundleLazy 'rhysd/vim-filetype-haskell'
+NeoBundleLazy 'ujihisa/ref-hoogle'
+NeoBundleLazy 'ujihisa/neco-ghc'
+NeoBundleLazy 'eagletmt/ghcmod-vim'
+NeoBundleLazy 'sudo.vim'
+
+" 遅延読み込み
+augroup NeoBundleLazyLoad
+    autocmd!
+    autocmd FileType cpp NeoBundleSource
+                \ cpp-vim
+                \ clang_complete
+                \ unite-n3337
+    autocmd FileType haskell NeoBundleSource
+                \ unite-haskellimport
+                \ vim2hs
+                \ vim-filetype-haskell
+                \ ref-hoogle
+                \ neco-ghc
+                \ ghcmod-vim
+augroup END
+
 filetype plugin indent on     " required!
 
-" 遅延読み込み {{{
 augroup NeoBundleLazySource
     autocmd!
     autocmd FileChangedRO * NeoBundleSource sudo.vim
@@ -906,18 +927,18 @@ function! s:cpp_hpp()
         execute "Unite spotlight -input=".base
     elseif !executable('locate')
         execute "Unite locate -input=".base
+    else
+        echoerr "not found"
     endif
 
 endfunction
 
-command! CppHpp :call <SID>cpp_hpp()
+command! -nargs=0 CppHpp :call <SID>cpp_hpp()
 
 augroup CppSetting
     au!
     autocmd FileType cpp setlocal matchpairs+=<:>
     autocmd FileType cpp inoremap <buffer>,  ,<Space>
-    autocmd FileType cpp inoremap <buffer><C-s>s      <C-o>Bstd::<End>
-    autocmd FileType cpp inoremap <buffer><C-s>b      <C-o>Bboost::<End>
     " autocmd FileType cpp inoremap <silent><buffer><expr><CR> <SID>cpp_expand_brace()."\<CR>"
     autocmd FileType cpp nnoremap <buffer><Leader>ret :<C-u>call <SID>return_type_completion()<CR>
     autocmd FileType cpp nnoremap <buffer><Leader>s Bistd::<Esc>
@@ -1624,8 +1645,8 @@ let g:neosnippet#snippets_directory=$HOME.'/.vim/bundle/home-made-snippets/snipp
 
 " EasyMotion {{{
 let g:EasyMotion_leader_key = 'm'
-nnoremap <silent>mn :<C-u>call <SID>easymotion_line_absolute(1)<CR>
-nnoremap <silent>mN :<C-u>call <SID>easymotion_line_absolute(0)<CR>
+nnoremap <silent>ml :<C-u>call <SID>easymotion_line_absolute(1)<CR>
+nnoremap <silent>mL :<C-u>call <SID>easymotion_line_absolute(0)<CR>
 
 " EasyMotion をカーソル行からでなく画面一番上/下から始める
 function! s:easymotion_line_absolute(down)
