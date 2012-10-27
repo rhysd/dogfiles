@@ -69,22 +69,6 @@ alias rg=run-gcc
 alias clang++='clang++ -stdlib=libc++ -std=c++11 -O2 -g -Wall -Wextra'
 alias cl=clang++
 
-# aliase for git
-alias gad="git add"
-alias gbl="git blame"
-alias gbr="git branch"
-alias gch="git checkout"
-alias gcl="git clone"
-alias gco="git commit"
-alias gdi="git diff"
-alias gfe="git fetch"
-alias glo="git log"
-alias gme="git merge"
-alias gpl="git pull"
-alias gps="git push"
-alias grb="git rebase"
-alias gst="git status"
-alias gre="git remote"
 # }}}
 
 ##########################
