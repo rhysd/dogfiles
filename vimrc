@@ -1,8 +1,6 @@
 " TODO: conflict marker のハイライト
-" TODO: 直前が f{char} なら ff を f{char} の繰り返しコマンドにする
 " TODO: NeoBundle ''にカーソルを合わせるとそのディレクトリを vimfiler で開くコマンド
 " TODO: その時の天気でステータスバーの色を変える
-" TODO: \ で行継続している全体を1つのテキストオブジェクトとみなす textobj プラグイン
 "<<<<<<< from
 "=======
 ">>>>>>> to
@@ -148,6 +146,8 @@ augroup FileTypeDetect
     autocmd BufRead,BufNew *.md,*.markdown setlocal ft=markdown
     " tmux
     autocmd BufRead,BufNew *tmux.conf setlocal ft=tmux
+    " git config file
+    autocmd BufRead,BufNew gitconfig setlocal ft=gitconfig
 augroup END
 
 augroup MiscForTiny
@@ -333,20 +333,6 @@ function! s:rotate_in_line()
     endif
 endfunction
 
-" スマートな f
-nnoremap <expr>f <SID>smart_find('f')
-nnoremap <expr>F <SID>smart_find('F')
-let s:line_f = -1
-let s:line_F = -1
-function! s:smart_find(char)
-    let cur = line('.')
-    if s:line_{a:char} == cur
-        return ';'
-    else
-        let s:line_{a:char} = cur
-        return a:char
-    endif
-endfunction
 " }}}
 
 "}}}
@@ -415,10 +401,11 @@ NeoBundle 'rhysd/endwize.vim'
 NeoBundle 'kana/vim-textobj-user'
 NeoBundle 'kana/vim-textobj-indent'
 NeoBundle 'kana/vim-textobj-lastpat'
+NeoBundle 'kana/vim-textobj-line'
 NeoBundle 'h1mesuke/textobj-wiw'
 NeoBundle 'inkarkat/argtextobj.vim'
-NeoBundle 'kana/vim-textobj-line'
 NeoBundle 'thinca/vim-textobj-between'
+NeoBundle 'rhysd/vim-textobj-continuous-line'
 NeoBundle 'kana/vim-operator-user'
 NeoBundle 'kana/vim-operator-replace'
 NeoBundle 'thinca/vim-prettyprint'
@@ -432,6 +419,7 @@ NeoBundle 'thinca/vim-scouter'
 NeoBundle 'thinca/vim-visualstar'
 NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'Lokaltog/vim-easymotion'
+NeoBundle 'rhysd/clever-f.vim'
     " NeoBundle 'rhysd/ref-rurema'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'ujihisa/neco-look'
@@ -486,11 +474,6 @@ augroup NeoBundleLazySource
     autocmd FileChangedRO * NeoBundleSource sudo.vim
     autocmd FileChangedRO * exe "command! W SudoWrite" expand('%')
 augroup END
-"}}}
-
-" カラースキーム "{{{
-colorscheme wombat256mod
-" }}}
 
 " auto_neobundle "{{{
 " augroup AutoUpdate
@@ -538,6 +521,10 @@ function! s:matchit(pairs)
 endfunction
 
 "}}}
+
+" カラースキーム "{{{
+colorscheme wombat256mod
+" }}}
 
 " その他の雑多な設定 {{{
 
