@@ -1,5 +1,6 @@
 export LANG=ja_JP.UTF-8
 export EDITOR=vim
+# export LESS='--LONG-PROMPT --ignore-case'
 
 export PATH=/usr/local/bin:$PATH
 export PATH=$HOME/.cabal/bin:$PATH
@@ -83,6 +84,8 @@ autoload -Uz terminfo
 autoload -Uz zmv
 autoload -Uz zcalc
 autoload -Uz add-zsh-hook
+autoload -Uz smart-insert-last-word
+autoload -Uz modify-current-argument
 # }}}
 
 ###############
@@ -245,15 +248,6 @@ function _pop_hist(){
 zle -N _pop_hist
 bindkey "^O" _pop_hist
 
-# ^Q で git status を見る
-function _git_status(){
-  echo
-  git status -sb
-  zle reset-prompt
-}
-zle -N _git_status
-bindkey "^Q" _git_status
-
 # 空行の状態で Tab を入れると ls する
 function _advanced_tab(){
   if [[ $#BUFFER == 0 ]]; then
@@ -274,6 +268,37 @@ bindkey "^I" _advanced_tab
 # zle -N _tmux
 # bindkey "^T" _tmux
 # }}}
+
+# git status を見る
+function _git_status(){
+  # for lower left prompt
+  echo "\n"
+  git status -sb
+  zle reset-prompt
+}
+zle -N _git_status
+bindkey "^Xg" _git_status
+
+# 前のコマンドで最後に打った単語の挿入
+zle -N insert-last-word smart-insert-last-word
+zstyle :insert-last-word match '*([^[:space:]][[:alpha:]/\\]|[[:alpha:]/\\][^[:space:]])*'
+bindkey '^]' insert-last-word
+
+# 1つ前の単語をシングルクォートで囲む
+_quote-previous-word-in-single() {
+    modify-current-argument '${(qq)${(Q)ARG}}'
+    zle vi-forward-blank-word
+}
+zle -N _quote-previous-word-in-single
+bindkey '^Q' _quote-previous-word-in-single
+
+# 1つ前の単語をダブルクォートで囲む
+_quote-previous-word-in-double() {
+    modify-current-argument '${(qqq)${(Q)ARG}}'
+    zle vi-forward-blank-word
+}
+zle -N _quote-previous-word-in-double
+bindkey '^Xq' _quote-previous-word-in-double
 
 ##############
 #   その他   #
