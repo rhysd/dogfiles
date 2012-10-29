@@ -424,6 +424,12 @@ NeoBundle 'rhysd/clever-f.vim'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'ujihisa/neco-look'
 
+" For testing
+NeoBundle 'mattn/webapi-vim'
+NeoBundle 'tyru/open-browser.vim'
+NeoBundle 'basyura/twibill.vim'
+set rtp+=~/Github/unite-twitter
+
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
 
@@ -776,7 +782,7 @@ function! s:smart_split(cmd)
 endfunction
 
 " 縦幅と横幅を見て help の開き方を決める
-set keywordprg=:SmartHelp
+" set keywordprg=:SmartHelp
 command! -nargs=* -complete=help SmartHelp call <SID>smart_help(<q-args>)
 nnoremap <silent><Leader>h :<C-u>SmartHelp<Space>
 function! s:smart_help(args)
@@ -1312,6 +1318,10 @@ endif
 function! g:pdf_hooks.on_opened()
     setlocal nowrap nonumber nolist
 endfunction
+"}}}
+
+" clever-f.vim "{{{
+nmap : <Plug>(clever-f-reset)
 "}}}
 
 " Hier.vim {{{
