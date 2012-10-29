@@ -29,5 +29,3 @@
 	cma = commit --amend
 	lsf = ls-files
 	lst = ls-tree
-[push]
-	default = simple
