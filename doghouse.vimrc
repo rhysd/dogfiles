@@ -1,7 +1,6 @@
 if has('vim_staring')
-    set rtp+=~/Github/operator-help.vim
+    " set rtp+=
 endif
-" map <Space>h <Plug>(operator-help)
 
 filetype off
 filetype plugin indent off
@@ -10,3 +9,5 @@ filetype plugin indent off
 " NeoBundle 'Lokaltog/vim-easymotion'
 
 filetype plugin indent on     " required!
+
+nnoremap <silent><expr>s "i".nr2char(getchar())."\<Esc>"
