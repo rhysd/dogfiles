@@ -23,6 +23,8 @@ let g:openbrowser_open_rules['google-chrome'] = "{browser} {shellescape(uri)}"
 
 let g:tweetvim_display_icon = 1
 let g:tweetvim_tweet_per_page = 60
+let g:tweetvim_async_post = 1
+let g:tweetvim_expand_t_co = 1
 
 command -nargs=1 TweetVimFavorites call call('tweetvim#timeline',['favorites',<q-args>])
 
@@ -68,8 +70,6 @@ augroup TweetVimSetting
     " 不要なマップを除去
     autocmd FileType tweetvim     nunmap   <buffer>ff
     autocmd FileType tweetvim     nunmap   <buffer>bb
-    " 半自動リロード
-    autocmd BufEnter * call <SID>tweetvim_reload()
 augroup END
 
 " セパレータを飛ばして移動する
@@ -85,13 +85,6 @@ function! s:tweetvim_vertical_move(cmd)
         call feedkeys("\<Plug>(tweetvim_action_page_next)")
     elseif line == 1
         call feedkeys("\<Plug>(tweetvim_action_page_previous)")
-    endif
-endfunction
-
-" ツイートをリロード
-function! s:tweetvim_reload()
-    if &filetype ==# "tweetvim"
-        call feedkeys("\<Plug>(tweetvim_action_reload)")
     endif
 endfunction
 
