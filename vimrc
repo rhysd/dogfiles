@@ -1,9 +1,8 @@
 " TODO: conflict marker のハイライト
-" TODO: NeoBundle ''にカーソルを合わせるとそのディレクトリを vimfiler で開くコマンド
-" TODO: その時の天気でステータスバーの色を変える
 "<<<<<<< from
 "=======
 ">>>>>>> to
+" TODO: vimfiler と unite-file の連携
 
 " 必須な基本設定 {{{
 
@@ -179,9 +178,6 @@ augroup MiscForTiny
     autocmd FileType gitcommit setl nofoldenable
 
 augroup END
-
-" カーソル下のハイライトグループを取得
-" command! -nargs=0 GetHighlightingGroup echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '> trans<' . synIDattr(synID(line('.'),col('.'),0),'name') . '> lo<' . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
 
 " tmux 用の設定
 "256 bitカラーモード(for tmux)
@@ -371,6 +367,7 @@ if has('vim_starting')
 endif
 
 " GitHub上のリポジトリ
+NeoBundle 'Shougo/neobundle.vim'
 NeoBundle 'Shougo/vimproc', {
             \ 'build' : {
             \       'windows' : 'echo "Please build vimproc manually."',
@@ -425,10 +422,9 @@ NeoBundle 'rhysd/clever-f.vim'
     " NeoBundle 'ujihisa/neco-look'
 
 " For testing
-NeoBundle 'mattn/webapi-vim'
 NeoBundle 'tyru/open-browser.vim'
 NeoBundle 'basyura/twibill.vim'
-set rtp+=~/Github/unite-twitter
+set rtp+=~/Github/unite-twitter.vim
 
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
@@ -533,6 +529,13 @@ colorscheme wombat256mod
 " }}}
 
 " その他の雑多な設定 {{{
+
+" カーソル下のハイライトグループを取得
+command! -nargs=0 GetHighlightingGroup 
+            \ echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '>
+            \ trans<' . synIDattr(synID(line('.'),col('.'),0),'name') . '>
+            \ lo<' . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
+
 
 " スクリプトに実行可能属性を自動で付ける
 if executable('chmod')
@@ -1358,6 +1361,8 @@ augroup VimFilerMapping
     autocmd FileType vimfiler nmap <buffer><silent>u [unite]
     " unite.vim の file_mru との連携
     autocmd FileType vimfiler nnoremap <buffer><silent><C-h> :<C-u>Unite file_mru directory_mru<CR>
+    " unite.vim の file との連携
+    autocmd FileType vimfiler nnoremap <buffer><silent>/ :<C-u>Unite file -default-action=vimfiler<CR>
 augroup END
 
 nnoremap <Leader>f                <Nop>
@@ -1568,8 +1573,14 @@ call smartinput#define_rule({
 call smartinput#define_rule({
             \   'at'    : '\s\+\%#',
             \   'char'  : '<CR>',
-            \   'input' : "<C-o>: call setline('.', substitute(getline('.'), '\\s\\+$', '', '')) <Bar> echo 'delete trailing spaces'<CR><CR><C-r>=endwize#crend()<CR>",
+            \   'input' : "<C-o>:call setline('.', substitute(getline('.'), '\\s\\+$', '', ''))<CR><CR><C-r>=endwize#crend()<CR>",
             \   'filetype' : ['vim', 'ruby', 'sh', 'zsh'],
+            \   })
+call smartinput#define_rule({
+            \   'at'    : '^#if\%(\|def\|ndef\)\s\+.*\%#',
+            \   'char'  : '<CR>',
+            \   'input' : "<C-o>:call setline('.', substitute(getline('.'), '\\s\\+$', '', ''))<CR><CR><C-r>=endwize#crend()<CR>",
+            \   'filetype' : ['c', 'cpp'],
             \   })
 "}}}
 
@@ -1694,6 +1705,11 @@ let g:unite_source_alignta_preset_options = [
       \ ["Margin 1:1",        '1'  ],
       \]
 " }}}
+
+" endwize.vim "{{{
+" 自動挿入された end の末尾に情報を付け加える e.g. end # if hoge
+let g:endwize_add_info_filetypes = ['ruby', 'c', 'cpp']
+"}}}
 
 " プラットフォーム依存な設定をロードする "{{{
 if has('mac') && filereadable($HOME."/.mac.vimrc")
