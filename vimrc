@@ -421,7 +421,6 @@ NeoBundle 'rhysd/clever-f.vim'
     " NeoBundle 'ujihisa/neco-look'
 
 " For testing
-NeoBundle 'tyru/open-browser.vim'
 NeoBundle 'basyura/twibill.vim'
 set rtp+=~/Github/unite-twitter.vim
 
@@ -1092,18 +1091,17 @@ let g:unite_source_grep_default_opts = "-Hn --color=never"
 let s:git_repo = { 'description' : 'all file in git repository' }
 function! s:git_repo.func(candidate)
     if(system('git rev-parse --is-inside-work-tree') ==# "true\n" )
-        for f in split(system('git ls-files `git rev-parse --show-cdup`'), '\n')
-            if !empty(f) && !isdirectory(f) && filereadable(f)
-                execute 'edit' f
-            endif
-        endfor
+        execute 'args'
+                \ join( filter(split(system('git ls-files `git rev-parse --show-cdup`'), '\n')
+                        \ , 'empty(v:val) || isdirectory(v:val) || filereadable(v:val)') )
+    else
+        echoerr 'Not a git repository!'
     endif
 endfunction
-" }}}
 
 call unite#custom_action('file', 'git_repo_files', s:git_repo)
-
 unlet s:git_repo
+" }}}
 
 "unite.vimのキーマップ {{{
 augroup UniteMapping
@@ -1172,6 +1170,8 @@ vnoremap <silent>[unite]ao        :<C-u>Unite alignta:options<CR>
 " }}}
 
 " }}}
+
+nnoremap <silent>[unite]tl :<C-u>Utwit -vertical -winwidth=70 -no-cursor-line -no-start-insert<CR>
 
 " unite-rails "{{{
 function! s:rails_mvc_name()
