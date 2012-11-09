@@ -389,7 +389,6 @@ NeoBundle 'osyo-manga/unite-fold'
 NeoBundle 'osyo-manga/unite-quickfix'
 NeoBundle 'rhysd/quickrun-unite-quickfix-outputter'
 NeoBundle 'basyura/unite-rails'
-NeoBundle 'kmnk/vim-unite-giti'
 " NeoBundle 'rhysd/open-pdf.vim'
 if has('vim_starting') | set rtp+=~/Github/open-pdf.vim | endif
 NeoBundle 'vim-jp/vimdoc-ja'
@@ -497,9 +496,9 @@ nnoremap <silent><Leader>nbl :<C-u>Unite output<CR>NeoBundleList<CR>
 
 " helpers {{{
 
-" git のルートディレクトリを開く
+" git のルートディレクトリを返す
 function! s:git_root_dir()
-    if(system('git rev-parse --is-inside-work-tree') == "true\n")
+    if(system('git rev-parse --is-inside-work-tree') ==# "true\n")
         return system('git rev-parse --show-cdup')
     else
         echoerr 'current directory is outside git working tree'
@@ -1089,6 +1088,23 @@ let g:loaded_unite_source_window = 1
 " unite-grep で使うコマンド
 let g:unite_source_grep_default_opts = "-Hn --color=never"
 
+" Git リポジトリのすべてのファイルを開くアクション {{{
+let s:git_repo = { 'description' : 'all file in git repository' }
+function! s:git_repo.func(candidate)
+    if(system('git rev-parse --is-inside-work-tree') ==# "true\n" )
+        for f in split(system('git ls-files `git rev-parse --show-cdup`'), '\n')
+            if !empty(f) && !isdirectory(f) && filereadable(f)
+                execute 'edit' f
+            endif
+        endfor
+    endif
+endfunction
+" }}}
+
+call unite#custom_action('file', 'git_repo_files', s:git_repo)
+
+unlet s:git_repo
+
 "unite.vimのキーマップ {{{
 augroup UniteMapping
     autocmd!
@@ -1138,11 +1154,11 @@ nnoremap <silent>[unite]L         :<C-u>Unite line<CR>
 nnoremap <silent>[unite]nb        :<C-u>Unite neobundle/update -auto-quit -keep-focus<CR>
 " Haskell Import
 augroup  HaskellImport
-                                  autocmd!
-                                  autocmd FileType haskell
-                                  \ nnoremap <buffer><expr>[unite]hi
-\        empty(expand("<cword>")) ? "    :\<C-u>Unite haskellimport\<CR>"
-\                                 :":\<C-u>UniteWithCursorWord haskellimport -immediately<CR>"
+    autocmd!
+    autocmd FileType haskell
+    \ nnoremap <buffer><expr>[unite]hi
+    \        empty(expand("<cword>")) ? "    :\<C-u>Unite haskellimport\<CR>"
+    \                                 :":\<C-u>UniteWithCursorWord haskellimport -immediately<CR>"
 augroup  END
 " Git のルートディレクトリを開く
 nnoremap <silent><expr>[unite]fg  ":\<C-u>Unite file -input=".fnamemodify(<SID>git_root_dir(),":p")
@@ -1363,8 +1379,9 @@ augroup VimFilerMapping
     autocmd FileType vimfiler nnoremap <buffer><silent><C-h> :<C-u>Unite file_mru directory_mru<CR>
     " unite.vim の file との連携
     autocmd FileType vimfiler nnoremap <buffer><silent>/ :<C-u>Unite file -default-action=vimfiler<CR>
+    " git リポジトリに登録されたすべてのファイルを開く
+    autocmd FileType vimfiler nnoremap <buffer><expr>ga vimfiler#do_action('git_repo_files')
 augroup END
-
 nnoremap <Leader>f                <Nop>
 nnoremap <Leader>ff               :<C-u>VimFiler<CR>
 nnoremap <Leader>fs               :<C-u>VimFilerSplit<CR>
