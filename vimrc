@@ -423,6 +423,7 @@ NeoBundle 'rhysd/clever-f.vim'
 " For testing
 NeoBundle 'basyura/twibill.vim'
 set rtp+=~/Github/unite-twitter.vim
+set rtp+=~/Github/vim-textobj-ruby
 
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
@@ -809,7 +810,7 @@ function! ScrollOtherWindow(mapping)
     wincmd p
 endfunction
 
-" Gist への投稿
+" Gist への投稿 {{{
 function! Gist(file, private, open, description, ...)
     if ! ( executable('gist') || executable('jist') )
         echoerr "This command requires gist gem. Please do `gem install gist.` or `gem install jist`"
@@ -846,6 +847,34 @@ function! Gist(file, private, open, description, ...)
 endfunction
 command! -nargs=* -bang Gist call Gist(expand('%:p'), 0, <q-bang>, <q-args>)
 command! -nargs=* -bang GistPrivate call Gist(expand('%:p'), 1, <q-bang>, <q-args>)
+"}}}
+
+" git add 用マッピング {{{
+function! s:git_add(fname)
+    execute 'lcd' fnamemodify(a:fname, ':p:h')
+    call system('git add '.fnamemodify(a:fname, ':p'))
+    if v:shell_error
+        echoerr 'failed to add.'
+    else
+        echo a:fname . ' is added.'
+    endif
+endfunction
+nnoremap <silent><Leader>ga :<C-u>call <SID>git_add(expand('%'))<CR>
+"}}}
+
+" git blame 用 {{{
+function! s:git_blame(fname, ...)
+    execute 'lcd' fnamemodify(a:fname, ':p:h')
+    let range = (a:0==0 ? line('.') : a:1.','.a:2)
+    let errfmt = &errorformat
+    set errorformat=.*
+    cgetexpr system('git blame -L '.range.' '.fnamemodify(a:fname, ':p'))
+    let &errorformat = errfmt
+    Unite quickfix -no-start-insert
+endfunction
+nnoremap <silent><Leader>gb :<C-u>call <SID>git_blame(expand('%'))<CR>
+"}}}
+
 "}}}
 
 " Ruby {{{
