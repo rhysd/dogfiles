@@ -32,6 +32,19 @@ function Emacs(){
     open -a /Applications/Emacs.app $1
 }
 
+function up(){
+    local outdated
+    brew update
+    outdated=`brew outdated`
+    if [[ outdated != '' ]]; then
+        echo
+        echo 'Outdated fomulae:'
+        echo $outdated
+        echo
+    fi
+    gem update
+}
+
 # Twitter Timeline Prompt
 # ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb init
 # function precmd(){
