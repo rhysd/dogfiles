@@ -409,7 +409,7 @@ NeoBundle 'rhysd/accelerated-jk'
 NeoBundle 'kana/vim-smartinput'
 NeoBundle 'kana/vim-niceblock'
 NeoBundle 'thinca/vim-ref'
-NeoBundle 'rhysd/auto-neobundle'
+" NeoBundle 'rhysd/auto-neobundle'
 NeoBundle 'rhysd/wombat256.vim'
 NeoBundle 'thinca/vim-scouter'
 NeoBundle 'thinca/vim-visualstar'
@@ -813,15 +813,15 @@ endfunction
 
 " git add 用マッピング {{{
 function! s:git_add(fname)
-    execute 'lcd' fnamemodify(a:fname, ':p:h')
-    call system('git add '.fnamemodify(a:fname, ':p'))
+    execute 'lcd' fnamemodify(a:fname, ':h')
+    let result = system('git add '.a:fname)
     if v:shell_error
-        echoerr 'failed to add.'
+        echoerr 'failed to add: '.result
     else
-        echo a:fname . ' is added.'
+        echo fnamemodify(a:fname, ':t') . ' is added:'
     endif
 endfunction
-command! -nargs=0 GitAddThisFile call <SID>git_add(expand('%'))
+command! -nargs=0 GitAddThisFile call <SID>git_add(expand('%:p'))
 nnoremap <silent><Leader>ga :<C-u>GitAddThisFile<CR>
 "}}}
 
