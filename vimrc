@@ -872,7 +872,10 @@ function! s:git_blame(fname, ...)
     let &errorformat = errfmt
     Unite quickfix -no-start-insert
 endfunction
-nnoremap <silent><Leader>gb :<C-u>call <SID>git_blame(expand('%'))<CR>
+command! -nargs=0 GitBlameThisLine call <SID>git_blame(expand('%'))
+command! -range GitBlameRange call <SID>git_blame(expand('%'), <line1>, <line2>)
+nnoremap <silent><Leader>gb :<C-u>GitBlameThisLine<CR>
+vnoremap <silent><Leader>gb :GitBlameRange<CR>
 "}}}
 
 "}}}
