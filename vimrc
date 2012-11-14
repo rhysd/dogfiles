@@ -425,11 +425,17 @@ NeoBundle 'rhysd/unite-twitter.vim'
     " NeoBundle 'ujihisa/neco-look'
 
 " For testing
+<<<<<<< HEAD
 " set rtp+=~/Github/unite-twitter.vim
 " set rtp+=~/Github/vim-textobj-ruby
 set rtp+=~/Github/accelerated-jk
 set rtp+=~/Github/unite-ruby-require.vim
 " set rtp+=~/Github/neco-ruby-keyword-args
+=======
+NeoBundle 'basyura/twibill.vim'
+NeoBundle 'rhysd/unite-twitter.vim'
+set rtp+=~/Github/vim-textobj-ruby
+>>>>>>> commit for merge
 
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
