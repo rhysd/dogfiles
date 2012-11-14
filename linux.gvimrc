@@ -66,6 +66,7 @@ augroup TweetVimSetting
     autocmd FileType tweetvim     nnoremap <silent><buffer>gm       :<C-u>TweetVimMentions<CR>
     autocmd FileType tweetvim     nnoremap <silent><buffer>gh       :<C-u>TweetVimHomeTimeline<CR>
     autocmd FileType tweetvim     nnoremap <silent><buffer>gu       :<C-u>TweetVimUserTimeline<Space>
+    autocmd FileType tweetvim     nnoremap <silent><buffer>gp       :<C-u>TweetVimUserTimeline Linda_pp<CR>
     autocmd FileType tweetvim     nnoremap <silent><buffer>gf       :<C-u>call call('tweetvim#timeline', ['favorites', 'Linda_pp'])<CR>
     " 不要なマップを除去
     autocmd FileType tweetvim     nunmap   <buffer>ff
