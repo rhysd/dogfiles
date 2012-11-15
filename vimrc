@@ -206,6 +206,9 @@ nnoremap <C-j> }
 nnoremap <C-k> {
 " <C-a> でインサートモードに入らずに1文字追加
 nnoremap <silent><expr><C-a> "i".nr2char(getchar())."\<Esc>"
+" <C-a> は <C-x> に退避
+nnoremap <C-S-X> <C-x>
+nnoremap <C-x> <C-a>
 "Esc->Escで検索結果とエラーハイライトをクリア
 nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>
 "{数値}<Tab>でその行へ移動．それ以外だと通常の<Tab>の動きに
