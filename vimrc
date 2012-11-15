@@ -2,7 +2,6 @@
 "<<<<<<< from
 "=======
 ">>>>>>> to
-" TODO: vimfiler と unite-file の連携
 
 " 必須な基本設定 {{{
 
@@ -147,12 +146,12 @@ augroup FileTypeDetect
     autocmd BufRead,BufNew *tmux.conf setlocal ft=tmux
     " git config file
     autocmd BufRead,BufNew gitconfig setlocal ft=gitconfig
+    " Gnuplot のファイルタイプを設定
+    autocmd BufRead *.plt,*.plot,*.gnuplot setlocal ft=gnuplot
 augroup END
 
 augroup MiscForTiny
     autocmd!
-    " Gnuplot のファイルタイプを設定
-    autocmd BufRead *.plt,*.plot,*.gnuplot setlocal ft=gnuplot
     " カーソル位置の復元
     autocmd BufReadPost *
         \ if line("'\"") > 1 && line("'\"") <= line("$") |
@@ -175,8 +174,7 @@ augroup MiscForTiny
     \ |   filetype detect
     \ | endif
     " git commit message のときは折りたたまない(diff で中途半端な折りたたみになりがち)
-    autocmd FileType gitcommit setl nofoldenable
-
+    autocmd FileType gitcommit setlocal nofoldenable
 augroup END
 
 " tmux 用の設定
@@ -203,9 +201,9 @@ nnoremap Y y$
 " 縦方向は論理移動する
 nnoremap j gj
 nnoremap k gk
-" 画面もスクロール
-nnoremap <C-j> <C-e>j
-nnoremap <C-k> <C-y>k
+" 空行単位移動
+nnoremap <C-j> }
+nnoremap <C-k> {
 "Esc->Escで検索結果とエラーハイライトをクリア
 nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>
 "{数値}<Tab>でその行へ移動．それ以外だと通常の<Tab>の動きに
@@ -417,6 +415,7 @@ NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'Lokaltog/vim-easymotion'
 NeoBundle 'rhysd/clever-f.vim'
 NeoBundle 'rhysd/gem-gist.vim'
+NeoBundle 'rhysd/neco-ruby-keyword-args'
     " NeoBundle 'rhysd/ref-rurema'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'ujihisa/neco-look'
@@ -1237,6 +1236,7 @@ call vimshell#set_execute_file('pdf,mp3,jpg,png', 'open')
 
 "VimShell のキーマッピング {{{
 nmap <Leader>vs <Plug>(vimshell_split_switch)
+nnoremap <Leader>vc :<C-u>VimShellSendString<Space>
 
 augroup VimShellMapping
     autocmd!
