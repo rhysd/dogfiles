@@ -421,6 +421,7 @@ NeoBundle 'Lokaltog/vim-easymotion'
 NeoBundle 'rhysd/clever-f.vim'
 NeoBundle 'rhysd/gem-gist.vim'
 NeoBundle 'rhysd/neco-ruby-keyword-args'
+" NeoBundle 'rhysd/neco-ruby-keyword-args'
     " NeoBundle 'rhysd/ref-rurema'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'ujihisa/neco-look'
@@ -429,6 +430,7 @@ NeoBundle 'rhysd/neco-ruby-keyword-args'
 NeoBundle 'basyura/twibill.vim'
 set rtp+=~/Github/unite-twitter.vim
 set rtp+=~/Github/vim-textobj-ruby
+" set rtp+=~/Github/neco-ruby-keyword-args
 
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'

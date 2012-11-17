@@ -25,9 +25,11 @@
 	plr = pull --rebase
 	rb  = rebase
 	rbi = rebase -i
+	rbc = rebase --continue
 	re  = remote
 	ad  = add
 	co  = checkout
 	sh  = show
 	lsf = ls-files
 	lst = ls-tree
+    he  = git help
