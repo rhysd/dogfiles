@@ -1,6 +1,6 @@
 export LANG=ja_JP.UTF-8
 export EDITOR=vim
-# export LESS='--LONG-PROMPT --ignore-case'
+export LESS='--LONG-PROMPT --ignore-case'
 
 export PATH=/usr/local/bin:$PATH
 export PATH=$HOME/.cabal/bin:$PATH
@@ -267,7 +267,6 @@ bindkey "^I" _advanced_tab
 # }
 # zle -N _tmux
 # bindkey "^T" _tmux
-# }}}
 
 # git status を見る
 function _git_status(){
@@ -299,6 +298,7 @@ _quote-previous-word-in-double() {
 }
 zle -N _quote-previous-word-in-double
 bindkey '^Xq' _quote-previous-word-in-double
+# }}}
 
 ##############
 #   その他   #
