@@ -11,8 +11,8 @@
 	bl  = blame
 	br  = branch
 	cm  = commit
-	cmv  = commit -v
-	cmm  = commit -m
+	cmv = commit -v
+	cmm = commit -m
 	cma = commit --amend
 	cl  = clone
 	di  = diff
@@ -32,4 +32,4 @@
 	sh  = show
 	lsf = ls-files
 	lst = ls-tree
-    he  = git help
+	he  = git help
