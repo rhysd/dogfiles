@@ -18,7 +18,7 @@
 	di  = diff
 	dic = diff --cached
 	fe  = fetch
-	lo  = log
+	lo  = log --graph
 	mg  = merge
 	ps  = push
 	pl  = pull
