@@ -1,6 +1,6 @@
 export LANG=ja_JP.UTF-8
 export EDITOR=vim
-export LESS='--LONG-PROMPT --ignore-case'
+# export LESS='--LONG-PROMPT --ignore-case'
 
 export PATH=/usr/local/bin:$PATH
 export PATH=$HOME/.cabal/bin:$PATH
@@ -33,6 +33,7 @@ alias vimfiler='vim +VimFiler'
 alias vimshell='vim +VimShell'
 alias gvim='vim -g'
 alias sudo='sudo '
+alias vspec='~/.vim/bundle/vim-vspec/bin/vspec ~/.vim/bundle/vim-vspec'
 
 alias l=ls
 alias pd=popd
