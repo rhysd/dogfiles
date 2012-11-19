@@ -96,7 +96,7 @@
 
 ;;行番号を表示
 ;;(require 'linum)
-(global-linum-mode)
+; (global-linum-mode)
 
 ;;C-hをバックスペースに割り当てる
 (global-set-key "\C-h" 'delete-backward-char)
