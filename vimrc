@@ -204,11 +204,8 @@ nnoremap k gk
 " 空行単位移動
 nnoremap <C-j> }
 nnoremap <C-k> {
-" <C-a> でインサートモードに入らずに1文字追加
-nnoremap <silent><expr><C-a> "i".nr2char(getchar())."\<Esc>"
-" <C-a> は <C-x> に退避
-nnoremap <C-S-X> <C-x>
-nnoremap <C-x> <C-a>
+" インサートモードに入らずに1文字追加
+nnoremap <silent><expr>m "i".nr2char(getchar())."\<Esc>"
 "Esc->Escで検索結果とエラーハイライトをクリア
 nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>
 "{数値}<Tab>でその行へ移動．それ以外だと通常の<Tab>の動きに
@@ -418,7 +415,6 @@ NeoBundle 'rhysd/wombat256.vim'
 NeoBundle 'thinca/vim-scouter'
 NeoBundle 'thinca/vim-visualstar'
 NeoBundle 'h1mesuke/vim-alignta'
-NeoBundle 'Lokaltog/vim-easymotion'
 NeoBundle 'rhysd/clever-f.vim'
 NeoBundle 'rhysd/gem-gist.vim'
 NeoBundle 'rhysd/neco-ruby-keyword-args'
@@ -1673,22 +1669,6 @@ let g:haskell_hsp = 0
 
 " 自作スニペット {{{
 let g:neosnippet#snippets_directory=$HOME.'/.vim/bundle/home-made-snippets/snippets'
-"}}}
-
-" EasyMotion {{{
-let g:EasyMotion_leader_key = 'm'
-nnoremap <silent>ml :<C-u>call <SID>easymotion_line_absolute(1)<CR>
-nnoremap <silent>mL :<C-u>call <SID>easymotion_line_absolute(0)<CR>
-
-" EasyMotion をカーソル行からでなく画面一番上/下から始める
-function! s:easymotion_line_absolute(down)
-    let scrolloff = &scrolloff
-    let &scrolloff=0
-    execute 'normal! '.(a:down ? 'H' : 'L')
-    " execute 'normal '.(a:down ? 'mj' : 'mk')
-    call feedkeys(a:down ? 'mj' : 'mk')
-    let &scrolloff = scrolloff
-endfunction
 "}}}
 
 " vim-alignta {{{
