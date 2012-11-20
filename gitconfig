@@ -18,7 +18,7 @@
 	di  = diff
 	dic = diff --cached
 	fe  = fetch
-	lo  = log --graph
+	lo  = log --graph --pretty=format:'%C(Yellow)%h %C(Cyan)%ad %C(White)| %s%C(Green)%d %C(Red)[%an]' --date=short
 	mg  = merge
 	ps  = push
 	pl  = pull
