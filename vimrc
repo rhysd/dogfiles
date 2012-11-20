@@ -404,11 +404,12 @@ NeoBundle 'kana/vim-textobj-line'
 NeoBundle 'h1mesuke/textobj-wiw'
 NeoBundle 'inkarkat/argtextobj.vim'
 NeoBundle 'thinca/vim-textobj-between'
-NeoBundle 'rhysd/vim-textobj-continuous-line'
+" NeoBundle 'rhysd/vim-textobj-ruby'
 NeoBundle 'kana/vim-operator-user'
 NeoBundle 'kana/vim-operator-replace'
 NeoBundle 'thinca/vim-prettyprint'
-NeoBundle 'rhysd/accelerated-jk'
+NeoBundle 'kana/vim-vspec'
+" NeoBundle 'rhysd/accelerated-jk'
 NeoBundle 'kana/vim-smartinput'
 NeoBundle 'kana/vim-niceblock'
 NeoBundle 'thinca/vim-ref'
@@ -421,15 +422,17 @@ NeoBundle 'Lokaltog/vim-easymotion'
 NeoBundle 'rhysd/clever-f.vim'
 NeoBundle 'rhysd/gem-gist.vim'
 NeoBundle 'rhysd/neco-ruby-keyword-args'
+NeoBundle 'basyura/twibill.vim'
+NeoBundle 'rhysd/unite-twitter.vim'
 " NeoBundle 'rhysd/neco-ruby-keyword-args'
     " NeoBundle 'rhysd/ref-rurema'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'ujihisa/neco-look'
 
 " For testing
-NeoBundle 'basyura/twibill.vim'
-set rtp+=~/Github/unite-twitter.vim
-set rtp+=~/Github/vim-textobj-ruby
+" set rtp+=~/Github/unite-twitter.vim
+" set rtp+=~/Github/vim-textobj-ruby
+set rtp+=~/Github/accelerated-jk
 " set rtp+=~/Github/neco-ruby-keyword-args
 
 " vim-scripts上のリポジトリ
@@ -1325,6 +1328,7 @@ augroup END
 " }}}
 
 " accelerated-jk "{{{
+let g:accelerated_jk_anable_deceleration = 1
 nmap j <Plug>(accelerated_jk_gj)
 nmap k <Plug>(accelerated_jk_gk)
 "}}}
@@ -1729,6 +1733,12 @@ let g:unite_source_alignta_preset_options = [
 " 自動挿入された end の末尾に情報を付け加える e.g. end # if hoge
 let g:endwize_add_info_filetypes = ['ruby', 'c', 'cpp']
 "}}}
+
+" vim-vspec 用コマンド {{{
+command! -nargs=0 Vspec
+            \ execute 'QuickRun' 'sh' '-src'
+            \ '''$HOME/.vim/bundle/vim-vspec/bin/vspec $HOME/.vim/bundle/vim-vspec '.expand('%:p').''''
+" }}}
 
 " プラットフォーム依存な設定をロードする "{{{
 if has('mac') && filereadable($HOME."/.mac.vimrc")
