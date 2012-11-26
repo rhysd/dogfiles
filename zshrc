@@ -3,7 +3,16 @@ export EDITOR=vim
 # export LESS='--LONG-PROMPT --ignore-case'
 
 export PATH=/usr/local/bin:$PATH
-export PATH=$HOME/.cabal/bin:$PATH
+
+# Haskell executables
+if [ -d $HOME/.cabal ]; then
+    export PATH=$HOME/.cabal/bin:$PATH
+fi
+
+export DOTZSH=$HOME/.zsh
+if [ ! -d $DOTZSH ];then
+    mkdir -p $DOTZSH
+fi
 
 ###############
 #   Aliases   #
@@ -209,7 +218,7 @@ RPROMPT='[%{$fg_bold[red]%}${HOST}%{$reset_color%}][%{$fg_bold[red]%}%D{%m/%d %H
 #   histroy setting   #
 #######################
 # {{{
-HISTFILE=$HOME/.zsh/zsh_history
+HISTFILE=$DOTZSH/zsh_history
 HISTSIZE=1000000
 SAVEHIST=1000000
 # }}}
@@ -299,6 +308,22 @@ _quote-previous-word-in-double() {
 }
 zle -N _quote-previous-word-in-double
 bindkey '^Xq' _quote-previous-word-in-double
+# }}}
+
+####################
+#  外部プラグイン  #
+####################
+# {{{
+export ZSHPLUGIN=$DOTZSH/plugins
+if [ ! -d $ZSHPLUGIN ]; then
+    mkdir -p $ZSHPLUGIN
+fi
+
+# zaw: incremental search interface
+# https://github.com/zsh-users/zaw
+# if [ -d $ZSHPLUGIN/zaw ]; then
+#     source $ZSHPLUGIN/zaw/zaw.zsh
+# fi
 # }}}
 
 ##############

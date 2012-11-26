@@ -33,3 +33,4 @@ alias d=dirs
 alias g=git
 alias cl=clang++
 alias i=iexe
+alias vspec='$HOME/.vim/bundle/vim-vspec/bin/vspec $HOME/.vim/bundle/vim-vspec'
