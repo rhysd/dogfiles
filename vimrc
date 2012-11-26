@@ -1,7 +1,10 @@
-" TODO: conflict marker のハイライト
+" TODO conflict marker のハイライト
 "<<<<<<< from
 "=======
 ">>>>>>> to
+"
+" TODO TweetVim を NeoBundleLazy で入れる．<Leader>tw などで起動と同時にタイム
+" ライン表示
 
 " 必須な基本設定 {{{
 
@@ -148,6 +151,8 @@ augroup FileTypeDetect
     autocmd BufRead,BufNew gitconfig setlocal ft=gitconfig
     " Gnuplot のファイルタイプを設定
     autocmd BufRead *.plt,*.plot,*.gnuplot setlocal ft=gnuplot
+    " Vim script テストプラグイン
+    autocmd BufRead *.vspec setlocal ft=vim
 augroup END
 
 augroup MiscForTiny
@@ -284,9 +289,6 @@ nnoremap <silent>gc :<C-u>tabclose<CR>
 nnoremap <Leader><Leader> :<C-u>set number! number?<CR>
 " クリップボードから貼り付け
 inoremap <C-r>* <C-o>:set paste<CR><C-r>*<C-o>:set nopaste<CR>
-" カーソル下の単語を help で調べる
-nnoremap K :<C-u>help <C-r><C-w><CR>
-" TODO v で選択した範囲を help
 " 貼り付けはインデントを揃える
     " nnoremap p ]p
 " コンマ後には空白を入れる
@@ -388,7 +390,6 @@ NeoBundle 'h1mesuke/unite-outline'
 NeoBundle 'osyo-manga/unite-fold'
 NeoBundle 'osyo-manga/unite-quickfix'
 NeoBundle 'rhysd/quickrun-unite-quickfix-outputter'
-NeoBundle 'basyura/unite-rails'
 " NeoBundle 'rhysd/open-pdf.vim'
 if has('vim_starting') | set rtp+=~/Github/open-pdf.vim | endif
 NeoBundle 'vim-jp/vimdoc-ja'
@@ -401,7 +402,6 @@ NeoBundle 'kana/vim-textobj-line'
 NeoBundle 'h1mesuke/textobj-wiw'
 NeoBundle 'inkarkat/argtextobj.vim'
 NeoBundle 'thinca/vim-textobj-between'
-" NeoBundle 'rhysd/vim-textobj-ruby'
 NeoBundle 'kana/vim-operator-user'
 NeoBundle 'kana/vim-operator-replace'
 NeoBundle 'thinca/vim-prettyprint'
@@ -417,7 +417,6 @@ NeoBundle 'thinca/vim-visualstar'
 NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'rhysd/clever-f.vim'
 NeoBundle 'rhysd/gem-gist.vim'
-NeoBundle 'rhysd/neco-ruby-keyword-args'
 NeoBundle 'basyura/twibill.vim'
 NeoBundle 'rhysd/unite-twitter.vim'
 " NeoBundle 'rhysd/neco-ruby-keyword-args'
@@ -429,6 +428,7 @@ NeoBundle 'rhysd/unite-twitter.vim'
 " set rtp+=~/Github/unite-twitter.vim
 " set rtp+=~/Github/vim-textobj-ruby
 set rtp+=~/Github/accelerated-jk
+set rtp+=~/Github/unite-ruby-require.vim
 " set rtp+=~/Github/neco-ruby-keyword-args
 
 " vim-scripts上のリポジトリ
@@ -454,9 +454,13 @@ NeoBundleLazy 'ujihisa/unite-haskellimport'
 NeoBundleLazy 'rhysd/vim2hs'
 NeoBundleLazy 'rhysd/vim-filetype-haskell'
 NeoBundleLazy 'ujihisa/ref-hoogle'
+NeoBundleLazy 'eagletmt/unite-haddock'
 NeoBundleLazy 'ujihisa/neco-ghc'
 NeoBundleLazy 'eagletmt/ghcmod-vim'
 NeoBundleLazy 'sudo.vim'
+NeoBundleLazy 'basyura/unite-rails'
+NeoBundleLazy 'rhysd/vim-textobj-ruby'
+NeoBundleLazy 'rhysd/neco-ruby-keyword-args'
 
 " 遅延読み込み
 augroup NeoBundleLazyLoad
@@ -470,8 +474,13 @@ augroup NeoBundleLazyLoad
                 \ vim2hs
                 \ vim-filetype-haskell
                 \ ref-hoogle
+                \ unite-haddock
                 \ neco-ghc
                 \ ghcmod-vim
+    autocmd FileType ruby NeoBundleSource
+                \ neco-ruby-keyword-args
+                \ vim-textobj-ruby
+                \ unite-rails
 augroup END
 
 filetype plugin indent on     " required!
@@ -576,6 +585,9 @@ augroup HelpMapping
     autocmd FileType help nnoremap <buffer>u <C-u>
     autocmd FileType help nnoremap <buffer>d <C-d>
     autocmd FileType help nnoremap <buffer>q :<C-u>q<CR>
+    " カーソル下の単語を help で調べる
+    autocmd FileType help nnoremap <buffer>K :<C-u>help <C-r><C-w><CR>
+    " TODO v で選択した範囲を help
 augroup END
 
 " quickfix のマッピング
@@ -947,13 +959,20 @@ augroup END
 " Haskell {{{
 augroup HaskellMapping
     autocmd!
-    autocmd FileType haskell inoremap ;; ::
+    autocmd FileType haskell inoremap <buffer>;; ::
+    autocmd FileType haskell nnoremap <buffer>[unite]hd :<C-u>Unite haddock<CR>
+    autocmd FileType haskell nnoremap <buffer>[unite]ho :<C-u>Unite hoogle<CR>
 augroup END
     " autocmd FileType haskell nnoremap <buffer><silent><Leader>ht :<C-u>call <SID>ShowTypeHaskell(expand('<cword>'))<CR>
     " function! s:ShowTypeHaskell(word)
     "     echo join(split(system("ghc -isrc " . expand('%') . " -e ':t " . a:word . "'")))
     " endfunction
-command! Ghci :<C-u>VimshellInteractive ghci<CR>
+function! s:start_ghci()
+    VimShell -split-command=vsplit
+    VimShellSendString ghci
+    startinsert
+endfunction
+command! Ghci call <SID>start_ghci()
 "}}}
 
 " Vim script "{{{
@@ -1324,7 +1343,7 @@ augroup END
 " }}}
 
 " accelerated-jk "{{{
-let g:accelerated_jk_anable_deceleration = 1
+let g:accelerated_jk_enable_deceleration = 1
 nmap j <Plug>(accelerated_jk_gj)
 nmap k <Plug>(accelerated_jk_gk)
 "}}}
@@ -1713,6 +1732,10 @@ let g:unite_source_alignta_preset_options = [
 " 自動挿入された end の末尾に情報を付け加える e.g. end # if hoge
 let g:endwize_add_info_filetypes = ['ruby', 'c', 'cpp']
 "}}}
+
+" unite-ruby-require.vim {{{
+let g:unite_source_ruby_require_ruby_command = '$HOME/.rbenv/shims/ruby'
+" }}}
 
 " vim-vspec 用コマンド {{{
 command! -nargs=0 Vspec
