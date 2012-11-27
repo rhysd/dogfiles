@@ -14,7 +14,6 @@ endif
 filetype off
 filetype plugin indent off
 NeoBundle 'choplin/unite-spotlight'
-NeoBundle 'rhysd/twit-buffer.vim'
 filetype plugin indent on     " required!
 
 "ctagsへのパス
@@ -51,5 +50,8 @@ nnoremap <silent><Leader>dc :<C-u>MacDictClose<CR>
 nnoremap <silent><Leader>df :<C-u>MacDictFocus<CR>
 "}}}
 
-" twit-buffer
-nnoremap <Leader>tw :<C-u>Tweet<CR>
+" unite-ruby-require.vim
+let g:unite_source_ruby_require_ruby_command = '$HOME/.rbenv/shims/ruby'
+
+" MacVim は sign を表示できないので，TweetVim でアイコン表示できない
+" let g:tweetvim_display_icon = 0

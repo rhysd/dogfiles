@@ -10,12 +10,6 @@ filetype plugin indent off
 NeoBundle 'ujihisa/unite-locate'
 NeoBundle 'Lokaltog/vim-powerline'
 " GUI
-NeoBundleLazy 'tyru/open-browser.vim'
-NeoBundleLazy 'basyura/twibill.vim'
-NeoBundleLazy 'mattn/webapi-vim'
-NeoBundleLazy 'rhysd/TweetVim'
-NeoBundleLazy 'yomi322/neco-tweetvim'
-NeoBundleLazy 'rhysd/tweetvim-advanced-filter'
 filetype plugin indent on     " required!
 
 " プラグインの設定
