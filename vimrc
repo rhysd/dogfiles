@@ -4,6 +4,7 @@
 ">>>>>>> to
 "
 " TODO TweetVim を NeoBundleLazy で入れる．<Leader>tw などで起動と同時にタイム
+" argtextobj の autoload 版を作成
 " ライン表示
 
 " 必須な基本設定 {{{
@@ -387,11 +388,9 @@ NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'tyru/caw.vim'
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'h1mesuke/unite-outline'
-NeoBundle 'osyo-manga/unite-fold'
 NeoBundle 'osyo-manga/unite-quickfix'
 NeoBundle 'rhysd/quickrun-unite-quickfix-outputter'
-" NeoBundle 'rhysd/open-pdf.vim'
-if has('vim_starting') | set rtp+=~/Github/open-pdf.vim | endif
+NeoBundle 'rhysd/open-pdf.vim'
 NeoBundle 'vim-jp/vimdoc-ja'
 NeoBundle 'jceb/vim-hier'
 NeoBundle 'rhysd/endwize.vim'
@@ -400,7 +399,6 @@ NeoBundle 'kana/vim-textobj-indent'
 NeoBundle 'kana/vim-textobj-lastpat'
 NeoBundle 'kana/vim-textobj-line'
 NeoBundle 'h1mesuke/textobj-wiw'
-NeoBundle 'inkarkat/argtextobj.vim'
 NeoBundle 'thinca/vim-textobj-between'
 NeoBundle 'kana/vim-operator-user'
 NeoBundle 'kana/vim-operator-replace'
@@ -409,7 +407,6 @@ NeoBundle 'kana/vim-vspec'
 " NeoBundle 'rhysd/accelerated-jk'
 NeoBundle 'kana/vim-smartinput'
 NeoBundle 'kana/vim-niceblock'
-NeoBundle 'thinca/vim-ref'
 " NeoBundle 'rhysd/auto-neobundle'
 NeoBundle 'rhysd/wombat256.vim'
 NeoBundle 'thinca/vim-scouter'
@@ -417,10 +414,6 @@ NeoBundle 'thinca/vim-visualstar'
 NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'rhysd/clever-f.vim'
 NeoBundle 'rhysd/gem-gist.vim'
-NeoBundle 'basyura/twibill.vim'
-NeoBundle 'rhysd/unite-twitter.vim'
-" NeoBundle 'rhysd/neco-ruby-keyword-args'
-    " NeoBundle 'rhysd/ref-rurema'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'ujihisa/neco-look'
 
@@ -453,7 +446,6 @@ NeoBundleLazy 'rhysd/unite-n3337'
 NeoBundleLazy 'ujihisa/unite-haskellimport'
 NeoBundleLazy 'rhysd/vim2hs'
 NeoBundleLazy 'rhysd/vim-filetype-haskell'
-NeoBundleLazy 'ujihisa/ref-hoogle'
 NeoBundleLazy 'eagletmt/unite-haddock'
 NeoBundleLazy 'ujihisa/neco-ghc'
 NeoBundleLazy 'eagletmt/ghcmod-vim'
@@ -480,7 +472,6 @@ augroup NeoBundleLazyLoad
                 \ unite-haskellimport
                 \ vim2hs
                 \ vim-filetype-haskell
-                \ ref-hoogle
                 \ unite-haddock
                 \ neco-ghc
                 \ ghcmod-vim
@@ -495,15 +486,8 @@ filetype plugin indent on     " required!
 augroup NeoBundleLazySource
     autocmd!
     autocmd FileChangedRO * NeoBundleSource sudo.vim
-    autocmd FileChangedRO * exe "command! W SudoWrite" expand('%')
+    autocmd FileChangedRO * execute "command! W SudoWrite" expand('%')
 augroup END
-
-" auto_neobundle "{{{
-" augroup AutoUpdate
-"     autocmd!
-"     autocmd VimEnter * call auto_neobundle#update_every_3days()
-" augroup END
-"}}}
 
 " NeoBundle のキーマップ{{{
 " すべて更新するときは基本的に Unite で非同期に実行
@@ -546,7 +530,9 @@ endfunction
 "}}}
 
 " カラースキーム "{{{
-colorscheme wombat256mod
+if !has('gui_running')
+    colorscheme wombat256mod
+endif
 " }}}
 
 " その他の雑多な設定 {{{
@@ -580,12 +566,6 @@ augroup HelpMapping
     autocmd FileType help nnoremap <buffer>t <C-]>
     " 戻る
     autocmd FileType help nnoremap <buffer>r <C-t>
-    " 履歴を戻る
-    autocmd FileType help nnoremap <buffer>< :<C-u>pop<CR>
-    " 履歴を進む
-    autocmd FileType help nnoremap <buffer>> :<C-u>tag<CR>
-    " help ウィンドウを広げる
-    autocmd FileType help nnoremap <buffer>+ 999<C-w>+999<C-w>>
     " リンクしている単語を選択する
     autocmd FileType help nnoremap <buffer><silent><Tab> /\%(\_.\zs<Bar>[^ ]\+<Bar>\ze\_.\<Bar>CTRL-.\<Bar><[^ >]\+>\)<CR>
     " そのた
@@ -729,69 +709,6 @@ endfunction
 command! -bang -complete=file -nargs=? Utf8 edit<bang> ++enc=utf-8 <args>
 command! -bang -complete=file -nargs=? Sjis edit<bang> ++enc=cp932 <args>
 command! -bang -complete=file -nargs=? Euc edit<bang> ++enc=eucjp <args>
-
-" 適当なファイル名のファイルを開く
-" http://vim-users.jp/2010/11/hack181/
-command! -nargs=0 Sandbox call s:open_sandbox()
-function! s:open_sandbox()
-    let dir = $HOME . '/.vim_sandbox'
-    if !isdirectory(dir)
-        call mkdir(dir, 'p')
-    endif
-
-    let filename = input('New File: ', dir.strftime('/%Y-%m-%d-%H%M.'))
-    if filename != ''
-        execute 'edit ' . filename
-    endif
-endfunction
-
-"スクリプトローカルな関数を呼び出す
-" http://d.hatena.ne.jp/thinca/20111228/1325077104
-" Call a script local function.
-" Usage:
-" - S('local_func')
-"   -> call s:local_func() in current file.
-" - S('plugin/hoge.vim:local_func', 'string', 10)
-"   -> call s:local_func('string', 10) in *plugin/hoge.vim.
-" - S('plugin/hoge:local_func("string", 10)')
-"   -> call s:local_func("string", 10) in *plugin/hoge(.vim)?.
-function! S(f, ...)
-  let [file, func] =a:f =~# ':' ?  split(a:f, ':') : [expand('%:p'), a:f]
-  let fname = matchstr(func, '^\w*')
-
-  " Get sourced scripts.
-  redir =>slist
-  silent scriptnames
-  redir END
-
-  let filepat = '\V' . substitute(file, '\\', '/', 'g') . '\v%(\.vim)?$'
-  for s in split(slist, "\n")
-    let p = matchlist(s, '^\s*\(\d\+\):\s*\(.*\)$')
-    if empty(p)
-      continue
-    endif
-    let [nr, sfile] = p[1 : 2]
-    let sfile = fnamemodify(sfile, ':p:gs?\\?/?')
-    if sfile =~# filepat &&
-    \    exists(printf("*\<SNR>%d_%s", nr, fname))
-      let cfunc = printf("\<SNR>%d_%s", nr, func)
-      break
-    endif
-  endfor
-
-  if !exists('nr')
-    echoerr Not sourced: ' . file
-    return
-  elseif !exists('cfunc')
-    let file = fnamemodify(file, ':p')
-    echoerr printf(
-    \    'File found, but function is not defined: %s: %s()', file, fname)
-    return
-  endif
-
-  return 0 <= match(func, '^\w*\s*(.*)\s*$')
-  \      ? eval(cfunc) : call(cfunc, a:000)
-endfunction
 
 " 横幅と縦幅を見て縦分割か横分割か決める
 command! -nargs=? -complete=command SmartSplit call <SID>smart_split(<q-args>)
@@ -939,7 +856,7 @@ function! s:cpp_hpp()
     " なければ Unite で検索
     if executable('mdfind')
         execute "Unite spotlight -input=".base
-    elseif !executable('locate')
+    elseif executable('locate')
         execute "Unite locate -input=".base
     else
         echoerr "not found"
@@ -1186,8 +1103,6 @@ augroup  HaskellImport
 augroup  END
 " Git のルートディレクトリを開く
 nnoremap <silent><expr>[unite]fg  ":\<C-u>Unite file -input=".fnamemodify(<SID>git_root_dir(),":p")
-" fold
-nnoremap <silent>[unite]fl        :<C-u>Unite fold -no-start-insert -no-empty<CR>
 " git
 nnoremap <silent>[unite]g         :<C-u>Unite giti -no-start-insert<CR>
 " alignta (visual)
@@ -1196,8 +1111,6 @@ vnoremap <silent>[unite]ao        :<C-u>Unite alignta:options<CR>
 " }}}
 
 " }}}
-
-nnoremap <silent>[unite]tl :<C-u>Utwit -vertical -winwidth=70 -no-cursor-line -no-start-insert<CR>
 
 " unite-rails "{{{
 function! s:rails_mvc_name()
@@ -1262,9 +1175,11 @@ let g:vimshell_right_prompt = 'strftime("%Y/%m/%d %H:%M")'
 let g:vimshell_prompt = "(U'w'){ "
     " let g:vimshell_prompt = "(U^w^){ "
 " executable suffix
-let g:vimshell_execute_file_list = { 'rb' : 'ruby', 'pl' : 'perl', 'py' : 'python' }
-call vimshell#set_execute_file('txt,vim,c,h,cpp,hpp,cc,d,java', 'vim')
-call vimshell#set_execute_file('pdf,mp3,jpg,png', 'open')
+let g:vimshell_execute_file_list = { 'rb' : 'ruby', 'pl' : 'perl', 'py' : 'python' ,
+            \ 'txt' : 'vim', 'vim' : 'vim' , 'c' : 'vim', 'h' : 'vim', 'cpp' : 'vim',
+            \ 'hpp' : 'vim', 'cc' : 'vim', 'd' : 'vim', 'pdf' : 'open', 'mp3' : 'open',
+            \ 'jpg' : 'open', 'png' : 'open',
+            \ }
 
 "VimShell のキーマッピング {{{
 nmap <Leader>vs <Plug>(vimshell_split_switch)
@@ -1381,10 +1296,9 @@ let g:vimfiler_as_default_explorer = 1
 let g:vimfiler_safe_mode_by_default = 0
 let g:vimfiler_enable_auto_cd = 1
 let g:vimfiler_split_command = 'vertical rightbelow vsplit'
-let g:vimfiler_execute_file_list = { '_' : 'vim' }
+let g:vimfiler_execute_file_list = deepcopy(g:vimshell_execute_file_list)
+let g:vimfiler_execute_file_list['_'] = 'vim'
 let g:vimfiler_split_rule = 'botright'
-call vimfiler#set_execute_file('c,h,cpp,hpp,cc,rb,hs,py,txt,vim','vim')
-call vimfiler#set_execute_file('pdf,mp3','open')
 
 " vimfiler.vim のキーマップ {{{
 augroup VimFilerMapping
@@ -1763,109 +1677,6 @@ function! s:setup_tweetvim()
     if exists('s:vimrc_tweetvim_loaded')
         return
     endif
-
-    " TweetVim
-    let g:tweetvim_display_icon = get(g:, 'tweetvim_display_icon', 0)
-    let g:tweetvim_tweet_per_page = 60
-    let g:tweetvim_async_post = 1
-    let g:tweetvim_expand_t_co = 1
-
-    " OpenBrowser
-    let g:openbrowser_open_commands = ['google-chrome', 'xdg-open', 'w3m']
-    if !exists('g:openbrowser_open_rules')
-        let g:openbrowser_open_rules = {}
-    endif
-    let g:openbrowser_open_rules['google-chrome'] = "{browser} {shellescape(uri)}"
-
-    " プラグインのロード
-    NeoBundleSource open-browser.vim
-    NeoBundleSource twibill.vim
-    NeoBundleSource TweetVim
-    NeoBundleSource neco-tweetvim
-    NeoBundleSource tweetvim-advanced-filter
-
-    command -nargs=1 TweetVimFavorites call call('tweetvim#timeline',['favorites',<q-args>])
-
-    augroup TweetVimSetting
-        autocmd!
-        " 行番号いらない
-        autocmd FileType tweetvim     setlocal nonumber
-        " マッピング
-        " 挿入・通常モードで閉じる
-        autocmd FileType tweetvim_say nnoremap <buffer><silent><C-g>    :<C-u>q!<CR>
-        autocmd FileType tweetvim_say inoremap <buffer><silent><C-g>    <C-o>:<C-u>q!<CR><Esc>
-        " ツイート履歴を <C-l> に
-        autocmd FileType tweetvim_say inoremap <buffer><silent><C-l>    <C-o>:<C-u>call unite#sources#tweetvim_tweet_history#start()<CR>
-        " <Tab> は neocomplcache で使う
-        autocmd FileType tweetvim_say iunmap   <buffer><Tab>
-        " 各種アクション
-        autocmd FileType tweetvim     nnoremap <buffer>s                :<C-u>TweetVimSay<CR>
-        autocmd FileType tweetvim     nmap     <buffer>c                <Plug>(tweetvim_action_in_reply_to)
-        autocmd FileType tweetvim     nnoremap <buffer>t                :<C-u>Unite tweetvim -no-start-insert -quick-match<CR>
-        autocmd FileType tweetvim     nmap     <buffer><Leader>F        <Plug>(tweetvim_action_remove_favorite)
-        autocmd FileType tweetvim     nmap     <buffer><Leader>d        <Plug>(tweetvim_action_remove_status)
-        " リロード後はカーソルを画面の中央に
-        autocmd FileType tweetvim     nmap     <buffer><Tab>            <Plug>(tweetvim_action_reload)
-        autocmd FileType tweetvim     nmap     <buffer><silent>gg       gg<Plug>(tweetvim_action_reload)
-        " ページ移動を ff/bb から f/b に
-        autocmd FileType tweetvim     nmap     <buffer>f                <Plug>(tweetvim_action_page_next)
-        autocmd FileType tweetvim     nmap     <buffer>b                <Plug>(tweetvim_action_page_previous)
-        " favstar や web UI で表示
-        autocmd FileType tweetvim     nnoremap <buffer><Leader><Leader> :<C-u>call <SID>tweetvim_favstar()<CR>
-        autocmd FileType tweetvim     nnoremap <buffer><Leader>u        :<C-u>call <SID>tweetvim_open_home()<CR>
-        " 縦移動
-        autocmd FileType tweetvim     nnoremap <buffer><silent>j        :<C-u>call <SID>tweetvim_vertical_move("j")<CR>zz
-        autocmd FileType tweetvim     nnoremap <buffer><silent>k        :<C-u>call <SID>tweetvim_vertical_move("k")<CR>zz
-        " タイムライン各種
-        autocmd FileType tweetvim     nnoremap <silent><buffer>gm       :<C-u>TweetVimMentions<CR>
-        autocmd FileType tweetvim     nnoremap <silent><buffer>gh       :<C-u>TweetVimHomeTimeline<CR>
-        autocmd FileType tweetvim     nnoremap <silent><buffer>gu       :<C-u>TweetVimUserTimeline<Space>
-        autocmd FileType tweetvim     nnoremap <silent><buffer>gp       :<C-u>TweetVimUserTimeline Linda_pp<CR>
-        autocmd FileType tweetvim     nnoremap <silent><buffer>gf       :<C-u>call call('tweetvim#timeline', ['favorites', 'Linda_pp'])<CR>
-        " 不要なマップを除去
-        autocmd FileType tweetvim     nunmap   <buffer>ff
-        autocmd FileType tweetvim     nunmap   <buffer>bb
-    augroup END
-
-    " セパレータを飛ばして移動する
-    function! s:tweetvim_vertical_move(cmd)
-        execute "normal! ".a:cmd
-        let end = line('$')
-        while getline('.') =~# '^[-~]\+$' && line('.') != end
-            execute "normal! ".a:cmd
-        endwhile
-        " 一番上/下まで来たら次のページに進む
-        let line = line('.')
-        if line == end
-            call feedkeys("\<Plug>(tweetvim_action_page_next)")
-        elseif line == 1
-            call feedkeys("\<Plug>(tweetvim_action_page_previous)")
-        endif
-    endfunction
-
-    function! s:tweetvim_favstar()
-        let screen_name = matchstr(getline('.'),'^\s\zs\w\+')
-        let route = empty(screen_name) ? 'me' : 'users/'.screen_name
-
-        execute "OpenBrowser http://ja.favstar.fm/".route
-    endfunction
-
-    function! s:open_favstar()
-        let username = expand('<cword>')
-        if empty(username)
-            OpenBrowser http://ja.favstar.fm/me
-        else
-            execute "OpenBrowser http://ja.favstar.fm/users/" . username
-        endif
-    endfunction
-    command! OpenFavstar call <SID>open_favstar()
-
-    function! s:tweetvim_open_home()
-        let username = expand('<cword>')
-        if username =~# '^[a-zA-Z0-9_]\+$'
-            execute "OpenBrowser https://twitter.com/" . username
-        endif
-    endfunction
 
     if filereadable($HOME.'/.tweetvimrc')
         source $HOME/.tweetvimrc
