@@ -20,4 +20,18 @@ augroup VimShellAlias
     autocmd FileType vimshell call vimshell#altercmd#define('gpp', 'g++ -std=c++11 -O2 -g -Wall -Wextra')
 augroup END
 
+" waf でビルド
+command! -nargs=* Waf call s:waf(<f-args>)
+
+function! s:waf(...)
+    if ! filereadable('waf')
+        echoerr 'waf file is not found.'
+        return
+    endif
+    let cmd = './waf '.join(a:000, ' ')
+    VimShellCurrentDir -split-command=vsplit
+    execute 'VimShellSendString' cmd
+    startinsert
+endfunction
+
 " vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8 :
