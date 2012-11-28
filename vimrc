@@ -1053,18 +1053,22 @@ unlet s:git_repo
 " }}}
 
 " ファイルなら開き，ディレクトリなら VimFiler に渡す {{{
-let s:open_or_vimfiler = { 'description' : 'open a file or open a directory with vimfiler' }
-function! s:open_or_vimfiler.func(candidate)
-    if a:candidate.kind ==# 'directory'
-        execute 'VimFiler' a:candidate.action__path
-    else
-        execute 'edit' a:candidate.action__path
-    endif
+let s:open_or_vimfiler = {
+            \ 'description' : 'open a file or open a directory with vimfiler',
+            \ 'is_selectable' : 1,
+            \ }
+function! s:open_or_vimfiler.func(candidates)
+    for candidate in a:candidates
+        if candidate.kind ==# 'directory'
+            execute 'VimFiler' candidate.action__path
+            return
+        endif
+    endfor
+    execute 'args' join(map(a:candidates, 'v:val.action__path'), ' ')
 endfunction
 call unite#custom_action('file', 'open_or_vimfiler', s:open_or_vimfiler)
 unlet s:open_or_vimfiler
 "}}}
-
 
 "unite.vimのキーマップ {{{
 augroup UniteMapping
