@@ -511,22 +511,6 @@ function! s:git_root_dir()
     endif
 endfunction
 
-" Linux かどうか判定
-    " let s:has_linux = !has('mac') && has('unix')
-" 本当はこっちのほうが良いが，速度面で難あり
-    " s:has_linux = executable('uname') && system('uname') == "Linux\n"
-" これは Arch Linux だと使えない
-    " s:has_linux = executable('lsb_release')
-
-" 本体に同梱されている matchit.vim のロードと matchpair の追加
-function! s:matchit(pairs)
-    if !exists('g:matchit_loaded')
-        runtime macros/matchit.vim
-        let g:matchit_loaded = 1
-    endif
-    let b:match_words = &matchpairs . ',' . join(a:pairs, ',')
-endfunction
-
 " git add 用マッピング {{{
 function! s:git_add(fname)
     if ! filereadable(a:fname)
@@ -563,7 +547,22 @@ vnoremap <silent><Leader>gb :GitBlameRange<CR>
 
 "}}}
 
+" 他の helper {{{
+" Linux かどうか判定
+    " let s:has_linux = !has('mac') && has('unix')
+" 本当はこっちのほうが良いが，速度面で難あり
+    " s:has_linux = executable('uname') && system('uname') == "Linux\n"
+" これは Arch Linux だと使えない
+    " s:has_linux = executable('lsb_release')
 
+" 本体に同梱されている matchit.vim のロードと matchpair の追加
+function! s:matchit(pairs)
+    if !exists('g:matchit_loaded')
+        runtime macros/matchit.vim
+        let g:matchit_loaded = 1
+    endif
+    let b:match_words = &matchpairs . ',' . join(a:pairs, ',')
+endfunction
 "}}}
 
 " カラースキーム "{{{
@@ -1709,7 +1708,11 @@ function! s:setup_tweetvim()
     let g:tweetvim_expand_t_co = 1
 
     " OpenBrowser
-    let g:openbrowser_open_commands = ['google-chrome', 'xdg-open', 'w3m']
+    if has('mac')
+        let g:openbrowser_open_commands = ['open']
+    else
+        let g:openbrowser_open_commands = ['google-chrome', 'xdg-open', 'w3m']
+    endif
     if !exists('g:openbrowser_open_rules')
         let g:openbrowser_open_rules = {}
     endif
