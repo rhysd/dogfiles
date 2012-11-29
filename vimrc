@@ -1224,8 +1224,8 @@ augroup VimShellMapping
     " popd
     autocmd FileType vimshell imap <buffer><silent><C-p> <C-u>popd<Plug>(vimshell_enter)
     " git status
-    " autocmd FileType vimshell imap <buffer><silent><C-q> <C-u>git status -sb<Plug>(vimshell_enter)
-    autocmd FileType vimshell imap <buffer><silent><C-q> <Plug>(vimshell_exit)
+    autocmd FileType vimshell imap <buffer><silent><C-q> <C-u>git status -sb<Plug>(vimshell_enter)
+    autocmd FileType vimshell imap <buffer><silent><expr><C-d> vimshell#get_cur_text()=='' ? "\<Plug>(vimshell_exit)" : "\<Del>"
 augroup END
 
 " }}}
