@@ -414,6 +414,7 @@ NeoBundle 'thinca/vim-visualstar'
 NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'rhysd/clever-f.vim'
 NeoBundle 'rhysd/gem-gist.vim'
+NeoBundle 'rhysd/unite-ruby-require.vim'
 NeoBundle 'vim-scripts/ZoomWin'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'ujihisa/neco-look'
@@ -422,7 +423,6 @@ NeoBundle 'vim-scripts/ZoomWin'
 " set rtp+=~/Github/unite-twitter.vim
 " set rtp+=~/Github/vim-textobj-ruby
 set rtp+=~/Github/accelerated-jk
-set rtp+=~/Github/unite-ruby-require.vim
 " set rtp+=~/Github/neco-ruby-keyword-args
 
 " vim-scripts上のリポジトリ
@@ -796,6 +796,7 @@ augroup RubyMapping
     autocmd FileType ruby setlocal tabstop=2 shiftwidth=2 softtabstop=2
     autocmd FileType ruby inoremap <buffer><C-s> self.
     autocmd FileType ruby inoremap <buffer>; <Bar>
+    autocmd FileType ruby nnoremap <buffer>[unite]r :<C-u>Unite ruby/require<CR>
     if filereadable(expand('~').'/.vim/skeletons/ruby.skel')
         autocmd BufNewFile *.rb 0r ~/.vim/skeletons/ruby.skel
     endif
@@ -1345,7 +1346,9 @@ augroup VimFilerMapping
     " unite.vim の file_mru との連携
     autocmd FileType vimfiler nnoremap <buffer><silent><C-h> :<C-u>Unite file_mru directory_mru<CR>
     " unite.vim の file との連携
-    autocmd FileType vimfiler nnoremap <buffer><silent>/ :<C-u>Unite file -default-action=open_or_vimfiler<CR>
+    autocmd FileType vimfiler
+                \ nnoremap <buffer><silent>/
+                \ :<C-u>execute 'Unite' 'file:'.vimfiler#get_current_vimfiler().current_dir '-default-action=open_or_vimfiler'<CR>
     " git リポジトリに登録されたすべてのファイルを開く
     autocmd FileType vimfiler nnoremap <buffer><expr>ga vimfiler#do_action('git_repo_files')
 augroup END
