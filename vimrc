@@ -414,6 +414,7 @@ NeoBundle 'thinca/vim-visualstar'
 NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'rhysd/clever-f.vim'
 NeoBundle 'rhysd/gem-gist.vim'
+NeoBundle 'vim-scripts/ZoomWin'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'ujihisa/neco-look'
 
@@ -1679,9 +1680,9 @@ let g:endwize_add_info_filetypes = ['ruby', 'c', 'cpp']
 "}}}
 
 " vim-vspec 用コマンド {{{
-command! -nargs=0 Vspec
+command! -nargs=* Vspec
             \ execute 'QuickRun' 'sh' '-src'
-            \ '''$HOME/.vim/bundle/vim-vspec/bin/vspec $HOME/.vim/bundle/vim-vspec '.expand('%:p').''''
+            \ '''$HOME/.vim/bundle/vim-vspec/bin/vspec $HOME/.vim/bundle/vim-vspec <args>'.expand('%:p').''''
 " }}}
 
 " TweetVim "{{{
@@ -1708,15 +1709,16 @@ function! s:setup_tweetvim()
     let g:tweetvim_expand_t_co = 1
 
     " OpenBrowser
-    if has('mac')
-        let g:openbrowser_open_commands = ['open']
-    else
-        let g:openbrowser_open_commands = ['google-chrome', 'xdg-open', 'w3m']
-    endif
     if !exists('g:openbrowser_open_rules')
         let g:openbrowser_open_rules = {}
     endif
-    let g:openbrowser_open_rules['google-chrome'] = "{browser} {shellescape(uri)}"
+    if has('mac')
+        let g:openbrowser_open_commands = ['open']
+        let g:openbrowser_open_rules['open'] = "{browser} {shellescape(uri)}"
+    else
+        let g:openbrowser_open_commands = ['google-chrome', 'xdg-open', 'w3m']
+        let g:openbrowser_open_rules['google-chrome'] = "{browser} {shellescape(uri)}"
+    endif
 
     " プラグインのロード
     NeoBundleSource open-browser.vim
