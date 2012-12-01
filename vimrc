@@ -383,7 +383,7 @@ NeoBundle 'Shougo/vimshell'
 NeoBundle 'Shougo/vimfiler'
 NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'Shougo/neosnippet'
-NeoBundle 'rhysd/home-made-snippets'
+NeoBundle 'rhysd/inu-snippets'
 NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'tyru/caw.vim'
 NeoBundle 'Shougo/unite.vim'
@@ -1633,7 +1633,7 @@ let g:haskell_hsp = 0
 " }}}
 
 " 自作スニペット {{{
-let g:neosnippet#snippets_directory=$HOME.'/.vim/bundle/home-made-snippets/snippets'
+let g:neosnippet#snippets_directory=$HOME.'/.vim/bundle/inu-snippets/snippets'
 "}}}
 
 " vim-alignta {{{
