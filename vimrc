@@ -546,6 +546,16 @@ nnoremap <silent><Leader>gb :<C-u>GitBlameThisLine<CR>
 vnoremap <silent><Leader>gb :GitBlameRange<CR>
 "}}}
 
+" git commit 用
+command! -nargs=+ GitCommit !git commit -m "<args>"
+
+" git push 用
+function! s:git_push(...)
+    let opts = join(a:000, " ")
+    VimShell -split-command=vsplit
+    execute 'VimShellSendString' 'git push' opts
+endfunction
+command! -nargs=* GitPush call <SID>git_push(<f-args>)
 "}}}
 
 " 他の helper {{{
