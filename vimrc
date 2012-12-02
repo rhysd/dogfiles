@@ -547,15 +547,22 @@ vnoremap <silent><Leader>gb :GitBlameRange<CR>
 "}}}
 
 " git commit 用
-command! -nargs=+ GitCommit !git commit -m "<args>"
+function! s:git_commit(...)
+    let msg = shellescape(join(a:000, ' '))
+    execute '!git' 'commit -m' msg
+endfunction
+command! -nargs=+ GitCommit call <SID>git_commit(<f-args>)
+nnoremap <Leader>gc :<C-u>GitCommit<Space>
 
 " git push 用
 function! s:git_push(...)
     let opts = join(a:000, " ")
     VimShell -split-command=vsplit
+    startinsert
     execute 'VimShellSendString' 'git push' opts
 endfunction
 command! -nargs=* GitPush call <SID>git_push(<f-args>)
+nnoremap <Leader>gp :<C-u>GitPush<CR>
 "}}}
 
 " 他の helper {{{
@@ -1125,6 +1132,8 @@ nnoremap <silent>[unite]G         :<C-u>Unite -no-start-insert grep<CR>
 nnoremap <silent>[unite]r         :<C-u>UniteResume<CR>
 "バッファ全体
 nnoremap <silent>[unite]L         :<C-u>Unite line<CR>
+" Unite ソース一覧
+nnoremap <silent>[unite]s         :<C-u>Unite source -vertical<CR>
 " NeoBundle
 " nnoremap <silent>[unite]nb      :<C-u>AutoNeoBundleTimestamp<CR>:Unite neobundle/update -auto-quit<CR>
 nnoremap <silent>[unite]nb        :<C-u>Unite neobundle/update -auto-quit -keep-focus<CR>
