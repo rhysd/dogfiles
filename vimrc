@@ -581,6 +581,23 @@ function! s:matchit(pairs)
     endif
     let b:match_words = &matchpairs . ',' . join(a:pairs, ',')
 endfunction
+
+" アサーション
+function! s:assert(throwpoint, file, result) "{{{
+    if ! a:result
+        echohl Error
+        echomsg "at ".a:throwpoint." of ".a:file
+        echomsg "assertion failed!"
+        echohl None
+    endif
+endfunction
+command! -nargs=+ Assert
+            \  try
+            \|     throw "throw_for_throwpoint"
+            \| catch "throw_for_throwpoint"
+            \|     call <SID>assert(v:throwpoint, expand('%'), eval("<args>"))
+            \| endtry
+"}}}
 "}}}
 
 " カラースキーム "{{{
