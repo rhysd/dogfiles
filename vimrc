@@ -3,7 +3,6 @@
 "=======
 ">>>>>>> to
 "
-" TODO TweetVim を NeoBundleLazy で入れる．<Leader>tw などで起動と同時にタイム
 " argtextobj の autoload 版を作成
 " ライン表示
 
@@ -404,7 +403,7 @@ NeoBundle 'kana/vim-operator-user'
 NeoBundle 'kana/vim-operator-replace'
 NeoBundle 'thinca/vim-prettyprint'
 NeoBundle 'kana/vim-vspec'
-" NeoBundle 'rhysd/accelerated-jk'
+NeoBundle 'rhysd/accelerated-jk'
 NeoBundle 'kana/vim-smartinput'
 NeoBundle 'kana/vim-niceblock'
 " NeoBundle 'rhysd/auto-neobundle'
@@ -422,7 +421,6 @@ NeoBundle 'vim-scripts/ZoomWin'
 " For testing
 " set rtp+=~/Github/unite-twitter.vim
 " set rtp+=~/Github/vim-textobj-ruby
-set rtp+=~/Github/accelerated-jk
 " set rtp+=~/Github/neco-ruby-keyword-args
 
 " vim-scripts上のリポジトリ
