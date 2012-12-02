@@ -549,7 +549,7 @@ vnoremap <silent><Leader>gb :GitBlameRange<CR>
 " git commit 用
 function! s:git_commit(...)
     let msg = shellescape(join(a:000, ' '))
-    execute '!git' 'commit -m' msg
+    execute '!git' 'commit -q -m' msg
 endfunction
 command! -nargs=+ GitCommit call <SID>git_commit(<f-args>)
 nnoremap <Leader>gc :<C-u>GitCommit<Space>
