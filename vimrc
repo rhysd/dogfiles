@@ -607,7 +607,7 @@ endif
 " その他の雑多な設定 {{{
 
 " カーソル下のハイライトグループを取得
-command! -nargs=0 GetHighlightingGroup 
+command! -nargs=0 GetHighlightingGroup
             \ echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '>
             \ trans<' . synIDattr(synID(line('.'),col('.'),0),'name') . '>
             \ lo<' . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
@@ -820,6 +820,16 @@ function! ScrollOtherWindow(mapping)
     execute 'normal!' a:mapping
     wincmd p
 endfunction
+
+" CursorHoldTime ごとに自動でコマンドを実行
+function! s:set_auto_down()
+    augroup vimrc-auto-down
+        autocmd!
+        autocmd CursorHold * call feedkeys("2\<C-e>", 'n')
+    augroup END
+endfunction
+command! -nargs=0 AutoDown call <SID>set_auto_down()
+command! -nargs=0 StopAutoDown autocmd! vimrc-auto-down
 "}}}
 
 " Ruby {{{
