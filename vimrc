@@ -1815,6 +1815,9 @@ function! s:setup_tweetvim()
         " 不要なマップを除去
         autocmd FileType tweetvim     nunmap   <buffer>ff
         autocmd FileType tweetvim     nunmap   <buffer>bb
+        " 自動更新
+        autocmd FileType tweetvim     nnoremap <buffer><Leader>au :<C-u>TweetVimAutoUpdate<CR>
+        autocmd FileType tweetvim     nnoremap <buffer><Leader>as :<C-u>TweetVimStopAutoUpdate<CR>
     augroup END
 
     " セパレータを飛ばして移動する
@@ -1856,6 +1859,28 @@ function! s:setup_tweetvim()
             execute "OpenBrowser https://twitter.com/" . username
         endif
     endfunction
+
+    " 自動更新 {{{
+    let s:tweetvim_update_interval_seconds = 60
+    let s:tweetvim_timestamp = reltime()[0]
+    function! s:tweetvim_autoupdate()
+        let current = reltime()[0]
+        if current - s:tweetvim_timestamp > s:tweetvim_update_interval_seconds
+            call feedkeys("\<Plug>(tweetvim_action_reload)")
+            let s:tweetvim_timestamp = current
+        endif
+        call feedkeys(mode() ==# 'i' ? "\<C-g>\<ESC>" : "g\<ESC>", 'n')
+    endfunction
+
+    function! s:tweetvim_setup_autoupdate()
+        augroup vimrc-tweetvim-autoupdate
+            autocmd!
+            autocmd CursorHold * call <SID>tweetvim_autoupdate()
+        augroup END
+    endfunction
+    command! -nargs=0 TweetVimAutoUpdate call <SID>tweetvim_setup_autoupdate()
+    command! -nargs=0 TweetVimStopAutoUpdate autocmd! vimrc-tweetvim-autoupdate
+    "}}}
 
     if filereadable($HOME.'/.tweetvimrc')
         source $HOME/.tweetvimrc
