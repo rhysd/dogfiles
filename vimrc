@@ -936,9 +936,6 @@ augroup END
 augroup HaskellMapping
     autocmd!
     autocmd FileType haskell inoremap <buffer>;; ::
-    autocmd FileType haskell nnoremap <buffer>[unite]hd :<C-u>Unite haddock<CR>
-    autocmd FileType haskell nnoremap <buffer>[unite]ho :<C-u>Unite hoogle<CR>
-    autocmd FileType haskell nnoremap <buffer>[unite]hi :<C-u>Unite haskellimport<CR>
 augroup END
     " autocmd FileType haskell nnoremap <buffer><silent><Leader>ht :<C-u>call <SID>ShowTypeHaskell(expand('<cword>'))<CR>
     " function! s:ShowTypeHaskell(word)
@@ -1167,8 +1164,10 @@ nnoremap <silent>[unite]s         :<C-u>Unite source -vertical<CR>
 " nnoremap <silent>[unite]nb      :<C-u>AutoNeoBundleTimestamp<CR>:Unite neobundle/update -auto-quit<CR>
 nnoremap <silent>[unite]nb        :<C-u>Unite neobundle/update -auto-quit -keep-focus<CR>
 " Haskell Import
-augroup  HaskellImport
+augroup  HaskellUnitSettings
     autocmd!
+    autocmd FileType haskell nnoremap <buffer>[unite]hd :<C-u>Unite haddock<CR>
+    autocmd FileType haskell nnoremap <buffer>[unite]ho :<C-u>Unite hoogle<CR>
     autocmd FileType haskell
     \ nnoremap <buffer><expr>[unite]hi
     \        empty(expand("<cWORD>")) ? ":\<C-u>Unite haskellimport\<CR>"
@@ -1215,22 +1214,22 @@ function! s:rails_mvc_name()
 endfunction
 
 " unite-rails コマンド {{{
-command! RModels Unite rails/model -no-start-insert -auto-resize
-command! RControllers Unite rails/controller -no-start-insert -auto-resize
-command! RViews Unite rails/view -no-start-insert -auto-resize
-command! RMVC Unite rails/model rails/controller rails/view
-command! RHelpers Unite rails/helpers -no-start-insert -auto-resize
-command! RMailers Unite rails/mailers -no-start-insert -auto-resize
-command! RLib Unite rails/lib -no-start-insert -auto-resize
-command! RDb Unite rails/db -no-start-insert -auto-resize
-command! RConfig Unite rails/config -no-start-insert -auto-resize
-command! RLog Unite rails/log -no-start-insert -auto-resize
-command! RJapascripts Unite rails/javascripts -no-start-insert -auto-resize
-command! RStylesheets Unite rails/stylesheets -no-start-insert -auto-resize
-command! RBundle Unite rails/bundle -no-start-insert -auto-resize
-command! RGems Unite rails/bundled_gem -no-start-insert -auto-resize
-command! R execute 'Unite rails/model rails/controller rails/view -no-start-insert -autoresize -input=' . s:rails_mvc_name()
-" }}}
+command! -nargs=0    RModels      Unite rails/model -no-start-insert -auto-resize
+command! -nargs=0    RControllers Unite rails/controller -no-start-insert -auto-resize
+command! -nargs=0    RViews       Unite rails/view -no-start-insert -auto-resize
+command! -nargs=0    RMVC         Unite rails/model rails/controller rails/view
+command! -nargs=0    RHelpers     Unite rails/helpers -no-start-insert -auto-resize
+command! -nargs=0    RMailers     Unite rails/mailers -no-start-insert -auto-resize
+command! -nargs=0    RLib         Unite rails/lib -no-start-insert -auto-resize
+command! -nargs=0    RDb          Unite rails/db -no-start-insert -auto-resize
+command! -nargs=0    RConfig      Unite rails/config -no-start-insert -auto-resize
+command! -nargs=0    RLog         Unite rails/log -no-start-insert -auto-resize
+command! -nargs=0    RJapascripts Unite rails/javascripts -no-start-insert -auto-resize
+command! -nargs=0    RStylesheets Unite rails/stylesheets -no-start-insert -auto-resize
+command! -nargs=0    RBundle      Unite rails/bundle -no-start-insert -auto-resize
+command! -nargs=0    RGems        Unite rails/bundled_gem -no-start-insert -auto-resize
+command! -nargs=0    R            execute 'Unite rails/model rails/controller rails/view -no-start-insert -autoresize -input=' . s:rails_mvc_name()
+"}}}
 "}}}
 
 " unite-n3337 "{{{
