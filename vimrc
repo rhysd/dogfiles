@@ -186,10 +186,6 @@ augroup END
 "256 bitカラーモード(for tmux)
 if !has('gui_running') && $TMUX !=# ''
     set t_Co=256
-    augroup Tmux
-        autocmd!
-        autocmd VimEnter,VimLeave * silent !tmux set status
-    augroup END
 endif
 
 " 基本マッピング {{{
@@ -438,20 +434,26 @@ NeoBundleLazy 'earendel'
 NeoBundleLazy 'rdark'
 NeoBundleLazy 'telamon/vim-color-github'
 
-" 特定の環境用のプラグイン
+" C++用のプラグイン
 NeoBundleLazy 'vim-jp/cpp-vim'
 NeoBundleLazy 'rhysd/clang_complete'
 NeoBundleLazy 'rhysd/unite-n3337'
+
+" Hadkell 用プラグイン
 NeoBundleLazy 'ujihisa/unite-haskellimport'
 NeoBundleLazy 'rhysd/vim2hs'
 NeoBundleLazy 'rhysd/vim-filetype-haskell'
 NeoBundleLazy 'eagletmt/unite-haddock'
 NeoBundleLazy 'ujihisa/neco-ghc'
 NeoBundleLazy 'eagletmt/ghcmod-vim'
-NeoBundleLazy 'sudo.vim'
+
+" Ruby 用プラグイン
 NeoBundleLazy 'basyura/unite-rails'
 NeoBundleLazy 'rhysd/vim-textobj-ruby'
 NeoBundleLazy 'rhysd/neco-ruby-keyword-args'
+
+" 書き込み権限の無いファイルを編集しようとした時
+NeoBundleLazy 'sudo.vim'
 
 " TweetVim
 NeoBundleLazy 'tyru/open-browser.vim'
@@ -935,6 +937,7 @@ augroup HaskellMapping
     autocmd FileType haskell inoremap <buffer>;; ::
     autocmd FileType haskell nnoremap <buffer>[unite]hd :<C-u>Unite haddock<CR>
     autocmd FileType haskell nnoremap <buffer>[unite]ho :<C-u>Unite hoogle<CR>
+    autocmd FileType haskell nnoremap <buffer>[unite]hi :<C-u>Unite haskellimport<CR>
 augroup END
     " autocmd FileType haskell nnoremap <buffer><silent><Leader>ht :<C-u>call <SID>ShowTypeHaskell(expand('<cword>'))<CR>
     " function! s:ShowTypeHaskell(word)
@@ -1167,8 +1170,8 @@ augroup  HaskellImport
     autocmd!
     autocmd FileType haskell
     \ nnoremap <buffer><expr>[unite]hi
-    \        empty(expand("<cword>")) ? "    :\<C-u>Unite haskellimport\<CR>"
-    \                                 :":\<C-u>UniteWithCursorWord haskellimport -immediately<CR>"
+    \        empty(expand("<cWORD>")) ? ":\<C-u>Unite haskellimport\<CR>"
+    \                                 :":\<C-u>UniteWithCursorWord haskellimport\<CR>"
 augroup  END
 " Git のルートディレクトリを開く
 nnoremap <silent><expr>[unite]fg  ":\<C-u>Unite file -input=".fnamemodify(<SID>git_root_dir(),":p")
