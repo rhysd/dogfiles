@@ -1214,21 +1214,21 @@ function! s:rails_mvc_name()
 endfunction
 
 " unite-rails コマンド {{{
-command! -nargs=0    RModels      Unite rails/model -no-start-insert -auto-resize
-command! -nargs=0    RControllers Unite rails/controller -no-start-insert -auto-resize
-command! -nargs=0    RViews       Unite rails/view -no-start-insert -auto-resize
+command! -nargs=0    RModels      Unite rails/model -no-start-insert
+command! -nargs=0    RControllers Unite rails/controller -no-start-insert
+command! -nargs=0    RViews       Unite rails/view -no-start-insert
 command! -nargs=0    RMVC         Unite rails/model rails/controller rails/view
-command! -nargs=0    RHelpers     Unite rails/helpers -no-start-insert -auto-resize
-command! -nargs=0    RMailers     Unite rails/mailers -no-start-insert -auto-resize
-command! -nargs=0    RLib         Unite rails/lib -no-start-insert -auto-resize
-command! -nargs=0    RDb          Unite rails/db -no-start-insert -auto-resize
-command! -nargs=0    RConfig      Unite rails/config -no-start-insert -auto-resize
-command! -nargs=0    RLog         Unite rails/log -no-start-insert -auto-resize
-command! -nargs=0    RJapascripts Unite rails/javascripts -no-start-insert -auto-resize
-command! -nargs=0    RStylesheets Unite rails/stylesheets -no-start-insert -auto-resize
-command! -nargs=0    RBundle      Unite rails/bundle -no-start-insert -auto-resize
-command! -nargs=0    RGems        Unite rails/bundled_gem -no-start-insert -auto-resize
-command! -nargs=0    R            execute 'Unite rails/model rails/controller rails/view -no-start-insert -autoresize -input=' . s:rails_mvc_name()
+command! -nargs=0    RHelpers     Unite rails/helpers -no-start-insert
+command! -nargs=0    RMailers     Unite rails/mailers -no-start-insert
+command! -nargs=0    RLib         Unite rails/lib -no-start-insert
+command! -nargs=0    RDb          Unite rails/db -no-start-insert
+command! -nargs=0    RConfig      Unite rails/config -no-start-insert
+command! -nargs=0    RLog         Unite rails/log -no-start-insert
+command! -nargs=0    RJapascripts Unite rails/javascripts -no-start-insert
+command! -nargs=0    RStylesheets Unite rails/stylesheets -no-start-insert
+command! -nargs=0    RBundle      Unite rails/bundle -no-start-insert
+command! -nargs=0    RGems        Unite rails/bundled_gem -no-start-insert
+command! -nargs=0    R            execute 'Unite rails/model rails/controller rails/view -no-start-insert -input=' . s:rails_mvc_name()
 "}}}
 "}}}
 
