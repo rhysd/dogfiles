@@ -439,7 +439,7 @@ NeoBundleLazy 'vim-jp/cpp-vim'
 NeoBundleLazy 'rhysd/clang_complete'
 NeoBundleLazy 'rhysd/unite-n3337'
 
-" Hadkell 用プラグイン
+" Haskell 用プラグイン
 NeoBundleLazy 'ujihisa/unite-haskellimport'
 NeoBundleLazy 'rhysd/vim2hs'
 NeoBundleLazy 'rhysd/vim-filetype-haskell'
