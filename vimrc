@@ -735,6 +735,7 @@ nnoremap <silent><Leader>c<Leader>
 
 " 行末のホワイトスペースおよびタブ文字の除去
 command! CleanTrailingSpaces call <SID>clean_trailing_spaces()
+nnoremap <Leader>cl :<C-u>CleanTrailingSpaces<>
 function! s:clean_trailing_spaces()
     let cursor = getpos(".")
     retab!
