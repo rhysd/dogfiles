@@ -398,7 +398,6 @@ NeoBundle 'rhysd/textobj-wiw'
 NeoBundle 'sgur/vim-textobj-parameter'
 NeoBundle 'thinca/vim-textobj-between'
 NeoBundle 'thinca/vim-textobj-comment'
-NeoBundle 'kana/vim-textobj-entire'
 NeoBundle 'kana/vim-operator-user'
 NeoBundle 'kana/vim-operator-replace'
 NeoBundle 'thinca/vim-prettyprint'
@@ -1646,6 +1645,7 @@ nmap <Leader>cO <Plug>(caw:jump:comment-prev)
 
 "}}}
 
+" textobject "{{{
 " textobj-wiw {{{
 let g:textobj_wiw_no_default_key_mappings = 1 " デフォルトキーマップの解除
 omap a<Space> <Plug>(textobj-wiw-a)
@@ -1653,6 +1653,23 @@ omap i<Space> <Plug>(textobj-wiw-i)
 xmap a<Space> <Plug>(textobj-wiw-a)
 xmap i<Space> <Plug>(textobj-wiw-i)
 " }}}
+
+" textobj-my-entire
+call textobj#user#plugin('myentire', {
+            \   '-' : {
+            \        '*sfile*' : expand('<sfile>:p'),
+            \        'select-a': 'ae',  '*select-a-function*': 's:entire_select_a',
+            \   }
+            \ })
+
+function! s:entire_select_a()
+    normal! gg0
+    let start_pos = getpos('.')
+    normal! G$
+    let endpos = getpos('.')
+    return ['V', start_pos, endpos]
+endfunction
+"}}}
 
 " vim-operator {{{
 " replace
