@@ -3,8 +3,9 @@
 "=======
 ">>>>>>> to
 "
-" argtextobj の autoload 版を作成
-" ライン表示
+" 非常に大きいファイルでは neocomplcache をオフにする設定
+" textobj-comment と textobj-entire を autoload に移す
+" ' でも " でも使える textobj プラグイン
 
 " 必須な基本設定 {{{
 
@@ -393,8 +394,11 @@ NeoBundle 'kana/vim-textobj-user'
 NeoBundle 'kana/vim-textobj-indent'
 NeoBundle 'kana/vim-textobj-lastpat'
 NeoBundle 'kana/vim-textobj-line'
-NeoBundle 'h1mesuke/textobj-wiw'
+NeoBundle 'rhysd/textobj-wiw'
+NeoBundle 'sgur/vim-textobj-parameter'
 NeoBundle 'thinca/vim-textobj-between'
+NeoBundle 'thinca/vim-textobj-comment'
+NeoBundle 'kana/vim-textobj-entire'
 NeoBundle 'kana/vim-operator-user'
 NeoBundle 'kana/vim-operator-replace'
 NeoBundle 'thinca/vim-prettyprint'
@@ -1644,8 +1648,10 @@ nmap <Leader>cO <Plug>(caw:jump:comment-prev)
 
 " textobj-wiw {{{
 let g:textobj_wiw_no_default_key_mappings = 1 " デフォルトキーマップの解除
-omap ac <Plug>(textobj-wiw-a)
-omap ic <Plug>(textobj-wiw-i)
+omap a<Space> <Plug>(textobj-wiw-a)
+omap i<Space> <Plug>(textobj-wiw-i)
+xmap a<Space> <Plug>(textobj-wiw-a)
+xmap i<Space> <Plug>(textobj-wiw-i)
 " }}}
 
 " vim-operator {{{
@@ -1653,10 +1659,21 @@ omap ic <Plug>(textobj-wiw-i)
 nmap <Leader>r <Plug>(operator-replace)
 vmap <Leader>r <Plug>(operator-replace)
 
-" operator-blank-killer
-call operator#user#define_ex_command('blank-killer', 's/\s\+$//e')
-nnoremap <silent><Leader>b :<C-u>s/\s\+$//e<CR>
-vmap <Leader>b <Plug>(operator-blank-killer)
+" operator-fillblank "{{{
+" replace selection with space
+function! OperatorFillBlank(motion_wise)
+    let v = operator#user#visual_command_from_wise_name(a:motion_wise)
+    execute 'normal! '. v . '`["x`]r '
+endfunction
+call operator#user#define('fillblank', 'OperatorFillBlank')
+map <silent><Leader>b <Plug>(operator-fillblank)
+"}}}
+
+" operator-blank-killer "{{{
+call operator#user#define_ex_command('blank-killer', 'retab <Bar> s/\s\+$//e')
+map <silent><Leader>k <Plug>(operator-blank-killer)
+"}}}
+
 "}}}
 
 " ghcmod-vim {{{

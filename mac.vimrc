@@ -16,6 +16,9 @@ filetype plugin indent off
 NeoBundle 'choplin/unite-spotlight'
 filetype plugin indent on     " required!
 
+" option キーを Alt として使う．
+set macmeta
+
 "ctagsへのパス
 let g:neocomplcache_ctags_program = '/usr/local/bin/ctags'
 nnoremap <silent>[unite]l :<C-u>UniteWithInput spotlight<CR>
