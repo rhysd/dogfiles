@@ -734,8 +734,8 @@ nnoremap <silent><Leader>c<Leader>
 "}}}
 
 " 行末のホワイトスペースおよびタブ文字の除去
-command! CleanTrailingSpaces call <SID>clean_trailing_spaces()
-nnoremap <Leader>cl :<C-u>CleanTrailingSpaces<>
+command! -nargs=0 CleanTrailingSpaces call <SID>clean_trailing_spaces()
+nnoremap <Leader>cl :<C-u>CleanTrailingSpaces<CR>
 function! s:clean_trailing_spaces()
     let cursor = getpos(".")
     retab!
@@ -833,6 +833,7 @@ function! s:set_auto_down()
 endfunction
 command! -nargs=0 AutoDown call <SID>set_auto_down()
 command! -nargs=0 StopAutoDown autocmd! vimrc-auto-down
+
 "}}}
 
 " Ruby {{{
