@@ -392,7 +392,7 @@ NeoBundle 'jceb/vim-hier'
 NeoBundle 'rhysd/endwize.vim'
 NeoBundle 'kana/vim-textobj-user'
 NeoBundle 'kana/vim-textobj-indent'
-NeoBundle 'kana/vim-textobj-lastpat'
+NeoBundle 'rhysd/vim-textobj-lastpat'
 NeoBundle 'kana/vim-textobj-line'
 NeoBundle 'rhysd/textobj-wiw'
 NeoBundle 'sgur/vim-textobj-parameter'
@@ -1645,30 +1645,32 @@ nmap <Leader>cO <Plug>(caw:jump:comment-prev)
 
 "}}}
 
-" textobject "{{{
+" Text Object "{{{
 " textobj-wiw {{{
 let g:textobj_wiw_no_default_key_mappings = 1 " デフォルトキーマップの解除
-omap a<Space> <Plug>(textobj-wiw-a)
-omap i<Space> <Plug>(textobj-wiw-i)
-xmap a<Space> <Plug>(textobj-wiw-a)
-xmap i<Space> <Plug>(textobj-wiw-i)
+omap am <Plug>(textobj-wiw-a)
+omap im <Plug>(textobj-wiw-i)
+xmap am <Plug>(textobj-wiw-a)
+xmap im <Plug>(textobj-wiw-i)
 " }}}
 
-" textobj-my-entire
+" textobj-my-entire {{{
 call textobj#user#plugin('myentire', {
             \   '-' : {
             \        '*sfile*' : expand('<sfile>:p'),
-            \        'select-a': 'ae',  '*select-a-function*': 's:entire_select_a',
+            \        'select' : ['ae', 'ie'],
+            \        '*select-function*' : 's:entire_select',
             \   }
             \ })
 
-function! s:entire_select_a()
+function! s:entire_select()
     normal! gg0
     let start_pos = getpos('.')
     normal! G$
     let endpos = getpos('.')
     return ['V', start_pos, endpos]
 endfunction
+"}}}
 "}}}
 
 " vim-operator {{{
@@ -1687,7 +1689,7 @@ map <silent><Leader>b <Plug>(operator-fillblank)
 "}}}
 
 " operator-blank-killer "{{{
-call operator#user#define_ex_command('blank-killer', 'retab <Bar> s/\s\+$//e')
+call operator#user#define_ex_command('blank-killer', 's/\s\+$//e')
 map <silent><Leader>k <Plug>(operator-blank-killer)
 "}}}
 
