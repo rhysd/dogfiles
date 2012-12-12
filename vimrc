@@ -283,7 +283,7 @@ nnoremap ge :<C-u>tabedit<Space>
 nnoremap gn :<C-u>tabnew<CR>
 nnoremap <silent>gc :<C-u>tabclose<CR>
 " 行表示・非表示の切り替え．少しでも横幅が欲しい時は OFF に
-nnoremap <Leader><Leader> :<C-u>set number! number?<CR>
+nnoremap <Leader>nu :<C-u>set number! number?<CR>
 " クリップボードから貼り付け
 inoremap <C-r>* <C-o>:set paste<CR><C-r>*<C-o>:set nopaste<CR>
 " 貼り付けはインデントを揃える
@@ -297,6 +297,8 @@ nnoremap <silent>- :<C-u>call <SID>smart_move('g$')<CR>
 vnoremap 0 g^
 vnoremap ^ g0
 vnoremap - g$
+" スペルチェック
+nnoremap <Leader>s :<C-u>setl spell! spell?<CR>
 
 " 初回のみ a:cmd の動きをして，それ以降は行内をローテートする
 let s:smart_line_pos = -1
@@ -413,6 +415,7 @@ NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'rhysd/gem-gist.vim'
 NeoBundle 'rhysd/unite-ruby-require.vim'
 NeoBundle 'vim-scripts/ZoomWin'
+NeoBundle 'daisuzu/rainbowcyclone.vim'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'ujihisa/neco-look'
 
@@ -1762,7 +1765,7 @@ let g:unite_source_alignta_preset_options = [
 
 " endwize.vim "{{{
 " 自動挿入された end の末尾に情報を付け加える e.g. end # if hoge
-let g:endwize_add_info_filetypes = ['ruby', 'c', 'cpp']
+let g:endwize_add_info_filetypes = ['c', 'cpp']
 "}}}
 
 " vim-vspec 用コマンド {{{
@@ -1927,6 +1930,16 @@ function! s:setup_tweetvim()
 
     let s:vimrc_tweetvim_loaded = 1
 endfunction
+"}}}
+
+" RainbowCyclone.vim "{{{
+nmap c/ <Plug>(rc_search_forward)
+nmap c? <Plug>(rc_search_backward)
+nmap c* <Plug>(rc_search_forward_with_cursor)
+nmap c# <Plug>(rc_search_backward_with_cursor)
+nmap cn <Plug>(rc_search_forward_with_last_pattern)
+nmap cN <Plug>(rc_search_backward_with_last_pattern)
+nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>:HierClear<CR>:RCReset<CR>
 "}}}
 
 " プラットフォーム依存な設定をロードする "{{{
