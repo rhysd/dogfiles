@@ -394,7 +394,6 @@ NeoBundle 'jceb/vim-hier'
 NeoBundle 'rhysd/endwize.vim'
 NeoBundle 'kana/vim-textobj-user'
 NeoBundle 'kana/vim-textobj-indent'
-NeoBundle 'rhysd/vim-textobj-lastpat'
 NeoBundle 'kana/vim-textobj-line'
 NeoBundle 'rhysd/textobj-wiw'
 NeoBundle 'sgur/vim-textobj-parameter'
@@ -912,12 +911,14 @@ function! s:cpp_hpp()
     endif
 
     " なければ Unite で検索
-    if executable('mdfind')
-        execute "Unite spotlight -input=".base
-    elseif executable('locate')
-        execute "Unite locate -input=".base
-    else
-        echoerr "not found"
+    if exists(':Unite')
+        if executable('mdfind')
+            execute "Unite spotlight -input=".base
+        elseif executable('locate')
+            execute "Unite locate -input=".base
+        else
+            echoerr "not found"
+        endif
     endif
 
 endfunction
@@ -928,11 +929,7 @@ augroup CppSetting
     au!
     autocmd FileType cpp setlocal matchpairs+=<:>
     autocmd FileType cpp inoremap <buffer>,  ,<Space>
-    " autocmd FileType cpp inoremap <silent><buffer><expr><CR> <SID>cpp_expand_brace()."\<CR>"
     autocmd FileType cpp nnoremap <buffer><Leader>ret :<C-u>call <SID>return_type_completion()<CR>
-    autocmd FileType cpp nnoremap <buffer><Leader>s Bistd::<Esc>
-    autocmd FileType cpp nnoremap <buffer><Leader>b Biboost::<Esc>
-    autocmd FileType cpp nnoremap <buffer><Leader>d Bidetail::<Esc>
     autocmd FileType cpp nnoremap <silent><buffer><C-t> :<C-u>call <SID>cpp_hpp()<CR>
 augroup END
 
@@ -1086,38 +1083,50 @@ let g:loaded_unite_source_window = 1
 " unite-grep で使うコマンド
 let g:unite_source_grep_default_opts = "-Hn --color=never"
 
-" Git リポジトリのすべてのファイルを開くアクション {{{
-let s:git_repo = { 'description' : 'all file in git repository' }
-function! s:git_repo.func(candidate)
-    if(system('git rev-parse --is-inside-work-tree') ==# "true\n" )
-        execute 'args'
-                \ join( filter(split(system('git ls-files `git rev-parse --show-cdup`'), '\n')
-                        \ , 'empty(v:val) || isdirectory(v:val) || filereadable(v:val)') )
-    else
-        echoerr 'Not a git repository!'
-    endif
-endfunction
-
-call unite#custom_action('file', 'git_repo_files', s:git_repo)
-unlet s:git_repo
-" }}}
-
-" ファイルなら開き，ディレクトリなら VimFiler に渡す {{{
-let s:open_or_vimfiler = {
-            \ 'description' : 'open a file or open a directory with vimfiler',
-            \ 'is_selectable' : 1,
-            \ }
-function! s:open_or_vimfiler.func(candidates)
-    for candidate in a:candidates
-        if candidate.kind ==# 'directory'
-            execute 'VimFiler' candidate.action__path
-            return
+" unite.vim カスタムアクション {{{
+function! s:define_unite_actions()
+    " Git リポジトリのすべてのファイルを開くアクション {{{
+    let git_repo = { 'description' : 'all file in git repository' }
+    function! git_repo.func(candidate)
+        if(system('git rev-parse --is-inside-work-tree') ==# "true\n" )
+            execute 'args'
+                    \ join( filter(split(system('git ls-files `git rev-parse --show-cdup`'), '\n')
+                            \ , 'empty(v:val) || isdirectory(v:val) || filereadable(v:val)') )
+        else
+            echoerr 'Not a git repository!'
         endif
-    endfor
-    execute 'args' join(map(a:candidates, 'v:val.action__path'), ' ')
+    endfunction
+
+    call unite#custom_action('file', 'git_repo_files', git_repo)
+    " }}}
+
+    " ファイルなら開き，ディレクトリなら VimFiler に渡す {{{
+    let open_or_vimfiler = {
+                \ 'description' : 'open a file or open a directory with vimfiler',
+                \ 'is_selectable' : 1,
+                \ }
+    function! open_or_vimfiler.func(candidates)
+        for candidate in a:candidates
+            if candidate.kind ==# 'directory'
+                execute 'VimFiler' candidate.action__path
+                return
+            endif
+        endfor
+        execute 'args' join(map(a:candidates, 'v:val.action__path'), ' ')
+    endfunction
+    call unite#custom_action('file', 'open_or_vimfiler', open_or_vimfiler)
+    "}}}
+
+    " load once
+    autocmd! UniteCustomActions
 endfunction
-call unite#custom_action('file', 'open_or_vimfiler', s:open_or_vimfiler)
-unlet s:open_or_vimfiler
+
+
+" カスタムアクションを遅延定義
+augroup UniteCustomActions
+    autocmd!
+    autocmd FileType unite,vimfiler call <SID>define_unite_actions()
+augroup END
 "}}}
 
 "unite.vimのキーマップ {{{
@@ -1170,7 +1179,7 @@ nnoremap <silent>[unite]s         :<C-u>Unite source -vertical<CR>
 " nnoremap <silent>[unite]nb      :<C-u>AutoNeoBundleTimestamp<CR>:Unite neobundle/update -auto-quit<CR>
 nnoremap <silent>[unite]nb        :<C-u>Unite neobundle/update -auto-quit -keep-focus<CR>
 " Haskell Import
-augroup  HaskellUnitSettings
+augroup  HaskellUniteSettings
     autocmd!
     autocmd FileType haskell nnoremap <buffer>[unite]hd :<C-u>Unite haddock<CR>
     autocmd FileType haskell nnoremap <buffer>[unite]ho :<C-u>Unite hoogle<CR>
@@ -1186,6 +1195,11 @@ nnoremap <silent>[unite]g         :<C-u>Unite giti -no-start-insert<CR>
 " alignta (visual)
 vnoremap <silent>[unite]aa        :<C-u>Unite alignta:arguments<CR>
 vnoremap <silent>[unite]ao        :<C-u>Unite alignta:options<CR>
+" C++ インクルードファイル
+augroup CppUniteSettings
+    autocmd!
+    autocmd FileType cpp nnoremap <buffer>[unite]i :<C-u>Unite file_include -vertical<CR>
+augroup END
 " }}}
 
 " }}}
