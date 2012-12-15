@@ -324,6 +324,12 @@ fi
 # if [ -d $ZSHPLUGIN/zaw ]; then
 #     source $ZSHPLUGIN/zaw/zaw.zsh
 # fi
+
+# zsh-syntax-highlighting
+# https://github.com/zsh-users/zsh-syntax-highlighting
+if [ -d $ZSHPLUGIN/zsh-syntax-highlighting ]; then
+    source $ZSHPLUGIN/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
 # }}}
 
 ##############
