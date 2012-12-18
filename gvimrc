@@ -1,11 +1,11 @@
 " GUI のみで読み込むプラグイン
 
 NeoBundleSource unite-colorscheme
-NeoBundleSource molokai
-NeoBundleSource vim-colors-solarized
-NeoBundleSource earendel
-NeoBundleSource rdark
-NeoBundleSource vim-color-github
+                \ molokai
+                \ vim-colors-solarized
+                \ earendel
+                \ rdark
+                \ vim-color-github
 
 " 基本設定
 "ツールバーの非表示

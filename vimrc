@@ -3,11 +3,14 @@
 "=======
 ">>>>>>> to
 "
-" 非常に大きいファイルでは neocomplcache をオフにする設定
-" textobj-comment と textobj-entire を autoload に移す
 " ' でも " でも使える textobj プラグイン
 
 " 必須な基本設定 {{{
+
+" augroup
+" augroup MyVimrc
+"     autocmd!
+" augroup END
 
 "エンコーディング
 set encoding=utf-8
@@ -388,6 +391,8 @@ NeoBundle 'Shougo/unite.vim'
 NeoBundle 'h1mesuke/unite-outline'
 NeoBundle 'osyo-manga/unite-quickfix'
 NeoBundle 'rhysd/quickrun-unite-quickfix-outputter'
+NeoBundle 'rhysd/unite-ruby-require.vim'
+NeoBundle 'tsukkee/unite-help'
 NeoBundle 'rhysd/open-pdf.vim'
 NeoBundle 'vim-jp/vimdoc-ja'
 NeoBundle 'jceb/vim-hier'
@@ -412,9 +417,9 @@ NeoBundle 'thinca/vim-scouter'
 NeoBundle 'thinca/vim-visualstar'
 NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'rhysd/gem-gist.vim'
-NeoBundle 'rhysd/unite-ruby-require.vim'
 NeoBundle 'vim-scripts/ZoomWin'
 NeoBundle 'daisuzu/rainbowcyclone.vim'
+NeoBundle 'rhysd/clever-f.vim'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'ujihisa/neco-look'
 
@@ -1117,6 +1122,17 @@ function! s:define_unite_actions()
     call unite#custom_action('file', 'open_or_vimfiler', open_or_vimfiler)
     "}}}
 
+    " Finder for Mac 
+    if has('mac')
+        let finder = { 'description' : 'open with Finder.app' }
+        function! finder.func(candidate)
+            if a:candidate.kind ==# 'directory'
+                call system('open -a Finder '.a:candidate.action__path)
+            endif
+        endfunction
+        call unite#custom_action('directory', 'finder', finder)
+    endif
+
     " load once
     autocmd! UniteCustomActions
 endfunction
@@ -1200,6 +1216,8 @@ augroup CppUniteSettings
     autocmd!
     autocmd FileType cpp nnoremap <buffer>[unite]i :<C-u>Unite file_include -vertical<CR>
 augroup END
+" help(項目が多いので，検索語を入力してから絞り込む)
+nnoremap <silent>[unite]h :<C-u>UniteWithInput help -vertical<CR>
 " }}}
 
 " }}}
@@ -1373,10 +1391,6 @@ endif
 function! g:pdf_hooks.on_opened()
     setlocal nowrap nonumber nolist
 endfunction
-"}}}
-
-" clever-f.vim "{{{
-nmap : <Plug>(clever-f-reset)
 "}}}
 
 " Hier.vim {{{
@@ -1954,6 +1968,10 @@ nmap c# <Plug>(rc_search_backward_with_cursor)
 nmap cn <Plug>(rc_search_forward_with_last_pattern)
 nmap cN <Plug>(rc_search_backward_with_last_pattern)
 nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>:HierClear<CR>:RCReset<CR>
+"}}}
+
+" clever-f.vim "{{{
+map : <Plug>(clever-f-reset)
 "}}}
 
 " プラットフォーム依存な設定をロードする "{{{
