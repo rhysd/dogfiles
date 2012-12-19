@@ -43,6 +43,7 @@ alias vimshell='vim +VimShell'
 alias gvim='vim -g'
 alias sudo='sudo '
 alias vspec='~/.vim/bundle/vim-vspec/bin/vspec ~/.vim/bundle/vim-vspec'
+alias memo='cat > /dev/null'
 
 alias l=ls
 alias pd=popd
