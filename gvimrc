@@ -28,10 +28,7 @@ set guioptions-=a
 set winaltkeys=no
 
 " GUI autocmds
-augroup GuiAtStart
-    autocmd!
-    autocmd VimEnter * call <SID>vimfiler_at_start()
-augroup END
+autocmd MyVimrc VimEnter * call <SID>vimfiler_at_start()
 
 function! s:vimfiler_at_start()
     if empty(bufname('%'))
