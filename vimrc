@@ -1245,8 +1245,7 @@ function! s:vimshell_lazy(...)
         NeoBundleSource vimshell
         let s:vimshell_already_loaded = 1
     endif
-    let cmd = join(a:000, ' ')
-    execute cmd
+    execute join(a:000, ' ')
 endfunction
 command! -nargs=+ LazyVimShell call <SID>vimshell_lazy(<q-args>)
 
