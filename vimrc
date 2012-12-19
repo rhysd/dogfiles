@@ -368,7 +368,6 @@ NeoBundle 'Shougo/vimproc', {
             \       'unix'    : 'make -f make_unix.mak',
             \   }
             \ }
-NeoBundle 'Shougo/vimfiler'
 NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'Shougo/neosnippet'
 NeoBundle 'rhysd/inu-snippets'
@@ -423,6 +422,7 @@ NeoBundle 'rhysd/clever-f.vim'
 
 " 初めてコマンドが使われた時に読み込む
 NeoBundleLazy 'Shougo/vimshell'
+NeoBundleLazy 'Shougo/vimfiler'
 
 " GUI オンリーなプラグイン
 NeoBundleLazy 'ujihisa/unite-colorscheme'
@@ -1073,7 +1073,7 @@ function! s:define_unite_actions()
     function! open_or_vimfiler.func(candidates)
         for candidate in a:candidates
             if candidate.kind ==# 'directory'
-                execute 'VimFiler' candidate.action__path
+                execute 'LazyVimFiler' 'VimFiler' candidate.action__path
                 return
             endif
         endfor
@@ -1081,17 +1081,6 @@ function! s:define_unite_actions()
     endfunction
     call unite#custom_action('file', 'open_or_vimfiler', open_or_vimfiler)
     "}}}
-
-    " Finder for Mac 
-    if has('mac')
-        let finder = { 'description' : 'open with Finder.app' }
-        function! finder.func(candidate)
-            if a:candidate.kind ==# 'directory'
-                call system('open -a Finder '.a:candidate.action__path)
-            endif
-        endfunction
-        call unite#custom_action('directory', 'finder', finder)
-    endif
 
     " load once
     autocmd! UniteCustomActions
@@ -1260,8 +1249,8 @@ autocmd MyVimrc FileType vimshell nnoremap <buffer><silent><C-p> :<C-u>bp<CR>
 autocmd MyVimrc FileType vimshell nmap <buffer><silent>gn <Plug>(vimshell_next_prompt)
 autocmd MyVimrc FileType vimshell nmap <buffer><silent>gp <Plug>(vimshell_previous_prompt)
 " VimFiler 連携
-autocmd MyVimrc FileType vimshell nnoremap <buffer><silent><Leader>ff :<C-u>VimFilerCurrentDir<CR>
-autocmd MyVimrc FileType vimshell inoremap <buffer><silent><C-s> <Esc>:<C-u>VimFilerCurrentDir<CR>
+autocmd MyVimrc FileType vimshell nnoremap <buffer><silent><Leader>ff :<C-u>LazyVimFiler VimFilerCurrentDir<CR>
+autocmd MyVimrc FileType vimshell inoremap <buffer><silent><C-s> <Esc>:<C-u>LazyVimFiler VimFilerCurrentDir<CR>
 " 親ディレクトリへ移動
 autocmd MyVimrc FileType vimshell imap <buffer><silent><C-j> <C-u>..<Plug>(vimshell_enter)
 " popd
@@ -1378,16 +1367,25 @@ autocmd MyVimrc FileType vimfiler
 " git リポジトリに登録されたすべてのファイルを開く
 autocmd MyVimrc FileType vimfiler nnoremap <buffer><expr>ga vimfiler#do_action('git_repo_files')
 
+function! s:vimfiler_lazy(...)
+    if ! exists('s:vimfiler_already_loaded')
+        NeoBundleSource vimfiler
+        let s:vimfiler_already_loaded = 1
+    endif
+    execute join(a:000, ' ')
+endfunction
+command! -nargs=+ LazyVimFiler call <SID>vimfiler_lazy(<q-args>)
+
 nnoremap <Leader>f                <Nop>
-nnoremap <Leader>ff               :<C-u>VimFiler<CR>
-nnoremap <Leader>fs               :<C-u>VimFilerSplit<CR>
-nnoremap <Leader><Leader>         :<C-u>VimFiler<CR>
-nnoremap <Leader>fq               :<C-u>VimFiler -no-quit<CR>
-nnoremap <Leader>fh               :<C-u>VimFiler ~<CR>
-nnoremap <Leader>fc               :<C-u>VimFilerCurrentDir<CR>
-nnoremap <Leader>fb               :<C-u>VimFilerBufferDir<CR>
-nnoremap <silent><expr><Leader>fg ":\<C-u>VimFiler " . <SID>git_root_dir() . '\<CR>'
-nnoremap <silent><expr><Leader>fe ":\<C-u>VimFilerExplorer " . <SID>git_root_dir() . '\<CR>'
+nnoremap <Leader>ff               :<C-u>LazyVimFiler VimFiler<CR>
+nnoremap <Leader>fs               :<C-u>LazyVimFiler VimFilerSplit<CR>
+nnoremap <Leader><Leader>         :<C-u>LazyVimFiler VimFiler<CR>
+nnoremap <Leader>fq               :<C-u>LazyVimFiler VimFiler -no-quit<CR>
+nnoremap <Leader>fh               :<C-u>LazyVimFiler VimFiler ~<CR>
+nnoremap <Leader>fc               :<C-u>LazyVimFiler VimFilerCurrentDir<CR>
+nnoremap <Leader>fb               :<C-u>LazyVimFiler VimFilerBufferDir<CR>
+nnoremap <silent><expr><Leader>fg ":\<C-u>LazyVimFiler VimFiler " . <SID>git_root_dir() . '\<CR>'
+nnoremap <silent><expr><Leader>fe ":\<C-u>LazyVimFiler VimFilerExplorer " . <SID>git_root_dir() . '\<CR>'
 "        }}}
 " }}}
 

@@ -32,7 +32,7 @@ autocmd MyVimrc VimEnter * call <SID>vimfiler_at_start()
 
 function! s:vimfiler_at_start()
     if empty(bufname('%'))
-        VimFilerCurrentDir
+        LazyVimFiler VimFilerCurrentDir
     endif
 endfunction
 
