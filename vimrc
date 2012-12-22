@@ -293,6 +293,8 @@ vnoremap ^ g0
 vnoremap - g$
 " スペルチェック
 nnoremap <Leader>s :<C-u>setl spell! spell?<CR>
+" バッファを削除
+nnoremap <Leader>bd :<C-u>bdelete<CR>
 
 " 初回のみ a:cmd の動きをして，それ以降は行内をローテートする
 let s:smart_line_pos = -1
@@ -1240,12 +1242,12 @@ let g:vimshell_execute_file_list = { 'rb' : 'ruby', 'pl' : 'perl', 'py' : 'pytho
             \ }
 
 " VimShell 遅延読み込み
-function! s:vimshell_lazy(...)
+function! s:vimshell_lazy(cmd)
     if ! exists('s:vimshell_already_loaded')
         NeoBundleSource vimshell
         let s:vimshell_already_loaded = 1
     endif
-    execute join(a:000, ' ')
+    execute a:cmd
 endfunction
 command! -nargs=+ LazyVimShell call <SID>vimshell_lazy(<q-args>)
 
