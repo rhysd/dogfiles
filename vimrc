@@ -293,6 +293,8 @@ vnoremap ^ g0
 vnoremap - g$
 " スペルチェック
 nnoremap <Leader>s :<C-u>setl spell! spell?<CR>
+" バッファを削除
+nnoremap <Leader>bd :<C-u>bdelete<CR>
 
 " 初回のみ a:cmd の動きをして，それ以降は行内をローテートする
 let s:smart_line_pos = -1
@@ -375,7 +377,7 @@ NeoBundle 'rhysd/inu-snippets'
 NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'tyru/caw.vim'
 NeoBundle 'Shougo/unite.vim'
-NeoBundle 'h1mesuke/unite-outline'
+NeoBundle 'Shougo/unite-outline'
 NeoBundle 'osyo-manga/unite-quickfix'
 NeoBundle 'rhysd/quickrun-unite-quickfix-outputter'
 NeoBundle 'rhysd/unite-ruby-require.vim'
@@ -1240,12 +1242,12 @@ let g:vimshell_execute_file_list = { 'rb' : 'ruby', 'pl' : 'perl', 'py' : 'pytho
             \ }
 
 " VimShell 遅延読み込み
-function! s:vimshell_lazy(...)
+function! s:vimshell_lazy(cmd)
     if ! exists('s:vimshell_already_loaded')
         NeoBundleSource vimshell
         let s:vimshell_already_loaded = 1
     endif
-    execute join(a:000, ' ')
+    execute a:cmd
 endfunction
 command! -nargs=+ LazyVimShell call <SID>vimshell_lazy(<q-args>)
 
@@ -1630,21 +1632,24 @@ xmap im <Plug>(textobj-wiw-i)
 " }}}
 
 " textobj-my-entire {{{
-call textobj#user#plugin('myentire', {
-            \   '-' : {
-            \        '*sfile*' : expand('<sfile>:p'),
-            \        'select' : ['ae', 'ie'],
-            \        '*select-function*' : 's:entire_select',
-            \   }
-            \ })
+if has('vim_starting')
+    " define once
+    call textobj#user#plugin('myentire', {
+                \   '-' : {
+                \        '*sfile*' : expand('<sfile>:p'),
+                \        'select' : ['ae', 'ie'],
+                \        '*select-function*' : 's:entire_select',
+                \   }
+                \ })
 
-function! s:entire_select()
-    normal! gg0
-    let start_pos = getpos('.')
-    normal! G$
-    let endpos = getpos('.')
-    return ['V', start_pos, endpos]
-endfunction
+    function! s:entire_select()
+        normal! gg0
+        let start_pos = getpos('.')
+        normal! G$
+        let endpos = getpos('.')
+        return ['V', start_pos, endpos]
+    endfunction
+endif
 "}}}
 "}}}
 
@@ -1906,7 +1911,7 @@ nmap c* <Plug>(rc_search_forward_with_cursor)
 nmap c# <Plug>(rc_search_backward_with_cursor)
 nmap cn <Plug>(rc_search_forward_with_last_pattern)
 nmap cN <Plug>(rc_search_backward_with_last_pattern)
-nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>:HierClear<CR>:RCReset<CR>
+nnoremap cr :<C-u>RCReset<CR>
 "}}}
 
 " clever-f.vim "{{{

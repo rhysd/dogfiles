@@ -1,3 +1,7 @@
+###############
+#   Exports   #
+###############
+# {{{
 export LANG=ja_JP.UTF-8
 export EDITOR=vim
 # export LESS='--LONG-PROMPT --ignore-case'
@@ -13,6 +17,7 @@ export DOTZSH=$HOME/.zsh
 if [ ! -d $DOTZSH ];then
     mkdir -p $DOTZSH
 fi
+# }}}
 
 ###############
 #   Aliases   #
@@ -44,6 +49,14 @@ alias gvim='vim -g'
 alias sudo='sudo '
 alias vspec='~/.vim/bundle/vim-vspec/bin/vspec ~/.vim/bundle/vim-vspec'
 alias memo='cat > /dev/null'
+
+function separate(){
+    echo -n $fg_bold[yellow]
+    for i in $(seq 1 $COLUMNS); do
+        echo -n '~'
+    done
+    echo -n $reset_color
+}
 
 alias l=ls
 alias pd=popd
@@ -97,6 +110,8 @@ autoload -Uz zcalc
 autoload -Uz add-zsh-hook
 autoload -Uz smart-insert-last-word
 autoload -Uz modify-current-argument
+autoload -Uz chpwd_recent_dirs
+autoload -Uz cdr
 # }}}
 
 ###############
@@ -222,6 +237,12 @@ RPROMPT='[%{$fg_bold[red]%}${HOST}%{$reset_color%}][%{$fg_bold[red]%}%D{%m/%d %H
 HISTFILE=$DOTZSH/zsh_history
 HISTSIZE=1000000
 SAVEHIST=1000000
+
+# ワーキングディレクトリ履歴
+add-zsh-hook chpwd chpwd_recent_dirs
+zstyle ':chpwd:*' recent-dirs-max 5000
+zstyle ':chpwd:*' recent-dirs-default yes
+zstyle ':completion:*' recent-dirs-insert both
 # }}}
 
 ####################
@@ -259,35 +280,12 @@ function _pop_hist(){
 zle -N _pop_hist
 bindkey "^O" _pop_hist
 
-# 空行の状態で Tab を入れると ls する
-function _advanced_tab(){
-  if [[ $#BUFFER == 0 ]]; then
-    echo ""
-    eval ls
-    zle redisplay
-  else
-    zle expand-or-complete
-  fi
-}
-zle -N _advanced_tab
-bindkey "^I" _advanced_tab
-
 # tmux 起動
 # function _tmux(){
 #   tmux
 # }
 # zle -N _tmux
 # bindkey "^T" _tmux
-
-# git status を見る
-function _git_status(){
-  # for lower left prompt
-  echo "\n"
-  git status -sb
-  zle reset-prompt
-}
-zle -N _git_status
-bindkey "^Xg" _git_status
 
 # 前のコマンドで最後に打った単語の挿入
 zle -N insert-last-word smart-insert-last-word
@@ -322,9 +320,32 @@ fi
 
 # zaw: incremental search interface
 # https://github.com/zsh-users/zaw
-# if [ -d $ZSHPLUGIN/zaw ]; then
-#     source $ZSHPLUGIN/zaw/zaw.zsh
-# fi
+if [ -d $ZSHPLUGIN/zaw ]; then
+    source $ZSHPLUGIN/zaw/zaw.zsh
+fi
+# 最大でも画面の縦幅半分までしか使わない
+zstyle ':filter-select' max-lines $(($LINES / 2))
+# 絞り込みをcase-insensitiveに
+zstyle ':filter-select' case-insensitive yes
+# キーバインド
+bindkey '^Xc' zaw-cdr
+bindkey '^@' zaw-cdr
+bindkey '^Xh' zaw-history
+bindkey '^Xg' zaw-git-files
+bindkey '^Xt' zaw-tmux
+# 空行の状態で Tab を入れると zaw-cdr する
+function _advanced_tab(){
+  if [[ $#BUFFER == 0 ]]; then
+    zaw-cdr
+    zle redisplay
+  else
+    zle expand-or-complete
+  fi
+}
+zle -N _advanced_tab
+bindkey "^I" _advanced_tab
+
+
 
 # zsh-syntax-highlighting
 # https://github.com/zsh-users/zsh-syntax-highlighting
@@ -361,10 +382,45 @@ if which hub > /dev/null; then
   eval "$(hub alias -s)"
 fi
 
+# PWD を移動するごとにディレクトリ内のファイルを表示
+# ただし，ファイルが多すぎるときは省略する
+_ls_abbrev() {
+    # -a : Do not ignore entries starting with ..
+    # -C : Force multi-column output.
+    # -F : Append indicator (one of */=>@|) to entries.
+    local cmd_ls='ls'
+    local -a opt_ls
+    case "${OSTYPE}" in
+        freebsd*|darwin*)
+            opt_ls=('-aCFG')
+            ;;
+        *)
+            opt_ls=('-aCF' '--color=always')
+            ;;
+    esac
+
+    local ls_result
+    ls_result=$(CLICOLOR_FORCE=1 COLUMNS=$COLUMNS command $cmd_ls ${opt_ls[@]} | sed $'/^\e\[[0-9;]*m$/d')
+
+    local ls_lines=$(echo "$ls_result" | wc -l | tr -d ' ')
+
+    if [ $ls_lines -gt 8 ]; then
+        echo "$ls_result" | head -n 4
+        echo '...'
+        echo "$ls_result" | tail -n 4
+        echo "$(command ls -1 -A | wc -l | tr -d ' ') files exist"
+    else
+        echo "$ls_result"
+    fi
+}
+add-zsh-hook chpwd _ls_abbrev
+
+# }}}
 
 ##########################################
 #   source platform-dependant settings   #
 ##########################################
+# {{{
 
 case $OSTYPE in
   darwin*)
