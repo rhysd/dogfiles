@@ -319,6 +319,15 @@ if [ ! -d $ZSHPLUGIN ]; then
     mkdir -p $ZSHPLUGIN
 fi
 
+# プラグインを更新するコマンド
+function zsh-plugin-update(){
+    for plugin in `ls $ZSHPLUGIN`; do
+        cd $ZSHPLUGIN/$plugin
+        git pull
+        cd ..
+    done
+}
+
 # zaw: incremental search interface
 # https://github.com/zsh-users/zaw
 if [ -d $ZSHPLUGIN/zaw ]; then
