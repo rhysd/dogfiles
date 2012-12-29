@@ -32,7 +32,7 @@ let g:clang_user_options='-stdlib=libc++ -I /usr/local/include -I /usr/include -
 let g:unite_pdf_search_cmd = '/usr/local/bin/locate -l 30 "*%s*.pdf"'
 
 " VimShell で g++ のエイリアス
-autocmd MyVimrc FileType vimshell call vimshell#commands#alias#define('gpp', 'g++-4.7 -std=c++11 -O2 -g -Wall -Wextra')
+autocmd MyVimrc FileType vimshell call vimshell#set_alias('gpp', 'g++-4.7 -std=c++11 -O2 -g -Wall -Wextra')
 
 " Mac の辞書.appで開く {{{
 " 引数に渡したワードを検索
