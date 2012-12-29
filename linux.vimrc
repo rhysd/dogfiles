@@ -15,7 +15,7 @@ filetype plugin indent on     " required!
 " プラグインの設定
 let g:neocomplcache_ctags_program = '/usr/bin/ctags'
 nnoremap <silent>[unite]l :<C-u>UniteWithInput locate<CR>
-autocmd MyVimrc FileType vimshell call vimshell#altercmd#define('gpp', 'g++ -std=c++11 -O2 -g -Wall -Wextra')
+autocmd MyVimrc FileType vimshell call vimshell#commands#alias#define('gpp', 'g++ -std=c++11 -O2 -g -Wall -Wextra')
 
 " waf でビルド
 command! -nargs=* Waf call s:waf(<f-args>)
