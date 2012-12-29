@@ -321,11 +321,14 @@ fi
 
 # プラグインを更新するコマンド
 function zsh-plugin-update(){
+    local cwd
+    cwd=$PWD
     for plugin in `ls $ZSHPLUGIN`; do
         cd $ZSHPLUGIN/$plugin
         git pull
         cd ..
     done
+    cd $cwd
 }
 
 # zaw: incremental search interface
