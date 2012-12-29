@@ -70,6 +70,7 @@ alias ng=noglob
 alias d=dirs
 alias g=git
 alias t=tmux
+alias gp=gnuplot
 
 # global alias
 alias -g G='| grep'
@@ -329,8 +330,8 @@ zstyle ':filter-select' max-lines $(($LINES / 2))
 zstyle ':filter-select' case-insensitive yes
 # キーバインド
 bindkey '^Xc' zaw-cdr
-bindkey '^@' zaw-cdr
 bindkey '^Xh' zaw-history
+bindkey '^@' zaw-history
 bindkey '^Xg' zaw-git-files
 bindkey '^Xt' zaw-tmux
 # 空行の状態で Tab を入れると zaw-cdr する
