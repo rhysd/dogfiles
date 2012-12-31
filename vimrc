@@ -1271,7 +1271,10 @@ autocmd MyVimrc FileType vimshell imap <buffer><silent><C-j> <C-u>..<Plug>(vimsh
 autocmd MyVimrc FileType vimshell imap <buffer><silent><C-p> <C-u>popd<Plug>(vimshell_enter)
 " git status
 autocmd MyVimrc FileType vimshell imap <buffer><silent><C-q> <C-u>git status -sb<Plug>(vimshell_enter)
+" zsh や bash の <C-d> っぽい挙動
 autocmd MyVimrc FileType vimshell imap <buffer><silent><expr><C-d> vimshell#get_cur_text()=='' ? "\<Esc>\<Plug>(vimshell_exit)" : "\<Del>"
+" 最新のプロンプトに移動
+autocmd MyVimrc FileType vimshell nnoremap <buffer>a GA
 
 " }}}
 
