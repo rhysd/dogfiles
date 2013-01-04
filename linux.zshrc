@@ -44,7 +44,7 @@ if which pacman > /dev/null; then
     echo ${@:2}
   }
   alias -g yaor='yaourt -Rsn'
-  alias -s pdf='apvlv'
+  alias -s pdf='zathura'
   function sshi(){
     ssh -i $HOME/.ssh/id_rsa r-hayashida@$1
   }
