@@ -71,6 +71,7 @@ alias d=dirs
 alias g=git
 alias t=tmux
 alias gp=gnuplot
+alias e='emacs -nw'
 
 # global alias
 alias -g G='| grep'
