@@ -370,12 +370,12 @@ NeoBundle 'Shougo/vimproc', {
             \       'unix'    : 'make -f make_unix.mak',
             \   }
             \ }
+NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Shougo/vimfiler'
 NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'Shougo/neosnippet'
 NeoBundle 'rhysd/inu-snippets'
 NeoBundle 'thinca/vim-quickrun'
-NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Shougo/unite-outline'
 NeoBundle 'osyo-manga/unite-quickfix'
 NeoBundle 'rhysd/quickrun-unite-quickfix-outputter'
@@ -392,7 +392,6 @@ NeoBundle 'sgur/vim-textobj-parameter'
 NeoBundle 'thinca/vim-textobj-between'
 NeoBundle 'thinca/vim-textobj-comment'
 NeoBundle 'kana/vim-operator-user'
-NeoBundle 'kana/vim-operator-replace'
 NeoBundle 'thinca/vim-prettyprint'
 NeoBundle 'kana/vim-vspec'
 NeoBundle 'rhysd/accelerated-jk'
@@ -410,7 +409,6 @@ NeoBundle 'rhysd/clever-f.vim'
     " NeoBundle 'ujihisa/neco-look'
 
 " For testing
-" set rtp+=~/Github/unite-twitter.vim
 " set rtp+=~/Github/vim-textobj-ruby
 " set rtp+=~/Github/neco-ruby-keyword-args
 
@@ -421,6 +419,18 @@ NeoBundle 'rhysd/clever-f.vim'
     " NeoBundle 'git://git.wincent.com/command-t.git'
 
 " 読み込みを遅延する
+" NeoBundleLazy 'Shougo/unite.vim', {
+"             \ 'autoload' : {
+"             \     'commands': ['Unite', 'UniteWithBufferDir',
+"             \                  'UniteWithCursorWord', 'UniteWithInput']
+"             \     }
+"             \ }
+NeoBundleLazy 'kana/vim-operator-replace', {
+            \ 'autoload' : {
+            \     'mappings' : '<Plug>(operator-replace)'
+            \     }
+            \ }
+
 NeoBundleLazy 'tyru/caw.vim', {
             \ 'autoload' : {
             \     'mappings' :
@@ -939,14 +949,12 @@ function! s:cpp_hpp()
     endif
 
     " なければ Unite で検索
-    if exists(':Unite')
-        if executable('mdfind')
-            execute "Unite spotlight -input=".base
-        elseif executable('locate')
-            execute "Unite locate -input=".base
-        else
-            echoerr "not found"
-        endif
+    if executable('mdfind')
+        execute "Unite spotlight -input=".base
+    elseif executable('locate')
+        execute "Unite locate -input=".base
+    else
+        echoerr "not found"
     endif
 
 endfunction
