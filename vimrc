@@ -466,7 +466,7 @@ NeoBundleLazy 'telamon/vim-color-github'
 " 特定のファイルタイプで読み込む
 NeoBundleLazy 'rhysd/endwize.vim', {
             \ 'autoload' : {
-            \     'filetypes' : ['ryby', 'vim', 'sh', 'zsh', 'c', 'cpp', 'lua']
+            \     'filetypes' : ['ruby', 'vim', 'sh', 'zsh', 'c', 'cpp', 'lua']
             \     }
             \ }
 
@@ -523,7 +523,7 @@ NeoBundleLazy 'rhysd/tweetvim-advanced-filter'
 NeoBundleLazy 'rhysd/TweetVim', {
             \ 'depends' :
             \     ['basyura/twibill.vim',
-            \      'tyru/openbrowser.vim',
+            \      'tyru/open-browser.vim',
             \      'rhysd/tweetvim-advanced-filter'],
             \ 'autoload' : {
             \     'commands' :
