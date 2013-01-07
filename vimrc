@@ -195,8 +195,8 @@ inoremap <C-c> <Esc>
 " Yの挙動はy$のほうが自然な気がする
 nnoremap Y y$
 " 縦方向は論理移動する
-nnoremap j gj
-nnoremap k gk
+noremap j gj
+noremap k gk
 " 空行単位移動
 nnoremap <C-j> }
 nnoremap <C-k> {
