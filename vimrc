@@ -370,23 +370,20 @@ NeoBundle 'Shougo/vimproc', {
             \       'unix'    : 'make -f make_unix.mak',
             \   }
             \ }
+NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Shougo/vimfiler'
 NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'Shougo/neosnippet'
 NeoBundle 'rhysd/inu-snippets'
 NeoBundle 'thinca/vim-quickrun'
-NeoBundle 'tyru/caw.vim'
-NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Shougo/unite-outline'
 NeoBundle 'osyo-manga/unite-quickfix'
 NeoBundle 'rhysd/quickrun-unite-quickfix-outputter'
-NeoBundle 'rhysd/unite-ruby-require.vim'
 NeoBundle 'tsukkee/unite-help'
 NeoBundle 'thinca/vim-unite-history'
 NeoBundle 'rhysd/open-pdf.vim'
 NeoBundle 'vim-jp/vimdoc-ja'
 NeoBundle 'jceb/vim-hier'
-NeoBundle 'rhysd/endwize.vim'
 NeoBundle 'kana/vim-textobj-user'
 NeoBundle 'kana/vim-textobj-indent'
 NeoBundle 'kana/vim-textobj-line'
@@ -395,7 +392,6 @@ NeoBundle 'sgur/vim-textobj-parameter'
 NeoBundle 'thinca/vim-textobj-between'
 NeoBundle 'thinca/vim-textobj-comment'
 NeoBundle 'kana/vim-operator-user'
-NeoBundle 'kana/vim-operator-replace'
 NeoBundle 'thinca/vim-prettyprint'
 NeoBundle 'kana/vim-vspec'
 NeoBundle 'rhysd/accelerated-jk'
@@ -407,14 +403,12 @@ NeoBundle 'thinca/vim-scouter'
 NeoBundle 'thinca/vim-visualstar'
 NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'rhysd/gem-gist.vim'
-NeoBundle 'vim-scripts/ZoomWin'
 NeoBundle 'daisuzu/rainbowcyclone.vim'
 NeoBundle 'rhysd/clever-f.vim'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'ujihisa/neco-look'
 
 " For testing
-" set rtp+=~/Github/unite-twitter.vim
 " set rtp+=~/Github/vim-textobj-ruby
 " set rtp+=~/Github/neco-ruby-keyword-args
 
@@ -424,8 +418,41 @@ NeoBundle 'rhysd/clever-f.vim'
 " その他のgitリポジトリ
     " NeoBundle 'git://git.wincent.com/command-t.git'
 
-" 初めてコマンドが使われた時に読み込む
-NeoBundleLazy 'Shougo/vimshell'
+" 読み込みを遅延する
+" NeoBundleLazy 'Shougo/unite.vim', {
+"             \ 'autoload' : {
+"             \     'commands': ['Unite', 'UniteWithBufferDir',
+"             \                  'UniteWithCursorWord', 'UniteWithInput']
+"             \     }
+"             \ }
+NeoBundleLazy 'kana/vim-operator-replace', {
+            \ 'autoload' : {
+            \     'mappings' : '<Plug>(operator-replace)'
+            \     }
+            \ }
+
+NeoBundleLazy 'tyru/caw.vim', {
+            \ 'autoload' : {
+            \     'mappings' :
+            \         ['<Plug>(caw:i:toggle)',
+            \          '<Plug>(caw:a:toggle)',
+            \          '<Plug>(caw:wrap:toggle)',
+            \          '<Plug>(caw:jump:comment-next)',
+            \          '<Plug>(caw:jump:comment-next)']
+            \     }
+            \ }
+
+NeoBundleLazy 'vim-scripts/ZoomWin', {
+            \ 'autoload' : {
+            \     'commands' : 'ZoomWin'
+            \     }
+            \ }
+
+NeoBundleLazy 'Shougo/vimshell', {
+            \ 'autoload' : {
+            \     'commands' : ['VimShell', 'VimShellSendString', 'VimShellCurrentDir'],
+            \     }
+            \ }
 
 " GUI オンリーなプラグイン
 NeoBundleLazy 'ujihisa/unite-colorscheme'
@@ -436,55 +463,86 @@ NeoBundleLazy 'earendel'
 NeoBundleLazy 'rdark'
 NeoBundleLazy 'telamon/vim-color-github'
 
+" 特定のファイルタイプで読み込む
+NeoBundleLazy 'rhysd/endwize.vim', {
+            \ 'autoload' : {
+            \     'filetypes' : ['ryby', 'vim', 'sh', 'zsh', 'c', 'cpp', 'lua']
+            \     }
+            \ }
+
 " C++用のプラグイン
-NeoBundleLazy 'vim-jp/cpp-vim'
-NeoBundleLazy 'rhysd/clang_complete'
-NeoBundleLazy 'rhysd/unite-n3337'
+NeoBundleLazy 'vim-jp/cpp-vim', {
+            \ 'autoload' : {'filetypes' : 'cpp'}
+            \ }
+NeoBundleLazy 'rhysd/clang_complete', {
+            \ 'autoload' : {'filetypes' : ['c', 'cpp']}
+            \ }
+NeoBundleLazy 'rhysd/unite-n3337', {
+            \ 'autoload' : {'filetypes' : 'cpp'}
+            \ }
 
 " Haskell 用プラグイン
-NeoBundleLazy 'ujihisa/unite-haskellimport'
-NeoBundleLazy 'rhysd/vim2hs'
-NeoBundleLazy 'rhysd/vim-filetype-haskell'
-NeoBundleLazy 'eagletmt/unite-haddock'
-NeoBundleLazy 'ujihisa/neco-ghc'
-NeoBundleLazy 'eagletmt/ghcmod-vim'
+NeoBundleLazy 'ujihisa/unite-haskellimport', {
+            \ 'autoload' : {'filetypes' : 'haskell'}
+            \ }
+NeoBundleLazy 'rhysd/vim2hs', {
+            \ 'autoload' : {'filetypes' : 'haskell'}
+            \ }
+NeoBundleLazy 'rhysd/vim-filetype-haskell', {
+            \ 'autoload' : {'filetypes' : 'haskell'}
+            \ }
+NeoBundleLazy 'eagletmt/unite-haddock', {
+            \ 'autoload' : {'filetypes' : 'haskell'}
+            \ }
+NeoBundleLazy 'ujihisa/neco-ghc', {
+            \ 'autoload' : {'filetypes' : 'haskell'}
+            \ }
+NeoBundleLazy 'eagletmt/ghcmod-vim', {
+            \ 'autoload' : {'filetypes' : 'haskell'}
+            \ }
 
 " Ruby 用プラグイン
-NeoBundleLazy 'basyura/unite-rails'
-NeoBundleLazy 'rhysd/vim-textobj-ruby'
-NeoBundleLazy 'rhysd/neco-ruby-keyword-args'
-
-" 書き込み権限の無いファイルを編集しようとした時
-NeoBundleLazy 'sudo.vim'
+NeoBundleLazy 'basyura/unite-rails', {
+            \ 'autoload' : {'filetypes' : 'ruby'}
+            \ }
+NeoBundleLazy 'rhysd/vim-textobj-ruby', {
+            \ 'autoload' : {'filetypes' : 'ruby'}
+            \ }
+NeoBundleLazy 'rhysd/neco-ruby-keyword-args', {
+            \ 'autoload' : {'filetypes' : 'ruby'}
+            \ }
+NeoBundleLazy 'rhysd/unite-ruby-require.vim', {
+            \ 'autoload' : {'filetypes' : 'ruby'}
+            \ }
 
 " TweetVim
 NeoBundleLazy 'tyru/open-browser.vim'
 NeoBundleLazy 'basyura/twibill.vim'
-NeoBundleLazy 'rhysd/TweetVim'
-NeoBundleLazy 'yomi322/neco-tweetvim'
+" NeoBundleLazy 'yomi322/neco-tweetvim'
 NeoBundleLazy 'rhysd/tweetvim-advanced-filter'
+NeoBundleLazy 'rhysd/TweetVim', {
+            \ 'depends' :
+            \     ['basyura/twibill.vim',
+            \      'tyru/openbrowser.vim',
+            \      'rhysd/tweetvim-advanced-filter'],
+            \ 'autoload' : {
+            \     'commands' :
+            \         ['TweetVimHomeTimeline', 
+            \          'TweetVimMentions',
+            \          'TweetVimSay',
+            \          'TweetVimUserTimeline']
+            \     }
+            \ }
 
-" 遅延読み込み
-autocmd MyVimrc FileType cpp NeoBundleSource
-            \ cpp-vim
-            \ clang_complete
-            \ unite-n3337
-autocmd MyVimrc FileType haskell NeoBundleSource
-            \ unite-haskellimport
-            \ vim2hs
-            \ vim-filetype-haskell
-            \ unite-haddock
-            \ neco-ghc
-            \ ghcmod-vim
-autocmd MyVimrc FileType ruby NeoBundleSource
-            \ neco-ruby-keyword-args
-            \ vim-textobj-ruby
-            \ unite-rails
+" 書き込み権限の無いファイルを編集しようとした時
+NeoBundleLazy 'sudo.vim'
+" ReadOnly のファイルを編集しようとしたときに sudo.vim を遅延読み込み
+autocmd MyVimrc FileChangedRO * NeoBundleSource sudo.vim
+autocmd MyVimrc FileChangedRO * execute "command! W SudoWrite" expand('%')
 
 filetype plugin indent on     " required!
 
-autocmd MyVimrc FileChangedRO * NeoBundleSource sudo.vim
-autocmd MyVimrc FileChangedRO * execute "command! W SudoWrite" expand('%')
+
 
 " NeoBundle のキーマップ{{{
 " すべて更新するときは基本的に Unite で非同期に実行
@@ -553,9 +611,9 @@ nnoremap <Leader>gc :<C-u>GitCommit<Space>
 " git push 用
 function! s:git_push(...)
     let opts = join(a:000, " ")
-    LazyVimShell VimShell -split-command=vsplit
+    VimShell -split-command=vsplit
     startinsert
-    execute 'LazyVimShell' 'VimShellSendString' 'git push' opts
+    execute 'VimShellSendString' 'git push' opts
 endfunction
 command! -nargs=* GitPush call <SID>git_push(<f-args>)
 nnoremap <Leader>gp :<C-u>GitPush<CR>
@@ -891,14 +949,12 @@ function! s:cpp_hpp()
     endif
 
     " なければ Unite で検索
-    if exists(':Unite')
-        if executable('mdfind')
-            execute "Unite spotlight -input=".base
-        elseif executable('locate')
-            execute "Unite locate -input=".base
-        else
-            echoerr "not found"
-        endif
+    if executable('mdfind')
+        execute "Unite spotlight -input=".base
+    elseif executable('locate')
+        execute "Unite locate -input=".base
+    else
+        echoerr "not found"
     endif
 
 endfunction
@@ -919,8 +975,8 @@ autocmd MyVimrc FileType haskell inoremap <buffer>;; ::
     "     echo join(split(system("ghc -isrc " . expand('%') . " -e ':t " . a:word . "'")))
     " endfunction
 function! s:start_ghci()
-    LazyVimShell VimShell -split-command=vsplit
-    LazyVimShell VimShellSendString ghci
+    VimShell -split-command=vsplit
+    VimShellSendString ghci
     startinsert
 endfunction
 command! Ghci call <SID>start_ghci()
@@ -1230,48 +1286,47 @@ autocmd MyVimrc FileType cpp nnoremap <buffer>[unite]un :<C-u>Unite n3337<CR>
 "}}}
 
 " VimShellの設定 {{{
-" プロンプト
-let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
-let g:vimshell_right_prompt = 'strftime("%Y/%m/%d %H:%M")'
-let g:vimshell_prompt = "(U'w'){ "
-    " let g:vimshell_prompt = "(U^w^){ "
-" executable suffix
-let g:vimshell_execute_file_list = { 'rb' : 'ruby', 'pl' : 'perl', 'py' : 'python' ,
-            \ 'txt' : 'vim', 'vim' : 'vim' , 'c' : 'vim', 'h' : 'vim', 'cpp' : 'vim',
-            \ 'hpp' : 'vim', 'cc' : 'vim', 'd' : 'vim', 'pdf' : 'open', 'mp3' : 'open',
-            \ 'jpg' : 'open', 'png' : 'open',
-            \ }
 
-" VimShell 遅延読み込み
-function! s:vimshell_lazy(cmd)
-    if ! exists('s:vimshell_already_loaded')
-        NeoBundleSource vimshell
-        let s:vimshell_already_loaded = 1
-    endif
-    execute a:cmd
+" 実行キーマッピング
+nnoremap <silent><Leader>vs :<C-u>VimShell -split=vsplit<CR>
+nnoremap <Leader>vc :<C-u>VimShellSendString<Space>
+
+let s:bundle = neobundle#get("vimshell")
+function! s:bundle.hooks.on_source(bundle)
+    " プロンプト
+    let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
+    let g:vimshell_right_prompt = 'strftime("%Y/%m/%d %H:%M")'
+    let g:vimshell_prompt = "(U'w'){ "
+        " let g:vimshell_prompt = "(U^w^){ "
+    " executable suffix
+    let g:vimshell_execute_file_list = { 'rb' : 'ruby', 'pl' : 'perl', 'py' : 'python' ,
+                \ 'txt' : 'vim', 'vim' : 'vim' , 'c' : 'vim', 'h' : 'vim', 'cpp' : 'vim',
+                \ 'hpp' : 'vim', 'cc' : 'vim', 'd' : 'vim', 'pdf' : 'open', 'mp3' : 'open',
+                \ 'jpg' : 'open', 'png' : 'open',
+                \ }
+
+    "VimShell のキーマッピング {{{
+    " コマンド履歴の移動
+    " バッファ移動の <C-n> <C-p> が潰されているので再マッピング
+    autocmd MyVimrc FileType vimshell nnoremap <buffer><silent><C-n> :<C-u>bn<CR>
+    autocmd MyVimrc FileType vimshell nnoremap <buffer><silent><C-p> :<C-u>bp<CR>
+    autocmd MyVimrc FileType vimshell nmap <buffer><silent>gn <Plug>(vimshell_next_prompt)
+    autocmd MyVimrc FileType vimshell nmap <buffer><silent>gp <Plug>(vimshell_previous_prompt)
+    " VimFiler 連携
+    autocmd MyVimrc FileType vimshell nnoremap <buffer><silent><Leader>ff :<C-u>VimFilerCurrentDir<CR>
+    autocmd MyVimrc FileType vimshell inoremap <buffer><silent><C-s> <Esc>:<C-u>VimFilerCurrentDir<CR>
+    " 親ディレクトリへ移動
+    autocmd MyVimrc FileType vimshell imap <buffer><silent><C-j> <C-u>..<Plug>(vimshell_enter)
+    " popd
+    autocmd MyVimrc FileType vimshell imap <buffer><silent><C-p> <C-u>popd<Plug>(vimshell_enter)
+    " git status
+    autocmd MyVimrc FileType vimshell imap <buffer><silent><C-q> <C-u>git status -sb<Plug>(vimshell_enter)
+    " zsh や bash の <C-d> っぽい挙動
+    autocmd MyVimrc FileType vimshell imap <buffer><silent><expr><C-d> vimshell#get_cur_text()=='' ? "\<Esc>\<Plug>(vimshell_exit)" : "\<Del>"
+    " 最新のプロンプトに移動
+    autocmd MyVimrc FileType vimshell nnoremap <buffer>a GA
 endfunction
-command! -nargs=+ LazyVimShell call <SID>vimshell_lazy(<q-args>)
-
-"VimShell のキーマッピング {{{
-nnoremap <silent><Leader>vs :<C-u>LazyVimShell VimShell -split=vsplit<CR>
-nnoremap <Leader>vc :<C-u>LazyVimShell VimShellSendString<Space>
-
-" コマンド履歴の移動
-" バッファ移動の <C-n> <C-p> が潰されているので再マッピング
-autocmd MyVimrc FileType vimshell nnoremap <buffer><silent><C-n> :<C-u>bn<CR>
-autocmd MyVimrc FileType vimshell nnoremap <buffer><silent><C-p> :<C-u>bp<CR>
-autocmd MyVimrc FileType vimshell nmap <buffer><silent>gn <Plug>(vimshell_next_prompt)
-autocmd MyVimrc FileType vimshell nmap <buffer><silent>gp <Plug>(vimshell_previous_prompt)
-" VimFiler 連携
-autocmd MyVimrc FileType vimshell nnoremap <buffer><silent><Leader>ff :<C-u>VimFilerCurrentDir<CR>
-autocmd MyVimrc FileType vimshell inoremap <buffer><silent><C-s> <Esc>:<C-u>VimFilerCurrentDir<CR>
-" 親ディレクトリへ移動
-autocmd MyVimrc FileType vimshell imap <buffer><silent><C-j> <C-u>..<Plug>(vimshell_enter)
-" popd
-autocmd MyVimrc FileType vimshell imap <buffer><silent><C-p> <C-u>popd<Plug>(vimshell_enter)
-" git status
-autocmd MyVimrc FileType vimshell imap <buffer><silent><C-q> <C-u>git status -sb<Plug>(vimshell_enter)
-autocmd MyVimrc FileType vimshell imap <buffer><silent><expr><C-d> vimshell#get_cur_text()=='' ? "\<Esc>\<Plug>(vimshell_exit)" : "\<Del>"
+unlet s:bundle
 
 " }}}
 
@@ -1352,7 +1407,11 @@ let g:vimfiler_as_default_explorer = 1
 let g:vimfiler_safe_mode_by_default = 0
 let g:vimfiler_enable_auto_cd = 1
 let g:vimfiler_split_command = 'vertical rightbelow vsplit'
-let g:vimfiler_execute_file_list = deepcopy(g:vimshell_execute_file_list)
+let g:vimfiler_execute_file_list = { 'rb' : 'ruby', 'pl' : 'perl', 'py' : 'python' ,
+            \ 'txt' : 'vim', 'vim' : 'vim' , 'c' : 'vim', 'h' : 'vim', 'cpp' : 'vim',
+            \ 'hpp' : 'vim', 'cc' : 'vim', 'd' : 'vim', 'pdf' : 'open', 'mp3' : 'open',
+            \ 'jpg' : 'open', 'png' : 'open',
+            \ }
 let g:vimfiler_execute_file_list['_'] = 'vim'
 let g:vimfiler_split_rule = 'botright'
 
@@ -1363,7 +1422,7 @@ autocmd MyVimrc FileType vimfiler nmap <buffer><silent><expr> s vimfiler#smart_c
             \ "\<Plug>(vimfiler_edit_file)")
 " jump to VimShell
 autocmd MyVimrc FileType vimfiler nnoremap <buffer><silent><Leader>vs
-            \ :<C-u>LazyVimShell VimShellCurrentDir<CR>
+            \ :<C-u>VimShellCurrentDir<CR>
 " e は元のまま使えるようにする
 autocmd MyVimrc FileType vimfiler nmap <buffer>e <C-w>
 " 'a'nother
@@ -1751,22 +1810,15 @@ command! -nargs=* Vspec
 " }}}
 
 " TweetVim "{{{
-nnoremap <silent><Leader>tw :<C-u>call <SID>tweetvim_command('TweetVimHomeTimeline')<CR>
-nnoremap <silent><Leader>tt :<C-u>call <SID>tweetvim_command('tabnew <Bar> TweetVimHomeTimeline')<CR>
-nnoremap <silent><Leader>tm :<C-u>call <SID>tweetvim_command('TweetVimMentions')<CR>
-nnoremap <silent><Leader>ts :<C-u>call <SID>tweetvim_command('TweetVimSay')<CR>
-nnoremap <silent><Leader>tu :<C-u>call <SID>tweetvim_command('TweetVimUserTimeline')<Space>
+nnoremap <silent><Leader>tw :<C-u>TweetVimHomeTimeline<CR>
+nnoremap <silent><Leader>tt :<C-u>tabnew <Bar> TweetVimHomeTimeline<CR>
+nnoremap <silent><Leader>tm :<C-u>TweetVimMentions<CR>
+nnoremap <silent><Leader>ts :<C-u>TweetVimSay<CR>
+nnoremap <silent><Leader>tu :<C-u>TweetVimUserTimeline<Space>
 
-function! s:tweetvim_command(cmd)
-    call <SID>setup_tweetvim()
-    execute a:cmd
-endfunction
-
-function! s:setup_tweetvim()
-    if exists('s:vimrc_tweetvim_loaded')
-        return
-    endif
-
+" TweetVim 読み込み時に設定する
+let s:bundle = neobundle#get("TweetVim")
+function! s:bundle.hooks.on_source(bundle)
     " TweetVim
     let g:tweetvim_display_icon = get(g:, 'tweetvim_display_icon', 0)
     let g:tweetvim_tweet_per_page = 60
@@ -1784,13 +1836,6 @@ function! s:setup_tweetvim()
         let g:openbrowser_open_commands = ['google-chrome', 'xdg-open', 'w3m']
         let g:openbrowser_open_rules['google-chrome'] = "{browser} {shellescape(uri)}"
     endif
-
-    " プラグインのロード
-    NeoBundleSource open-browser.vim
-    NeoBundleSource twibill.vim
-    NeoBundleSource TweetVim
-    NeoBundleSource neco-tweetvim
-    NeoBundleSource tweetvim-advanced-filter
 
     command -nargs=1 TweetVimFavorites call call('tweetvim#timeline',['favorites',<q-args>])
 
@@ -1901,8 +1946,8 @@ function! s:setup_tweetvim()
         source $HOME/.tweetvimrc
     endif
 
-    let s:vimrc_tweetvim_loaded = 1
 endfunction
+unlet s:bundle
 "}}}
 
 " RainbowCyclone.vim "{{{

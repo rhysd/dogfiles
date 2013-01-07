@@ -1,7 +1,9 @@
 # vim:ft=ruby:
 
+# libraries
 require 'awesome_print'
 
+# user defined commands
 if RUBY_PLATFORM.include? 'darwin'
   def pbcopy(str)
     IO.popen('pbcopy', 'r+') {|io| io.puts str }
@@ -15,3 +17,6 @@ if RUBY_PLATFORM.include? 'darwin'
     pbcopy _pry_.last_result.chomp
   end
 end
+
+# aliases
+alias :r :require
