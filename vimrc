@@ -1430,8 +1430,17 @@ nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>:HierClear<CR>
 
 " VimFilerの設定 {{{
 " ディレクトリを指定して Vim を開いたときは VimFiler をロードする{{{
-autocmd MyVimrc FileType netrw NeoBundleSource vimfiler
+autocmd MyVimrc FileType netrw NeoBundleSource vimfiler <Bar> let g:loaded_netrw = 1
 " }}}
+" Netrw 無効化
+augroup DisableNetrw
+    autocmd!
+    autocmd BufEnter,BufCreate,BufWinEnter * call <SID>disable_netrw()
+augroup END
+function! s:disable_netrw()
+    autocmd! FileExplorer
+    autocmd! DisableNetrw
+endfunction
 
 let g:vimfiler_as_default_explorer = 1
 let g:vimfiler_safe_mode_by_default = 0
