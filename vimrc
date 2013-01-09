@@ -431,6 +431,24 @@ NeoBundleLazy 'kana/vim-operator-replace', {
             \     }
             \ }
 
+NeoBundleLazy 'rhysd/vim-operator-trailingspace-killer', {
+            \ 'autoload' : {
+            \     'mappings' : '<Plug>(operator-trailingspace-killer)'
+            \     }
+            \ }
+
+NeoBundleLazy 'rhysd/vim-operator-filled-with-blank', {
+            \ 'autoload' : {
+            \     'mappings' : '<Plug>(operator-filled-with-blank)'
+            \     }
+            \ }
+
+NeoBundleLazy 'rhysd/vim-operator-filled-with-blank', {
+            \ 'autoload' : {
+            \     'mappings' : '<Plug>(operator-filled-with-blank)'
+            \     }
+            \ }
+
 NeoBundleLazy 'tyru/caw.vim', {
             \ 'autoload' : {
             \     'mappings' :
@@ -523,7 +541,7 @@ NeoBundleLazy 'rhysd/tweetvim-advanced-filter'
 NeoBundleLazy 'rhysd/TweetVim', {
             \ 'depends' :
             \     ['basyura/twibill.vim',
-            \      'tyru/openbrowser.vim',
+            \      'tyru/open-browser.vim',
             \      'rhysd/tweetvim-advanced-filter'],
             \ 'autoload' : {
             \     'commands' :
@@ -1714,25 +1732,12 @@ endif
 "}}}
 
 " vim-operator {{{
-" replace
-nmap <Leader>r <Plug>(operator-replace)
-vmap <Leader>r <Plug>(operator-replace)
-
-" operator-fillblank "{{{
-" replace selection with space
-function! OperatorFillBlank(motion_wise)
-    let v = operator#user#visual_command_from_wise_name(a:motion_wise)
-    execute 'normal! '. v . '`["x`]r '
-endfunction
-call operator#user#define('fillblank', 'OperatorFillBlank')
-map <silent><Leader>b <Plug>(operator-fillblank)
-"}}}
-
-" operator-blank-killer "{{{
-call operator#user#define_ex_command('blank-killer', 's/\s\+$//e')
-map <silent><Leader>k <Plug>(operator-blank-killer)
-"}}}
-
+" operator-replace
+map <Leader>r <Plug>(operator-replace)
+" operator-blank-killer
+map <silent><Leader>k <Plug>(operator-trailingspace-killer)
+" operator-filled-with-blank
+map <silent><Leader>b <Plug>(operator-filled-with-blank)
 "}}}
 
 " ghcmod-vim {{{
