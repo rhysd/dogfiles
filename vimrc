@@ -419,8 +419,9 @@ NeoBundle 'rhysd/clever-f.vim'
 " 読み込みを遅延する
 NeoBundleLazy 'Shougo/unite.vim', {
             \ 'autoload' : {
-            \     'commands': ['Unite', 'UniteWithBufferDir',
-            \                  'UniteWithCursorWord', 'UniteWithInput']
+            \     'commands' : ['Unite', 'UniteWithBufferDir',
+            \                  'UniteWithCursorWord', 'UniteWithInput'],
+            \     'functions' : 'unite#start'
             \     }
             \ }
 
