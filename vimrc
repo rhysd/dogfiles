@@ -1430,12 +1430,7 @@ nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>:HierClear<CR>
 
 " VimFilerの設定 {{{
 " ディレクトリを指定して Vim を開いたときは VimFiler をロードする{{{
-for arg in argv()
-    if isdirectory(arg)
-        NeoBundleSource vimfiler
-        break
-    endif
-endfor
+autocmd MyVimrc FileType netrw NeoBundleSource vimfiler
 " }}}
 
 let g:vimfiler_as_default_explorer = 1
