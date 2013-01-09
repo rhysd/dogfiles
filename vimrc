@@ -1429,18 +1429,37 @@ nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>:HierClear<CR>
 " }}}
 
 " VimFilerの設定 {{{
-" ディレクトリを指定して Vim を開いたときは VimFiler をロードする{{{
-autocmd MyVimrc FileType netrw NeoBundleSource vimfiler <Bar> let g:loaded_netrw = 1
-" }}}
-" Netrw 無効化
-augroup DisableNetrw
+
+" VimFiler の読み込みを遅延しつつデフォルトのファイラに設定 {{{
+augroup LoadVimFiler
     autocmd!
-    autocmd BufEnter,BufCreate,BufWinEnter * call <SID>disable_netrw()
+    autocmd MyVimrc BufEnter,BufCreate,BufWinEnter * call <SID>load_vimfiler(expand('<amatch>'))
 augroup END
-function! s:disable_netrw()
-    autocmd! FileExplorer
-    autocmd! DisableNetrw
+
+" :edit {dir} や unite.vim などでディレクトリを開こうとした場合
+function! s:load_vimfiler(path)
+    let path = a:path
+    " For ':edit ~'
+    if fnamemodify(path, ':t') ==# '~'
+        let path = '~'
+    endif
+
+    if isdirectory(expand(path))
+        NeoBundleSource vimfiler
+    endif
+
+    autocmd! LoadVimFiler
 endfunction
+
+" 起動時にディレクトリを指定した場合
+for arg in argv()
+    if isdirectory(getcwd().'/'.arg)
+        NeoBundleSource vimfiler
+        autocmd! LoadVimFiler
+        break
+    endif
+endfor
+"}}}
 
 let g:vimfiler_as_default_explorer = 1
 let g:vimfiler_safe_mode_by_default = 0
