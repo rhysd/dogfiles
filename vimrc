@@ -195,8 +195,8 @@ inoremap <C-c> <Esc>
 " Yの挙動はy$のほうが自然な気がする
 nnoremap Y y$
 " 縦方向は論理移動する
-nnoremap j gj
-nnoremap k gk
+noremap j gj
+noremap k gk
 " 空行単位移動
 nnoremap <C-j> }
 nnoremap <C-k> {
@@ -370,8 +370,6 @@ NeoBundle 'Shougo/vimproc', {
             \       'unix'    : 'make -f make_unix.mak',
             \   }
             \ }
-NeoBundle 'Shougo/unite.vim'
-NeoBundle 'Shougo/vimfiler'
 NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'Shougo/neosnippet'
 NeoBundle 'rhysd/inu-snippets'
@@ -419,12 +417,22 @@ NeoBundle 'rhysd/clever-f.vim'
     " NeoBundle 'git://git.wincent.com/command-t.git'
 
 " 読み込みを遅延する
-" NeoBundleLazy 'Shougo/unite.vim', {
-"             \ 'autoload' : {
-"             \     'commands': ['Unite', 'UniteWithBufferDir',
-"             \                  'UniteWithCursorWord', 'UniteWithInput']
-"             \     }
-"             \ }
+NeoBundleLazy 'Shougo/unite.vim', {
+            \ 'autoload' : {
+            \     'commands' : ['Unite', 'UniteWithBufferDir',
+            \                  'UniteWithCursorWord', 'UniteWithInput'],
+            \     'functions' : 'unite#start'
+            \     }
+            \ }
+
+NeoBundleLazy 'Shougo/vimfiler', {
+            \ 'autoload' : {
+            \     'commands' : ['VimFiler', 'VimFilerCurrentDir',
+            \                   'VimFilerBufferDir', 'VimFilerSplit',
+            \                   'VimFilerExplorer']
+            \     }
+            \ }
+
 NeoBundleLazy 'kana/vim-operator-replace', {
             \ 'autoload' : {
             \     'mappings' : '<Plug>(operator-replace)'
@@ -484,7 +492,7 @@ NeoBundleLazy 'telamon/vim-color-github'
 " 特定のファイルタイプで読み込む
 NeoBundleLazy 'rhysd/endwize.vim', {
             \ 'autoload' : {
-            \     'filetypes' : ['ryby', 'vim', 'sh', 'zsh', 'c', 'cpp', 'lua']
+            \     'filetypes' : ['ruby', 'vim', 'sh', 'zsh', 'c', 'cpp', 'lua']
             \     }
             \ }
 
@@ -1421,6 +1429,15 @@ nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>:HierClear<CR>
 " }}}
 
 " VimFilerの設定 {{{
+" ディレクトリを指定して Vim を開いたときは VimFiler をロードする{{{
+for arg in argv()
+    if isdirectory(arg)
+        NeoBundleSource vimfiler
+        break
+    endif
+endfor
+" }}}
+
 let g:vimfiler_as_default_explorer = 1
 let g:vimfiler_safe_mode_by_default = 0
 let g:vimfiler_enable_auto_cd = 1
