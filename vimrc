@@ -370,8 +370,6 @@ NeoBundle 'Shougo/vimproc', {
             \       'unix'    : 'make -f make_unix.mak',
             \   }
             \ }
-NeoBundle 'Shougo/unite.vim'
-NeoBundle 'Shougo/vimfiler'
 NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'Shougo/neosnippet'
 NeoBundle 'rhysd/inu-snippets'
@@ -419,12 +417,21 @@ NeoBundle 'rhysd/clever-f.vim'
     " NeoBundle 'git://git.wincent.com/command-t.git'
 
 " 読み込みを遅延する
-" NeoBundleLazy 'Shougo/unite.vim', {
-"             \ 'autoload' : {
-"             \     'commands': ['Unite', 'UniteWithBufferDir',
-"             \                  'UniteWithCursorWord', 'UniteWithInput']
-"             \     }
-"             \ }
+NeoBundleLazy 'Shougo/unite.vim', {
+            \ 'autoload' : {
+            \     'commands': ['Unite', 'UniteWithBufferDir',
+            \                  'UniteWithCursorWord', 'UniteWithInput']
+            \     }
+            \ }
+
+NeoBundleLazy 'Shougo/vimfiler', {
+            \ 'autoload' : {
+            \     'commands' : ['VimFiler', 'VimFilerCurrentDir',
+            \                   'VimFilerBufferDir', 'VimFilerSplit',
+            \                   'VimFilerExplorer']
+            \     }
+            \ }
+
 NeoBundleLazy 'kana/vim-operator-replace', {
             \ 'autoload' : {
             \     'mappings' : '<Plug>(operator-replace)'
@@ -1403,6 +1410,15 @@ nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>:HierClear<CR>
 " }}}
 
 " VimFilerの設定 {{{
+" ディレクトリを指定して Vim を開いたときは VimFiler をロードする{{{
+for arg in argv()
+    if isdirectory(arg)
+        NeoBundleSource vimfiler
+        break
+    endif
+endfor
+" }}}
+
 let g:vimfiler_as_default_explorer = 1
 let g:vimfiler_safe_mode_by_default = 0
 let g:vimfiler_enable_auto_cd = 1
