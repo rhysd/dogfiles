@@ -1438,13 +1438,18 @@ augroup END
 
 " :edit {dir} や unite.vim などでディレクトリを開こうとした場合
 function! s:load_vimfiler(path)
-    let path = a:path
-    " For ':edit ~'
-    if fnamemodify(path, ':t') ==# '~'
-        let path = '~'
+    if exists('g:loaded_vimfiler')
+        autocmd! LoadVimFiler
+        return
     endif
 
-    if isdirectory(expand(path))
+    let path = a:path
+    " for ':edit ~'
+    if fnamemodify(path, ':t') ==# '~'
+        let path = expand('~')
+    endif
+
+    if isdirectory(path)
         NeoBundleSource vimfiler
     endif
 
