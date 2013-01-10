@@ -1,10 +1,3 @@
-" TODO conflict marker のハイライト
-"<<<<<<< from
-"=======
-">>>>>>> to
-"
-" ' でも " でも使える textobj プラグイン
-
 " 必須な基本設定 {{{
 
 " Vimrc 共通の augroup
@@ -1102,17 +1095,17 @@ imap <expr><CR> (pumvisible() ? neocomplcache#smart_close_popup() : "")."\<Plug>
 " neosnippet {{{
 "スニペット展開候補があれば展開を，そうでなければbash風補完を．
 " プレースホルダ優先で展開
-imap <expr><C-l> neosnippet#expandable() ?
+imap <expr><C-l> neosnippet#expandable() \|\| neosnippet#jumpable() ?
             \ "\<Plug>(neosnippet_jump_or_expand)" :
             \ neocomplcache#complete_common_string()
-smap <expr><C-l> neosnippet#expandable() ?
+smap <expr><C-l> neosnippet#expandable() \|\| neosnippet#jumpable() ?
             \ "\<Plug>(neosnippet_jump_or_expand)" :
             \ neocomplcache#complete_common_string()
 " ネスト優先で展開
-imap <expr><C-S-l> neosnippet#expandable() ?
+imap <expr><C-S-l> neosnippet#expandable() \|\| neosnippet#jumpable() ?
             \ "\<Plug>(neosnippet_expand_or_jump)" :
             \ neocomplcache#complete_common_string()
-smap <expr><C-S-l> neosnippet#expandable() ?
+smap <expr><C-S-l> neosnippet#expandable() \|\| neosnippet#jumpable() ?
             \ "\<Plug>(neosnippet_expand_or_jump)" :
             \ neocomplcache#complete_common_string()
 "}}}
