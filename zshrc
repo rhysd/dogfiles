@@ -50,14 +50,6 @@ alias sudo='sudo '
 alias vspec='~/.vim/bundle/vim-vspec/bin/vspec ~/.vim/bundle/vim-vspec'
 alias memo='cat > /dev/null'
 
-function separate(){
-    echo -n $fg_bold[yellow]
-    for i in $(seq 1 $COLUMNS); do
-        echo -n '~'
-    done
-    echo -n $reset_color
-}
-
 alias l=ls
 alias pd=popd
 alias v=vim
@@ -88,15 +80,40 @@ alias -s bib=bibtex
 # aliases for C++
 alias g++='g++ -std=c++11 -O2 -g -Wall -Wextra'
 alias gpp=g++
-function run-gcc(){
-    set -e
-    /usr/local/bin/g++-4.7 -g -O2 -Wall -Wextra -std=c++11 $* && ./a.out
-}
 alias rg=run-gcc
 alias clang++='clang++ -stdlib=libc++ -std=c++11 -O2 -g -Wall -Wextra'
 alias cl=clang++
 
 # }}}
+
+############
+#   関数   #
+############
+function separate(){
+    echo -n $fg_bold[yellow]
+    for i in $(seq 1 $COLUMNS); do
+        echo -n '~'
+    done
+    echo -n $reset_color
+}
+
+function kiritori(){
+    echo -n $fg_bold[blue]
+    for i in $(seq 1 $(($COLUMNS/4-2))); do
+        echo -n '- '
+    done
+    echo -n ' ｷﾘﾄﾘｾﾝ '
+    for i in $(seq 1 $(($COLUMNS/4-2))); do
+        echo -n ' -'
+    done
+    echo -n $reset_color
+}
+
+function run-gcc(){
+    set -e
+    /usr/local/bin/g++-4.7 -g -O2 -Wall -Wextra -std=c++11 $* && ./a.out
+}
+
 
 ##########################
 #   モジュールのロード   #
