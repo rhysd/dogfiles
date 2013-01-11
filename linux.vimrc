@@ -31,4 +31,32 @@ function! s:waf(...)
     startinsert
 endfunction
 
+" pdf ファイルを開く
+command! -nargs=0 TeXPdfOpen call <SID>tex_pdf_open(expand('%'))
+autocmd MyVimrc FileType tex nnoremap <buffer><Leader>tp :<C-u>TeXPdfOpen<CR>
+
+function! s:tex_pdf_open(fname)
+    if fnamemodify(a:fname, ':e') !=# 'tex'
+        echoerr a:fname.' is not a latex file!'
+        return
+    endif
+
+    let pdf_name = fnamemodify(a:fname, ':p:r').'.pdf'
+    if ! filereadable(pdf_name)
+        echoerr pdf_name.' is not found!'
+        return
+    endif
+
+    call system('zathura '.pdf_name)
+endfunction
+
+command! -nargs=0 TeXMakePdf call <SID>tex_make_pdf(expand('%:r'))
+autocmd MyVimrc FileType tex nnoremap <buffer><Leader>tm :<C-u>TeXMakePdf<CR>
+function! s:tex_make_pdf(base)
+    VimShellCurrentDir -split-command=vsplit
+    execute 'VimShellSendString' 'platex '.a:base.' && dvipdfmx '.a:base
+endfunction
+
+let g:quickrun_config.tex = {'exec' : 'platex %s:p && dvipdfmx %s:p'}
+
 " vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8 :
