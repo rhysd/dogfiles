@@ -69,7 +69,7 @@ set hlsearch
 "コマンドラインでのIM無効化
 set noimcmdline
 " コマンドラインで cmd window を出すキー
-set cedit=<C-z>
+set cedit=<C-c>
 "バックスペースでなんでも消せるように
 set backspace=indent,eol,start
 " 改行時にコメントしない
