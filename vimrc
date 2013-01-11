@@ -984,7 +984,7 @@ autocmd MyVimrc FileType cpp setlocal matchpairs+=<:>
 autocmd MyVimrc FileType cpp inoremap <buffer>,  ,<Space>
 autocmd MyVimrc FileType cpp nnoremap <buffer><Leader>ret :<C-u>call <SID>return_type_completion()<CR>
 autocmd MyVimrc FileType cpp nnoremap <silent><buffer><C-t> :<C-u>call <SID>cpp_hpp()<CR>
-
+autocmd MyVimrc FileType cpp inoremap <expr> e getline('.')[col('.') - 6:col('.') - 2] ==# 'const' ? 'expr ' : 'e'
 " }}}
 
 " Haskell {{{
