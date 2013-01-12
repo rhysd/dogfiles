@@ -537,12 +537,13 @@ NeoBundleLazy 'rhysd/unite-ruby-require.vim', {
 " TweetVim
 NeoBundleLazy 'tyru/open-browser.vim'
 NeoBundleLazy 'basyura/twibill.vim'
-" NeoBundleLazy 'yomi322/neco-tweetvim'
+NeoBundleLazy 'yomi322/neco-tweetvim'
 NeoBundleLazy 'rhysd/tweetvim-advanced-filter'
 NeoBundleLazy 'rhysd/TweetVim', {
             \ 'depends' :
             \     ['basyura/twibill.vim',
             \      'tyru/open-browser.vim',
+            \      'yomi322/neco-tweetvim',
             \      'rhysd/tweetvim-advanced-filter'],
             \ 'autoload' : {
             \     'commands' :
