@@ -14,8 +14,6 @@ set fileencodings=utf-8,cp932,euc-jp
 set nocompatible
 " user-defined prefix
 let mapleader = ','
-" シンタックスハイライト
-syntax enable
 "行番号表示
 set number
 "バックアップファイルいらない
@@ -678,6 +676,8 @@ command! -nargs=+ Assert
 if !has('gui_running')
     colorscheme wombat256mod
 endif
+" シンタックスハイライト
+syntax enable
 " }}}
 
 " その他の雑多な設定 {{{
@@ -1844,7 +1844,8 @@ let g:unite_source_alignta_preset_options = [
 
 " endwize.vim "{{{
 " 自動挿入された end の末尾に情報を付け加える e.g. end # if hoge
-let g:endwize_add_info_filetypes = ['c', 'cpp']
+let g:endwize_add_info_filetypes = ['c', 'cpp', 'ruby']
+let g:endwize_add_verbose_info_filetypes = ['c', 'cpp']
 "}}}
 
 " vim-vspec 用コマンド {{{
