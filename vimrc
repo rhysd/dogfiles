@@ -400,6 +400,7 @@ NeoBundle 'rhysd/clever-f.vim'
 " For testing
 " set rtp+=~/Github/vim-textobj-ruby
 " set rtp+=~/Github/neco-ruby-keyword-args
+" set rtp+=~/Github/clever-f.vim
 
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
@@ -560,8 +561,6 @@ autocmd MyVimrc FileChangedRO * execute "command! W SudoWrite" expand('%')
 
 filetype plugin indent on     " required!
 
-
-
 " NeoBundle のキーマップ{{{
 " すべて更新するときは基本的に Unite で非同期に実行
 " nnoremap <silent><Leader>nbu :<C-u>AutoNeoBundleTimestamp<CR>:NeoBundleUpdate<CR>
@@ -569,6 +568,7 @@ nnoremap <silent><Leader>nbu :<C-u>NeoBundleUpdate<CR>
 nnoremap <silent><Leader>nbc :<C-u>NeoBundleClean<CR>
 nnoremap <silent><Leader>nbi :<C-u>NeoBundleInstall<CR>
 nnoremap <silent><Leader>nbl :<C-u>Unite output<CR>NeoBundleList<CR>
+nnoremap <silent><Leader>nbd :<C-u>NeoBundleDocs<CR>
 " }}}
 
 " }}}
