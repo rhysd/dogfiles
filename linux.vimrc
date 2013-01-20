@@ -47,7 +47,7 @@ function! s:tex_pdf_open(fname)
         return
     endif
 
-    call system('zathura '.pdf_name)
+    call vimproc#system_bg('zathura '.pdf_name)
 endfunction
 
 command! -nargs=0 TeXMakePdf call <SID>tex_make_pdf(expand('%:r'))
