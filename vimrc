@@ -394,12 +394,14 @@ NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'rhysd/gem-gist.vim'
 NeoBundle 'daisuzu/rainbowcyclone.vim'
 NeoBundle 'rhysd/clever-f.vim'
+NeoBundle 'tyru/open-browser.vim'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'ujihisa/neco-look'
 
 " For testing
 " set rtp+=~/Github/vim-textobj-ruby
 " set rtp+=~/Github/neco-ruby-keyword-args
+" set rtp+=~/Github/clever-f.vim
 
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
@@ -533,7 +535,6 @@ NeoBundleLazy 'rhysd/unite-ruby-require.vim', {
             \ }
 
 " TweetVim
-NeoBundleLazy 'tyru/open-browser.vim'
 NeoBundleLazy 'basyura/twibill.vim'
 NeoBundleLazy 'yomi322/neco-tweetvim'
 NeoBundleLazy 'rhysd/tweetvim-advanced-filter'
@@ -560,7 +561,16 @@ autocmd MyVimrc FileChangedRO * execute "command! W SudoWrite" expand('%')
 
 filetype plugin indent on     " required!
 
-
+" カーソル行で NeoBundle されたプラグインをブラウザで表示
+function! s:browse_neobundle_home(bundle_name)
+    if match(a:bundle_name, '/') == -1
+        let url = 'http://www.google.com/cse?cx=partner-pub-3005259998294962%3Abvyni59kjr1&q=sudo.vim#gsc.tab=0&gsc.q='.a:bundle_name.'&gsc.page=1'
+    else
+        let url = 'https://github.com/'.a:bundle_name
+    endif
+    execute 'OpenBrowser' url
+endfunction
+command! -nargs=1 BrowseNeoBundleHome call <SID>browse_neobundle_home(<q-args>)
 
 " NeoBundle のキーマップ{{{
 " すべて更新するときは基本的に Unite で非同期に実行
@@ -569,6 +579,8 @@ nnoremap <silent><Leader>nbu :<C-u>NeoBundleUpdate<CR>
 nnoremap <silent><Leader>nbc :<C-u>NeoBundleClean<CR>
 nnoremap <silent><Leader>nbi :<C-u>NeoBundleInstall<CR>
 nnoremap <silent><Leader>nbl :<C-u>Unite output<CR>NeoBundleList<CR>
+nnoremap <silent><Leader>nbd :<C-u>NeoBundleDocs<CR>
+nnoremap <silent><Leader>nbh :<C-u>execute 'BrowseNeoBundleHome' matchstr(getline('.'), '\%[Neo]Bundle\%[Lazy]\s\+[''"]\zs.\+\ze[''"]')<CR>
 " }}}
 
 " }}}
