@@ -107,6 +107,7 @@ function kiritori(){
         echo -n ' -'
     done
     echo -n $reset_color
+    echo
 }
 
 function run-gcc(){

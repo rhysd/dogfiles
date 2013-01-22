@@ -906,8 +906,8 @@ autocmd MyVimrc FileType ruby setlocal tabstop=2 shiftwidth=2 softtabstop=2
 autocmd MyVimrc FileType ruby inoremap <buffer><C-s> self.
 autocmd MyVimrc FileType ruby inoremap <buffer>; <Bar>
 autocmd MyVimrc FileType ruby nnoremap <buffer>[unite]r :<C-u>Unite ruby/require<CR>
-if filereadable(expand('~').'/.vim/skeletons/ruby.skel')
-    autocmd BufNewFile *.rb 0r ~/.vim/skeletons/ruby.skel
+if filereadable(expand('~/.vim/skeletons/ruby.skel'))
+    autocmd MyVimrc BufNewFile *.rb 0r ~/.vim/skeletons/ruby.skel
 endif
 "}}}
 
@@ -969,7 +969,7 @@ function! s:cpp_hpp()
     endif
 
     " なければ Unite で検索
-    if executable('mdfind')
+    if executable('mdfind') && has('mac')
         execute "Unite spotlight -input=".base
     elseif executable('locate')
         execute "Unite locate -input=".base
