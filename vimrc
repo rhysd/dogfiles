@@ -935,8 +935,8 @@ function! s:exec_with_vimshell(cmd, ...)
 endfunction
 autocmd MyVimrc FileType ruby nnoremap <buffer><silent><Leader>pr :<C-u>call <SID>exec_with_vimshell('ruby')<CR>
 
-if filereadable(expand('~').'/.vim/skeletons/ruby.skel')
-    autocmd BufNewFile *.rb 0r ~/.vim/skeletons/ruby.skel
+if filereadable(expand('~/.vim/skeletons/ruby.skel'))
+    autocmd MyVimrc BufNewFile *.rb 0r ~/.vim/skeletons/ruby.skel
 endif
 
 function! s:start_pry()
@@ -1004,7 +1004,7 @@ function! s:cpp_hpp()
     endif
 
     " なければ Unite で検索
-    if executable('mdfind')
+    if executable('mdfind') && has('mac')
         execute "Unite spotlight -input=".base
     elseif executable('locate')
         execute "Unite locate -input=".base
