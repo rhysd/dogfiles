@@ -918,7 +918,6 @@ autocmd MyVimrc FileType ruby setlocal tabstop=2 shiftwidth=2 softtabstop=2
 autocmd MyVimrc FileType ruby inoremap <buffer><C-s> self.
 autocmd MyVimrc FileType ruby inoremap <buffer>; <Bar>
 autocmd MyVimrc FileType ruby nnoremap <buffer>[unite]r :<C-u>Unite ruby/require<CR>
-autocmd MyVimrc FileType ruby nnoremap <buffer><C-t> :<C-u>Irb<CR>
 if filereadable(expand('~/.vim/skeletons/ruby.skel'))
     autocmd MyVimrc BufNewFile *.rb 0r ~/.vim/skeletons/ruby.skel
 endif
@@ -928,6 +927,28 @@ function! s:start_irb()
     startinsert
 endfunction
 command! Irb call <SID>start_irb()
+
+function! s:toggle_binding_pry()
+    if getline('.') =~# '^\s*binding\.pry\s*$'
+        normal! ddk
+    else
+        normal! obinding.pry
+    endif
+endfunction
+autocmd MyVimrc FileType ruby nnoremap <buffer><silent><C-t> :<C-u>call <SID>toggle_binding_pry()<CR>
+
+function! s:exec_with_vimshell(cmd, ...)
+    let cmdline = a:cmd . ' ' . expand('%:p') . ' ' . join(a:000)
+    VimShell -split-command=vsplit
+    execute 'VimShellSendString' cmdline
+endfunction
+autocmd MyVimrc FileType ruby nnoremap <buffer><silent><Leader>pr :<C-u>call <SID>exec_with_vimshell('ruby')<CR>
+
+function! s:start_pry()
+    VimShell -split-command=vsplit
+    VimShellSendString pry -d coolline
+endfunction
+command! Pry call <SID>start_pry()
 "}}}
 
 " C++ {{{
@@ -1321,7 +1342,7 @@ command! -nargs=0    R            execute 'Unite rails/model rails/controller ra
 
 " unite-n3337 "{{{
 let g:unite_n3337_pdf = $HOME.'/Documents/C++/n3337.pdf'
-autocmd MyVimrc FileType cpp nnoremap <buffer>[unite]un :<C-u>Unite n3337<CR>
+autocmd MyVimrc FileType cpp nnoremap <buffer>[unite]n :<C-u>Unite n3337<CR>
 "}}}
 
 " VimShellの設定 {{{
