@@ -193,6 +193,8 @@ nnoremap <C-j> }
 nnoremap <C-k> {
 " インサートモードに入らずに1文字追加
 nnoremap <silent><expr>m "i".nr2char(getchar())."\<Esc>"
+" gm にマーク機能を退避
+nnoremap gm m
 "Esc->Escで検索結果とエラーハイライトをクリア
 nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>
 "{数値}<Tab>でその行へ移動．それ以外だと通常の<Tab>の動きに
@@ -245,12 +247,14 @@ function! s:good_width()
     endif
 endfunction
 nnoremap t e
-" <C-w> → e
+" <C-w> -> e
 nmap     e <C-w>
+" 現在のウィンドウのみを残す
+nnoremap <C-w>O <C-w>o
 "インサートモードで次の行に直接改行
 inoremap <C-j> <Esc>o
 "<BS>の挙動
-nnoremap <BS> bdw
+nnoremap <BS> diw
 " カーソルキーでのウィンドウサイズ変更
 nnoremap <silent><Down>  <C-w>-
 nnoremap <silent><Up>    <C-w>+
@@ -806,8 +810,6 @@ inoremap <silent><C-q>
             \ <Esc>:call <SID>close_windows_like('s:is_target_window(winnr)')<CR>
 nnoremap <silent><Leader>cp
             \ :<C-u>call <SID>close_windows_like('s:is_target_window(winnr)', 'first_only')<CR>
-nnoremap <silent><Leader>c<Leader>
-            \ :<C-u>call <SID>close_windows_like('winnr != '.winnr())<CR>
 "}}}
 
 " 行末のホワイトスペースおよびタブ文字の除去
@@ -2060,6 +2062,10 @@ nnoremap cr :<C-u>RCReset<CR>
 
 " clever-f.vim "{{{
 map : <Plug>(clever-f-reset)
+"}}}
+
+" ZoomWin {{{
+nnoremap <C-w>o :<C-u>ZoomWin<CR>
 "}}}
 
 " プラットフォーム依存な設定をロードする "{{{
