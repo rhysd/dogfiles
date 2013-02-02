@@ -57,6 +57,6 @@ function! s:tex_make_pdf(base)
     execute 'VimShellSendString' 'platex '.a:base.' && dvipdfmx '.a:base
 endfunction
 
-let g:quickrun_config.tex = {'exec' : 'platex %s:p && dvipdfmx %s:p'}
+let g:quickrun_config.tex = {'exec' : ['platex %s:p', 'dvipdfmx %s:p'] }
 
 " vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8 :
