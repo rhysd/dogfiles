@@ -53,6 +53,7 @@ endfunction
 command! -nargs=0 TeXMakePdf call <SID>tex_make_pdf(expand('%:r'))
 autocmd MyVimrc FileType tex nnoremap <buffer><Leader>tm :<C-u>TeXMakePdf<CR>
 function! s:tex_make_pdf(base)
+    execute 'lcd' a:base
     VimShellCurrentDir -split-command=vsplit
     execute 'VimShellSendString' 'platex '.a:base.' && dvipdfmx '.a:base
 endfunction

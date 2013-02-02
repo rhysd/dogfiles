@@ -696,9 +696,9 @@ syntax enable
 
 " カーソル下のハイライトグループを取得
 command! -nargs=0 GetHighlightingGroup
-            \ echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '>
-            \ trans<' . synIDattr(synID(line('.'),col('.'),0),'name') . '>
-            \ lo<' . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
+            \ echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '>trans<'
+            \ . synIDattr(synID(line('.'),col('.'),0),'name') . '>lo<'
+            \ . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
 
 
 " スクリプトに実行可能属性を自動で付ける
@@ -918,6 +918,15 @@ autocmd MyVimrc FileType ruby setlocal tabstop=2 shiftwidth=2 softtabstop=2
 autocmd MyVimrc FileType ruby inoremap <buffer><C-s> self.
 autocmd MyVimrc FileType ruby inoremap <buffer>; <Bar>
 autocmd MyVimrc FileType ruby nnoremap <buffer>[unite]r :<C-u>Unite ruby/require<CR>
+if filereadable(expand('~/.vim/skeletons/ruby.skel'))
+    autocmd MyVimrc BufNewFile *.rb 0r ~/.vim/skeletons/ruby.skel
+endif
+function! s:start_irb()
+    VimShell -split-command=vsplit
+    VimShellSendString irb
+    startinsert
+endfunction
+command! Irb call <SID>start_irb()
 
 function! s:toggle_binding_pry()
     if getline('.') =~# '^\s*binding\.pry\s*$'
@@ -934,10 +943,6 @@ function! s:exec_with_vimshell(cmd, ...)
     execute 'VimShellSendString' cmdline
 endfunction
 autocmd MyVimrc FileType ruby nnoremap <buffer><silent><Leader>pr :<C-u>call <SID>exec_with_vimshell('ruby')<CR>
-
-if filereadable(expand('~/.vim/skeletons/ruby.skel'))
-    autocmd MyVimrc BufNewFile *.rb 0r ~/.vim/skeletons/ruby.skel
-endif
 
 function! s:start_pry()
     VimShell -split-command=vsplit
@@ -1273,7 +1278,7 @@ nnoremap <silent>[unite]L         :<C-u>Unite line<CR>
 nnoremap <silent>[unite]s         :<C-u>Unite source -vertical<CR>
 " NeoBundle
 " nnoremap <silent>[unite]nb      :<C-u>AutoNeoBundleTimestamp<CR>:Unite neobundle/update -auto-quit<CR>
-nnoremap <silent>[unite]nb        :<C-u>Unite neobundle/update -auto-quit -keep-focus<CR>
+nnoremap <silent>[unite]nb        :<C-u>Unite neobundle/update:all -auto-quit -keep-focus<CR>
 " Haskell Import
 autocmd MyVimrc FileType haskell nnoremap <buffer>[unite]hd :<C-u>Unite haddock<CR>
 autocmd MyVimrc FileType haskell nnoremap <buffer>[unite]ho :<C-u>Unite hoogle<CR>
