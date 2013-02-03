@@ -287,7 +287,7 @@ vnoremap - g$
 " スペルチェック
 nnoremap <Leader>s :<C-u>setl spell! spell?<CR>
 " バッファを削除
-nnoremap <Leader>bd :<C-u>bdelete<CR>
+nnoremap <C-w>d :<C-u>bdelete<CR>
 
 " 初回のみ a:cmd の動きをして，それ以降は行内をローテートする
 let s:smart_line_pos = -1
@@ -395,7 +395,7 @@ NeoBundle 'thinca/vim-visualstar'
 NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'rhysd/gem-gist.vim'
 NeoBundle 'daisuzu/rainbowcyclone.vim'
-NeoBundle 'rhysd/clever-f.vim'
+NeoBundle 'rhysd/clever-f.vim', 'no-across-line'
 NeoBundle 'tyru/open-browser.vim'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'ujihisa/neco-look'
@@ -1114,6 +1114,15 @@ endif
 let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
 let g:neocomplcache_omni_patterns.c   = '\%(\.\|->\)\h\w*'
 let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
+" neocomplcache 補完用関数
+let g:neocomplcache_vim_completefuncs = {
+    \ 'Unite' : 'unite#complete_source',
+    \ 'VimShellExecute' : 'vimshell#vimshell_execute_complete',
+    \ 'VimShellInteractive' : 'vimshell#vimshell_execute_complete',
+    \ 'VimShellTerminal' : 'vimshell#vimshell_execute_complete',
+    \ 'VimShell' : 'vimshell#complete',
+    \ 'VimFiler' : 'vimfiler#complete',
+    \}
 
 "neocomplcacheのマッピング {{{
 inoremap <expr><C-g> neocomplcache#undo_completion()
@@ -1366,6 +1375,10 @@ function! s:bundle.hooks.on_source(bundle)
                 \ 'hpp' : 'vim', 'cc' : 'vim', 'd' : 'vim', 'pdf' : 'open', 'mp3' : 'open',
                 \ 'jpg' : 'open', 'png' : 'open',
                 \ }
+    " zsh 履歴も利用する
+    if filereadable(expand('~/.zsh/zsh_history'))
+        let g:vimshell_external_history_path = expand('~/.zsh/zsh_history')
+    endif
 
     "VimShell のキーマッピング {{{
     " コマンド履歴の移動
