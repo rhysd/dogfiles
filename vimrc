@@ -140,9 +140,11 @@ autocmd MyVimrc BufRead,BufNew *tmux.conf setlocal ft=tmux
 " git config file
 autocmd MyVimrc BufRead,BufNew gitconfig setlocal ft=gitconfig
 " Gnuplot のファイルタイプを設定
-autocmd MyVimrc BufRead *.plt,*.plot,*.gnuplot setlocal ft=gnuplot
+autocmd MyVimrc BufRead,BufNew *.plt,*.plot,*.gnuplot setlocal ft=gnuplot
 " Vim script テストプラグイン
-autocmd MyVimrc BufRead *.vspec setlocal ft=vim
+autocmd MyVimrc BufRead,BufNew *.vspec setlocal ft=vim
+" Ruby の guard 用ファイル
+autocmd MyVimrc BufRead,BufNew Guardfile setlocal ft=ruby
 
 " カーソル位置の復元
 autocmd MyVimrc BufReadPost *
