@@ -50,14 +50,22 @@ function! s:tex_pdf_open(fname)
     call vimproc#system_bg('zathura '.pdf_name)
 endfunction
 
-command! -nargs=0 TeXMakePdf call <SID>tex_make_pdf(expand('%:r'))
+command! -nargs=0 TeXMakePdf call <SID>tex_make_pdf(expand('%:p'))
 autocmd MyVimrc FileType tex nnoremap <buffer><Leader>tm :<C-u>TeXMakePdf<CR>
-function! s:tex_make_pdf(base)
-    execute 'lcd' a:base
+function! s:tex_make_pdf(path)
+    execute 'lcd' fnamemodify(a:path, ':h')
+    let base = fnamemodify(a:path, ':r')
     VimShellCurrentDir -split-command=vsplit
-    execute 'VimShellSendString' 'platex '.a:base.' && dvipdfmx '.a:base
+    execute 'VimShellSendString' 'platex '.base.' && dvipdfmx '.base
 endfunction
 
 let g:quickrun_config.tex = {'exec' : ['platex %s:p', 'dvipdfmx %s:p'] }
 
+" 句読点変換
+command! -nargs=0 ConvertCommaPeriod call <SID>convert_comma_period()
+
+function! s:convert_comma_period()
+    %substitute/，/、/g
+    %substitute/．/。/g
+endfunction
 " vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8 :

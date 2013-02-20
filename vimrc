@@ -395,15 +395,16 @@ NeoBundle 'thinca/vim-visualstar'
 NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'rhysd/gem-gist.vim'
 NeoBundle 'daisuzu/rainbowcyclone.vim'
-NeoBundle 'rhysd/clever-f.vim', 'no-across-line'
+" NeoBundle 'rhysd/clever-f.vim', 'no-across-line'
 NeoBundle 'tyru/open-browser.vim'
+NeoBundle 'rhysd/unite-zsh-cdr.vim'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'ujihisa/neco-look'
 
 " For testing
 " set rtp+=~/Github/vim-textobj-ruby
 " set rtp+=~/Github/neco-ruby-keyword-args
-" set rtp+=~/Github/clever-f.vim
+set rtp+=~/Github/clever-f.vim
 
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
@@ -495,9 +496,9 @@ NeoBundleLazy 'rhysd/endwize.vim', {
 NeoBundleLazy 'vim-jp/cpp-vim', {
             \ 'autoload' : {'filetypes' : 'cpp'}
             \ }
-NeoBundleLazy 'rhysd/clang_complete', {
-            \ 'autoload' : {'filetypes' : ['c', 'cpp']}
-            \ }
+" NeoBundleLazy 'rhysd/clang_complete', {
+"             \ 'autoload' : {'filetypes' : ['c', 'cpp']}
+"             \ }
 NeoBundleLazy 'rhysd/unite-n3337', {
             \ 'autoload' : {'filetypes' : 'cpp'}
             \ }
@@ -1261,7 +1262,7 @@ nnoremap [unite]u                 :<C-u>Unite<Space>
 "バッファを開いた時のパスを起点としたファイル検索
 nnoremap <silent>[unite]<Space>   :<C-u>UniteWithBufferDir -buffer-name=files file -vertical<CR>
 "最近使用したファイル
-nnoremap <silent>[unite]m         :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
+nnoremap <silent>[unite]m         :<C-u>Unite -no-start-insert file_mru directory_mru file/new<CR>
 "指定したディレクトリ以下を再帰的に開く
 " nnoremap <silent>[unite]R       :<C-u>UniteWithBufferDir -no-start-insert file_rec/async -auto-resize<CR>
 "バッファ一覧
@@ -1271,7 +1272,7 @@ nnoremap <silent>[unite]o         :<C-u>Unite outline -vertical -no-start-insert
 "コマンドの出力
 nnoremap <silent>[unite]c         :<C-u>Unite output<CR>
 "grep検索．
-nnoremap <silent>[unite]G         :<C-u>Unite -no-start-insert grep<CR>
+nnoremap <silent>[unite]g         :<C-u>Unite -no-start-insert grep<CR>
 "Uniteバッファの復元
 nnoremap <silent>[unite]r         :<C-u>UniteResume<CR>
 "バッファ全体
@@ -1290,15 +1291,15 @@ autocmd MyVimrc FileType haskell
 \                                 :":\<C-u>UniteWithCursorWord haskellimport\<CR>"
 " Git のルートディレクトリを開く
 nnoremap <silent><expr>[unite]fg  ":\<C-u>Unite file -input=".fnamemodify(<SID>git_root_dir(),":p")
-" git
-nnoremap <silent>[unite]g         :<C-u>Unite giti -no-start-insert<CR>
 " alignta (visual)
 vnoremap <silent>[unite]aa        :<C-u>Unite alignta:arguments<CR>
 vnoremap <silent>[unite]ao        :<C-u>Unite alignta:options<CR>
 " C++ インクルードファイル
 autocmd MyVimrc FileType cpp nnoremap <buffer>[unite]i :<C-u>Unite file_include -vertical<CR>
 " help(項目が多いので，検索語を入力してから絞り込む)
-nnoremap <silent>[unite]h :<C-u>UniteWithInput help -vertical<CR>
+nnoremap <silent>[unite]h         :<C-u>UniteWithInput help -vertical<CR>
+" プロジェクトのファイル一覧
+nnoremap <silent>[unite]p         :<C-u>Unite file_rec:! file/new<CR>
 " }}}
 
 " }}}
@@ -1418,6 +1419,8 @@ endif
 let g:quickrun_config.cpp = { 'command' : "g++", 'cmdopt' : '-std=c++11 -Wall -Wextra -O2' }
 "QuickRun 結果の開き方
 let g:quickrun_config._ = { 'outputter' : 'unite_quickfix', 'split' : 'rightbelow 10sp', 'hook/hier_update/enable' : 1 }
+" runner vimproc で結果の polling の間隔
+let g:quickrun_config['_']['runner/vimproc/updatetime'] = 500
 "outputter
 let g:quickrun_unite_quickfix_outputter_unite_context = { 'no_empty' : 1 }
 
@@ -2062,6 +2065,10 @@ nnoremap cr :<C-u>RCReset<CR>
 
 " clever-f.vim "{{{
 map : <Plug>(clever-f-reset)
+"}}}
+
+" ZoomWin {{{
+nnoremap <C-w>o :<C-u>ZoomWin<CR>
 "}}}
 
 " プラットフォーム依存な設定をロードする "{{{
