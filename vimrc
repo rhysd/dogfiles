@@ -347,6 +347,11 @@ endif
 "}}}
 
 " neobundle.vim の設定 {{{
+if ! isdirectory(expand('~/.vim/bundle'))
+    echoerr '~/.vim/bundle is not found!'
+    finish
+endif
+
 filetype off
 filetype plugin indent off
 
@@ -384,8 +389,8 @@ NeoBundle 'rhysd/textobj-wiw'
 NeoBundle 'sgur/vim-textobj-parameter'
 NeoBundle 'thinca/vim-textobj-between'
 NeoBundle 'thinca/vim-textobj-comment'
-NeoBundle 'kana/vim-operator-user'
 NeoBundle 'thinca/vim-prettyprint'
+NeoBundle 'kana/vim-operator-user'
 NeoBundle 'kana/vim-vspec'
 NeoBundle 'rhysd/accelerated-jk'
 NeoBundle 'kana/vim-smartinput'
@@ -397,15 +402,17 @@ NeoBundle 'thinca/vim-visualstar'
 NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'rhysd/gem-gist.vim'
 NeoBundle 'daisuzu/rainbowcyclone.vim'
-NeoBundle 'rhysd/clever-f.vim', 'no-across-line'
+" NeoBundle 'rhysd/clever-f.vim'
 NeoBundle 'tyru/open-browser.vim'
+NeoBundle 'rhysd/unite-zsh-cdr.vim'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'ujihisa/neco-look'
 
 " For testing
 " set rtp+=~/Github/vim-textobj-ruby
 " set rtp+=~/Github/neco-ruby-keyword-args
-" set rtp+=~/Github/clever-f.vim
+set rtp+=~/Github/clever-f.vim
+" set rtp+=~/Github/unite-zsh-cdr.vim
 
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
@@ -439,12 +446,6 @@ NeoBundleLazy 'kana/vim-operator-replace', {
 NeoBundleLazy 'rhysd/vim-operator-trailingspace-killer', {
             \ 'autoload' : {
             \     'mappings' : '<Plug>(operator-trailingspace-killer)'
-            \     }
-            \ }
-
-NeoBundleLazy 'rhysd/vim-operator-filled-with-blank', {
-            \ 'autoload' : {
-            \     'mappings' : '<Plug>(operator-filled-with-blank)'
             \     }
             \ }
 
@@ -645,9 +646,7 @@ nnoremap <Leader>gc :<C-u>GitCommit<Space>
 " git push 用
 function! s:git_push(...)
     let opts = join(a:000, " ")
-    VimShell -split-command=vsplit
-    startinsert
-    execute 'VimShellSendString' 'git push' opts
+    QuickRun sh -src 'git push' -runner vimproc
 endfunction
 command! -nargs=* GitPush call <SID>git_push(<f-args>)
 nnoremap <Leader>gp :<C-u>GitPush<CR>
@@ -690,7 +689,7 @@ command! -nargs=+ Assert
 
 " カラースキーム "{{{
 if !has('gui_running')
-    colorscheme wombat256mod
+    colorscheme wombat256rhysd
 endif
 " シンタックスハイライト
 syntax enable
@@ -1261,7 +1260,11 @@ nnoremap [unite]u                 :<C-u>Unite<Space>
 "バッファを開いた時のパスを起点としたファイル検索
 nnoremap <silent>[unite]<Space>   :<C-u>UniteWithBufferDir -buffer-name=files file -vertical<CR>
 "最近使用したファイル
-nnoremap <silent>[unite]m         :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
+if filereadable(expand('~/.chpwd-recent-dirs'))
+    nnoremap <silent>[unite]m         :<C-u>Unite file_mru directory_mru zsh-cdr<CR>
+else
+    nnoremap <silent>[unite]m         :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
+endif
 "指定したディレクトリ以下を再帰的に開く
 " nnoremap <silent>[unite]R       :<C-u>UniteWithBufferDir -no-start-insert file_rec/async -auto-resize<CR>
 "バッファ一覧
@@ -1299,6 +1302,9 @@ vnoremap <silent>[unite]ao        :<C-u>Unite alignta:options<CR>
 autocmd MyVimrc FileType cpp nnoremap <buffer>[unite]i :<C-u>Unite file_include -vertical<CR>
 " help(項目が多いので，検索語を入力してから絞り込む)
 nnoremap <silent>[unite]h :<C-u>UniteWithInput help -vertical<CR>
+" zsh の cdr コマンド
+nnoremap <silent>[unite]z :<C-u>Unite zsh-cdr<CR>
+" nnoremap <silent>[unite]z :<C-u>Unite zsh-cdr -default-action=vimfiler<CR>
 " }}}
 
 " }}}
@@ -1370,7 +1376,7 @@ function! s:bundle.hooks.on_source(bundle)
     let g:vimshell_prompt = "(U'w'){ "
         " let g:vimshell_prompt = "(U^w^){ "
     " executable suffix
-    let g:vimshell_execute_file_list = { 'rb' : 'ruby', 'pl' : 'perl', 'py' : 'python' ,
+    let g:vimshell_execute_file_list = { 'rb' : 'vim', 'pl' : 'vim', 'py' : 'vim' ,
                 \ 'txt' : 'vim', 'vim' : 'vim' , 'c' : 'vim', 'h' : 'vim', 'cpp' : 'vim',
                 \ 'hpp' : 'vim', 'cc' : 'vim', 'd' : 'vim', 'pdf' : 'open', 'mp3' : 'open',
                 \ 'jpg' : 'open', 'png' : 'open',
@@ -1420,7 +1426,8 @@ let g:quickrun_config.cpp = { 'command' : "g++", 'cmdopt' : '-std=c++11 -Wall -W
 let g:quickrun_config._ = { 'outputter' : 'unite_quickfix', 'split' : 'rightbelow 10sp', 'hook/hier_update/enable' : 1 }
 "outputter
 let g:quickrun_unite_quickfix_outputter_unite_context = { 'no_empty' : 1 }
-
+" runner vimproc における polling 間隔
+let g:quickrun_config['_']['runner/vimproc/updatetime'] = 500
 autocmd MyVimrc BufReadPost,BufNewFile [Rr]akefile{,.rb}
             \ let b:quickrun_config = {'exec': 'rake -f %s'}
 
@@ -1899,7 +1906,6 @@ let g:unite_source_alignta_preset_options = [
 
 " endwize.vim "{{{
 " 自動挿入された end の末尾に情報を付け加える e.g. end # if hoge
-let g:endwize_add_info_filetypes = ['c', 'cpp', 'ruby']
 let g:endwize_add_verbose_info_filetypes = ['c', 'cpp']
 "}}}
 
@@ -1920,7 +1926,7 @@ nnoremap <silent><Leader>tu :<C-u>TweetVimUserTimeline<Space>
 let s:bundle = neobundle#get("TweetVim")
 function! s:bundle.hooks.on_source(bundle)
     " TweetVim
-    let g:tweetvim_display_icon = get(g:, 'tweetvim_display_icon', 0)
+    let g:tweetvim_display_icon = 1
     let g:tweetvim_tweet_per_page = 60
     let g:tweetvim_async_post = 1
     let g:tweetvim_expand_t_co = 1
@@ -2061,7 +2067,8 @@ nnoremap cr :<C-u>RCReset<CR>
 "}}}
 
 " clever-f.vim "{{{
-map : <Plug>(clever-f-reset)
+let g:clever_f_across_no_line = 1
+map : <Plug>(clever-f-repeat-forward)
 "}}}
 
 " ZoomWin {{{
