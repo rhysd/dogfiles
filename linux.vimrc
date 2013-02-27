@@ -3,7 +3,6 @@ set listchars=tab:>-,trail:-,eol:$,extends:>,precedes:<,nbsp:%
 " 256色使う
 set t_Co=256
 
-colorscheme wombat256mod
 " プラグインのロード
 filetype off
 filetype plugin indent off
