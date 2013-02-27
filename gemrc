@@ -1,6 +1,6 @@
 :verbose: true
 :sources: 
-- http://gems.rubyforge.org/
+- https://rubygems.org
 - http://gems.github.com
 :benchmark: false
 :update_sources: true
