@@ -5,11 +5,10 @@ home = File.expand_path '~'
 
 def cmd_exists? cmd
   paths = ENV['PATH'].split(':').uniq
-  paths.each do |path|
+  paths.any? do |path|
     p = "#{path}/#{cmd}"
-    return true if File.exists?(p) && File.executable?(p)
+    File.exists?(p) && File.executable?(p)
   end
-  false
 end
 
 
