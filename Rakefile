@@ -14,7 +14,7 @@ end
 
 def installed?(name)
   unless cmd_exists? name
-    puts "#{name} is not installed. skipped."
+    puts "#{name} is not installed. task is skipped."
     false
   else
     true
