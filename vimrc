@@ -140,9 +140,11 @@ autocmd MyVimrc BufRead,BufNew *tmux.conf setlocal ft=tmux
 " git config file
 autocmd MyVimrc BufRead,BufNew gitconfig setlocal ft=gitconfig
 " Gnuplot のファイルタイプを設定
-autocmd MyVimrc BufRead *.plt,*.plot,*.gnuplot setlocal ft=gnuplot
+autocmd MyVimrc BufRead,BufNew *.plt,*.plot,*.gnuplot setlocal ft=gnuplot
 " Vim script テストプラグイン
-autocmd MyVimrc BufRead *.vspec setlocal ft=vim
+autocmd MyVimrc BufRead,BufNew *.vspec setlocal ft=vim
+" Ruby の guard 用ファイル
+autocmd MyVimrc BufRead,BufNew Guardfile setlocal ft=ruby
 
 " カーソル位置の復元
 autocmd MyVimrc BufReadPost *
@@ -498,9 +500,9 @@ NeoBundleLazy 'rhysd/endwize.vim', {
 NeoBundleLazy 'vim-jp/cpp-vim', {
             \ 'autoload' : {'filetypes' : 'cpp'}
             \ }
-NeoBundleLazy 'rhysd/clang_complete', {
-            \ 'autoload' : {'filetypes' : ['c', 'cpp']}
-            \ }
+" NeoBundleLazy 'rhysd/clang_complete', {
+"             \ 'autoload' : {'filetypes' : ['c', 'cpp']}
+"             \ }
 NeoBundleLazy 'rhysd/unite-n3337', {
             \ 'autoload' : {'filetypes' : 'cpp'}
             \ }
@@ -1261,9 +1263,9 @@ nnoremap [unite]u                 :<C-u>Unite<Space>
 nnoremap <silent>[unite]<Space>   :<C-u>UniteWithBufferDir -buffer-name=files file -vertical<CR>
 "最近使用したファイル
 if filereadable(expand('~/.chpwd-recent-dirs'))
-    nnoremap <silent>[unite]m         :<C-u>Unite file_mru directory_mru zsh-cdr<CR>
+    nnoremap <silent>[unite]m         :<C-u>Unite file_mru directory_mru zsh-cdr file/new<CR>
 else
-    nnoremap <silent>[unite]m         :<C-u>Unite -no-start-insert file_mru directory_mru<CR>
+    nnoremap <silent>[unite]m         :<C-u>Unite file_mru directory_mru file/new<CR>
 endif
 "指定したディレクトリ以下を再帰的に開く
 " nnoremap <silent>[unite]R       :<C-u>UniteWithBufferDir -no-start-insert file_rec/async -auto-resize<CR>
@@ -1274,7 +1276,7 @@ nnoremap <silent>[unite]o         :<C-u>Unite outline -vertical -no-start-insert
 "コマンドの出力
 nnoremap <silent>[unite]c         :<C-u>Unite output<CR>
 "grep検索．
-nnoremap <silent>[unite]G         :<C-u>Unite -no-start-insert grep<CR>
+nnoremap <silent>[unite]g         :<C-u>Unite -no-start-insert grep<CR>
 "Uniteバッファの復元
 nnoremap <silent>[unite]r         :<C-u>UniteResume<CR>
 "バッファ全体
@@ -1293,18 +1295,18 @@ autocmd MyVimrc FileType haskell
 \                                 :":\<C-u>UniteWithCursorWord haskellimport\<CR>"
 " Git のルートディレクトリを開く
 nnoremap <silent><expr>[unite]fg  ":\<C-u>Unite file -input=".fnamemodify(<SID>git_root_dir(),":p")
-" git
-nnoremap <silent>[unite]g         :<C-u>Unite giti -no-start-insert<CR>
 " alignta (visual)
 vnoremap <silent>[unite]aa        :<C-u>Unite alignta:arguments<CR>
 vnoremap <silent>[unite]ao        :<C-u>Unite alignta:options<CR>
 " C++ インクルードファイル
 autocmd MyVimrc FileType cpp nnoremap <buffer>[unite]i :<C-u>Unite file_include -vertical<CR>
-" help(項目が多いので，検索語を入力してから絞り込む)
-nnoremap <silent>[unite]h :<C-u>UniteWithInput help -vertical<CR>
 " zsh の cdr コマンド
 nnoremap <silent>[unite]z :<C-u>Unite zsh-cdr<CR>
 " nnoremap <silent>[unite]z :<C-u>Unite zsh-cdr -default-action=vimfiler<CR>
+" help(項目が多いので，検索語を入力してから絞り込む)
+nnoremap <silent>[unite]h         :<C-u>UniteWithInput help -vertical<CR>
+" プロジェクトのファイル一覧
+nnoremap <silent>[unite]p         :<C-u>Unite file_rec:! file/new<CR>
 " }}}
 
 " }}}
@@ -1424,6 +1426,8 @@ endif
 let g:quickrun_config.cpp = { 'command' : "g++", 'cmdopt' : '-std=c++11 -Wall -Wextra -O2' }
 "QuickRun 結果の開き方
 let g:quickrun_config._ = { 'outputter' : 'unite_quickfix', 'split' : 'rightbelow 10sp', 'hook/hier_update/enable' : 1 }
+" runner vimproc で結果の polling の間隔
+let g:quickrun_config['_']['runner/vimproc/updatetime'] = 500
 "outputter
 let g:quickrun_unite_quickfix_outputter_unite_context = { 'no_empty' : 1 }
 " runner vimproc における polling 間隔
@@ -2069,6 +2073,10 @@ nnoremap cr :<C-u>RCReset<CR>
 " clever-f.vim "{{{
 let g:clever_f_across_no_line = 1
 map : <Plug>(clever-f-repeat-forward)
+"}}}
+
+" ZoomWin {{{
+nnoremap <C-w>o :<C-u>ZoomWin<CR>
 "}}}
 
 " ZoomWin {{{

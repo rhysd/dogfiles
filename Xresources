@@ -1,0 +1,25 @@
+xterm*background: black
+xterm*foreground: gray
+! xterm*faceName: 'Ricty:style=Regular'
+xterm*faceName: 'Ricty'
+xterm*faceSize: 10
+
+urxvt*termName: xterm
+urxvt*background: black
+urxvt*foreground: gray
+! urxvt*faceName: 'Ricty'
+! urxvt*faceSize: 10
+urxvt*font: xft:Ricty:pixelsize=18:antialias=true:hinting=true
+urxvt*boldFont: xft:Ricty:pixelsize=18:antialias=true:hinting=true
+urxvt*saveLines: 1000000
+urxvt*scrollstyle: rxvt
+urxvt*transparent: true
+urxvt*shading: 30
+urxvt*scrollBar: false
+urxvt*color4: #5566FF
+urxvt*color12: #6688FF
+urxvt*iso14755_52: false
+! clickable link
+urxvt.perl-ext-common: default,matcher,clipboard
+urxvt.urlLauncher:     /usr/bin/google-chrome
+urxvt.matcher.button: 1
