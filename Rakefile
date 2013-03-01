@@ -135,3 +135,18 @@ namespace :mac do
   end
 
 end
+
+require "rbconfig"
+os = RbConfig::CONFIG["target_os"].downcase
+case os
+when /mswin(?!ce)|mingw|cygwin|bccwin/
+  raise 'Windows is not supported'
+when /linux/
+  desc 'set up dotfiles (platform is guessed)'
+  task :setup => ['linux:setup']
+when /darwin/
+  desc 'set up dotfiles (platform is guessed)'
+  task :setup => ['linux:mac']
+else
+  raise 'Unknown platform'
+end
