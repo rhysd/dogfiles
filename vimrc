@@ -1279,8 +1279,6 @@ nnoremap <silent>[unite]c         :<C-u>Unite output<CR>
 nnoremap <silent>[unite]g         :<C-u>Unite -no-start-insert grep<CR>
 "Uniteバッファの復元
 nnoremap <silent>[unite]r         :<C-u>UniteResume<CR>
-"バッファ全体
-nnoremap <silent>[unite]L         :<C-u>Unite line<CR>
 " Unite ソース一覧
 nnoremap <silent>[unite]s         :<C-u>Unite source -vertical<CR>
 " NeoBundle
@@ -1307,6 +1305,10 @@ nnoremap <silent>[unite]z :<C-u>Unite zsh-cdr<CR>
 nnoremap <silent>[unite]h         :<C-u>UniteWithInput help -vertical<CR>
 " プロジェクトのファイル一覧
 nnoremap <silent>[unite]p         :<C-u>Unite file_rec:! file/new<CR>
+" 検索に unite-lines を使う
+nnoremap <silent><expr> [unite]/ line('$') > 5000 ? 
+            \ ":\<C-u>Unite -buffer-name=search -no-split -start-insert line/fast\<CR>" :
+            \ ":\<C-u>Unite -buffer-name=search -start-insert line\<CR>"
 " }}}
 
 " }}}
@@ -1839,6 +1841,8 @@ endif
 " vim-operator {{{
 " operator-replace
 map <Leader>r <Plug>(operator-replace)
+" v_p を置き換える
+vmap p <Plug>(operator-replace)
 " operator-blank-killer
 map <silent><Leader>k <Plug>(operator-trailingspace-killer)
 " operator-filled-with-blank
