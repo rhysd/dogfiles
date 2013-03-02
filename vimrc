@@ -1178,6 +1178,12 @@ let g:loaded_unite_source_tab = 1
 let g:loaded_unite_source_window = 1
 " unite-grep で使うコマンド
 let g:unite_source_grep_default_opts = "-Hn --color=never"
+" the silver searcher を unite-grep のバックエンドにする
+if executable('ag')
+    let g:unite_source_grep_command = 'ag'
+    let g:unite_source_grep_default_opts = '--nocolor --nogroup --column'
+    let g:unite_source_grep_recursive_opt = ''
+endif
 
 " unite.vim カスタムアクション {{{
 function! s:define_unite_actions()
