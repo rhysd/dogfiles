@@ -69,6 +69,7 @@ namespace :common do
     next unless installed? 'git'
     chdir "#{home}/.zsh/plugins" do
       `git clone git://github.com/zsh-users/zaw.git`
+      `git clone git://github.com/zsh-users/zsh-syntax-highlighting.git`
     end
   end
 end
