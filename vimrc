@@ -214,7 +214,7 @@ nnoremap # *zvzz
 cnoremap <expr>/ getcmdtype() == '/' ? '\/' : '/'
 cnoremap <expr>/ getcmdtype() == '?' ? '\/' : '/'
 " 空行挿入
-nnoremap <silent><CR> :<C-u>call append(expand('.'), '')<CR>j
+nnoremap <silent><CR> :<C-u>call append('.', '')<CR>j
 "ヘルプ表示
 nnoremap <Leader>h :<C-u>vert to help<Space>
 " スペースを挿入
@@ -404,17 +404,20 @@ NeoBundle 'thinca/vim-visualstar'
 NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'rhysd/gem-gist.vim'
 NeoBundle 'daisuzu/rainbowcyclone.vim'
-" NeoBundle 'rhysd/clever-f.vim'
+NeoBundle 'rhysd/clever-f.vim'
 NeoBundle 'tyru/open-browser.vim'
 NeoBundle 'rhysd/unite-zsh-cdr.vim'
+NeoBundle 'airblade/vim-gitgutter'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'ujihisa/neco-look'
 
 " For testing
 " set rtp+=~/Github/vim-textobj-ruby
 " set rtp+=~/Github/neco-ruby-keyword-args
-set rtp+=~/Github/clever-f.vim
+" set rtp+=~/Github/clever-f.vim
 " set rtp+=~/Github/unite-zsh-cdr.vim
+" set rtp+=~/Github/vim-operator-evalruby
+set rtp+=~/Github/vim-textobj-lastinserted
 
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
@@ -454,6 +457,12 @@ NeoBundleLazy 'rhysd/vim-operator-trailingspace-killer', {
 NeoBundleLazy 'rhysd/vim-operator-filled-with-blank', {
             \ 'autoload' : {
             \     'mappings' : '<Plug>(operator-filled-with-blank)'
+            \     }
+            \ }
+
+NeoBundleLazy 'rhysd/vim-operator-evalruby', {
+            \ 'autoload' : {
+            \     'mappings' : '<Plug>(operator-evalruby)'
             \     }
             \ }
 
@@ -1375,7 +1384,7 @@ autocmd MyVimrc FileType cpp nnoremap <buffer>[unite]n :<C-u>Unite n3337<CR>
 " VimShellの設定 {{{
 
 " 実行キーマッピング
-nnoremap <silent><Leader>vs :<C-u>VimShell -split=vsplit<CR>
+nnoremap <silent><Leader>vs :<C-u>VimShell -split-command=vsplit<CR>
 nnoremap <Leader>vc :<C-u>VimShellSendString<Space>
 
 let s:bundle = neobundle#get("vimshell")
@@ -1853,6 +1862,9 @@ vmap p <Plug>(operator-replace)
 map <silent><Leader>k <Plug>(operator-trailingspace-killer)
 " operator-filled-with-blank
 map <silent><Leader>b <Plug>(operator-filled-with-blank)
+" vim-operator-evalruby
+let g:operator_evalruby_command = $HOME . '/.rbenv/shims/ruby'
+map <silent><Leader>x <Plug>(operator-evalruby)
 "}}}
 
 " ghcmod-vim {{{
@@ -2083,10 +2095,6 @@ nnoremap cr :<C-u>RCReset<CR>
 " clever-f.vim "{{{
 let g:clever_f_across_no_line = 1
 map : <Plug>(clever-f-repeat-forward)
-"}}}
-
-" ZoomWin {{{
-nnoremap <C-w>o :<C-u>ZoomWin<CR>
 "}}}
 
 " ZoomWin {{{
