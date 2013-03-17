@@ -71,7 +71,8 @@ set cedit=<C-c>
 "バックスペースでなんでも消せるように
 set backspace=indent,eol,start
 " 改行時にコメントしない
-set formatoptions-=ro
+set formatoptions-=r
+set formatoptions-=o
 " 行継続で勝手にインデントしない
 " let g:vim_indent_cont = 0
 " 8進数インクリメントをオフにする
@@ -417,7 +418,8 @@ NeoBundle 'airblade/vim-gitgutter'
 " set rtp+=~/Github/clever-f.vim
 " set rtp+=~/Github/unite-zsh-cdr.vim
 " set rtp+=~/Github/vim-operator-evalruby
-set rtp+=~/Github/vim-textobj-lastinserted
+" set rtp+=~/Github/vim-textobj-lastinserted
+set rtp+=~/Github/unite-blamer.vim
 
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
@@ -1273,7 +1275,7 @@ autocmd MyVimrc FileType unite nmap <buffer>s <C-w>
 nnoremap [unite] <Nop>
 nmap     <Space> [unite]
 " コマンドラインウィンドウで Unite コマンドを入力
-nnoremap [unite]u                 :<C-u>Unite<Space>
+nnoremap [unite]u                 :<C-u>Unite source<CR>
 "バッファを開いた時のパスを起点としたファイル検索
 nnoremap <silent>[unite]<Space>   :<C-u>UniteWithBufferDir -buffer-name=files file -vertical<CR>
 "最近使用したファイル
