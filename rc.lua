@@ -10,6 +10,8 @@ local beautiful = require("beautiful")
 -- Notification library
 local naughty = require("naughty")
 local menubar = require("menubar")
+-- Extensions
+local revelation = require("revelation")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -229,7 +231,7 @@ globalkeys = awful.util.table.join(
             awful.client.focus.byidx(-1)
             if client.focus then client.focus:raise() end
         end),
-    awful.key({ modkey,           }, "w", function () mymainmenu:show() end),
+    -- awful.key({ modkey,           }, "w", function () mymainmenu:show() end),
 
     -- Layout manipulation
     awful.key({ modkey, "Shift"   }, "j", function () awful.client.swap.byidx(  1)    end),
@@ -251,6 +253,7 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey, "Shift"   }, "m", function () awful.util.spawn(twitter) end),
     awful.key({ modkey,           }, "e", function () awful.util.spawn("emacs") end),
     awful.key({ modkey,           }, "v", function () awful.util.spawn("vim -g") end),
+    awful.key({ modkey,           }, "w", revelation),
     awful.key({ modkey, "Control" }, "r", awesome.restart),
     awful.key({ modkey, "Shift"   }, "q", awesome.quit),
 
