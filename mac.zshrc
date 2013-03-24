@@ -3,7 +3,7 @@ export PATH=/usr/local/texlive/2011/bin/x86_64-darwin:$PATH
 
 unalias ls
 alias ls='ls -G'
-alias g++='g++-4.7 -std=c++0x -Wall -Wextra -O2'
+alias g++='g++-4.8 -std=c++0x -Wall -Wextra -O2'
 alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
 alias gvim='open -n -a /Applications/MacVim.app'
 alias emacs='/usr/local/bin/emacs -nw'
@@ -18,8 +18,8 @@ alias Vim=gvim
 # suffix alias
 alias -s pdf='open -a Preview'
 alias -s html='open -a Google\ Chrome'
-alias -s cpp=g++-4.7
-alias -s cc=g++-4.7
+alias -s cpp=g++-4.8
+alias -s cc=g++-4.8
 
 #Homebrew
 export HOMEBREW_VERBOSE=true

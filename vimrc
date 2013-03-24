@@ -71,7 +71,8 @@ set cedit=<C-c>
 "バックスペースでなんでも消せるように
 set backspace=indent,eol,start
 " 改行時にコメントしない
-set formatoptions-=ro
+set formatoptions-=r
+set formatoptions-=o
 " 行継続で勝手にインデントしない
 " let g:vim_indent_cont = 0
 " 8進数インクリメントをオフにする
@@ -195,6 +196,8 @@ nnoremap <C-j> }
 nnoremap <C-k> {
 " インサートモードに入らずに1文字追加
 nnoremap <silent><expr>m "i".nr2char(getchar())."\<Esc>"
+" gm にマーク機能を退避
+nnoremap gm m
 "Esc->Escで検索結果とエラーハイライトをクリア
 nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>
 "{数値}<Tab>でその行へ移動．それ以外だと通常の<Tab>の動きに
@@ -212,7 +215,7 @@ nnoremap # *zvzz
 cnoremap <expr>/ getcmdtype() == '/' ? '\/' : '/'
 cnoremap <expr>/ getcmdtype() == '?' ? '\/' : '/'
 " 空行挿入
-nnoremap <silent><CR> :<C-u>call append(expand('.'), '')<CR>j
+nnoremap <silent><CR> :<C-u>call append('.', '')<CR>j
 "ヘルプ表示
 nnoremap <Leader>h :<C-u>vert to help<Space>
 " スペースを挿入
@@ -247,12 +250,14 @@ function! s:good_width()
     endif
 endfunction
 nnoremap t e
-" <C-w> → e
+" <C-w> -> e
 nmap     e <C-w>
+" 現在のウィンドウのみを残す
+nnoremap <C-w>O <C-w>o
 "インサートモードで次の行に直接改行
 inoremap <C-j> <Esc>o
 "<BS>の挙動
-nnoremap <BS> bdw
+nnoremap <BS> diw
 " カーソルキーでのウィンドウサイズ変更
 nnoremap <silent><Down>  <C-w>-
 nnoremap <silent><Up>    <C-w>+
@@ -345,6 +350,11 @@ endif
 "}}}
 
 " neobundle.vim の設定 {{{
+if ! isdirectory(expand('~/.vim/bundle'))
+    echoerr '~/.vim/bundle is not found!'
+    finish
+endif
+
 filetype off
 filetype plugin indent off
 
@@ -382,8 +392,8 @@ NeoBundle 'rhysd/textobj-wiw'
 NeoBundle 'sgur/vim-textobj-parameter'
 NeoBundle 'thinca/vim-textobj-between'
 NeoBundle 'thinca/vim-textobj-comment'
-NeoBundle 'kana/vim-operator-user'
 NeoBundle 'thinca/vim-prettyprint'
+NeoBundle 'kana/vim-operator-user'
 NeoBundle 'kana/vim-vspec'
 NeoBundle 'rhysd/accelerated-jk'
 NeoBundle 'kana/vim-smartinput'
@@ -395,16 +405,21 @@ NeoBundle 'thinca/vim-visualstar'
 NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'rhysd/gem-gist.vim'
 NeoBundle 'daisuzu/rainbowcyclone.vim'
-" NeoBundle 'rhysd/clever-f.vim', 'no-across-line'
+NeoBundle 'rhysd/clever-f.vim'
 NeoBundle 'tyru/open-browser.vim'
 NeoBundle 'rhysd/unite-zsh-cdr.vim'
+NeoBundle 'airblade/vim-gitgutter'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'ujihisa/neco-look'
 
 " For testing
 " set rtp+=~/Github/vim-textobj-ruby
 " set rtp+=~/Github/neco-ruby-keyword-args
-set rtp+=~/Github/clever-f.vim
+" set rtp+=~/Github/clever-f.vim
+" set rtp+=~/Github/unite-zsh-cdr.vim
+" set rtp+=~/Github/vim-operator-evalruby
+" set rtp+=~/Github/vim-textobj-lastinserted
+set rtp+=~/Github/unite-blamer.vim
 
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
@@ -447,9 +462,9 @@ NeoBundleLazy 'rhysd/vim-operator-filled-with-blank', {
             \     }
             \ }
 
-NeoBundleLazy 'rhysd/vim-operator-filled-with-blank', {
+NeoBundleLazy 'rhysd/vim-operator-evalruby', {
             \ 'autoload' : {
-            \     'mappings' : '<Plug>(operator-filled-with-blank)'
+            \     'mappings' : '<Plug>(operator-evalruby)'
             \     }
             \ }
 
@@ -644,9 +659,7 @@ nnoremap <Leader>gc :<C-u>GitCommit<Space>
 " git push 用
 function! s:git_push(...)
     let opts = join(a:000, " ")
-    VimShell -split-command=vsplit
-    startinsert
-    execute 'VimShellSendString' 'git push' opts
+    QuickRun sh -src 'git push' -runner vimproc
 endfunction
 command! -nargs=* GitPush call <SID>git_push(<f-args>)
 nnoremap <Leader>gp :<C-u>GitPush<CR>
@@ -689,7 +702,7 @@ command! -nargs=+ Assert
 
 " カラースキーム "{{{
 if !has('gui_running')
-    colorscheme wombat256mod
+    colorscheme wombat256rhysd
 endif
 " シンタックスハイライト
 syntax enable
@@ -809,8 +822,6 @@ inoremap <silent><C-q>
             \ <Esc>:call <SID>close_windows_like('s:is_target_window(winnr)')<CR>
 nnoremap <silent><Leader>cp
             \ :<C-u>call <SID>close_windows_like('s:is_target_window(winnr)', 'first_only')<CR>
-nnoremap <silent><Leader>c<Leader>
-            \ :<C-u>call <SID>close_windows_like('winnr != '.winnr())<CR>
 "}}}
 
 " 行末のホワイトスペースおよびタブ文字の除去
@@ -1178,6 +1189,12 @@ let g:loaded_unite_source_tab = 1
 let g:loaded_unite_source_window = 1
 " unite-grep で使うコマンド
 let g:unite_source_grep_default_opts = "-Hn --color=never"
+" the silver searcher を unite-grep のバックエンドにする
+if executable('ag')
+    let g:unite_source_grep_command = 'ag'
+    let g:unite_source_grep_default_opts = '--nocolor --nogroup --column'
+    let g:unite_source_grep_recursive_opt = ''
+endif
 
 " unite.vim カスタムアクション {{{
 function! s:define_unite_actions()
@@ -1258,11 +1275,15 @@ autocmd MyVimrc FileType unite nmap <buffer>s <C-w>
 nnoremap [unite] <Nop>
 nmap     <Space> [unite]
 " コマンドラインウィンドウで Unite コマンドを入力
-nnoremap [unite]u                 :<C-u>Unite<Space>
+nnoremap [unite]u                 :<C-u>Unite source<CR>
 "バッファを開いた時のパスを起点としたファイル検索
 nnoremap <silent>[unite]<Space>   :<C-u>UniteWithBufferDir -buffer-name=files file -vertical<CR>
 "最近使用したファイル
-nnoremap <silent>[unite]m         :<C-u>Unite -no-start-insert file_mru directory_mru file/new<CR>
+if filereadable(expand('~/.chpwd-recent-dirs'))
+    nnoremap <silent>[unite]m         :<C-u>Unite file_mru directory_mru zsh-cdr file/new<CR>
+else
+    nnoremap <silent>[unite]m         :<C-u>Unite file_mru directory_mru file/new<CR>
+endif
 "指定したディレクトリ以下を再帰的に開く
 " nnoremap <silent>[unite]R       :<C-u>UniteWithBufferDir -no-start-insert file_rec/async -auto-resize<CR>
 "バッファ一覧
@@ -1275,8 +1296,6 @@ nnoremap <silent>[unite]c         :<C-u>Unite output<CR>
 nnoremap <silent>[unite]g         :<C-u>Unite -no-start-insert grep<CR>
 "Uniteバッファの復元
 nnoremap <silent>[unite]r         :<C-u>UniteResume<CR>
-"バッファ全体
-nnoremap <silent>[unite]L         :<C-u>Unite line<CR>
 " Unite ソース一覧
 nnoremap <silent>[unite]s         :<C-u>Unite source -vertical<CR>
 " NeoBundle
@@ -1296,10 +1315,17 @@ vnoremap <silent>[unite]aa        :<C-u>Unite alignta:arguments<CR>
 vnoremap <silent>[unite]ao        :<C-u>Unite alignta:options<CR>
 " C++ インクルードファイル
 autocmd MyVimrc FileType cpp nnoremap <buffer>[unite]i :<C-u>Unite file_include -vertical<CR>
+" zsh の cdr コマンド
+nnoremap <silent>[unite]z :<C-u>Unite zsh-cdr<CR>
+" nnoremap <silent>[unite]z :<C-u>Unite zsh-cdr -default-action=vimfiler<CR>
 " help(項目が多いので，検索語を入力してから絞り込む)
 nnoremap <silent>[unite]h         :<C-u>UniteWithInput help -vertical<CR>
 " プロジェクトのファイル一覧
 nnoremap <silent>[unite]p         :<C-u>Unite file_rec:! file/new<CR>
+" 検索に unite-lines を使う
+nnoremap <silent><expr> [unite]/ line('$') > 5000 ? 
+            \ ":\<C-u>Unite -buffer-name=search -no-split -start-insert line/fast\<CR>" :
+            \ ":\<C-u>Unite -buffer-name=search -start-insert line\<CR>"
 " }}}
 
 " }}}
@@ -1360,7 +1386,7 @@ autocmd MyVimrc FileType cpp nnoremap <buffer>[unite]n :<C-u>Unite n3337<CR>
 " VimShellの設定 {{{
 
 " 実行キーマッピング
-nnoremap <silent><Leader>vs :<C-u>VimShell -split=vsplit<CR>
+nnoremap <silent><Leader>vs :<C-u>VimShell -split-command=vsplit<CR>
 nnoremap <Leader>vc :<C-u>VimShellSendString<Space>
 
 let s:bundle = neobundle#get("vimshell")
@@ -1371,7 +1397,7 @@ function! s:bundle.hooks.on_source(bundle)
     let g:vimshell_prompt = "(U'w'){ "
         " let g:vimshell_prompt = "(U^w^){ "
     " executable suffix
-    let g:vimshell_execute_file_list = { 'rb' : 'ruby', 'pl' : 'perl', 'py' : 'python' ,
+    let g:vimshell_execute_file_list = { 'rb' : 'vim', 'pl' : 'vim', 'py' : 'vim' ,
                 \ 'txt' : 'vim', 'vim' : 'vim' , 'c' : 'vim', 'h' : 'vim', 'cpp' : 'vim',
                 \ 'hpp' : 'vim', 'cc' : 'vim', 'd' : 'vim', 'pdf' : 'open', 'mp3' : 'open',
                 \ 'jpg' : 'open', 'png' : 'open',
@@ -1423,7 +1449,8 @@ let g:quickrun_config._ = { 'outputter' : 'unite_quickfix', 'split' : 'rightbelo
 let g:quickrun_config['_']['runner/vimproc/updatetime'] = 500
 "outputter
 let g:quickrun_unite_quickfix_outputter_unite_context = { 'no_empty' : 1 }
-
+" runner vimproc における polling 間隔
+let g:quickrun_config['_']['runner/vimproc/updatetime'] = 500
 autocmd MyVimrc BufReadPost,BufNewFile [Rr]akefile{,.rb}
             \ let b:quickrun_config = {'exec': 'rake -f %s'}
 
@@ -1831,10 +1858,15 @@ endif
 " vim-operator {{{
 " operator-replace
 map <Leader>r <Plug>(operator-replace)
+" v_p を置き換える
+vmap p <Plug>(operator-replace)
 " operator-blank-killer
 map <silent><Leader>k <Plug>(operator-trailingspace-killer)
 " operator-filled-with-blank
 map <silent><Leader>b <Plug>(operator-filled-with-blank)
+" vim-operator-evalruby
+let g:operator_evalruby_command = $HOME . '/.rbenv/shims/ruby'
+map <silent><Leader>x <Plug>(operator-evalruby)
 "}}}
 
 " ghcmod-vim {{{
@@ -1902,7 +1934,6 @@ let g:unite_source_alignta_preset_options = [
 
 " endwize.vim "{{{
 " 自動挿入された end の末尾に情報を付け加える e.g. end # if hoge
-let g:endwize_add_info_filetypes = ['c', 'cpp', 'ruby']
 let g:endwize_add_verbose_info_filetypes = ['c', 'cpp']
 "}}}
 
@@ -1923,7 +1954,7 @@ nnoremap <silent><Leader>tu :<C-u>TweetVimUserTimeline<Space>
 let s:bundle = neobundle#get("TweetVim")
 function! s:bundle.hooks.on_source(bundle)
     " TweetVim
-    let g:tweetvim_display_icon = get(g:, 'tweetvim_display_icon', 0)
+    let g:tweetvim_display_icon = 1
     let g:tweetvim_tweet_per_page = 60
     let g:tweetvim_async_post = 1
     let g:tweetvim_expand_t_co = 1
@@ -2064,7 +2095,8 @@ nnoremap cr :<C-u>RCReset<CR>
 "}}}
 
 " clever-f.vim "{{{
-map : <Plug>(clever-f-reset)
+let g:clever_f_across_no_line = 1
+map : <Plug>(clever-f-repeat-forward)
 "}}}
 
 " ZoomWin {{{

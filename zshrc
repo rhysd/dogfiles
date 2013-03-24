@@ -112,7 +112,7 @@ function kiritori(){
 
 function run-gcc(){
     set -e
-    /usr/local/bin/g++-4.7 -g -O2 -Wall -Wextra -std=c++11 $* && ./a.out
+    g++ $* && ./a.out
 }
 
 
