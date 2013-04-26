@@ -419,7 +419,7 @@ NeoBundle 'airblade/vim-gitgutter'
 " set rtp+=~/Github/unite-zsh-cdr.vim
 " set rtp+=~/Github/vim-operator-evalruby
 " set rtp+=~/Github/vim-textobj-lastinserted
-set rtp+=~/Github/unite-blamer.vim
+set rtp+=~/Github/git-messenger.vim
 
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
@@ -511,9 +511,9 @@ NeoBundleLazy 'rhysd/endwize.vim', {
 NeoBundleLazy 'vim-jp/cpp-vim', {
             \ 'autoload' : {'filetypes' : 'cpp'}
             \ }
-" NeoBundleLazy 'rhysd/clang_complete', {
-"             \ 'autoload' : {'filetypes' : ['c', 'cpp']}
-"             \ }
+NeoBundleLazy 'Rip-Rip/clang_complete', {
+            \ 'autoload' : {'filetypes' : ['c', 'cpp']}
+            \ }
 NeoBundleLazy 'rhysd/unite-n3337', {
             \ 'autoload' : {'filetypes' : 'cpp'}
             \ }
@@ -564,7 +564,7 @@ NeoBundleLazy 'rhysd/TweetVim', {
             \      'rhysd/tweetvim-advanced-filter'],
             \ 'autoload' : {
             \     'commands' :
-            \         ['TweetVimHomeTimeline', 
+            \         ['TweetVimHomeTimeline',
             \          'TweetVimMentions',
             \          'TweetVimSay',
             \          'TweetVimUserTimeline']
@@ -925,6 +925,21 @@ endfunction
 command! -nargs=0 AutoDown call <SID>set_auto_down()
 command! -nargs=0 StopAutoDown autocmd! vimrc-auto-down
 
+" 議事録用コマンド
+command! -nargs=* Proceeding call <SID>proceeding(<f-args>)
+function! s:proceeding(...)
+    let proceedings_dir = expand('~/Proceedings')
+
+    if ! isdirectory(expand(proceedings_dir))
+        call mkdir(proceedings_dir)
+    endif
+
+    let fname = "proceedings_" . (a:0 == 1 ? (a:1."_") : "") . strftime("%Y_%m_%d") . ".txt"
+    let fpath = proceedings_dir . '/' . fname
+
+    execute 'vsplit' '+edit' fpath
+endfunction
+
 "}}}
 
 " Ruby {{{
@@ -1102,7 +1117,7 @@ endif
 let g:neocomplcache_include_paths.cpp  = '.,/usr/local/include,/usr/local/Cellar/gcc/4.7.2/gcc/include/c++/4.7.2,/usr/include'
 let g:neocomplcache_include_paths.c    = '.,/usr/include'
 let g:neocomplcache_include_paths.perl = '.,/System/Library/Perl,/Users/rhayasd/Programs'
-let g:neocomplcache_include_paths.ruby = expand('~/.rbenv/versions/1.9.3-p286/lib/ruby/1.9.1')
+let g:neocomplcache_include_paths.ruby = expand('~/.rbenv/versions/2.0.0-p0/lib/ruby/2.0.0')
 "インクルード文のパターンを指定
 let g:neocomplcache_include_patterns = { 'cpp' : '^\s*#\s*include', 'ruby' : '^\s*require', 'perl' : '^\s*use', }
 "インクルード先のファイル名の解析パターン
@@ -1230,7 +1245,7 @@ function! s:define_unite_actions()
     call unite#custom_action('file', 'open_or_vimfiler', open_or_vimfiler)
     "}}}
 
-    " Finder for Mac 
+    " Finder for Mac
     if has('mac')
         let finder = { 'description' : 'open with Finder.app' }
         function! finder.func(candidate)
@@ -1319,11 +1334,15 @@ autocmd MyVimrc FileType cpp nnoremap <buffer>[unite]i :<C-u>Unite file_include 
 nnoremap <silent>[unite]z :<C-u>Unite zsh-cdr<CR>
 " nnoremap <silent>[unite]z :<C-u>Unite zsh-cdr -default-action=vimfiler<CR>
 " help(項目が多いので，検索語を入力してから絞り込む)
-nnoremap <silent>[unite]h         :<C-u>UniteWithInput help -vertical<CR>
+nnoremap <silent>[unite]hh        :<C-u>UniteWithInput help -vertical<CR>
+" 履歴
+nnoremap <silent>[unite]hc        :<C-u>Unite -buffer-name=lines history/command<CR>
+nnoremap <silent>[unite]hs        :<C-u>Unite -buffer-name=lines history/search<CR>
+nnoremap <silent>[unite]hy        :<C-u>Unite -buffer-name=lines history/yank<CR>
 " プロジェクトのファイル一覧
 nnoremap <silent>[unite]p         :<C-u>Unite file_rec:! file/new<CR>
 " 検索に unite-lines を使う
-nnoremap <silent><expr> [unite]/ line('$') > 5000 ? 
+nnoremap <silent><expr> [unite]/ line('$') > 5000 ?
             \ ":\<C-u>Unite -buffer-name=search -no-split -start-insert line/fast\<CR>" :
             \ ":\<C-u>Unite -buffer-name=search -start-insert line\<CR>"
 " }}}
@@ -1395,7 +1414,7 @@ function! s:bundle.hooks.on_source(bundle)
     let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
     let g:vimshell_right_prompt = 'strftime("%Y/%m/%d %H:%M")'
     let g:vimshell_prompt = "(U'w'){ "
-        " let g:vimshell_prompt = "(U^w^){ "
+    " let g:vimshell_prompt = "(U^w^){ "
     " executable suffix
     let g:vimshell_execute_file_list = { 'rb' : 'vim', 'pl' : 'vim', 'py' : 'vim' ,
                 \ 'txt' : 'vim', 'vim' : 'vim' , 'c' : 'vim', 'h' : 'vim', 'cpp' : 'vim',
@@ -1406,6 +1425,8 @@ function! s:bundle.hooks.on_source(bundle)
     if filereadable(expand('~/.zsh/zsh_history'))
         let g:vimshell_external_history_path = expand('~/.zsh/zsh_history')
     endif
+
+    let g:vimshell_kawaii_allow_overwrite = 1
 
     "VimShell のキーマッピング {{{
     " コマンド履歴の移動
@@ -1949,12 +1970,16 @@ nnoremap <silent><Leader>tt :<C-u>tabnew <Bar> TweetVimHomeTimeline<CR>
 nnoremap <silent><Leader>tm :<C-u>TweetVimMentions<CR>
 nnoremap <silent><Leader>ts :<C-u>TweetVimSay<CR>
 nnoremap <silent><Leader>tu :<C-u>TweetVimUserTimeline<Space>
+nnoremap <silent><A-h> gT
+nnoremap <silent><A-l> gt
 
 " TweetVim 読み込み時に設定する
 let s:bundle = neobundle#get("TweetVim")
 function! s:bundle.hooks.on_source(bundle)
     " TweetVim
-    let g:tweetvim_display_icon = 1
+    if has('gui_running')
+        let g:tweetvim_display_icon = 1
+    endif
     let g:tweetvim_tweet_per_page = 60
     let g:tweetvim_async_post = 1
     let g:tweetvim_expand_t_co = 1
@@ -2103,6 +2128,10 @@ map : <Plug>(clever-f-repeat-forward)
 nnoremap <C-w>o :<C-u>ZoomWin<CR>
 "}}}
 
+" git blamer
+nmap <Leader>gg <Plug>(git-messenger-commit-summary)
+nnoremap <silent><Leader>gs :<C-u>echo gitmessenger#commit_message(expand('%'), line('.'))<CR>
+
 " プラットフォーム依存な設定をロードする "{{{
 if has('mac') && filereadable($HOME."/.mac.vimrc")
     source $HOME/.mac.vimrc
@@ -2156,3 +2185,4 @@ endif
 "}}}
 
 " vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8:
+

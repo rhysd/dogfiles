@@ -4,8 +4,8 @@ export PATH=/usr/local/texlive/2011/bin/x86_64-darwin:$PATH
 unalias ls
 alias ls='ls -G'
 alias g++='g++-4.8 -std=c++0x -Wall -Wextra -O2'
-alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
-alias gvim='open -n -a /Applications/MacVim.app'
+# alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
+# alias gvim='open -n -a /Applications/MacVim.app'
 alias emacs='/usr/local/bin/emacs -nw'
 alias locate='/usr/bin/locate'
 alias vi="vim --cmd \"let g:linda_pp_startup_with_tiny = 1\""
