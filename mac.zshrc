@@ -1,5 +1,6 @@
 
 export PATH=/usr/local/texlive/2011/bin/x86_64-darwin:$PATH
+export PATH=$PATH:$HOME/Programs/c++/Qt5.0.2/5.0.2/clang_64/bin
 
 unalias ls
 alias ls='ls -G'
