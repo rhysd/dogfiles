@@ -430,8 +430,9 @@ set rtp+=~/Github/git-messenger.vim
 " 読み込みを遅延する
 NeoBundleLazy 'Shougo/unite.vim', {
             \ 'autoload' : {
-            \     'commands' : ['Unite', 'UniteWithBufferDir',
-            \                  'UniteWithCursorWord', 'UniteWithInput'],
+            \     'commands' : [{'name': 'Unite', 'complete' : 'customlist,unite#complete_source'},
+            \                   'UniteWithBufferDir',
+            \                   'UniteWithCursorWord', 'UniteWithInput'],
             \     'functions' : 'unite#start'
             \     }
             \ }
@@ -1315,7 +1316,7 @@ nnoremap <silent>[unite]r         :<C-u>UniteResume<CR>
 nnoremap <silent>[unite]s         :<C-u>Unite source -vertical<CR>
 " NeoBundle
 " nnoremap <silent>[unite]nb      :<C-u>AutoNeoBundleTimestamp<CR>:Unite neobundle/update -auto-quit<CR>
-nnoremap <silent>[unite]nb        :<C-u>Unite neobundle/update:all -auto-quit -keep-focus<CR>
+nnoremap <silent>[unite]nb        :<C-u>Unite neobundle/update:all -auto-quit -keep-focus -log<CR>
 " Haskell Import
 autocmd MyVimrc FileType haskell nnoremap <buffer>[unite]hd :<C-u>Unite haddock<CR>
 autocmd MyVimrc FileType haskell nnoremap <buffer>[unite]ho :<C-u>Unite hoogle<CR>
@@ -1921,6 +1922,9 @@ let g:alignta_default_arguments = '\s'
 vnoremap <Leader>al :Alignta<Space>
 vnoremap <Leader>aa :Alignta<CR>
 vnoremap <Leader>ae :Alignta <<<1 =<CR>
+vnoremap <Leader>a= :Alignta <<<1 =<CR>
+vnoremap <Leader>a, :Alignta ,<CR>
+vnoremap <Leader>a> :Alignta =><CR>
 
 let g:unite_source_alignta_preset_arguments = [
       \ ["Align at '='", '=>\='],
@@ -2130,7 +2134,7 @@ nnoremap <C-w>o :<C-u>ZoomWin<CR>
 
 " git blamer
 nmap <Leader>gg <Plug>(git-messenger-commit-summary)
-nnoremap <silent><Leader>gs :<C-u>echo gitmessenger#commit_message(expand('%'), line('.'))<CR>
+nmap <Leader>gs <Plug>(git-messenger-commit-message)
 
 " プラットフォーム依存な設定をロードする "{{{
 if has('mac') && filereadable($HOME."/.mac.vimrc")
