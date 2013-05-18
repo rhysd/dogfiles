@@ -128,6 +128,9 @@ endif
 " ステータスライン
 set ruf=%45(%12f%=\ %m%{'['.(&fenc!=''?&fenc:&enc).']'}\ %l-%v\ %p%%\ [%02B]%)
 set statusline=%f:\ %{substitute(getcwd(),'.*/','','')}\ %m%=%{(&fenc!=''?&fenc:&enc).':'.strpart(&ff,0,1)}\ %l-%v\ %p%%\ %02B
+" リストヘッダ
+set formatlistpat&
+let &formatlistpat .= '\|^\s*[*+-]\s*'
 " 一定時間カーソルを移動しないとカーソルラインを表示（ただし，ウィンドウ移動時
 " はなぜか切り替わらない
 " http://d.hatena.ne.jp/thinca/20090530/1243615055
@@ -274,6 +277,8 @@ nnoremap P "0P
 nnoremap ge :<C-u>tabedit<Space>
 nnoremap gn :<C-u>tabnew<CR>
 nnoremap <silent>gc :<C-u>tabclose<CR>
+nnoremap <silent><A-h> gT
+nnoremap <silent><A-l> gt
 " 行表示・非表示の切り替え．少しでも横幅が欲しい時は OFF に
 nnoremap <Leader>nu :<C-u>set number! number?<CR>
 " クリップボードから貼り付け
@@ -699,6 +704,15 @@ command! -nargs=+ Assert
             \|     call <SID>assert(v:throwpoint, expand('%'), eval("<args>"))
             \| endtry
 "}}}
+
+" エラー表示
+function! EchoError(messages)
+    echohl Error
+    execute 'echo' join(a:messages)
+    echohl None
+endfunction
+command! -nargs=+ EchoError call EchoError([<f-args>])
+
 "}}}
 
 " カラースキーム "{{{
@@ -1974,8 +1988,6 @@ nnoremap <silent><Leader>tt :<C-u>tabnew <Bar> TweetVimHomeTimeline<CR>
 nnoremap <silent><Leader>tm :<C-u>TweetVimMentions<CR>
 nnoremap <silent><Leader>ts :<C-u>TweetVimSay<CR>
 nnoremap <silent><Leader>tu :<C-u>TweetVimUserTimeline<Space>
-nnoremap <silent><A-h> gT
-nnoremap <silent><A-l> gt
 
 " TweetVim 読み込み時に設定する
 let s:bundle = neobundle#get("TweetVim")
