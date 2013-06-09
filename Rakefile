@@ -1,7 +1,7 @@
 require 'fileutils'
 include FileUtils
 
-home = File.expand_path '~'
+home = File.expand_path('~')
 
 def cmd_exists? cmd
   paths = ENV['PATH'].split(':').uniq
@@ -21,21 +21,26 @@ def installed?(name)
   end
 end
 
+def ln_dotfile(from, to)
+  ln_s "#{File.expand_path '~'}/Github/dotfiles/#{from}", to
+end
+
 namespace :common do
-  task :all => [:git, :vim, :gem, :zsh]
+  # task :all => [:git, :vim, :gem, :zsh]
+  task :all => [:git, :vim, :zsh]
 
   task :git do
     next unless installed? 'git'
-    ln_s 'gitconfig', "#{home}/.gitconfig"
-    ln_s 'global.gitignore', "#{home}/.gitignore"
+    ln_dotfile 'gitconfig', "#{home}/.gitconfig"
+    ln_dotfile 'global.gitignore', "#{home}/.gitignore"
   end
 
   task :vim do
     next unless installed? 'vim'
     %w( vimrc gvimrc vimshrc ).each do |f|
-      ln_s f, "#{home}/.#{f}"
+      ln_dotfile f, "#{home}/.#{f}"
     end
-    unless directory? "#{home}/.vim"
+    unless File.directory? "#{home}/.vim"
       mkdir "#{home}/.vim"
       mkdir "#{home}/.vim/bundle"
       mkdir "#{home}/.vim/undo"
@@ -50,7 +55,7 @@ namespace :common do
   task :gem do
     next unless installed? 'gem'
     %w( gemrc pryrc ).each do |f|
-      ln_s f, "#{home}/.#{f}"
+      ln_dotfile f, "#{home}/.#{f}"
     end
 
     `gem install pry pry-coolline pry-debugger pry-doc active_support`
@@ -58,9 +63,9 @@ namespace :common do
 
   task :zsh do
     next unless installed? 'zsh'
-    ln_s 'zshrc', "#{home}/.zshrc"
+    ln_dotfile 'zshrc', "#{home}/.zshrc"
 
-    unless directory? "#{home}/.zsh"
+    unless File.directory? "#{home}/.zsh"
       mkdir "#{home}/.zsh"
       mkdir "#{home}/.zsh/plugins"
       mkdir "#{home}/.zsh/site-functions"
@@ -80,37 +85,37 @@ namespace :linux do
 
   task :tmux do
     next unless installed? 'tmux'
-    ln_s 'arch.tmux.conf', "#{home}/.tmux.conf"
+    ln_dotfile 'arch.tmux.conf', "#{home}/.tmux.conf"
   end
 
   task :vim do
     next unless installed? 'vim'
     %w( linux.vimrc linux.gvimrc ).each do |vimrc|
-      ln_s vimrc, "#{home}/.#{vimrc}"
+      ln_dotfile vimrc, "#{home}/.#{vimrc}"
     end
   end
 
   task :zsh do
     next unless installed? 'zsh'
-    ln_s 'linux.zsh', "#{home}/.linux.zsh"
+    ln_dotfile 'linux.zshrc', "#{home}/.linux.zshrc"
   end
 
   task :xmodmap do
     next unless installed? 'xmodmap'
-    ln_s 'Xmodmap', "#{home}/.Xmodmap"
+    ln_dotfile 'Xmodmap', "#{home}/.Xmodmap"
   end
 
   task :awesome do
     next unless installed? 'awesome'
-    unless directory? "#{home}/.config/awesome"
+    unless File.directory? "#{home}/.config/awesome"
       mkdir_p "#{home}/.config/awesome"
     end
-    ln_s 'rc.lua', "#{home}/.config/awesome/rc.lua"
+    ln_dotfile 'rc.lua', "#{home}/.config/awesome/rc.lua"
   end
 
   task :conky do
     next unless installed? 'conky'
-    ln_s 'conkyrc', "#{home}/.conkyrc"
+    ln_dotfile 'conkyrc', "#{home}/.conkyrc"
   end
 end
 
@@ -121,18 +126,18 @@ namespace :mac do
   task :vim do
     next unless installed? 'vim'
     %w( mac.vimrc mac.gvimrc ).each do |vimrc|
-      ln_s vimrc, "#{home}/.#{vimrc}"
+      ln_dotfile vimrc, "#{home}/.#{vimrc}"
     end
   end
 
   task :zsh do
     next unless installed? 'zsh'
-    ln_s 'mac.zsh', "#{home}/.mac.zsh"
+    ln_dotfile 'mac.zsh', "#{home}/.mac.zsh"
   end
 
   task :tmux do
     next unless installed? 'tmux'
-    ln_s 'mac.tmux.conf', "#{home}/.tmux.conf"
+    ln_dotfile 'mac.tmux.conf', "#{home}/.tmux.conf"
   end
 
 end
@@ -151,3 +156,4 @@ when /darwin/
 else
   raise 'Unknown platform'
 end
+
