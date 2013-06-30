@@ -187,9 +187,9 @@ noremap : ;
 "モードから抜ける
 inoremap <expr> j getline('.')[col('.') - 2] ==# 'j' ? "\<BS>\<ESC>" : 'j'
 cnoremap <expr> j getcmdline()[getcmdpos() - 2] ==# 'j' ? "\<BS>\<ESC>" : 'j'
-" <C-c> も Esc と抜け方にする
+" <C-c> も Esc と同じ抜け方にする
 inoremap <C-c> <Esc>
-" Yの挙動はy$のほうが自然な気がする
+" Yの挙動はy$のほうが自然
 nnoremap Y y$
 " 縦方向は論理移動する
 noremap j gj
@@ -205,7 +205,7 @@ nnoremap gm m
 nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>
 "{数値}<Tab>でその行へ移動．それ以外だと通常の<Tab>の動きに
 nnoremap <expr><Tab> v:count !=0 ? "G" : "\<Tab>zvzz"
-" リアルタイムマッチング
+" 検索に very matching を使う
 nnoremap / /\v
 nnoremap ? ?\v
 " コマンドラインウィンドウ
@@ -298,6 +298,9 @@ vnoremap - g$
 nnoremap <Leader>s :<C-u>setl spell! spell?<CR>
 " バッファを削除
 nnoremap <C-w>d :<C-u>bdelete<CR>
+" カーソル付近の文字列で検索（新規ウィンドウ）
+nnoremap <C-w>*  <C-w>s*
+nnoremap <C-w>#  <C-w>s#
 
 " 初回のみ a:cmd の動きをして，それ以降は行内をローテートする
 let s:smart_line_pos = -1
@@ -370,7 +373,7 @@ endif
 
 " GitHub上のリポジトリ
 NeoBundle 'Shougo/neobundle.vim'
-NeoBundle 'Shougo/vimproc', {
+NeoBundle 'Shougo/vimproc.vim', {
             \ 'build' : {
             \       'windows' : 'echo "Please build vimproc manually."',
             \       'cygwin'  : 'make -f make_cygwin.mak',
@@ -407,10 +410,11 @@ NeoBundle 'kana/vim-niceblock'
 NeoBundle 'rhysd/wombat256.vim'
 NeoBundle 'thinca/vim-scouter'
 NeoBundle 'thinca/vim-visualstar'
+" NeoBundle 'thinca/vim-submode'
 NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'rhysd/gem-gist.vim'
 NeoBundle 'daisuzu/rainbowcyclone.vim'
-NeoBundle 'rhysd/clever-f.vim'
+" NeoBundle 'rhysd/clever-f.vim'
 NeoBundle 'tyru/open-browser.vim'
 NeoBundle 'rhysd/unite-zsh-cdr.vim'
 NeoBundle 'airblade/vim-gitgutter'
@@ -418,13 +422,10 @@ NeoBundle 'airblade/vim-gitgutter'
     " NeoBundle 'ujihisa/neco-look'
 
 " For testing
-" set rtp+=~/Github/vim-textobj-ruby
-" set rtp+=~/Github/neco-ruby-keyword-args
-" set rtp+=~/Github/clever-f.vim
-" set rtp+=~/Github/unite-zsh-cdr.vim
-" set rtp+=~/Github/vim-operator-evalruby
-" set rtp+=~/Github/vim-textobj-lastinserted
-set rtp+=~/Github/git-messenger.vim
+set rtp+=~/Github/clever-f.vim
+set rtp+=~/Github/tmpwin.vim
+set rtp+=~/Github/vim-textobj-continuous-line
+set rtp+=~/Github/unite-ruby-require.vim
 
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
@@ -554,15 +555,16 @@ NeoBundleLazy 'rhysd/vim-textobj-ruby', {
 NeoBundleLazy 'rhysd/neco-ruby-keyword-args', {
             \ 'autoload' : {'filetypes' : 'ruby'}
             \ }
-NeoBundleLazy 'rhysd/unite-ruby-require.vim', {
-            \ 'autoload' : {'filetypes' : 'ruby'}
-            \ }
+" NeoBundleLazy 'rhysd/unite-ruby-require.vim', {
+"             \ 'autoload' : {'filetypes' : 'ruby'}
+"             \ }
 
 " TweetVim
 NeoBundleLazy 'basyura/twibill.vim'
 NeoBundleLazy 'yomi322/neco-tweetvim'
 NeoBundleLazy 'rhysd/tweetvim-advanced-filter'
-NeoBundleLazy 'rhysd/TweetVim', {
+NeoBundle 'mattn/webapi-vim'
+NeoBundleLazy 'basyura/TweetVim', 'dev', {
             \ 'depends' :
             \     ['basyura/twibill.vim',
             \      'tyru/open-browser.vim',
@@ -573,7 +575,8 @@ NeoBundleLazy 'rhysd/TweetVim', {
             \         ['TweetVimHomeTimeline',
             \          'TweetVimMentions',
             \          'TweetVimSay',
-            \          'TweetVimUserTimeline']
+            \          'TweetVimUserTimeline',
+            \          'TweetVimUserStream']
             \     }
             \ }
 
@@ -708,7 +711,7 @@ command! -nargs=+ Assert
 " エラー表示
 function! EchoError(messages)
     echohl Error
-    execute 'echo' join(a:messages)
+    execute 'echomsg' join(a:messages)
     echohl None
 endfunction
 command! -nargs=+ EchoError call EchoError([<f-args>])
@@ -745,19 +748,24 @@ if executable('chmod')
 endif
 
 " help のマッピング
-" カーソル下のタグへ飛ぶ
-autocmd MyVimrc FileType help nnoremap <buffer>t <C-]>
-" 戻る
-autocmd MyVimrc FileType help nnoremap <buffer>r <C-t>
-" リンクしている単語を選択する
-autocmd MyVimrc FileType help nnoremap <buffer><silent><Tab> /\%(\_.\zs<Bar>[^ ]\+<Bar>\ze\_.\<Bar>CTRL-.\<Bar><[^ >]\+>\)<CR>
-" そのた
-autocmd MyVimrc FileType help nnoremap <buffer>u <C-u>
-autocmd MyVimrc FileType help nnoremap <buffer>d <C-d>
-autocmd MyVimrc FileType help nnoremap <buffer>q :<C-u>q<CR>
-" カーソル下の単語を help で調べる
-autocmd MyVimrc FileType help nnoremap <buffer>K :<C-u>help <C-r><C-w><CR>
-" TODO v で選択した範囲を help
+function! s:on_FileType_help_define_mappings()
+    if &l:readonly
+        " カーソル下のタグへ飛ぶ
+        nnoremap <buffer>J <C-]>
+        " 戻る
+        nnoremap <buffer>K <C-t>
+        " リンクしている単語を選択する
+        nnoremap <buffer><silent><Tab> /\%(\_.\zs<Bar>[^ ]\+<Bar>\ze\_.\<Bar>CTRL-.\<Bar><[^ >]\+>\)<CR>
+        " そのた
+        nnoremap <buffer>u <C-u>
+        nnoremap <buffer>d <C-d>
+        nnoremap <buffer>q :<C-u>q<CR>
+        " カーソル下の単語を help で調べる
+        " autocmd MyVimrc FileType help nnoremap <buffer>K :<C-u>help <C-r><C-w><CR>
+        " TODO v で選択した範囲を help
+    endif
+endfunction
+autocmd MyVimrc FileType help call s:on_FileType_help_define_mappings()
 
 " quickfix のマッピング
 autocmd MyVimrc FileType qf nnoremap <buffer><silent> q :q<CR>
@@ -1585,10 +1593,10 @@ let g:vimfiler_as_default_explorer = 1
 let g:vimfiler_safe_mode_by_default = 0
 let g:vimfiler_enable_auto_cd = 1
 let g:vimfiler_split_command = 'vertical rightbelow vsplit'
-let g:vimfiler_execute_file_list = { 'rb' : 'ruby', 'pl' : 'perl', 'py' : 'python' ,
-            \ 'txt' : 'vim', 'vim' : 'vim' , 'c' : 'vim', 'h' : 'vim', 'cpp' : 'vim',
-            \ 'hpp' : 'vim', 'cc' : 'vim', 'd' : 'vim', 'pdf' : 'open', 'mp3' : 'open',
-            \ 'jpg' : 'open', 'png' : 'open',
+let g:vimfiler_execute_file_list = { 'txt' : 'vim', 'vim' : 'vim' , 'c' : 'vim',
+            \ 'h' : 'vim', 'cpp' : 'vim', 'hpp' : 'vim', 'cc' : 'vim',
+            \ 'd' : 'vim', 'pdf' : 'open', 'mp3' : 'open', 'jpg' : 'open',
+            \ 'png' : 'open',
             \ }
 let g:vimfiler_execute_file_list['_'] = 'vim'
 let g:vimfiler_split_rule = 'botright'
@@ -1979,12 +1987,11 @@ let g:endwize_add_verbose_info_filetypes = ['c', 'cpp']
 " vim-vspec 用コマンド {{{
 command! -nargs=* Vspec
             \ execute 'QuickRun' 'sh' '-src'
-            \ '''$HOME/.vim/bundle/vim-vspec/bin/vspec $HOME/.vim/bundle/vim-vspec <args>'.expand('%:p').''''
+            \ '''PATH=/usr/local/bin:$PATH $HOME/.vim/bundle/vim-vspec/bin/vspec $HOME/.vim/bundle/vim-vspec <args>'.expand('%:p').''''
 " }}}
 
 " TweetVim "{{{
 nnoremap <silent><Leader>tw :<C-u>TweetVimHomeTimeline<CR>
-nnoremap <silent><Leader>tt :<C-u>tabnew <Bar> TweetVimHomeTimeline<CR>
 nnoremap <silent><Leader>tm :<C-u>TweetVimMentions<CR>
 nnoremap <silent><Leader>ts :<C-u>TweetVimSay<CR>
 nnoremap <silent><Leader>tu :<C-u>TweetVimUserTimeline<Space>
@@ -2144,9 +2151,8 @@ map : <Plug>(clever-f-repeat-forward)
 nnoremap <C-w>o :<C-u>ZoomWin<CR>
 "}}}
 
-" git blamer
-nmap <Leader>gg <Plug>(git-messenger-commit-summary)
-nmap <Leader>gs <Plug>(git-messenger-commit-message)
+" tmpwin.vim
+nnoremap <silent><Leader>tt :<C-u>call tmpwin#toggle({'open_post' : ['normal! gg', 'setl nohidden']}, 'TweetVimHomeTimeline')<CR>
 
 " プラットフォーム依存な設定をロードする "{{{
 if has('mac') && filereadable($HOME."/.mac.vimrc")
@@ -2201,4 +2207,3 @@ endif
 "}}}
 
 " vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8:
-
