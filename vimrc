@@ -417,7 +417,8 @@ NeoBundle 'daisuzu/rainbowcyclone.vim'
 " NeoBundle 'rhysd/clever-f.vim'
 NeoBundle 'tyru/open-browser.vim'
 NeoBundle 'rhysd/unite-zsh-cdr.vim'
-NeoBundle 'airblade/vim-gitgutter'
+" NeoBundle 'airblade/vim-gitgutter'
+NeoBundle 'sgur/vim-gitgutter'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'ujihisa/neco-look'
 
@@ -963,6 +964,15 @@ function! s:proceeding(...)
     execute 'vsplit' '+edit' fpath
 endfunction
 
+function! s:cmd_lcd(count)
+  let dir = expand('%:p' . repeat(':h', a:count + 1))
+  if isdirectory(dir)
+    execute 'lcd' fnameescape(dir)
+  endif
+endfunction
+command! -nargs=0 -count=0 Lcd  call s:cmd_lcd(<count>)
+
+command! -nargs=0 Todo Unite line -input=TODO
 "}}}
 
 " Ruby {{{
@@ -1325,7 +1335,7 @@ endif
 "指定したディレクトリ以下を再帰的に開く
 " nnoremap <silent>[unite]R       :<C-u>UniteWithBufferDir -no-start-insert file_rec/async -auto-resize<CR>
 "バッファ一覧
-nnoremap <silent>[unite]b         :<C-u>Unite -quick-match -immediately -no-empty -auto-preview buffer<CR>
+nnoremap <silent>[unite]b         :<C-u>Unite -immediately -no-empty -auto-preview buffer<CR>
 "プログラミングにおけるアウトラインの表示
 nnoremap <silent>[unite]o         :<C-u>Unite outline -vertical -no-start-insert<CR>
 "コマンドの出力
@@ -1699,7 +1709,7 @@ call smartinput#map_to_trigger('i', '<Plug>(physical_key_return)', '<CR>', '<CR>
 call smartinput#define_rule({
             \   'at'    : '\s\+\%#',
             \   'char'  : '<CR>',
-            \   'input' : "<C-o>: call setline('.', substitute(getline('.'), '\\s\\+$', '', '')) <Bar> echo 'delete trailing spaces'<CR><CR>",
+            \   'input' : "<C-o>:call setline('.', substitute(getline('.'), '\\s\\+$', '', '')) <Bar> echo 'delete trailing spaces'<CR><CR>",
             \   })
 
 " Ruby 文字列内変数埋め込み
@@ -1843,6 +1853,42 @@ call smartinput#define_rule({
             \   'input' : "<C-o>:call setline('.', substitute(getline('.'), '\\s\\+$', '', ''))<CR><CR><C-r>=endwize#crend()<CR>",
             \   'filetype' : ['c', 'cpp'],
             \   })
+
+" \s= を入力したときに空白を挟む
+call smartinput#map_to_trigger('i', '=', '=', '=')
+call smartinput#define_rule(
+    \ { 'at'    : '\s\%#'
+    \ , 'char'  : '='
+    \ , 'input' : '= '
+    \ , 'filetype' : ['c', 'cpp', 'vim', 'ruby']
+    \ })
+
+" でも連続した == となる場合には空白は挟まない
+call smartinput#define_rule(
+    \ { 'at'    : '=\s\%#'
+    \ , 'char'  : '='
+    \ , 'input' : '<BS>= '
+    \ , 'filetype' : ['c', 'cpp', 'vim', 'ruby']
+    \ })
+
+" でも連続した =~ となる場合には空白は挟まない
+call smartinput#map_to_trigger('i', '~', '~', '~')
+call smartinput#define_rule(
+    \ { 'at'    : '=\s\%#'
+    \ , 'char'  : '~'
+    \ , 'input' : '<BS>~ '
+    \ , 'filetype' : ['c', 'cpp', 'vim', 'ruby']
+    \ })
+
+" Vim は ==# と =~# がある
+call smartinput#map_to_trigger('i', '#', '#', '#')
+call smartinput#define_rule(
+    \ { 'at'    : '=[~=]\s\%#'
+    \ , 'char'  : '#'
+    \ , 'input' : '<BS># '
+    \ , 'filetype' : ['vim']
+    \ })
+
 "}}}
 
 " caw.vim {{{
@@ -1984,14 +2030,44 @@ let g:unite_source_alignta_preset_options = [
 let g:endwize_add_verbose_info_filetypes = ['c', 'cpp']
 "}}}
 
-" vim-vspec 用コマンド {{{
+" vim-vspec {{{
 command! -nargs=* Vspec
             \ execute 'QuickRun' 'sh' '-src'
             \ '''PATH=/usr/local/bin:$PATH $HOME/.vim/bundle/vim-vspec/bin/vspec $HOME/.vim/bundle/vim-vspec <args>'.expand('%:p').''''
+
+let g:quickrun_config['vim/vspec'] = {
+        \ 'exec' : '%c %o',
+        \ 'cmdopt' :  '-u NONE -i NONE -N -e -s -S'
+        \ . ' %{' . 'VspecHelper([getcwd()], expand("%"))}',
+        \ 'command' : 'vim',
+        \ }
+function! VspecHelper(paths, target)
+    let vspec_path = matchstr(split(&runtimepath, ','), 'vspec')
+    let paths  = map([vspec_path] + copy(a:paths)
+        \ , '"''".substitute(v:val, "\\", "/", "g")."''"')
+    let target = substitute(a:target, "\\", "/", "g")
+    let lines =
+        \ ['function s:main()'
+        \ , '  let standard_paths = split(&runtimepath, ",")[1:-2]'
+        \ , '  let non_standard_paths = [' . join(reverse(paths), ",") . ']'
+        \ , '  let all_paths = copy(standard_paths)'
+        \ , '  for i in non_standard_paths'
+        \ , '    let all_paths = [i] + all_paths + [i . "/after"]'
+        \ , '  endfor'
+        \ , '  let &runtimepath = join(all_paths, ",")'
+        \ , '  1 verbose call vspec#test("' . target . '")'
+        \ , '  qall!'
+        \ , 'endfunction'
+        \ , 'call s:main()']
+    let temp = tempname()
+    call writefile(lines, temp)
+    return temp
+endfunction
 " }}}
 
 " TweetVim "{{{
-nnoremap <silent><Leader>tw :<C-u>TweetVimHomeTimeline<CR>
+nnoremap <silent><Leader>tw :<C-u>TweetVimUserStream<CR>
+nnoremap <silent><Leader>th :<C-u>TweetVimHomeTimeline<CR>
 nnoremap <silent><Leader>tm :<C-u>TweetVimMentions<CR>
 nnoremap <silent><Leader>ts :<C-u>TweetVimSay<CR>
 nnoremap <silent><Leader>tu :<C-u>TweetVimUserTimeline<Space>
@@ -2144,6 +2220,7 @@ nnoremap cr :<C-u>RCReset<CR>
 
 " clever-f.vim "{{{
 let g:clever_f_across_no_line = 1
+let g:clever_f_fix_key_direction = 1
 map : <Plug>(clever-f-repeat-forward)
 "}}}
 
@@ -2153,6 +2230,14 @@ nnoremap <C-w>o :<C-u>ZoomWin<CR>
 
 " tmpwin.vim
 nnoremap <silent><Leader>tt :<C-u>call tmpwin#toggle({'open_post' : ['normal! gg', 'setl nohidden']}, 'TweetVimHomeTimeline')<CR>
+
+" vim-gitgutter {{{
+let g:gitgutter_eager                 = 0
+let g:gitgutter_system_function       = 'vimproc#system'
+let g:gitgutter_system_error_function = 'vimproc#get_last_status'
+let g:gitgutter_shellescape_function  = 'vimproc#shellescape'
+let g:gitgutter_sign_readonly_always  = 0
+" }}}
 
 " プラットフォーム依存な設定をロードする "{{{
 if has('mac') && filereadable($HOME."/.mac.vimrc")

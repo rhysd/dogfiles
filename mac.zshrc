@@ -4,7 +4,7 @@ export PATH=$PATH:$HOME/Programs/c++/Qt5.0.2/5.0.2/clang_64/bin
 
 unalias ls
 alias ls='ls -G'
-alias g++='g++-4.8 -std=c++0x -Wall -Wextra -O2'
+alias g++='g++-4.8 -std=c++11 -Wall -Wextra -O2'
 # alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
 # alias gvim='open -n -a /Applications/MacVim.app'
 alias emacs='/usr/local/bin/emacs -nw'
