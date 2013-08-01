@@ -410,7 +410,6 @@ NeoBundle 'kana/vim-niceblock'
 NeoBundle 'rhysd/wombat256.vim'
 NeoBundle 'thinca/vim-scouter'
 NeoBundle 'thinca/vim-visualstar'
-" NeoBundle 'thinca/vim-submode'
 NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'rhysd/gem-gist.vim'
 NeoBundle 'daisuzu/rainbowcyclone.vim'
@@ -421,6 +420,12 @@ NeoBundle 'rhysd/unite-zsh-cdr.vim'
 NeoBundle 'sgur/vim-gitgutter'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'ujihisa/neco-look'
+NeoBundle 'kana/vim-submode'
+NeoBundleLazy 'kana/vim-altr', {
+            \ 'autoload' : {
+            \     'mappings' : '<Plug>(altr-forward)'
+            \   }
+            \ }
 
 " For testing
 set rtp+=~/Github/clever-f.vim
@@ -580,6 +585,7 @@ NeoBundleLazy 'basyura/TweetVim', 'dev', {
             \          'TweetVimUserStream']
             \     }
             \ }
+
 
 " 書き込み権限の無いファイルを編集しようとした時
 NeoBundleLazy 'sudo.vim'
@@ -915,7 +921,7 @@ endfunction
 " 縦幅と横幅を見て help の開き方を決める
 " set keywordprg=:SmartHelp
 command! -nargs=* -complete=help SmartHelp call <SID>smart_help(<q-args>)
-nnoremap <silent><Leader>h :<C-u>SmartHelp<Space>
+nnoremap <silent><Leader>h :<C-u>SmartHelp<Space><C-l>
 function! s:smart_help(args)
     if winwidth(0) > winheight(0) * 2
         " 縦分割
@@ -997,7 +1003,7 @@ function! s:toggle_binding_pry()
         normal! obinding.pry
     endif
 endfunction
-autocmd MyVimrc FileType ruby nnoremap <buffer><silent><C-t> :<C-u>call <SID>toggle_binding_pry()<CR>
+autocmd MyVimrc FileType ruby nnoremap <buffer><silent><Leader>p :<C-u>call <SID>toggle_binding_pry()<CR>
 
 function! s:exec_with_vimshell(cmd, ...)
     let cmdline = a:cmd . ' ' . expand('%:p') . ' ' . join(a:000)
@@ -1044,49 +1050,9 @@ function! s:return_type_completion()
 endfunction
 
 " ヘッダファイルとソースファイルを入れ替える
-function! s:cpp_hpp()
-    let cpps = ['cpp', 'cc', 'cxx', 'c']
-    let hpps = ['hpp', 'h']
-    let ext  = expand('%:e')
-    let base = expand('%:r')
-
-    " ソースファイルのとき
-    if count(cpps,ext) != 0
-        for hpp in hpps
-            if filereadable(base.'.'.hpp)
-                execute 'edit '.base.'.'.hpp
-                return
-            endif
-        endfor
-    endif
-
-    " ヘッダファイルのとき
-    if count(hpps,ext) != 0
-        for cpp in cpps
-            if filereadable(base.'.'.cpp)
-                execute 'edit '.base.'.'.cpp
-                return
-            endif
-        endfor
-    endif
-
-    " なければ Unite で検索
-    if executable('mdfind') && has('mac')
-        execute "Unite spotlight -input=".base
-    elseif executable('locate')
-        execute "Unite locate -input=".base
-    else
-        echoerr "not found"
-    endif
-
-endfunction
-
-command! -nargs=0 CppHpp :call <SID>cpp_hpp()
-
 autocmd MyVimrc FileType cpp setlocal matchpairs+=<:>
 autocmd MyVimrc FileType cpp inoremap <buffer>,  ,<Space>
 autocmd MyVimrc FileType cpp nnoremap <buffer><Leader>ret :<C-u>call <SID>return_type_completion()<CR>
-autocmd MyVimrc FileType cpp nnoremap <silent><buffer><C-t> :<C-u>call <SID>cpp_hpp()<CR>
 autocmd MyVimrc FileType cpp inoremap <expr> e getline('.')[col('.') - 6:col('.') - 2] ==# 'const' ? 'expr ' : 'e'
 " }}}
 
@@ -1147,10 +1113,10 @@ let g:neocomplcache_delimiter_patterns.cpp = ['::']
 if !exists('g:neocomplcache_include_paths')
     let g:neocomplcache_include_paths = {}
 endif
-let g:neocomplcache_include_paths.cpp  = '.,/usr/local/include,/usr/local/Cellar/gcc/4.7.2/gcc/include/c++/4.7.2,/usr/include'
+let g:neocomplcache_include_paths.cpp  = '.,/usr/local/include,/usr/local/Cellar/gcc/4.8.1/gcc/include/c++/4.8.1,/usr/include'
 let g:neocomplcache_include_paths.c    = '.,/usr/include'
 let g:neocomplcache_include_paths.perl = '.,/System/Library/Perl,/Users/rhayasd/Programs'
-let g:neocomplcache_include_paths.ruby = expand('~/.rbenv/versions/2.0.0-p0/lib/ruby/2.0.0')
+let g:neocomplcache_include_paths.ruby = expand('~/.rbenv/versions/2.0.0-p195/lib/ruby/2.0.0')
 "インクルード文のパターンを指定
 let g:neocomplcache_include_patterns = { 'cpp' : '^\s*#\s*include', 'ruby' : '^\s*require', 'perl' : '^\s*use', }
 "インクルード先のファイル名の解析パターン
@@ -1496,7 +1462,7 @@ if !has("g:quickrun_config")
     let g:quickrun_config = {}
 endif
 "C++
-let g:quickrun_config.cpp = { 'command' : "g++", 'cmdopt' : '-std=c++11 -Wall -Wextra -O2' }
+let g:quickrun_config.cpp = { 'command' : 'g++', 'cmdopt' : '-std=c++11 -Wall -Wextra -O2' }
 "QuickRun 結果の開き方
 let g:quickrun_config._ = { 'outputter' : 'unite_quickfix', 'split' : 'rightbelow 10sp', 'hook/hier_update/enable' : 1 }
 " runner vimproc で結果の polling の間隔
@@ -2238,6 +2204,45 @@ let g:gitgutter_system_error_function = 'vimproc#get_last_status'
 let g:gitgutter_shellescape_function  = 'vimproc#shellescape'
 let g:gitgutter_sign_readonly_always  = 0
 " }}}
+
+" submode.vim
+" タブ移動
+call submode#enter_with('changetab', 'n', '', 'gt', 'gt')
+call submode#enter_with('changetab', 'n', '', 'gT', 'gT')
+call submode#map('changetab', 'n', '', 't', 'gt')
+call submode#map('changetab', 'n', '', 'T', 'gT')
+" 時系列 undo/redo
+call submode#enter_with('undo/redo', 'n', '', 'g-', 'g-')
+call submode#enter_with('undo/redo', 'n', '', 'g+', 'g+')
+call submode#map('undo/redo', 'n', '', '-', 'g-')
+call submode#map('undo/redo', 'n', '', '+', 'g+')
+" ウィンドウサイズ変更
+call submode#enter_with('winsize', 'n', '', '<C-w>>', '<C-w>>')
+call submode#enter_with('winsize', 'n', '', '<C-w><', '<C-w><')
+call submode#enter_with('winsize', 'n', '', '<C-w>+', '<C-w>-')
+call submode#enter_with('winsize', 'n', '', '<C-w>-', '<C-w>+')
+call submode#map('winsize', 'n', '', '>', '<C-w>>')
+call submode#map('winsize', 'n', '', '<', '<C-w><')
+call submode#map('winsize', 'n', '', '+', '<C-w>-')
+call submode#map('winsize', 'n', '', '-', '<C-w>+')
+" changelist
+call submode#enter_with('change-list', 'n', '', 'g;', 'g;')
+call submode#enter_with('change-list', 'n', '', 'g,', 'g,')
+call submode#map('change-list', 'n', '', ';', 'g;')
+call submode#map('change-list', 'n', '', ',', 'g,')
+
+" vim-altr
+let s:bundle = neobundle#get("vim-altr")
+function! s:bundle.hooks.on_source(bundle)
+    nmap <C-a> <Plug>(altr-forward)
+    " ruby TDD
+    call altr#define('%.rb', 'spec/%_spec.rb')
+    " Rails TDD
+    call altr#define('app/models/%.rb', 'spec/models/%_spec.rb', 'spec/factories/%s.rb')
+    call altr#define('app/controllers/%.rb', 'spec/controllers/%_spec.rb')
+    call altr#define('app/helpers/%.rb', 'spec/helpers/%_spec.rb')
+endfunction
+unlet s:bundle
 
 " プラットフォーム依存な設定をロードする "{{{
 if has('mac') && filereadable($HOME."/.mac.vimrc")
