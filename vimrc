@@ -423,11 +423,7 @@ NeoBundle 'sgur/vim-gitgutter'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'ujihisa/neco-look'
 NeoBundle 'kana/vim-submode'
-NeoBundleLazy 'kana/vim-altr', {
-            \ 'autoload' : {
-            \     'mappings' : '<Plug>(altr-forward)'
-            \   }
-            \ }
+NeoBundle 'bling/vim-airline'
 
 " For testing
 set rtp+=~/Github/clever-f.vim
@@ -504,6 +500,12 @@ NeoBundleLazy 'Shougo/vimshell', {
             \ 'autoload' : {
             \     'commands' : ['VimShell', 'VimShellSendString', 'VimShellCurrentDir'],
             \     }
+            \ }
+
+NeoBundleLazy 'kana/vim-altr', {
+            \ 'autoload' : {
+            \     'mappings' : '<Plug>(altr-forward)'
+            \   }
             \ }
 
 " GUI オンリーなプラグイン
@@ -2258,6 +2260,13 @@ function! s:bundle.hooks.on_source(bundle)
 endfunction
 unlet s:bundle
 " }}}
+
+" vim-airline
+if has('gui_running')
+    let g:airline_theme = 'solarized'
+else
+    let g:airline_theme = 'wombat'
+endif
 
 " プラットフォーム依存な設定をロードする "{{{
 if has('mac') && filereadable($HOME."/.mac.vimrc")
