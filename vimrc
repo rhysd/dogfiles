@@ -1,3 +1,5 @@
+" TODO vmap <CR> に割り当て
+
 " 必須な基本設定 {{{
 
 " Vimrc 共通の augroup
@@ -2205,7 +2207,7 @@ let g:gitgutter_shellescape_function  = 'vimproc#shellescape'
 let g:gitgutter_sign_readonly_always  = 0
 " }}}
 
-" submode.vim
+" submode.vim {{{
 " タブ移動
 call submode#enter_with('changetab', 'n', '', 'gt', 'gt')
 call submode#enter_with('changetab', 'n', '', 'gT', 'gT')
@@ -2230,11 +2232,23 @@ call submode#enter_with('change-list', 'n', '', 'g;', 'g;')
 call submode#enter_with('change-list', 'n', '', 'g,', 'g,')
 call submode#map('change-list', 'n', '', ';', 'g;')
 call submode#map('change-list', 'n', '', ',', 'g,')
+" }}}
 
-" vim-altr
+" vim-altr {{{
+nmap <C-t> <Plug>(altr-forward)
 let s:bundle = neobundle#get("vim-altr")
 function! s:bundle.hooks.on_source(bundle)
-    nmap <C-a> <Plug>(altr-forward)
+    " for vimrc
+    if has('mac')
+        call altr#define('.vimrc', '.gvimrc', '.mac.vimrc', '.mac.gvimrc')
+    elseif has('win32') || has('win64')
+        call altr#define('_vimrc', '_gvimrc')
+    elseif has('unix')
+        call altr#define('.vimrc', '.gvimrc', '.linux.vimrc', '.linux.gvimrc')
+    endif
+    call altr#define('dotfiles/vimrc', 'dotfiles/gvimrc',
+                \    'dotfiles/mac.vimrc', 'dotfiles/mac.gvimrc',
+                \    'dotfiles/linux.vimrc', 'dotfiles/linux.gvimrc')
     " ruby TDD
     call altr#define('%.rb', 'spec/%_spec.rb')
     " Rails TDD
@@ -2243,6 +2257,7 @@ function! s:bundle.hooks.on_source(bundle)
     call altr#define('app/helpers/%.rb', 'spec/helpers/%_spec.rb')
 endfunction
 unlet s:bundle
+" }}}
 
 " プラットフォーム依存な設定をロードする "{{{
 if has('mac') && filereadable($HOME."/.mac.vimrc")
