@@ -430,6 +430,7 @@ set rtp+=~/Github/clever-f.vim
 set rtp+=~/Github/tmpwin.vim
 set rtp+=~/Github/vim-textobj-continuous-line
 set rtp+=~/Github/unite-ruby-require.vim
+set rtp+=~/Github/vim-operator-clang-format
 
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
@@ -1339,7 +1340,7 @@ nnoremap <silent>[unite]z :<C-u>Unite zsh-cdr<CR>
 " help(項目が多いので，検索語を入力してから絞り込む)
 nnoremap <silent>[unite]hh        :<C-u>UniteWithInput help -vertical<CR>
 " 履歴
-nnoremap <silent>[unite]hc        :<C-u>Unite -buffer-name=lines history/command<CR>
+nnoremap <silent>[unite]hc        :<C-u>Unite -buffer-name=lines history/command -start-insert<CR>
 nnoremap <silent>[unite]hs        :<C-u>Unite -buffer-name=lines history/search<CR>
 nnoremap <silent>[unite]hy        :<C-u>Unite -buffer-name=lines history/yank<CR>
 " プロジェクトのファイル一覧
@@ -1624,7 +1625,7 @@ let g:neocomplcache_force_overwrite_completefunc=1
 let g:clang_hl_errors=1
 let g:clang_conceal_snippets=1
 let g:clang_exec="/usr/bin/clang"
-let g:clang_user_options='-I /usr/local/include -I /usr/include  2>/dev/null || exit 0'
+let g:clang_user_options='-std=c++11 -I /usr/local/include -I /usr/include  2>/dev/null || exit 0'
 " neocomplcache との共存設定
 let g:neocomplcache_force_overwrite_completefunc=1
 if !exists('g:neocomplcache_force_omni_patterns')
@@ -1927,6 +1928,14 @@ map <silent><Leader>b <Plug>(operator-filled-with-blank)
 " vim-operator-evalruby
 let g:operator_evalruby_command = $HOME . '/.rbenv/shims/ruby'
 map <silent><Leader>x <Plug>(operator-evalruby)
+" vim-operator-clang-format
+let g:operator_clang_format_style_options = {
+            \ "AccessModifierOffset" : -4,
+            \ "AllowShortIfStatementsOnASingleLine" : "true",
+            \ "AlwaysBreakTemplateDeclarations" : "true",
+            \ "Standard" : "C++11",
+            \ "BreakBeforeBraces" : "Stroustrup"}
+autocmd MyVimrc FileType cpp map <buffer><Leader>x <Plug>(operator-clang-format)
 "}}}
 
 " ghcmod-vim {{{
@@ -2261,12 +2270,13 @@ endfunction
 unlet s:bundle
 " }}}
 
-" vim-airline
+" vim-airline "{{{
 if has('gui_running')
     let g:airline_theme = 'solarized'
 else
     let g:airline_theme = 'wombat'
 endif
+"}}}
 
 " プラットフォーム依存な設定をロードする "{{{
 if has('mac') && filereadable($HOME."/.mac.vimrc")
