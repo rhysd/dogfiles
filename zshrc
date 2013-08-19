@@ -78,10 +78,10 @@ alias -s dvi=dvipdfmx
 alias -s bib=bibtex
 
 # aliases for C++
-alias g++='g++ -std=c++11 -O2 -g -Wall -Wextra'
+alias g++='g++ -std=c++11 -O2 -Wall -Wextra'
 alias gpp=g++
 alias rg=run-gcc
-alias clang++='clang++ -stdlib=libc++ -std=c++11 -O2 -g -Wall -Wextra'
+alias clang++='clang++ -stdlib=libc++ -std=c++11 -O2 -Wall -Wextra'
 alias cl=clang++
 
 # }}}
