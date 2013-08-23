@@ -1,1 +1,1 @@
-Thank you for reading me :)
+[(U>◡╹)-♡](http://opensource.org/licenses/MIT) 
