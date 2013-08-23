@@ -140,17 +140,15 @@ autocmd MyVimrc CursorMoved,CursorMovedI,WinLeave * setlocal nocursorline
 autocmd MyVimrc CursorHold,CursorHoldI,WinEnter * setlocal cursorline
 
 " *.md で読み込む filetype を変更（デフォルトは modula2）
-autocmd MyVimrc BufRead,BufNew *.md,*.markdown setlocal ft=markdown
+autocmd MyVimrc BufRead,BufNew,BufNewFile *.md,*.markdown setlocal ft=markdown
 " tmux
-autocmd MyVimrc BufRead,BufNew *tmux.conf setlocal ft=tmux
+autocmd MyVimrc BufRead,BufNew,BufNewFile *tmux.conf setlocal ft=tmux
 " git config file
-autocmd MyVimrc BufRead,BufNew gitconfig setlocal ft=gitconfig
+autocmd MyVimrc BufRead,BufNew,BufNewFile gitconfig setlocal ft=gitconfig
 " Gnuplot のファイルタイプを設定
-autocmd MyVimrc BufRead,BufNew *.plt,*.plot,*.gnuplot setlocal ft=gnuplot
-" Vim script テストプラグイン
-autocmd MyVimrc BufRead,BufNew *.vspec setlocal ft=vim
+autocmd MyVimrc BufRead,BufNew,BufNewFile *.plt,*.plot,*.gnuplot setlocal ft=gnuplot
 " Ruby の guard 用ファイル
-autocmd MyVimrc BufRead,BufNew Guardfile setlocal ft=ruby
+autocmd MyVimrc BufRead,BufNew,BufNewFile Guardfile setlocal ft=ruby
 
 " カーソル位置の復元
 autocmd MyVimrc BufReadPost *
