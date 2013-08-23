@@ -50,6 +50,24 @@ nnoremap <silent><Leader>dc :<C-u>MacDictClose<CR>
 nnoremap <silent><Leader>df :<C-u>MacDictFocus<CR>
 "}}}
 
+" Kobito.app {{{
+function! s:open_kobito(...)
+    if a:0 == 0
+        call system('open -a Kobito '.expand('%:p'))
+    else
+        call system('open -a Kobito '.join(a:000, ' '))
+    endif
+endfunction
+
+" 引数のファイル(複数指定可)を Kobitoで開く
+" （引数無しのときはカレントバッファを開く
+command! -nargs=* Kobito call s:open_kobito(<f-args>)
+" Kobito を閉じる
+command! -nargs=0 KobitoClose call system("osascript -e 'tell application \"Kobito\" to quit'")
+" Kobito にフォーカスを移す
+command! -nargs=0 KobitoActivate call system("osascript -e 'tell application \"Kobito\" to activate'")
+"}}}
+
 " unite-ruby-require.vim
 let g:unite_source_ruby_require_ruby_command = '$HOME/.rbenv/shims/ruby'
 
