@@ -303,6 +303,8 @@ nnoremap <C-w>d :<C-u>bdelete<CR>
 " カーソル付近の文字列で検索（新規ウィンドウ）
 nnoremap <C-w>*  <C-w>s*
 nnoremap <C-w>#  <C-w>s#
+" 連結時にスペースを入れない
+nnoremap gJ J"_x
 
 " 初回のみ a:cmd の動きをして，それ以降は行内をローテートする
 let s:smart_line_pos = -1
@@ -991,6 +993,7 @@ autocmd MyVimrc FileType ruby setlocal tabstop=2 shiftwidth=2 softtabstop=2
 autocmd MyVimrc FileType ruby inoremap <buffer><C-s> self.
 autocmd MyVimrc FileType ruby inoremap <buffer>; <Bar>
 autocmd MyVimrc FileType ruby nnoremap <buffer>[unite]r :<C-u>Unite ruby/require<CR>
+autocmd MyVimrc BufRead  Guardfile set filetype=ruby
 if filereadable(expand('~/.vim/skeletons/ruby.skel'))
     autocmd MyVimrc BufNewFile *.rb 0r ~/.vim/skeletons/ruby.skel
 endif
