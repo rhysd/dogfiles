@@ -410,7 +410,6 @@ NeoBundle 'kana/vim-vspec'
 NeoBundle 'rhysd/accelerated-jk'
 NeoBundle 'kana/vim-smartinput'
 NeoBundle 'kana/vim-niceblock'
-" NeoBundle 'rhysd/auto-neobundle'
 NeoBundle 'rhysd/wombat256.vim'
 NeoBundle 'thinca/vim-scouter'
 NeoBundle 'thinca/vim-visualstar'
@@ -420,8 +419,7 @@ NeoBundle 'daisuzu/rainbowcyclone.vim'
 " NeoBundle 'rhysd/clever-f.vim'
 NeoBundle 'tyru/open-browser.vim'
 NeoBundle 'rhysd/unite-zsh-cdr.vim'
-" NeoBundle 'airblade/vim-gitgutter'
-NeoBundle 'sgur/vim-gitgutter'
+NeoBundle 'airblade/vim-gitgutter'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'ujihisa/neco-look'
 NeoBundle 'kana/vim-submode'
@@ -2214,11 +2212,7 @@ nnoremap <C-w>o :<C-u>ZoomWin<CR>
 nnoremap <silent><Leader>tt :<C-u>call tmpwin#toggle({'open_post' : ['normal! gg', 'setl nohidden']}, 'TweetVimHomeTimeline')<CR>
 
 " vim-gitgutter {{{
-let g:gitgutter_eager                 = 0
-let g:gitgutter_system_function       = 'vimproc#system'
-let g:gitgutter_system_error_function = 'vimproc#get_last_status'
-let g:gitgutter_shellescape_function  = 'vimproc#shellescape'
-let g:gitgutter_sign_readonly_always  = 0
+let g:gitgutter_eager = 0
 " }}}
 
 " submode.vim {{{
@@ -2279,6 +2273,7 @@ if has('gui_running')
 else
     let g:airline_theme = 'wombat'
 endif
+let g:airline#extensions#whitespace#enabled = 0
 "}}}
 
 " プラットフォーム依存な設定をロードする "{{{
