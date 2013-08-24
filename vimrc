@@ -572,7 +572,6 @@ NeoBundleLazy 'rhysd/neco-ruby-keyword-args', {
 NeoBundleLazy 'basyura/twibill.vim'
 NeoBundleLazy 'yomi322/neco-tweetvim'
 NeoBundleLazy 'rhysd/tweetvim-advanced-filter'
-NeoBundle 'mattn/webapi-vim'
 NeoBundleLazy 'basyura/TweetVim', 'dev', {
             \ 'depends' :
             \     ['basyura/twibill.vim',
