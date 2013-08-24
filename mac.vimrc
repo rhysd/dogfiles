@@ -66,6 +66,8 @@ command! -nargs=* Kobito call s:open_kobito(<f-args>)
 command! -nargs=0 KobitoClose call system("osascript -e 'tell application \"Kobito\" to quit'")
 " Kobito にフォーカスを移す
 command! -nargs=0 KobitoActivate call system("osascript -e 'tell application \"Kobito\" to activate'")
+" QuickRun の代わりに Kobito を開く
+autocmd MyVimrc FileType markdown nnoremap <buffer><Leader>qr :<C-u>Kobito<CR>
 "}}}
 
 " unite-ruby-require.vim

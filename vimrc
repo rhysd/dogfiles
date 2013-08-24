@@ -2413,6 +2413,11 @@ endif
 let g:airline#extensions#whitespace#enabled = 0
 "}}}
 
+" previm {{{
+autocmd MyVimrc FileType markdown            nnoremap <buffer><Leader>p :<C-u>PrevimOpen<CR>
+autocmd MyVimrc BufWritePost *.md,*.markdown call previm#refresh()
+"}}}
+
 " プラットフォーム依存な設定をロードする "{{{
 if has('mac') && filereadable($HOME."/.mac.vimrc")
     source $HOME/.mac.vimrc
