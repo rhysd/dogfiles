@@ -325,6 +325,8 @@ autocmd MyVimrc CmdwinEnter * nnoremap <silent><buffer>q :<C-u>q<CR>
 autocmd MyVimrc CmdwinEnter * nnoremap <silent><buffer><Esc> :<C-u>q<CR>
 autocmd MyVimrc CmdwinEnter * inoremap <silent><buffer><C-g> <Esc>:q<CR>
 autocmd MyVimrc CmdwinEnter * nnoremap <silent><buffer><CR> A<CR>
+" endwiseze.vim はコマンドラインウィンドウでうまく動かない
+autocmd MyVimrc CmdwinEnter * inoremap <silent><buffer><CR> <CR>
 
 " 初回のみ a:cmd の動きをして，それ以降は行内をローテートする
 let s:smart_line_pos = -1
