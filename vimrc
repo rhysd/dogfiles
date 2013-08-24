@@ -2,6 +2,11 @@
 
 
 " 必須な基本設定 {{{
+function! s:get_SID()
+  return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeget_SID$')
+endfunction
+let s:SID = s:get_SID()
+delfunction s:get_SID
 
 " Vimrc 共通の augroup
 augroup MyVimrc
@@ -478,7 +483,8 @@ NeoBundleLazy 'tyru/caw.vim', {
             \          '<Plug>(caw:a:toggle)',
             \          '<Plug>(caw:wrap:toggle)',
             \          '<Plug>(caw:jump:comment-next)',
-            \          '<Plug>(caw:jump:comment-next)']
+            \          '<Plug>(caw:jump:comment-next)',
+            \          '<Plug>(operator-caw)']
             \     }
             \ }
 
@@ -1991,20 +1997,29 @@ call smartinput#define_rule(
 let g:caw_no_default_keymappings = 1
 
 " キーマッピング {{{
-nmap <Leader>c <Nop>
-vmap <Leader>c <Nop>
 " 行コメント
 nmap <Leader>cc <Plug>(caw:i:toggle)
-vmap <Leader>cc <Plug>(caw:i:toggle)
 " 行末尾コメント
 nmap <Leader>ca <Plug>(caw:a:toggle)
-vmap <Leader>ca <Plug>(caw:a:toggle)
 " ブロックコメント
 nmap <Leader>cw <Plug>(caw:wrap:toggle)
-vmap <Leader>cw <Plug>(caw:wrap:toggle)
 " 改行後コメント
 nmap <Leader>co <Plug>(caw:jump:comment-next)
 nmap <Leader>cO <Plug>(caw:jump:comment-prev)
+" caw 用オペレータ
+let s:bundle = neobundle#get("caw.vim")
+function! s:bundle.hooks.on_source(bundle)
+    function! s:op_caw_commentout(motion_wise)
+        if a:motion_wise ==# 'char'
+            execute 'normal' "`[v`]\<Plug>(caw:wrap:toggle)"
+        else
+            execute "normal" "`[V`]\<Plug>(caw:i:toggle)"
+        endif
+    endfunction
+    call operator#user#define('caw', s:SID.'op_caw_commentout')
+endfunction
+unlet s:bundle
+map <Leader>c <Plug>(operator-caw)
 "}}}
 
 "}}}
