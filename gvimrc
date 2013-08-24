@@ -65,6 +65,10 @@ nnoremap <Space>C :<C-u>Unite -auto-preview colorscheme<CR>
 
 let g:haskell_conceal = 1
 
+if isdirectory(expand('~/.cabal/bin'))
+    let $PATH .= ':'.expand('~/.cabal/bin')
+endif
+
 " プラットフォーム依存な設定の読み込み
 if has('mac') && filereadable($HOME.'/.mac.gvimrc')
     source $HOME/.mac.gvimrc
