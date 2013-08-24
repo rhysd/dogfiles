@@ -253,9 +253,8 @@ function! s:good_width()
         vertical resize 84
     endif
 endfunction
-nnoremap t e
-" <C-w> -> e
-nmap     e <C-w>
+" <C-w> -> s
+nmap     s <C-w>
 " 現在のウィンドウのみを残す
 nnoremap <C-w>O <C-w>o
 "インサートモードで次の行に直接改行
@@ -1425,8 +1424,6 @@ autocmd MyVimrc FileType unite nmap <buffer>l <Plug>(unite_do_default_action)
 autocmd MyVimrc FileType unite imap <buffer><expr>l unite#smart_map("l", unite#do_action(unite#get_current_unite().context.default_action))
 "jjで待ち時間が発生しないようにしていると候補が見えなくなるので対処
 autocmd MyVimrc FileType unite imap <buffer><silent>jj <Plug>(unite_insert_leave)
-" s を wincmd リマップする
-autocmd MyVimrc FileType unite nmap <buffer>s <C-w>
 
 nnoremap [unite] <Nop>
 nmap     <Space> [unite]
@@ -1721,14 +1718,12 @@ let g:vimfiler_split_rule = 'botright'
 
 " vimfiler.vim のキーマップ {{{
 " smart s mapping for edit or cd
-autocmd MyVimrc FileType vimfiler nmap <buffer><silent><expr> s vimfiler#smart_cursor_map(
+autocmd MyVimrc FileType vimfiler nmap <buffer><silent><expr> l vimfiler#smart_cursor_map(
             \ "\<Plug>(vimfiler_cd_file)",
             \ "\<Plug>(vimfiler_edit_file)")
 " jump to VimShell
 autocmd MyVimrc FileType vimfiler nnoremap <buffer><silent><Leader>vs
             \ :<C-u>VimShellCurrentDir<CR>
-" e は元のまま使えるようにする
-autocmd MyVimrc FileType vimfiler nmap <buffer>e <C-w>
 " 'a'nother
 autocmd MyVimrc FileType vimfiler nmap <buffer><silent>a <Plug>(vimfiler_switch_to_another_vimfiler)
 " unite.vim に合わせる
