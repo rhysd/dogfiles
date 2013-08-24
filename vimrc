@@ -424,7 +424,6 @@ NeoBundle 'bling/vim-airline'
 
 " For testing
 set rtp+=~/Github/clever-f.vim
-set rtp+=~/Github/tmpwin.vim
 " set rtp+=~/Github/vim-textobj-continuous-line
 set rtp+=~/Github/unite-ruby-require.vim
 set rtp+=~/Github/vim-operator-clang-format
@@ -510,6 +509,12 @@ NeoBundleLazy 'tyru/open-browser.vim', {
             \ 'autoload' : {
             \     'commands' : ['OpenBrowser', 'OpenBrowserSearch', 'OpenBrowserSmartSearch'],
             \     'functions' : ['openbrowser#open', 'openbrowser#search', 'openbrowser#smart_search']
+            \   }
+            \ }
+
+NeoBundleLazy 'rhysd/tmpwin.vim', {
+            \ 'autoload' : {
+            \     'functions' : ['tmpwin#toggle']
             \   }
             \ }
 
