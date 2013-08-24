@@ -514,14 +514,14 @@ NeoBundleLazy 'tyru/open-browser.vim', {
             \ }
 
 " if_lua プラグイン
-NeoBundleFetch 'Shougo/neocomplcache.vim'
-NeoBundleFetch 'Shougo/neocomplete.vim'
 function! s:meet_neocomplete_requirements()
     return has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
 endfunction
 if s:meet_neocomplete_requirements()
     NeoBundle 'Shougo/neocomplete.vim'
+    NeoBundleFetch 'Shougo/neocomplcache.vim'
 else
+    NeoBundleFetch 'Shougo/neocomplete.vim'
     NeoBundle 'Shougo/neocomplcache.vim'
 endif
 
@@ -1104,13 +1104,24 @@ let g:acp_enableAtStartup = 0
 let g:neocomplete#enable_at_startup = 1
 "smart_caseを有効にする．大文字が入力されるまで大文字小文字の区別をなくす
 let g:neocomplete#enable_smart_case = 1
-"シンタックスをキャッシュするときの最小文字長を3に
-let g:neocomplete#min_keyword_length = 3
-let g:neocomplete#sources#syntax#min_keyword_length = 3
+"シンタックスをキャッシュするときの最小文字長を4に
+let g:neocomplete#min_keyword_length = 4
+let g:neocomplete#sources#syntax#min_keyword_length = 4
+"補完を開始する入力文字長
+let g:neocomplete#auto_completion_start_length = 2
 "日本語を収集しないようにする
 if !exists('g:neocomplete#keyword_patterns')
     let g:neocomplete#keyword_patterns = {}
 endif
+" ctags は自分の用意したものを使う
+if executable('/usr/local/bin/ctags')
+    let g:neocomplete#ctags_command = '/usr/local/bin/ctags'
+endif
+" Ruby の外部ファイルの拡張子
+let g:neocomplete#sources#file_include#exts
+            \ = get(g:, 'neocomplete#sources#file_include#exts', {})
+let g:neocomplete#sources#file_include#exts.ruby = ['', 'rb']
+" キーワードとして認識するパターン
 let g:neocomplete#keyword_patterns['default'] = '\h\w*'
 "リスト表示
 let g:neocomplete#max_list = 300
