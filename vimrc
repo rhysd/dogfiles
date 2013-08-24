@@ -344,6 +344,7 @@ endfunction
 " または vi という名前の シンボリックリンク越しに vim を起動した時
 if (exists("g:linda_pp_startup_with_tiny") && g:linda_pp_startup_with_tiny)
             \ || v:progname ==# 'vi'
+            \ || ! exists('v:version') || v:version < 703
 
     " help は 80 行以上ないと読みにくい
     autocmd MyVimrc FileType help if winwidth(0) < 80 | vertical resize 80 | endif
