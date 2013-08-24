@@ -289,12 +289,19 @@ inoremap <C-r>* <C-o>:set paste<CR><C-r>*<C-o>:set nopaste<CR>
 " コンマ後には空白を入れる
 inoremap , ,<Space>
 " 賢く行頭・非空白行頭・行末の移動
-nnoremap <silent>0 :<C-u>call <SID>smart_move('g^')<CR>
-nnoremap <silent>^ :<C-u>call <SID>smart_move('g0')<CR>
-nnoremap <silent>- :<C-u>call <SID>smart_move('g$')<CR>
-vnoremap 0 g^
-vnoremap ^ g0
-vnoremap - g$
+nnoremap <silent>M :<C-u>call <SID>smart_move('g^')<CR>
+nnoremap <silent>H :<C-u>call <SID>smart_move('g0')<CR>
+nnoremap <silent>L :<C-u>call <SID>smart_move('g$')<CR>
+vnoremap M g^
+vnoremap H g0
+vnoremap L g$
+" スクリーン内移動
+nnoremap gh H
+nnoremap gl L
+nnoremap gm M
+vnoremap gh H
+vnoremap gl L
+vnoremap gm M
 " スペルチェック
 nnoremap <Leader>s :<C-u>setl spell! spell?<CR>
 " バッファを削除
@@ -345,18 +352,6 @@ endfunction
 if (exists("g:linda_pp_startup_with_tiny") && g:linda_pp_startup_with_tiny)
             \ || v:progname ==# 'vi'
             \ || ! exists('v:version') || v:version < 703
-
-    " help は 80 行以上ないと読みにくい
-    autocmd MyVimrc FileType help if winwidth(0) < 80 | vertical resize 80 | endif
-
-    let g:caw_no_default_keymappings = 1
-    if has('vim_starting')
-        set rtp+=~/.vim/bundle/caw.vim
-    endif
-    nmap <Leader>c <Plug>(caw:i:toggle)
-    vmap <Leader>c <Plug>(caw:i:toggle)
-    nmap <Leader>C <Plug>(caw:wrap:toggle)
-    vmap <Leader>C <Plug>(caw:wrap:toggle)
     finish
 endif
 "}}}
