@@ -514,7 +514,15 @@ NeoBundleLazy 'tyru/open-browser.vim', {
 
 NeoBundleLazy 'rhysd/tmpwin.vim', {
             \ 'autoload' : {
-            \     'functions' : ['tmpwin#toggle']
+            \     'functions' : 'tmpwin#toggle'
+            \   }
+            \ }
+
+NeoBundleLazy 'kannokanno/previm', {
+            \ 'depends' : 'tyru/open-browser.vim',
+            \ 'autoload' : {
+            \     'commands' : 'PrevimOpen',
+            \     'filetypes' : 'markdown'
             \   }
             \ }
 
