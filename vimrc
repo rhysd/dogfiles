@@ -122,7 +122,7 @@ if has('persistent_undo') && isdirectory($HOME.'/.vim/undo')
     set undofile
 endif
 " command-line-window の縦幅
-    " set cmdwinheight=14
+set cmdwinheight=3
 " Ruby シンタックスチェック
     " function! s:ExecuteMake()
     "   if &filetype == 'ruby' && expand('%:t') !~? '^pry\d\{8}.\+\.rb'
@@ -188,8 +188,13 @@ endif
 
 " 基本マッピング {{{
 " ; と : をスワップ
-noremap ; :
 noremap : ;
+if has('cmdline_hist')
+    noremap ; q:i
+    noremap <Leader>; :
+else
+    noremap ; :
+endif
 "モードから抜ける
 inoremap <expr> j getline('.')[col('.') - 2] ==# 'j' ? "\<BS>\<ESC>" : 'j'
 cnoremap <expr> j getcmdline()[getcmdpos() - 2] ==# 'j' ? "\<BS>\<ESC>" : 'j'
@@ -315,6 +320,11 @@ nnoremap <C-w>*  <C-w>s*
 nnoremap <C-w>#  <C-w>s#
 " 連結時にスペースを入れない
 nnoremap gJ J"_x
+" コマンドラインウィンドウを閉じられるようにする
+autocmd MyVimrc CmdwinEnter * nnoremap <silent><buffer>q :<C-u>q<CR>
+autocmd MyVimrc CmdwinEnter * nnoremap <silent><buffer><Esc> :<C-u>q<CR>
+autocmd MyVimrc CmdwinEnter * inoremap <silent><buffer><C-g> <Esc>:q<CR>
+autocmd MyVimrc CmdwinEnter * nnoremap <silent><buffer><CR> A<CR>
 
 " 初回のみ a:cmd の動きをして，それ以降は行内をローテートする
 let s:smart_line_pos = -1
@@ -1200,8 +1210,8 @@ let g:neocomplete#force_omni_input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\
 inoremap <expr><C-g> neocomplete#undo_completion()
 inoremap <expr><C-s> neocomplete#complete_common_string()
 " <CR>: close popup and save indent.
-" <TAB>: completion
-inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+" <Tab>: completion
+inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 "<C-h>, <BS>: close popup and delete backword char.
 inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
 inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
@@ -1212,6 +1222,8 @@ inoremap <expr><C-y> neocomplete#close_popup()
 "    smart_close_popup() is called when pumvisible() ->
 "    <Plug>(physical_key_return) hooked by vim-smartinput is used
 imap <expr><CR> (pumvisible() ? neocomplete#smart_close_popup() : "")."\<Plug>(physical_key_return)"
+" コマンドラインウィンドウでは Tab の挙動が変わるのでワークアラウンド
+autocmd MyVimrc CmdwinEnter * inoremap <silent><buffer><Tab> <C-n>
 " }}}
 else
 " neocomplcache.vim {{{
@@ -1300,8 +1312,8 @@ let g:neocomplcache_force_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|::'
 inoremap <expr><C-g> neocomplcache#undo_completion()
 inoremap <expr><C-s> neocomplcache#complete_common_string()
 " <CR>: close popup and save indent.
-" <TAB>: completion
-inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+" <Tab>: completion
+inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 "<C-h>, <BS>: close popup and delete backword char.
                      " inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
                      " inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
@@ -1312,6 +1324,8 @@ inoremap <expr><C-y> neocomplcache#close_popup()
 "    smart_close_popup() is called when pumvisible() ->
 "    <Plug>(physical_key_return) hooked by vim-smartinput is used
 imap <expr><CR> (pumvisible() ? neocomplcache#smart_close_popup() : "")."\<Plug>(physical_key_return)"
+" コマンドラインウィンドウでは Tab の挙動が変わるのでワークアラウンド
+autocmd MyVimrc CmdwinEnter * inoremap <silent><buffer><Tab> <C-n>
 "}}}
 
 " }}}
