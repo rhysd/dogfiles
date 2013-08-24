@@ -415,7 +415,6 @@ NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'rhysd/gem-gist.vim'
 NeoBundle 'daisuzu/rainbowcyclone.vim'
 " NeoBundle 'rhysd/clever-f.vim'
-NeoBundle 'tyru/open-browser.vim'
 NeoBundle 'rhysd/unite-zsh-cdr.vim'
 NeoBundle 'airblade/vim-gitgutter'
     " NeoBundle 'ujihisa/vimshell-ssh'
@@ -504,6 +503,13 @@ NeoBundleLazy 'Shougo/vimshell', {
 NeoBundleLazy 'kana/vim-altr', {
             \ 'autoload' : {
             \     'mappings' : '<Plug>(altr-forward)'
+            \   }
+            \ }
+
+NeoBundleLazy 'tyru/open-browser.vim', {
+            \ 'autoload' : {
+            \     'commands' : ['OpenBrowser', 'OpenBrowserSearch', 'OpenBrowserSmartSearch'],
+            \     'functions' : ['openbrowser#open', 'openbrowser#search', 'openbrowser#smart_search']
             \   }
             \ }
 
@@ -1883,7 +1889,7 @@ nmap <Leader>cO <Plug>(caw:jump:comment-prev)
 
 "}}}
 
-" Text Object "{{{
+" text object "{{{
 " textobj-wiw {{{
 let g:textobj_wiw_no_default_key_mappings = 1 " デフォルトキーマップの解除
 omap am <Plug>(textobj-wiw-a)
@@ -2005,6 +2011,11 @@ let g:unite_source_alignta_preset_options = [
 " endwize.vim "{{{
 " 自動挿入された end の末尾に情報を付け加える e.g. end # if hoge
 let g:endwize_add_verbose_info_filetypes = ['c', 'cpp']
+"}}}
+
+" open-browser.vim "{{{
+nnoremap <Leader>o :<C-u>execute 'OpenBrowserSmartSearch' expand('<cWORD>')<CR>
+vnoremap <Leader>o y:OpenBrowserSmartSearch <C-r>+<CR>
 "}}}
 
 " vim-vspec {{{
