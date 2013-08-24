@@ -1,5 +1,6 @@
 " TODO vmap <CR> に割り当て
 
+
 " 必須な基本設定 {{{
 
 " Vimrc 共通の augroup
@@ -383,7 +384,6 @@ NeoBundle 'Shougo/vimproc.vim', {
             \       'unix'    : 'make -f make_unix.mak',
             \   }
             \ }
-NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'Shougo/neosnippet'
 NeoBundle 'rhysd/inu-snippets'
 NeoBundle 'thinca/vim-quickrun'
@@ -425,7 +425,7 @@ NeoBundle 'bling/vim-airline'
 " For testing
 set rtp+=~/Github/clever-f.vim
 set rtp+=~/Github/tmpwin.vim
-set rtp+=~/Github/vim-textobj-continuous-line
+" set rtp+=~/Github/vim-textobj-continuous-line
 set rtp+=~/Github/unite-ruby-require.vim
 set rtp+=~/Github/vim-operator-clang-format
 
@@ -512,6 +512,18 @@ NeoBundleLazy 'tyru/open-browser.vim', {
             \     'functions' : ['openbrowser#open', 'openbrowser#search', 'openbrowser#smart_search']
             \   }
             \ }
+
+" if_lua プラグイン
+NeoBundleFetch 'Shougo/neocomplcache.vim'
+NeoBundleFetch 'Shougo/neocomplete.vim'
+function! s:meet_neocomplete_requirements()
+    return has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
+endfunction
+if s:meet_neocomplete_requirements()
+    NeoBundle 'Shougo/neocomplete.vim'
+else
+    NeoBundle 'Shougo/neocomplcache.vim'
+endif
 
 " GUI オンリーなプラグイン
 NeoBundleLazy 'ujihisa/unite-colorscheme'
@@ -1084,7 +1096,100 @@ autocmd MyVimrc FileType vim inoremap , ,<Space>
 autocmd MyVimrc FileType vim call <SID>matchit([])
 "}}}
 
-" neocomplcacheの設定 {{{
+if s:meet_neocomplete_requirements()
+" neocomplete.vim {{{
+"AutoComplPopを無効にする
+let g:acp_enableAtStartup = 0
+"vim起動時に有効化
+let g:neocomplete#enable_at_startup = 1
+"smart_caseを有効にする．大文字が入力されるまで大文字小文字の区別をなくす
+let g:neocomplete#enable_smart_case = 1
+"シンタックスをキャッシュするときの最小文字長を3に
+let g:neocomplete#min_keyword_length = 3
+let g:neocomplete#sources#syntax#min_keyword_length = 3
+"日本語を収集しないようにする
+if !exists('g:neocomplete#keyword_patterns')
+    let g:neocomplete#keyword_patterns = {}
+endif
+let g:neocomplete#keyword_patterns['default'] = '\h\w*'
+"リスト表示
+let g:neocomplete#max_list = 300
+" 最大キーワード幅
+let g:neocomplete#max_keyword_width = 20
+" 辞書定義
+let g:neocomplete#sources#dictionary#dictionaries = {
+            \ 'default' : '',
+            \ 'vimshell' : expand('~/.vimshell/command-history'),
+            \ }
+"区切り文字パターンの定義
+if !exists('g:neocomplete#delimiter_patterns')
+    let g:neocomplete#delimiter_patterns = {}
+endif
+let g:neocomplete#delimiter_patterns.vim = ['#']
+let g:neocomplete#delimiter_patterns.cpp = ['::']
+"インクルードパスの指定
+if !exists('g:neocomplete#sources#include#paths')
+    let g:neocomplete#sources#include#paths = {}
+endif
+let g:neocomplete#sources#include#paths.cpp  = '.,/usr/local/include,/usr/local/Cellar/gcc/4.8.1/gcc/include/c++/4.8.1,/usr/include'
+let g:neocomplete#sources#include#paths.c    = '.,/usr/include'
+let g:neocomplete#sources#include#paths.perl = '.,/System/Library/Perl,/Users/rhayasd/Programs'
+let g:neocomplete#sources#include#paths.ruby = expand('~/.rbenv/versions/2.0.0-p195/lib/ruby/2.0.0')
+"インクルード文のパターンを指定
+let g:neocomplete#sources#include#patterns = { 'c' : '^\s*#\s*include', 'cpp' : '^\s*#\s*include', 'ruby' : '^\s*require', 'perl' : '^\s*use', }
+"インクルード先のファイル名の解析パターン
+let g:neocomplete#filename#include#exprs = {
+            \ 'ruby' : "substitute(substitute(v:fname,'::','/','g'),'$','.rb','')"
+            \ }
+" オムニ補完を有効にする(ruby のオムニ補完は挙動が怪しいので off)
+autocmd MyVimrc FileType python     setlocal omnifunc=pythoncomplete#Complete
+autocmd MyVimrc FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd MyVimrc FileType html       setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd MyVimrc FileType css        setlocal omnifunc=csscomplete#CompleteCss
+autocmd MyVimrc FileType xml        setlocal omnifunc=xmlcomplete#CompleteTags
+autocmd MyVimrc FileType php        setlocal omnifunc=phpcomplete#CompletePHP
+autocmd MyVimrc FileType c          setlocal omnifunc=ccomplete#Complete
+" オムニ補完を実行するパターン
+if !exists('g:neocomplete#sources#omni#input_patterns')
+    let g:neocomplete#sources#omni#input_patterns = {}
+endif
+let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+let g:neocomplete#sources#omni#input_patterns.c   = '\%(\.\|->\)\h\w*'
+let g:neocomplete#sources#omni#input_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
+" neocomplcache 補完用関数
+let g:neocomplete#sources#vim#complete_functions = {
+    \ 'Unite' : 'unite#complete_source',
+    \ 'VimShellExecute' : 'vimshell#vimshell_execute_complete',
+    \ 'VimShellInteractive' : 'vimshell#vimshell_execute_complete',
+    \ 'VimShellTerminal' : 'vimshell#vimshell_execute_complete',
+    \ 'VimShell' : 'vimshell#complete',
+    \ 'VimFiler' : 'vimfiler#complete',
+    \}
+let g:neocomplete#force_overwrite_completefunc = 1
+if !exists('g:neocomplete#force_omni_input_patterns')
+    let g:neocomplete#force_omni_input_patterns = {}
+endif
+let g:neocomplete#force_omni_input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|::'
+
+"neocompleteのマッピング
+inoremap <expr><C-g> neocomplete#undo_completion()
+inoremap <expr><C-s> neocomplete#complete_common_string()
+" <CR>: close popup and save indent.
+" <TAB>: completion
+inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+"<C-h>, <BS>: close popup and delete backword char.
+inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+inoremap <expr><C-y> neocomplete#close_popup()
+" HACK: This hack needs because of using both vim-smartinput and neocomplete
+" when <CR> is typed.
+"    A user types <CR> ->
+"    smart_close_popup() is called when pumvisible() ->
+"    <Plug>(physical_key_return) hooked by vim-smartinput is used
+imap <expr><CR> (pumvisible() ? neocomplete#smart_close_popup() : "")."\<Plug>(physical_key_return)"
+" }}}
+else
+" neocomplcache.vim {{{
 "AutoComplPopを無効にする
 let g:acp_enableAtStartup = 0
 "vim起動時に有効化
@@ -1158,6 +1263,13 @@ let g:neocomplcache_vim_completefuncs = {
     \ 'VimShell' : 'vimshell#complete',
     \ 'VimFiler' : 'vimfiler#complete',
     \}
+" clang_complete との共存
+let g:neocomplcache_force_overwrite_completefunc=1
+if !exists('g:neocomplcache_force_omni_patterns')
+    let g:neocomplcache_force_omni_patterns = {}
+endif
+let g:neocomplcache_force_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|::'
+
 
 "neocomplcacheのマッピング {{{
 inoremap <expr><C-g> neocomplcache#undo_completion()
@@ -1178,23 +1290,24 @@ imap <expr><CR> (pumvisible() ? neocomplcache#smart_close_popup() : "")."\<Plug>
 "}}}
 
 " }}}
+endif
 
 " neosnippet {{{
 "スニペット展開候補があれば展開を，そうでなければbash風補完を．
 " プレースホルダ優先で展開
 imap <expr><C-l> neosnippet#expandable() \|\| neosnippet#jumpable() ?
             \ "\<Plug>(neosnippet_jump_or_expand)" :
-            \ neocomplcache#complete_common_string()
+            \ "\<C-s>"
 smap <expr><C-l> neosnippet#expandable() \|\| neosnippet#jumpable() ?
             \ "\<Plug>(neosnippet_jump_or_expand)" :
-            \ neocomplcache#complete_common_string()
+            \ "\<C-s>"
 " ネスト優先で展開
 imap <expr><C-S-l> neosnippet#expandable() \|\| neosnippet#jumpable() ?
             \ "\<Plug>(neosnippet_expand_or_jump)" :
-            \ neocomplcache#complete_common_string()
+            \ "\<C-s>"
 smap <expr><C-S-l> neosnippet#expandable() \|\| neosnippet#jumpable() ?
             \ "\<Plug>(neosnippet_expand_or_jump)" :
-            \ neocomplcache#complete_common_string()
+            \ "\<C-s>"
 "}}}
 
 " unite.vim {{{
@@ -1625,18 +1738,10 @@ nnoremap <silent><expr><Leader>fe ":\<C-u>VimFilerExplorer " . <SID>git_root_dir
 " }}}
 
 " clang_complete {{{
-let g:neocomplcache_force_overwrite_completefunc=1
 let g:clang_hl_errors=1
 let g:clang_conceal_snippets=1
 let g:clang_exec="/usr/bin/clang"
 let g:clang_user_options='-std=c++11 -I /usr/local/include -I /usr/include  2>/dev/null || exit 0'
-" neocomplcache との共存設定
-let g:neocomplcache_force_overwrite_completefunc=1
-if !exists('g:neocomplcache_force_omni_patterns')
-    let g:neocomplcache_force_omni_patterns = {}
-endif
-let g:neocomplcache_force_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|::'
-
 let g:clang_complete_auto = 0
 " }}}
 
@@ -2093,7 +2198,7 @@ function! s:bundle.hooks.on_source(bundle)
     autocmd MyVimrc FileType tweetvim_say inoremap <buffer><silent><C-g>    <C-o>:<C-u>q!<CR><Esc>
     " ツイート履歴を <C-l> に
     autocmd MyVimrc FileType tweetvim_say inoremap <buffer><silent><C-l>    <C-o>:<C-u>call unite#sources#tweetvim_tweet_history#start()<CR>
-    " <Tab> は neocomplcache で使う
+    " <Tab> は補完で使う
     autocmd MyVimrc FileType tweetvim_say iunmap   <buffer><Tab>
     " 各種アクション
     autocmd MyVimrc FileType tweetvim     nnoremap <buffer>s                :<C-u>TweetVimSay<CR>
