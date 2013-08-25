@@ -320,13 +320,17 @@ nnoremap <C-w>*  <C-w>s*
 nnoremap <C-w>#  <C-w>s#
 " 連結時にスペースを入れない
 nnoremap gJ J"_x
-" コマンドラインウィンドウを閉じられるようにする
-autocmd MyVimrc CmdwinEnter * nnoremap <silent><buffer>q :<C-u>q<CR>
-autocmd MyVimrc CmdwinEnter * nnoremap <silent><buffer><Esc> :<C-u>q<CR>
-autocmd MyVimrc CmdwinEnter * inoremap <silent><buffer><C-g> <Esc>:q<CR>
-autocmd MyVimrc CmdwinEnter * nnoremap <silent><buffer><CR> A<CR>
-" endwiseze.vim はコマンドラインウィンドウでうまく動かない
-autocmd MyVimrc CmdwinEnter * inoremap <silent><buffer><CR> <CR>
+" コマンドラインウィンドウ設定
+function! s:cmdline_window_settings()
+    " コマンドラインウィンドウを閉じられるようにする
+    nnoremap <silent><buffer>q :<C-u>q<CR>
+    nnoremap <silent><buffer><Esc> :<C-u>q<CR>
+    inoremap <silent><buffer><C-g> <Esc>:q<CR>
+    nnoremap <silent><buffer><CR> A<CR>
+    " endwiseze.vim はコマンドラインウィンドウでうまく動かない
+    inoremap <silent><buffer><CR> <CR>
+endfunction
+autocmd MyVimrc CmdwinEnter * call s:cmdline_window_settings()
 
 " 初回のみ a:cmd の動きをして，それ以降は行内をローテートする
 let s:smart_line_pos = -1
