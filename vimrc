@@ -1230,6 +1230,7 @@ inoremap <expr><C-y> neocomplete#close_popup()
 imap <expr><CR> (pumvisible() ? neocomplete#smart_close_popup() : "")."\<Plug>(physical_key_return)"
 " コマンドラインウィンドウでは Tab の挙動が変わるのでワークアラウンド
 autocmd MyVimrc CmdwinEnter * inoremap <silent><buffer><Tab> <C-n>
+autocmd MyVimrc CmdwinEnter * inoremap <expr><buffer><CR> (pumvisible() ? neocomplete#smart_close_popup() : "")."\<CR>"
 " }}}
 else
 " neocomplcache.vim {{{
@@ -1313,8 +1314,7 @@ if !exists('g:neocomplcache_force_omni_patterns')
 endif
 let g:neocomplcache_force_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|::'
 
-
-"neocomplcacheのマッピング {{{
+"neocomplcacheのマッピング
 inoremap <expr><C-g> neocomplcache#undo_completion()
 inoremap <expr><C-s> neocomplcache#complete_common_string()
 " <CR>: close popup and save indent.
@@ -1332,8 +1332,7 @@ inoremap <expr><C-y> neocomplcache#close_popup()
 imap <expr><CR> (pumvisible() ? neocomplcache#smart_close_popup() : "")."\<Plug>(physical_key_return)"
 " コマンドラインウィンドウでは Tab の挙動が変わるのでワークアラウンド
 autocmd MyVimrc CmdwinEnter * inoremap <silent><buffer><Tab> <C-n>
-"}}}
-
+autocmd MyVimrc CmdwinEnter * inoremap <expr><buffer><CR> (pumvisible() ? neocomplcache#smart_close_popup() : "")."\<CR>"
 " }}}
 endif
 
