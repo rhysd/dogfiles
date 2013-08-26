@@ -73,5 +73,6 @@ autocmd MyVimrc FileType markdown nnoremap <buffer><Leader>qr :<C-u>Kobito<CR>
 " unite-ruby-require.vim
 let g:unite_source_ruby_require_ruby_command = '$HOME/.rbenv/shims/ruby'
 
-" MacVim は sign を表示できないので，TweetVim でアイコン表示できない
-" let g:tweetvim_display_icon = 0
+" openbrowser
+let g:openbrowser_open_commands = ['open']
+let g:openbrowser_open_rules['open'] = "{browser} {shellescape(uri)}"

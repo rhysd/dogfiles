@@ -67,4 +67,10 @@ function! s:convert_comma_period()
     %substitute/，/、/g
     %substitute/．/。/g
 endfunction
+
+" openbrowser
+let s:browser = executable('google-chrome') ? 'google-chrome' : 'firefox'
+let g:openbrowser_open_commands = [s:browser, 'xdg-open', 'w3m']
+let g:openbrowser_open_rules[s:browser] = "{browser} {shellescape(uri)}"
+
 " vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8 :

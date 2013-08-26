@@ -323,14 +323,15 @@ nnoremap gJ J"_x
 " コマンドラインウィンドウ設定
 function! s:cmdline_window_settings()
     " コマンドラインウィンドウを閉じられるようにする
-    nnoremap <silent><buffer>q :<C-u>q<CR>
-    nnoremap <silent><buffer><Esc> :<C-u>q<CR>
-    inoremap <silent><buffer><C-g> <Esc>:q<CR>
+    nnoremap <silent><buffer>q          :<C-u>q<CR>
+    nnoremap <silent><buffer><Esc>      :<C-u>q<CR>
+    nnoremap <silent><buffer><Esc><Esc> :<C-u>q<CR>
+    inoremap <silent><buffer><C-g>      <Esc>:q<CR>
     nnoremap <silent><buffer><CR> A<CR>
-    " endwiseze.vim はコマンドラインウィンドウでうまく動かない
-    inoremap <silent><buffer><CR> <CR>
 endfunction
 autocmd MyVimrc CmdwinEnter * call s:cmdline_window_settings()
+" 対応する括弧間の移動
+nmap 0 %
 
 " 初回のみ a:cmd の動きをして，それ以降は行内をローテートする
 let s:smart_line_pos = -1
@@ -1231,6 +1232,10 @@ imap <expr><CR> (pumvisible() ? neocomplete#smart_close_popup() : "")."\<Plug>(p
 " コマンドラインウィンドウでは Tab の挙動が変わるのでワークアラウンド
 autocmd MyVimrc CmdwinEnter * inoremap <silent><buffer><Tab> <C-n>
 autocmd MyVimrc CmdwinEnter * inoremap <expr><buffer><CR> (pumvisible() ? neocomplete#smart_close_popup() : "")."\<CR>"
+autocmd MyVimrc CmdwinEnter * inoremap <silent><buffer><expr><C-h> col('.') == 1 ?
+                                    \ "\<ESC>:quit\<CR>" : neocomplete#cancel_popup()."\<C-h>"
+autocmd MyVimrc CmdwinEnter * inoremap <silent><buffer><expr><BS> col('.') == 1 ?
+                                    \ "\<ESC>:quit\<CR>" : neocomplete#cancel_popup()."\<BS>"
 " }}}
 else
 " neocomplcache.vim {{{
@@ -1333,6 +1338,10 @@ imap <expr><CR> (pumvisible() ? neocomplcache#smart_close_popup() : "")."\<Plug>
 " コマンドラインウィンドウでは Tab の挙動が変わるのでワークアラウンド
 autocmd MyVimrc CmdwinEnter * inoremap <silent><buffer><Tab> <C-n>
 autocmd MyVimrc CmdwinEnter * inoremap <expr><buffer><CR> (pumvisible() ? neocomplcache#smart_close_popup() : "")."\<CR>"
+autocmd MyVimrc CmdwinEnter * inoremap <silent><buffer><expr><C-h> col('.') == 1 ?
+                                    \ "\<ESC>:quit\<CR>" : neocomplcache#cancel_popup()."\<C-h>"
+autocmd MyVimrc CmdwinEnter * inoremap <silent><buffer><expr><BS> col('.') == 1 ?
+                                    \ "\<ESC>:quit\<CR>" : neocomplcache#cancel_popup()."\<BS>"
 " }}}
 endif
 
@@ -2092,7 +2101,8 @@ let g:operator_clang_format_style_options = {
             \ "AllowShortIfStatementsOnASingleLine" : "true",
             \ "AlwaysBreakTemplateDeclarations" : "true",
             \ "Standard" : "C++11",
-            \ "BreakBeforeBraces" : "Stroustrup"}
+            \ "BreakBeforeBraces" : "Stroustrup",
+            \ }
 autocmd MyVimrc FileType cpp map <buffer><Leader>x <Plug>(operator-clang-format)
 "}}}
 
@@ -2170,6 +2180,10 @@ let g:endwize_add_verbose_info_filetypes = ['c', 'cpp']
 " open-browser.vim "{{{
 nnoremap <Leader>o :<C-u>execute 'OpenBrowserSmartSearch' expand('<cWORD>')<CR>
 vnoremap <Leader>o y:OpenBrowserSmartSearch <C-r>+<CR>
+" OpenBrowser
+if !exists('g:openbrowser_open_rules')
+    let g:openbrowser_open_rules = {}
+endif
 "}}}
 
 " vim-vspec {{{
@@ -2225,18 +2239,6 @@ function! s:bundle.hooks.on_source(bundle)
     let g:tweetvim_async_post = 1
     let g:tweetvim_expand_t_co = 1
 
-    " OpenBrowser
-    if !exists('g:openbrowser_open_rules')
-        let g:openbrowser_open_rules = {}
-    endif
-    if has('mac')
-        let g:openbrowser_open_commands = ['open']
-        let g:openbrowser_open_rules['open'] = "{browser} {shellescape(uri)}"
-    else
-        let g:openbrowser_open_commands = ['google-chrome', 'xdg-open', 'w3m']
-        let g:openbrowser_open_rules['google-chrome'] = "{browser} {shellescape(uri)}"
-    endif
-
     command -nargs=1 TweetVimFavorites call call('tweetvim#timeline',['favorites',<q-args>])
 
     " 行番号いらない
@@ -2250,7 +2252,7 @@ function! s:bundle.hooks.on_source(bundle)
     " <Tab> は補完で使う
     autocmd MyVimrc FileType tweetvim_say iunmap   <buffer><Tab>
     " 各種アクション
-    autocmd MyVimrc FileType tweetvim     nnoremap <buffer>s                :<C-u>TweetVimSay<CR>
+    autocmd MyVimrc FileType tweetvim     nnoremap <buffer><Leader>s        :<C-u>TweetVimSay<CR>
     autocmd MyVimrc FileType tweetvim     nmap     <buffer>c                <Plug>(tweetvim_action_in_reply_to)
     autocmd MyVimrc FileType tweetvim     nnoremap <buffer>t                :<C-u>Unite tweetvim -no-start-insert -quick-match<CR>
     autocmd MyVimrc FileType tweetvim     nmap     <buffer><Leader>F        <Plug>(tweetvim_action_remove_favorite)
@@ -2370,8 +2372,9 @@ map : <Plug>(clever-f-repeat-forward)
 nnoremap <C-w>o :<C-u>ZoomWin<CR>
 "}}}
 
-" tmpwin.vim
+" tmpwin.vim {{{
 nnoremap <silent><Leader>tt :<C-u>call tmpwin#toggle({'open_post' : ['normal! gg', 'setl nohidden']}, 'TweetVimHomeTimeline')<CR>
+"}}}
 
 " vim-gitgutter {{{
 let g:gitgutter_eager = 0
@@ -2402,6 +2405,11 @@ call submode#enter_with('change-list', 'n', '', 'g;', 'g;')
 call submode#enter_with('change-list', 'n', '', 'g,', 'g,')
 call submode#map('change-list', 'n', '', ';', 'g;')
 call submode#map('change-list', 'n', '', ',', 'g,')
+" move to next/previous fold
+call submode#enter_with('move-to-fold', 'n', '', 'zj', 'zj')
+call submode#enter_with('move-to-fold', 'n', '', 'zk', 'zk')
+call submode#map('move-to-fold', 'n', '', 'j', 'zj')
+call submode#map('move-to-fold', 'n', '', 'k', 'zk')
 " }}}
 
 " vim-altr {{{
