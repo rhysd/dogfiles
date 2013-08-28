@@ -444,6 +444,7 @@ set rtp+=~/Github/clever-f.vim
 " set rtp+=~/Github/vim-textobj-continuous-line
 set rtp+=~/Github/unite-ruby-require.vim
 set rtp+=~/Github/vim-operator-clang-format
+set rtp+=~/Github/vital.vim
 
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
@@ -2103,7 +2104,7 @@ let g:operator_clang_format_style_options = {
             \ "Standard" : "C++11",
             \ "BreakBeforeBraces" : "Stroustrup",
             \ }
-autocmd MyVimrc FileType cpp map <buffer><Leader>x <Plug>(operator-clang-format)
+autocmd MyVimrc FileType c,cpp map <buffer><Leader>x <Plug>(operator-clang-format)
 "}}}
 
 " ghcmod-vim {{{
