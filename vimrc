@@ -392,15 +392,23 @@ endfunction
 " または vi という名前の シンボリックリンク越しに vim を起動した時
 if (exists("g:linda_pp_startup_with_tiny") && g:linda_pp_startup_with_tiny)
             \ || v:progname ==# 'vi'
-            \ || ! exists('v:version') || v:version < 703
+            \ || ! exists('v:version') || v:version < 702
+            \ || ! executable('git')
     finish
 endif
 "}}}
 
 " neobundle.vim の設定 {{{
+" neobundle.vim が無ければインストールする
 if ! isdirectory(expand('~/.vim/bundle'))
-    echoerr '~/.vim/bundle is not found!'
-    finish
+    echon "Installing neobundle.vim..."
+    silent call mkdir(expand('~/.vim/bundle'), 'p')
+    silent !git clone https://github.com/Shougo/neobundle.vim $HOME/.vim/bundle/neobundle.vim
+    echo "done."
+    if v:shell_error
+        echoerr "neobundle.vim installation has failed!"
+        finish
+    endif
 endif
 
 filetype off
