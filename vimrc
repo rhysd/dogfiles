@@ -2268,7 +2268,7 @@ function! s:bundle.hooks.on_source(bundle)
     let g:tweetvim_async_post = 1
     let g:tweetvim_expand_t_co = 1
 
-    command -nargs=1 TweetVimFavorites call call('tweetvim#timeline',['favorites',<q-args>])
+    command -nargs=1 TweetVimFavorites call tweetvim#timeline('favorites', <q-args>)
 
     " 行番号いらない
     autocmd MyVimrc FileType tweetvim     setlocal nonumber
@@ -2303,7 +2303,7 @@ function! s:bundle.hooks.on_source(bundle)
     autocmd MyVimrc FileType tweetvim     nnoremap <silent><buffer>gh       :<C-u>TweetVimHomeTimeline<CR>
     autocmd MyVimrc FileType tweetvim     nnoremap <silent><buffer>gu       :<C-u>TweetVimUserTimeline<Space>
     autocmd MyVimrc FileType tweetvim     nnoremap <silent><buffer>gp       :<C-u>TweetVimUserTimeline Linda_pp<CR>
-    autocmd MyVimrc FileType tweetvim     nnoremap <silent><buffer>gf       :<C-u>call call('tweetvim#timeline', ['favorites', 'Linda_pp'])<CR>
+    autocmd MyVimrc FileType tweetvim     nnoremap <silent><buffer>gf       :<C-u>call <SID>open_favstar('')<CR>
     " 不要なマップを除去
     autocmd MyVimrc FileType tweetvim     nunmap   <buffer>ff
     autocmd MyVimrc FileType tweetvim     nunmap   <buffer>bb
@@ -2334,15 +2334,14 @@ function! s:bundle.hooks.on_source(bundle)
         execute "OpenBrowser http://ja.favstar.fm/".route
     endfunction
 
-    function! s:open_favstar()
-        let username = expand('<cword>')
-        if empty(username)
+    function! s:open_favstar(user)
+        if empty(user)
             OpenBrowser http://ja.favstar.fm/me
         else
-            execute "OpenBrowser http://ja.favstar.fm/users/" . username
+            execute "OpenBrowser http://ja.favstar.fm/users/" . user
         endif
     endfunction
-    command! OpenFavstar call <SID>open_favstar()
+    command! OpenFavstar call <SID>open_favstar(expand('<cword>'))
 
     function! s:tweetvim_open_home()
         let username = expand('<cword>')
@@ -2407,6 +2406,7 @@ nnoremap <silent><Leader>tt :<C-u>call tmpwin#toggle({'open_post' : ['normal! gg
 
 " vim-gitgutter {{{
 let g:gitgutter_eager = 0
+let g:gitgutter_realtime_line_limit = 1000
 " }}}
 
 " submode.vim {{{
