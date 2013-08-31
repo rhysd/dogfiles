@@ -1,6 +1,5 @@
 " TODO vmap <CR> に割り当て
 
-
 " 必須な基本設定 {{{
 function! s:get_SID()
   return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeget_SID$')
@@ -472,7 +471,6 @@ set rtp+=~/Github/clever-f.vim
 " set rtp+=~/Github/vim-textobj-continuous-line
 set rtp+=~/Github/unite-ruby-require.vim
 set rtp+=~/Github/vim-operator-clang-format
-set rtp+=~/Github/vital.vim
 
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
@@ -1139,10 +1137,10 @@ autocmd MyVimrc FileType cpp inoremap <expr> e getline('.')[col('.') - 6:col('.'
 
 " Haskell {{{
 autocmd MyVimrc FileType haskell inoremap <buffer>;; ::
-    " autocmd FileType haskell nnoremap <buffer><silent><Leader>ht :<C-u>call <SID>ShowTypeHaskell(expand('<cword>'))<CR>
-    " function! s:ShowTypeHaskell(word)
-    "     echo join(split(system("ghc -isrc " . expand('%') . " -e ':t " . a:word . "'")))
-    " endfunction
+" autocmd FileType haskell nnoremap <buffer><silent><Leader>ht :<C-u>call <SID>ShowTypeHaskell(expand('<cword>'))<CR>
+" function! s:ShowTypeHaskell(word)
+"     echo join(split(system("ghc -isrc " . expand('%') . " -e ':t " . a:word . "'")))
+" endfunction
 function! s:start_ghci()
     VimShell -split-command=vsplit
     VimShellSendString ghci
@@ -1155,7 +1153,6 @@ command! Ghci call <SID>start_ghci()
 autocmd MyVimrc FileType vim inoremap , ,<Space>
 autocmd MyVimrc FileType vim call <SID>matchit([])
 "}}}
-
 if s:meet_neocomplete_requirements()
 " neocomplete.vim {{{
 "AutoComplPopを無効にする
@@ -1173,6 +1170,7 @@ let g:neocomplete#auto_completion_start_length = 2
 if !exists('g:neocomplete#keyword_patterns')
     let g:neocomplete#keyword_patterns = {}
 endif
+let g:neocomplete#keyword_patterns['default'] = '\h\w*'
 " ctags は自分の用意したものを使う
 if executable('/usr/local/bin/ctags')
     let g:neocomplete#ctags_command = '/usr/local/bin/ctags'
@@ -1181,12 +1179,10 @@ endif
 let g:neocomplete#sources#file_include#exts
             \ = get(g:, 'neocomplete#sources#file_include#exts', {})
 let g:neocomplete#sources#file_include#exts.ruby = ['', 'rb']
-" キーワードとして認識するパターン
-let g:neocomplete#keyword_patterns['default'] = '\h\w*'
 "リスト表示
 let g:neocomplete#max_list = 300
 " 最大キーワード幅
-let g:neocomplete#max_keyword_width = 20
+" let g:neocomplete#max_keyword_width = 20
 " 辞書定義
 let g:neocomplete#sources#dictionary#dictionaries = {
             \ 'default' : '',
@@ -2393,6 +2389,7 @@ nnoremap cr :<C-u>RCReset<CR>
 " clever-f.vim "{{{
 let g:clever_f_across_no_line = 1
 let g:clever_f_fix_key_direction = 1
+" let g:clever_f_use_migemo = 0
 map : <Plug>(clever-f-repeat-forward)
 "}}}
 
@@ -2405,6 +2402,7 @@ nnoremap <silent><Leader>tt :<C-u>call tmpwin#toggle({'open_post' : ['normal! gg
 "}}}
 
 " vim-gitgutter {{{
+let g:gitgutter_realtime = 0
 let g:gitgutter_eager = 0
 let g:gitgutter_realtime_line_limit = 1000
 " }}}
