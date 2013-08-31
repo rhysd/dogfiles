@@ -389,7 +389,7 @@ endfunction
 " 最小限の設定と最小限のプラグインだけ読み込む {{{
 " % vim --cmd "g:linda_pp_startup_with_tiny = 1" で起動した時
 " または vi という名前の シンボリックリンク越しに vim を起動した時
-if (exists("g:linda_pp_startup_with_tiny") && g:linda_pp_startup_with_tiny)
+if get(g:, 'linda_pp_startup_with_tiny', 0)
             \ || v:progname ==# 'vi'
             \ || ! exists('v:version') || v:version < 702
             \ || ! executable('git')
