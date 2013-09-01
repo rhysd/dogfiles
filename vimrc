@@ -1,4 +1,5 @@
 " TODO vmap <CR> に割り当て
+" 直前の単語を大文字化するインサートモードマッピング（マクロ用）
 
 " 必須な基本設定 {{{
 function! s:get_SID()
@@ -177,7 +178,8 @@ autocmd MyVimrc BufWritePost
 \ |   filetype detect
 \ | endif
 " git commit message のときは折りたたまない(diff で中途半端な折りたたみになりがち)
-autocmd MyVimrc FileType gitcommit setlocal nofoldenable
+" git commit message のときはスペルをチェックする
+autocmd MyVimrc FileType gitcommit setlocal nofoldenable spell
 
 " tmux 用の設定
 "256 bitカラーモード(for tmux)
@@ -331,6 +333,9 @@ endfunction
 autocmd MyVimrc CmdwinEnter * call s:cmdline_window_settings()
 " 対応する括弧間の移動
 nmap 0 %
+" タブ文字を入力
+inoremap <C-Tab> <C-v><Tab>
+
 " tmux と vim 間のウィンドウ間移動
 if exists('$TMUX')
     function! TmuxOrSplitSwitch(wincmd, tmuxdir)
@@ -568,6 +573,13 @@ NeoBundleLazy 'kannokanno/previm', {
             \ 'autoload' : {
             \     'commands' : 'PrevimOpen',
             \     'filetypes' : 'markdown'
+            \   }
+            \ }
+
+NeoBundleLazy 'glidenote/memolist.vim', {
+            \ 'depends' : 'Shougo/vimfiler',
+            \ 'autoload' : {
+            \     'commands' : ['MemoNew', 'MemoList', 'MemoGrep']
             \   }
             \ }
 
@@ -1153,6 +1165,7 @@ command! Ghci call <SID>start_ghci()
 autocmd MyVimrc FileType vim inoremap , ,<Space>
 autocmd MyVimrc FileType vim call <SID>matchit([])
 "}}}
+
 if s:meet_neocomplete_requirements()
 " neocomplete.vim {{{
 "AutoComplPopを無効にする
@@ -2476,6 +2489,25 @@ let g:airline#extensions#whitespace#enabled = 0
 " previm {{{
 autocmd MyVimrc FileType markdown            nnoremap <buffer><Leader>p :<C-u>PrevimOpen<CR>
 autocmd MyVimrc BufWritePost *.md,*.markdown call previm#refresh()
+"}}}
+
+" memolist.vim "{{{
+nnoremap <Leader>mn :<C-u>MemoNew<CR>
+nnoremap <Leader>ml :<C-u>MemoList<CR>
+nnoremap <Leader>mg :<C-u>MemoGrep<CR>
+
+if isdirectory(expand('~/Dropbox/memo'))
+    let g:memolist_path = expand('~/Dropbox/memo')
+else
+    if isdirectory(expand('~/.vim/memo'))
+        call mkdir(expand('~/.vim/memo'), 'p')
+    endif
+    let g:memolist_path = expand('~/.vim/memo')
+endif
+
+let g:memolist_memo_suffix = 'md'
+let g:memolist_vimfiler = 1
+let g:memolist_vimfiler_option = ''
 "}}}
 
 " プラットフォーム依存な設定をロードする "{{{
