@@ -103,6 +103,7 @@ function t(){
 ############
 #   関数   #
 ############
+# {{{
 function separate(){
     echo -n $fg_bold[yellow]
     for i in $(seq 1 $COLUMNS); do
@@ -128,7 +129,7 @@ function run-gcc(){
     set -e
     g++ $* && ./a.out
 }
-
+# }}}
 
 ##########################
 #   モジュールのロード   #
@@ -212,6 +213,9 @@ zstyle ':completion:*:sudo:*' command-path $sudo_path $path
 
 # キャッシュ
 zstyle ':completion:*' use-cache true
+
+# git をエイリアス時にも補完できるようにする
+compdef _git g=git
 # }}}
 
 ##############
