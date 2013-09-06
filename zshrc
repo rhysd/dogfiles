@@ -47,7 +47,6 @@ alias vimfiler='vim +VimFiler'
 alias vimshell='vim +VimShell'
 alias gvim='vim -g'
 alias sudo='sudo '
-alias vspec='~/.vim/bundle/vim-vspec/bin/vspec ~/.vim/bundle/vim-vspec'
 alias memo='cat > /dev/null'
 
 alias l=ls
@@ -61,7 +60,6 @@ alias k=kill
 alias ng=noglob
 alias d=dirs
 alias g=git
-alias t=tmux
 alias gp=gnuplot
 alias e='emacs -nw'
 
@@ -83,6 +81,22 @@ alias gpp=g++
 alias rg=run-gcc
 alias clang++='clang++ -stdlib=libc++ -std=c++11 -O2 -Wall -Wextra'
 alias cl=clang++
+
+# vspec
+if [ -d "$HOME/.vim/bundle/vim-vspec-matchers" ]; then
+    alias vspec='PATH=/usr/local/bin:$PATH ~/.vim/bundle/vim-vspec/bin/vspec ~/.vim/bundle/vim-vspec ~/.vim/bundle/vim-vspec-matchers'
+else
+    alias vspec='PATH=/usr/local/bin:$PATH ~/.vim/bundle/vim-vspec/bin/vspec ~/.vim/bundle/vim-vspec'
+fi
+
+#tmux wrapper
+function t(){
+    if [[ $TMUX == "" ]]; then
+        tmux new-session \; split-window -h \; select-pane -t 0
+    else
+        tmux $0
+    fi
+}
 
 # }}}
 
@@ -364,7 +378,7 @@ bindkey '^Xc' zaw-cdr
 bindkey '^Xh' zaw-history
 bindkey '^@' zaw-history
 bindkey '^Xg' zaw-git-files
-bindkey '^Xt' zaw-tmux
+bindkey '^St' zaw-tmux
 # 空行の状態で Tab を入れると zaw-cdr する
 function _advanced_tab(){
   if [[ $#BUFFER == 0 ]]; then
