@@ -470,6 +470,8 @@ NeoBundle 'airblade/vim-gitgutter'
     " NeoBundle 'ujihisa/neco-look'
 NeoBundle 'kana/vim-submode'
 NeoBundle 'bling/vim-airline'
+NeoBundle 'rhysd/migemo-search.vim'
+NeoBundle 'rhysd/vim-vspec-matchers'
 
 " For testing
 set rtp+=~/Github/clever-f.vim
@@ -493,7 +495,7 @@ NeoBundleLazy 'Shougo/unite.vim', {
             \     }
             \ }
 
-NeoBundleLazy 'Shougo/vimfiler', {
+NeoBundleLazy 'Shougo/vimfiler.vim', {
             \ 'autoload' : {
             \     'commands' : ['VimFiler', 'VimFilerCurrentDir',
             \                   'VimFilerBufferDir', 'VimFilerSplit',
@@ -577,7 +579,7 @@ NeoBundleLazy 'kannokanno/previm', {
             \ }
 
 NeoBundleLazy 'glidenote/memolist.vim', {
-            \ 'depends' : 'Shougo/vimfiler',
+            \ 'depends' : 'Shougo/vimfiler.vim',
             \ 'autoload' : {
             \     'commands' : ['MemoNew', 'MemoList', 'MemoGrep']
             \   }
@@ -755,19 +757,19 @@ vnoremap <silent><Leader>gb :GitBlameRange<CR>
 "}}}
 
 " git commit 用
-function! s:git_commit(...)
-    let msg = shellescape(join(a:000, ' '))
+function! s:git_commit(args)
+    let msg = shellescape(string(a:args))
     execute '!git' 'commit -m' msg
 endfunction
-command! -nargs=+ GitCommit call <SID>git_commit(<f-args>)
+command! -nargs=+ GitCommit call <SID>git_commit(<q-args>)
 nnoremap <Leader>gc :<C-u>GitCommit<Space>
 
 " git push 用
-function! s:git_push(...)
-    let opts = join(a:000, " ")
-    QuickRun sh -src 'git push' -runner vimproc
+function! s:git_push(args)
+    let opts = join(a:args)
+    QuickRun sh -src 'git push' opts -runner vimproc
 endfunction
-command! -nargs=* GitPush call <SID>git_push(<f-args>)
+command! -nargs=* GitPush call <SID>git_push(<q-args>)
 nnoremap <Leader>gp :<C-u>GitPush<CR>
 "}}}
 
@@ -981,7 +983,7 @@ endfunction
 " カレントパスをクリプボゥにコピー
 command! CopyCurrentPath :call s:copy_current_path()
 function! s:copy_current_path()
-    if has('win32')
+    if has('win32') || has('win64')
         let @*=substitute(expand('%:p'), '\\/', '\\', 'g')
     elseif has('unix')
         let @*=expand('%:p')
@@ -1175,8 +1177,8 @@ let g:neocomplete#enable_at_startup = 1
 "smart_caseを有効にする．大文字が入力されるまで大文字小文字の区別をなくす
 let g:neocomplete#enable_smart_case = 1
 "シンタックスをキャッシュするときの最小文字長を4に
-let g:neocomplete#min_keyword_length = 4
-let g:neocomplete#sources#syntax#min_keyword_length = 4
+let g:neocomplete#min_keyword_length = 3
+let g:neocomplete#sources#syntax#min_keyword_length = 3
 "補完を開始する入力文字長
 let g:neocomplete#auto_completion_start_length = 2
 "日本語を収集しないようにする
@@ -2225,17 +2227,27 @@ endif
 "}}}
 
 " vim-vspec {{{
-command! -nargs=* Vspec
-            \ execute 'QuickRun' 'sh' '-src'
-            \ '''PATH=/usr/local/bin:$PATH $HOME/.vim/bundle/vim-vspec/bin/vspec $HOME/.vim/bundle/vim-vspec <args>'.expand('%:p').''''
+function! s:vspec(file, opts)
+    if ! isdirectory($HOME.'/.vim/bundle/vim-vspec')
+        echoerr "Error: vspec is not found."
+    endif
+
+    let args = ' '
+    if isdirectory($HOME.'/.vim/bundle/vim-vspec-matchers')
+        let args .= '$HOME/.vim/bundle/vim-vspec-matchers '
+    endif
+
+    execute 'QuickRun' 'sh' '-src' '''PATH=/usr/local/bin:$PATH $HOME/.vim/bundle/vim-vspec/bin/vspec $HOME/.vim/bundle/vim-vspec '.args.a:opts.' '.a:file.''''
+endfunction
+command! -nargs=* Vspec call <SID>vspec(expand('%:p'), <q-args>)
 
 let g:quickrun_config['vim/vspec'] = {
         \ 'exec' : '%c %o',
         \ 'cmdopt' :  '-u NONE -i NONE -N -e -s -S'
-        \ . ' %{' . 'VspecHelper([getcwd()], expand("%"))}',
+        \ . ' %{' . s:SID.'vspec_helper([getcwd(), isdirectory($HOME."/.vim/bundle/vim-vspec-matchers") ? $HOME."/.vim/bundle/vim-vspec-matchers" : ""], expand("%"))}',
         \ 'command' : 'vim',
         \ }
-function! VspecHelper(paths, target)
+function! s:vspec_helper(paths, target)
     let vspec_path = matchstr(split(&runtimepath, ','), 'vspec')
     let paths  = map([vspec_path] + copy(a:paths)
         \ , '"''".substitute(v:val, "\\", "/", "g")."''"')
@@ -2361,14 +2373,14 @@ function! s:bundle.hooks.on_source(bundle)
 
     " 自動更新 {{{
     let s:tweetvim_update_interval_seconds = 60
-    let s:tweetvim_timestamp = reltime()[0]
+    let s:tweetvim_timestamp = localtime()
     function! s:tweetvim_autoupdate()
-        let current = reltime()[0]
+        let current = localtime()
         if current - s:tweetvim_timestamp > s:tweetvim_update_interval_seconds
             call feedkeys("\<Plug>(tweetvim_action_reload)")
             let s:tweetvim_timestamp = current
         endif
-        call feedkeys(mode() ==# 'i' ? "\<C-g>\<ESC>" : "g\<ESC>", 'n')
+        call feedkeys(mode() ==# 'i' ? "\<C-g>\<Esc>" : "g\<Esc>", 'n')
     endfunction
 
     function! s:tweetvim_setup_autoupdate()
@@ -2402,7 +2414,7 @@ nnoremap cr :<C-u>RCReset<CR>
 " clever-f.vim "{{{
 let g:clever_f_across_no_line = 1
 let g:clever_f_fix_key_direction = 1
-" let g:clever_f_use_migemo = 0
+let g:clever_f_use_migemo = 1
 map : <Plug>(clever-f-repeat-forward)
 "}}}
 
@@ -2509,6 +2521,18 @@ let g:memolist_memo_suffix = 'md'
 let g:memolist_vimfiler = 1
 let g:memolist_vimfiler_option = ''
 "}}}
+
+" vim-numberstar {{{
+nnoremap <expr>*  numberstar#key('*')
+nnoremap <expr>#  numberstar#key('#')
+nnoremap <expr>g* numberstar#key('g*')
+nnoremap <expr>#* numberstar#key('#*')
+" }}}
+
+" migemo-search.vim
+if executable('cmigemo')
+    cnoremap <expr><CR> migemosearch#replace_search_word()."\<CR>"
+endif
 
 " プラットフォーム依存な設定をロードする "{{{
 if has('mac') && filereadable($HOME."/.mac.vimrc")
