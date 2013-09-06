@@ -33,3 +33,5 @@
 	lsf = ls-files
 	lst = ls-tree
 	he  = git help
+[push]
+	default = simple
