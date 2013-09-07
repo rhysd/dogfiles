@@ -346,27 +346,6 @@ nmap 0 %
 " タブ文字を入力
 inoremap <C-Tab> <C-v><Tab>
 
-" tmux と vim 間のウィンドウ間移動
-if exists('$TMUX')
-    function! TmuxOrSplitSwitch(wincmd, tmuxdir)
-        let previous_winnr = winnr()
-        execute "wincmd " . a:wincmd
-        if previous_winnr == winnr()
-            " The sleep and & gives time to get back to vim so tmux's focus tracking
-            " can kick in and send us our ^[[O
-            execute "silent !sh -c 'sleep 0.01; tmux select-pane -" . a:tmuxdir . "' &"
-            redraw!
-        endif
-    endfunction
-    let previous_title = substitute(system("tmux display-message -p '#{pane_title}'"), '\n', '', '')
-    let &t_ti = "\<Esc>]2;vim\<Esc>\\" . &t_ti
-    let &t_te = "\<Esc>]2;". previous_title . "\<Esc>\\" . &t_te
-    nnoremap <silent> <C-w>h :<C-u>call TmuxOrSplitSwitch('h', 'L')<CR>
-    nnoremap <silent> <C-w>j :<C-u>call TmuxOrSplitSwitch('j', 'D')<CR>
-    nnoremap <silent> <C-w>k :<C-u>call TmuxOrSplitSwitch('k', 'U')<CR>
-    nnoremap <silent> <C-w>l :<C-u>call TmuxOrSplitSwitch('l', 'R')<CR>
-endif
-
 " 初回のみ a:cmd の動きをして，それ以降は行内をローテートする
 let s:smart_line_pos = -1
 function! s:smart_move(cmd)
