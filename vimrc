@@ -254,7 +254,9 @@ cnoremap <C-d> <Del>
 inoremap <silent><expr><C-k> "\<C-g>u".(col('.') == col('$') ? '<C-o>gJ' : '<C-o>D')
 cnoremap <C-k> <C-\>e getcmdpos() == 1 ? '' : getcmdline()[:getcmdpos()-2]<CR>
 " クリップボードから貼り付け
-cnoremap <C-y> <C-r>*
+cnoremap <C-y> <C-r>+
+" キャンセル
+cnoremap <C-g> <C-u><BS>
 "バッファ切り替え
 nnoremap <silent><C-n>   :<C-u>bnext<CR>
 nnoremap <silent><C-p>   :<C-u>bprevious<CR>
@@ -272,6 +274,8 @@ nnoremap <C-w>O <C-w>o
 inoremap <C-j> <Esc>o
 "<BS>の挙動
 nnoremap <BS> diw
+" x でレジスタを使わない
+nnoremap x "_x
 " カーソルキーでのウィンドウサイズ変更
 nnoremap <silent><Down>  <C-w>-
 nnoremap <silent><Up>    <C-w>+
@@ -293,7 +297,7 @@ nnoremap <silent><A-l> gt
 " 行表示・非表示の切り替え．少しでも横幅が欲しい時は OFF に
 nnoremap <Leader>nu :<C-u>set number! number?<CR>
 " クリップボードから貼り付け
-inoremap <C-r>* <C-o>:set paste<CR><C-r>*<C-o>:set nopaste<CR>
+inoremap <C-r>+ <C-o>:set paste<CR><C-r>+<C-o>:set nopaste<CR>
 " 貼り付けはインデントを揃える
     " nnoremap p ]p
 " コンマ後には空白を入れる
@@ -320,7 +324,13 @@ nnoremap <C-w>d :<C-u>bdelete<CR>
 nnoremap <C-w>*  <C-w>s*
 nnoremap <C-w>#  <C-w>s#
 " 連結時にスペースを入れない
-nnoremap gJ J"_x
+function! s:cmd_gJ()
+    normal! J
+    if getline('.')[col('.')-1] ==# ' '
+        normal! "_x
+    endif
+endfunction
+nnoremap gJ :<C-u>call <SID>cmd_gJ()<CR>
 " コマンドラインウィンドウ設定
 function! s:cmdline_window_settings()
     " コマンドラインウィンドウを閉じられるようにする
@@ -766,8 +776,7 @@ nnoremap <Leader>gc :<C-u>GitCommit<Space>
 
 " git push 用
 function! s:git_push(args)
-    let opts = join(a:args)
-    QuickRun sh -src 'git push' opts -runner vimproc
+    execute "QuickRun sh -cmd sh -src 'git push ".a:args."' -runner vimproc"
 endfunction
 command! -nargs=* GitPush call <SID>git_push(<q-args>)
 nnoremap <Leader>gp :<C-u>GitPush<CR>
@@ -1071,6 +1080,8 @@ endfunction
 command! -nargs=0 -count=0 Lcd  call s:cmd_lcd(<count>)
 
 command! -nargs=0 Todo Unite line -input=TODO
+
+command! -nargs=0 EchoCurrentPath echo expand('%:p')
 "}}}
 
 " Ruby {{{
@@ -1628,17 +1639,13 @@ function! s:bundle.hooks.on_source(bundle)
     let g:vimshell_prompt = "(U'w'){ "
     " let g:vimshell_prompt = "(U^w^){ "
     " executable suffix
-    let g:vimshell_execute_file_list = { 'rb' : 'vim', 'pl' : 'vim', 'py' : 'vim' ,
-                \ 'txt' : 'vim', 'vim' : 'vim' , 'c' : 'vim', 'h' : 'vim', 'cpp' : 'vim',
-                \ 'hpp' : 'vim', 'cc' : 'vim', 'd' : 'vim', 'pdf' : 'open', 'mp3' : 'open',
-                \ 'jpg' : 'open', 'png' : 'open',
-                \ }
+    let g:vimshell_execute_file_list = { 'pdf' : 'open', 'mp3' : 'open',
+                                       \ 'jpg' : 'open', 'png' : 'open',
+                                       \ }
     " zsh 履歴も利用する
     if filereadable(expand('~/.zsh/zsh_history'))
         let g:vimshell_external_history_path = expand('~/.zsh/zsh_history')
     endif
-
-    let g:vimshell_kawaii_allow_overwrite = 1
 
     "VimShell のキーマッピング {{{
     " コマンド履歴の移動
@@ -1671,9 +1678,7 @@ unlet s:bundle
 "<Leader>r を使わない
 let g:quickrun_no_default_key_mappings = 1
 " quickrun_configの初期化
-if !has("g:quickrun_config")
-    let g:quickrun_config = {}
-endif
+let g:quickrun_config = get(g:, 'quickrun_config', {})
 "C++
 let g:quickrun_config.cpp = { 'command' : 'g++', 'cmdopt' : '-std=c++11 -Wall -Wextra -O2' }
 "QuickRun 結果の開き方
@@ -1686,6 +1691,12 @@ let g:quickrun_unite_quickfix_outputter_unite_context = { 'no_empty' : 1 }
 let g:quickrun_config['_']['runner/vimproc/updatetime'] = 500
 autocmd MyVimrc BufReadPost,BufNewFile [Rr]akefile{,.rb}
             \ let b:quickrun_config = {'exec': 'rake -f %s'}
+" tmux
+let g:quickrun_config['tmux'] = {
+            \ 'command' : 'tmux',
+            \ 'cmdopt' : 'source-file',
+            \ 'exec' : ['%c %o %s:p', 'echo "sourced %s"'],
+            \ }
 
 " シンタックスチェック
 let g:quickrun_config['syntax/cpp'] = {
@@ -1780,14 +1791,10 @@ endfor
 
 let g:vimfiler_as_default_explorer = 1
 let g:vimfiler_safe_mode_by_default = 0
-let g:vimfiler_enable_auto_cd = 1
 let g:vimfiler_split_command = 'vertical rightbelow vsplit'
-let g:vimfiler_execute_file_list = { 'txt' : 'vim', 'vim' : 'vim' , 'c' : 'vim',
-            \ 'h' : 'vim', 'cpp' : 'vim', 'hpp' : 'vim', 'cc' : 'vim',
-            \ 'd' : 'vim', 'pdf' : 'open', 'mp3' : 'open', 'jpg' : 'open',
-            \ 'png' : 'open',
-            \ }
-let g:vimfiler_execute_file_list['_'] = 'vim'
+let g:vimfiler_execute_file_list = { '_' : 'vim', 'pdf' : 'open', 'mp3' : 'open', 'jpg' : 'open',
+                                   \ 'png' : 'open',
+                                   \ }
 let g:vimfiler_split_rule = 'botright'
 
 " vimfiler.vim のキーマップ {{{
@@ -2174,12 +2181,14 @@ let g:neosnippet#snippets_directory=$HOME.'/.vim/bundle/inu-snippets/snippets'
 " vim-alignta {{{
 let g:alignta_default_options   = '<<<0:0'
 let g:alignta_default_arguments = '\s'
-vnoremap <Leader>al :Alignta<Space>
+vnoremap <expr><leader>al   ':Alignta 1:1 '.nr2char(getchar())."\<CR>"
 vnoremap <Leader>aa :Alignta<CR>
 vnoremap <Leader>ae :Alignta <<<1 =<CR>
 vnoremap <Leader>a= :Alignta <<<1 =<CR>
 vnoremap <Leader>a, :Alignta ,<CR>
 vnoremap <Leader>a> :Alignta =><CR>
+
+vnoremap <expr>x ':Alignta 1:1 '.nr2char(getchar())."\<CR>"
 
 let g:unite_source_alignta_preset_arguments = [
       \ ["Align at '='", '=>\='],
@@ -2529,10 +2538,11 @@ nnoremap <expr>g* numberstar#key('g*')
 nnoremap <expr>#* numberstar#key('#*')
 " }}}
 
-" migemo-search.vim
+" migemo-search.vim {{{
 if executable('cmigemo')
-    cnoremap <expr><CR> migemosearch#replace_search_word()."\<CR>"
+    cnoremap <expr><CR> migemosearch#replace_search_word()."\<CR>zv"
 endif
+"}}}
 
 " プラットフォーム依存な設定をロードする "{{{
 if has('mac') && filereadable($HOME."/.mac.vimrc")
