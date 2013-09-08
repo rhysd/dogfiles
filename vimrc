@@ -459,6 +459,7 @@ NeoBundle 'airblade/vim-gitgutter'
     " NeoBundle 'ujihisa/neco-look'
 NeoBundle 'kana/vim-submode'
 NeoBundle 'bling/vim-airline'
+NeoBundle 'rhysd/vim-numberstar'
 NeoBundle 'rhysd/migemo-search.vim'
 NeoBundle 'rhysd/vim-vspec-matchers'
 
@@ -1166,6 +1167,10 @@ let g:acp_enableAtStartup = 0
 let g:neocomplete#enable_at_startup = 1
 "smart_caseを有効にする．大文字が入力されるまで大文字小文字の区別をなくす
 let g:neocomplete#enable_smart_case = 1
+" あいまいな候補一致
+let g:neocomplete#enable_fuzzy_completion = 1
+" デリミタ（autoload 関数の # など）の自動挿入
+let g:neocomplete#enable_auto_delimiter = 1
 "シンタックスをキャッシュするときの最小文字長を4に
 let g:neocomplete#min_keyword_length = 3
 let g:neocomplete#sources#syntax#min_keyword_length = 3
@@ -1228,7 +1233,7 @@ endif
 let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
 let g:neocomplete#sources#omni#input_patterns.c   = '\%(\.\|->\)\h\w*'
 let g:neocomplete#sources#omni#input_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
-" neocomplcache 補完用関数
+" neocomplete 補完用関数
 let g:neocomplete#sources#vim#complete_functions = {
     \ 'Unite' : 'unite#complete_source',
     \ 'VimShellExecute' : 'vimshell#vimshell_execute_complete',
@@ -1242,6 +1247,8 @@ if !exists('g:neocomplete#force_omni_input_patterns')
     let g:neocomplete#force_omni_input_patterns = {}
 endif
 let g:neocomplete#force_omni_input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|::'
+" neosnippet だけは短いキーワードでも候補に出す
+call neocomplete#custom#source('neosnippet', 'min_pattern_length', 1)
 
 "neocompleteのマッピング
 inoremap <expr><C-g> neocomplete#undo_completion()
@@ -1761,7 +1768,7 @@ endfunction
 " 起動時にディレクトリを指定した場合
 for arg in argv()
     if isdirectory(getcwd().'/'.arg)
-        NeoBundleSource vimfiler
+        NeoBundleSource vimfiler.vim
         autocmd! LoadVimFiler
         break
     endif
@@ -2401,7 +2408,6 @@ nnoremap cr :<C-u>RCReset<CR>
 
 " clever-f.vim "{{{
 let g:clever_f_across_no_line = 1
-let g:clever_f_fix_key_direction = 1
 let g:clever_f_use_migemo = 1
 map : <Plug>(clever-f-repeat-forward)
 "}}}
@@ -2511,10 +2517,10 @@ let g:memolist_vimfiler_option = ''
 "}}}
 
 " vim-numberstar {{{
-nnoremap <expr>*  numberstar#key('*')
-nnoremap <expr>#  numberstar#key('#')
-nnoremap <expr>g* numberstar#key('g*')
-nnoremap <expr>#* numberstar#key('#*')
+nnoremap <silent><expr>*  numberstar#key('*')
+nnoremap <silent><expr>#  numberstar#key('#')
+nnoremap <silent><expr>g* numberstar#key('g*')
+nnoremap <silent><expr>#* numberstar#key('#*')
 " }}}
 
 " migemo-search.vim {{{
