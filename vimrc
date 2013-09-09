@@ -715,7 +715,7 @@ endfunction
 " git add 用マッピング {{{
 function! s:git_add(fname)
     if ! filereadable(a:fname)
-        echoerr 'file is not opened'
+        echoerr 'file cannot be opened'
         return
     endif
     execute 'lcd' fnamemodify(a:fname, ':h')
@@ -748,7 +748,7 @@ vnoremap <silent><Leader>gb :GitBlameRange<CR>
 
 " git commit 用
 function! s:git_commit(args)
-    let msg = shellescape(string(a:args))
+    let msg = shellescape(a:args)
     execute '!git' 'commit -m' msg
 endfunction
 command! -nargs=+ GitCommit call <SID>git_commit(<q-args>)
@@ -1125,7 +1125,7 @@ function! s:return_type_completion()
                 echo "add return type at line ".linum
                 break
             elseif cur_line =~#
-                        \ '^\s*\%(constexpr\s\+\|\)\%(inline\s\+\|\)[A-Za-z][A-Za-z:0-9\[\]]*\s\+[A-Za-z][A-Za-z:0-9]*\s*(.*)\s*$'
+                        \ '^\s*\%(constexpr\s\+\)\=\%(inline\s\+\)\=[A-Za-z][A-Za-z:0-9\[\]]*\s\+[A-Za-z][A-Za-z:0-9]*\s*(.*)\s*$'
                 break
             endif
             let linum -= 1
@@ -1133,7 +1133,9 @@ function! s:return_type_completion()
     endif
 endfunction
 
-" ヘッダファイルとソースファイルを入れ替える
+command! -nargs=1 OpenCppReference OpenBrowser http://en.cppreference.com/mwiki/index.php?title=Special:Search&search=<args>
+
+autocmd MyVimrc FileType cpp nnoremap <buffer>K :<C-u>execute 'OpenCppReference' expand('<cword>')<CR>
 autocmd MyVimrc FileType cpp setlocal matchpairs+=<:>
 autocmd MyVimrc FileType cpp inoremap <buffer>,  ,<Space>
 autocmd MyVimrc FileType cpp nnoremap <buffer><Leader>ret :<C-u>call <SID>return_type_completion()<CR>
@@ -2525,7 +2527,7 @@ nnoremap <silent><expr>#* numberstar#key('#*')
 
 " migemo-search.vim {{{
 if executable('cmigemo')
-    cnoremap <expr><CR> migemosearch#replace_search_word()."\<CR>zv"
+    cnoremap <expr><CR> getcmdtype() =~# '^[/?]$' ? migemosearch#replace_search_word()."\<CR>zv" : "\<CR>"
 endif
 "}}}
 
