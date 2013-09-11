@@ -404,13 +404,11 @@ if ! isdirectory(expand('~/.vim/bundle'))
     endif
 endif
 
-filetype off
-filetype plugin indent off
-
 if has('vim_starting')
     set rtp+=~/.vim/bundle/neobundle.vim/
-    call neobundle#rc(expand('~/.vim/bundle'))
 endif
+
+call neobundle#rc(expand('~/.vim/bundle'))
 
 " GitHub上のリポジトリ
 NeoBundle 'Shougo/neobundle.vim'
@@ -1261,7 +1259,7 @@ inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 "<C-h>, <BS>: close popup and delete backword char.
 inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
 inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-inoremap <expr><C-y> neocomplete#close_popup()
+inoremap <expr><C-y> neocomplete#cancel_popup()
 " HACK: This hack needs because of using both vim-smartinput and neocomplete
 " when <CR> is typed.
 "    A user types <CR> ->
