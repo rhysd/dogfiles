@@ -460,6 +460,7 @@ NeoBundle 'bling/vim-airline'
 NeoBundle 'rhysd/vim-numberstar'
 NeoBundle 'rhysd/migemo-search.vim'
 NeoBundle 'rhysd/vim-vspec-matchers'
+NeoBundle 'chriskempson/tomorrow-theme', {'rtp' : 'vim'}
 
 " For testing
 set rtp+=~/Github/clever-f.vim

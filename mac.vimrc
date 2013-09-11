@@ -76,3 +76,7 @@ let g:unite_source_ruby_require_ruby_command = '$HOME/.rbenv/shims/ruby'
 " openbrowser
 let g:openbrowser_open_commands = ['open']
 let g:openbrowser_open_rules['open'] = "{browser} {shellescape(uri)}"
+
+" airline
+let g:airline_left_sep = '»'
+let g:airline_right_sep = '«'
