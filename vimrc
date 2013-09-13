@@ -432,12 +432,6 @@ NeoBundle 'rhysd/open-pdf.vim'
 NeoBundle 'vim-jp/vimdoc-ja'
 NeoBundle 'jceb/vim-hier'
 NeoBundle 'kana/vim-textobj-user'
-NeoBundle 'kana/vim-textobj-indent'
-NeoBundle 'kana/vim-textobj-line'
-NeoBundle 'rhysd/textobj-wiw'
-NeoBundle 'sgur/vim-textobj-parameter'
-NeoBundle 'thinca/vim-textobj-between'
-NeoBundle 'thinca/vim-textobj-comment'
 NeoBundle 'thinca/vim-prettyprint'
 NeoBundle 'kana/vim-operator-user'
 NeoBundle 'kana/vim-vspec'
@@ -519,12 +513,7 @@ NeoBundleLazy 'rhysd/vim-operator-evalruby', {
 NeoBundleLazy 'tyru/caw.vim', {
             \ 'autoload' : {
             \     'mappings' :
-            \         ['<Plug>(caw:i:toggle)',
-            \          '<Plug>(caw:a:toggle)',
-            \          '<Plug>(caw:wrap:toggle)',
-            \          '<Plug>(caw:jump:comment-next)',
-            \          '<Plug>(caw:jump:comment-next)',
-            \          '<Plug>(operator-caw)']
+            \         ['<Plug>(caw', '<Plug>(operator-caw)']
             \     }
             \ }
 
@@ -542,7 +531,7 @@ NeoBundleLazy 'Shougo/vimshell', {
 
 NeoBundleLazy 'kana/vim-altr', {
             \ 'autoload' : {
-            \     'mappings' : '<Plug>(altr-forward)'
+            \     'mappings' : '<Plug>(altr-'
             \   }
             \ }
 
@@ -571,6 +560,49 @@ NeoBundleLazy 'glidenote/memolist.vim', {
             \ 'depends' : 'Shougo/vimfiler.vim',
             \ 'autoload' : {
             \     'commands' : ['MemoNew', 'MemoList', 'MemoGrep']
+            \   }
+            \ }
+
+NeoBundleLazy 'kana/vim-textobj-indent', {
+            \ 'depends' : 'kana/vim-textobj-user',
+            \ 'autoload' : {
+            \       'mappings' : ['xo', 'ai', 'aI', 'ii', 'iI']
+            \   }
+            \ }
+
+NeoBundleLazy 'kana/vim-textobj-line', {
+            \ 'depends' : 'kana/vim-textobj-user',
+            \ 'autoload' : {
+            \       'mappings' : ['xo', 'al', 'il']
+            \   }
+            \ }
+
+NeoBundleLazy 'rhysd/textobj-wiw', {
+            \ 'depends' : 'kana/vim-textobj-user',
+            \ 'autoload' : {
+            \       'mappings' : ['xo', 'am', 'im']
+            \   }
+            \ }
+
+
+NeoBundleLazy 'sgur/vim-textobj-parameter', {
+            \ 'depends' : 'kana/vim-textobj-user',
+            \ 'autoload' : {
+            \       'mappings' : ['xo', 'a,', 'i,']
+            \   }
+            \ }
+
+NeoBundleLazy 'thinca/vim-textobj-between', {
+            \ 'depends' : 'kana/vim-textobj-user',
+            \ 'autoload' : {
+            \       'mappings' : ['xo', 'af', 'if']
+            \   }
+            \ }
+
+NeoBundleLazy 'thinca/vim-textobj-comment', {
+            \ 'depends' : 'kana/vim-textobj-user',
+            \ 'autoload' : {
+            \       'mappings' : ['xo', 'ac', 'ic']
             \   }
             \ }
 
