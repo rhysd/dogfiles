@@ -85,7 +85,7 @@ namespace :linux do
 
   task :tmux do
     next unless installed? 'tmux'
-    ln_dotfile 'arch.tmux.conf', "#{home}/.tmux.conf"
+    ln_dotfile 'tmux.conf', "#{home}/.tmux.conf"
   end
 
   task :vim do
@@ -137,7 +137,7 @@ namespace :mac do
 
   task :tmux do
     next unless installed? 'tmux'
-    ln_dotfile 'mac.tmux.conf', "#{home}/.tmux.conf"
+    ln_dotfile 'tmux.conf', "#{home}/.tmux.conf"
   end
 
 end
