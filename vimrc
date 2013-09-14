@@ -139,49 +139,52 @@ set statusline=%f:\ %{substitute(getcwd(),'.*/','','')}\ %m%=%{(&fenc!=''?&fenc:
 " リストヘッダ
 set formatlistpat&
 let &formatlistpat .= '\|^\s*[*+-]\s*'
-" 一定時間カーソルを移動しないとカーソルラインを表示（ただし，ウィンドウ移動時
-" はなぜか切り替わらない
-" http://d.hatena.ne.jp/thinca/20090530/1243615055
-autocmd MyVimrc CursorMoved,CursorMovedI,WinLeave * setlocal nocursorline
-autocmd MyVimrc CursorHold,CursorHoldI,WinEnter * setlocal cursorline
 " スペルチェックを英単語のみに限定する
 syntax match Normal /[^!-~]/ contains=@NoSpell
 
-" *.md で読み込む filetype を変更（デフォルトは modula2）
-autocmd MyVimrc BufRead,BufNew,BufNewFile *.md,*.markdown setlocal ft=markdown
-" tmux
-autocmd MyVimrc BufRead,BufNew,BufNewFile *tmux.conf setlocal ft=tmux
-" git config file
-autocmd MyVimrc BufRead,BufNew,BufNewFile gitconfig setlocal ft=gitconfig
-" Gnuplot のファイルタイプを設定
-autocmd MyVimrc BufRead,BufNew,BufNewFile *.plt,*.plot,*.gnuplot setlocal ft=gnuplot
-" Ruby の guard 用ファイル
-autocmd MyVimrc BufRead,BufNew,BufNewFile Guardfile setlocal ft=ruby
+augroup MyVimrc
+    " 一定時間カーソルを移動しないとカーソルラインを表示（ただし，ウィンドウ移動時
+    " はなぜか切り替わらない
+    " http://d.hatena.ne.jp/thinca/20090530/1243615055
+    autocmd CursorMoved,CursorMovedI,WinLeave * setlocal nocursorline
+    autocmd CursorHold,CursorHoldI,WinEnter * setlocal cursorline
 
-" カーソル位置の復元
-autocmd MyVimrc BufReadPost *
-    \ if line("'\"") > 1 && line("'\"") <= line("$") |
-    \   exe "normal! g`\"" |
-    \ endif
-" Hack #202: 自動的にディレクトリを作成する
-" http://vim-users.jp/2011/02/hack202/
-autocmd MyVimrc BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'), v:cmdbang)
-function! s:auto_mkdir(dir, force)
-    if !isdirectory(a:dir) && (a:force ||
-                \    input(printf('"%s" does not exist. Create? [y/N]', a:dir)) =~? '^y\%[es]$')
-        " call mkdir(iconv(a:dir, &encoding, &termencoding), 'p')
-        call mkdir(a:dir, 'p')
-    endif
-endfunction
-" ファイルタイプを書き込み時に自動判別
-autocmd MyVimrc BufWritePost
-\ * if &l:filetype ==# '' || exists('b:ftdetect')
-\ |   unlet! b:ftdetect
-\ |   filetype detect
-\ | endif
-" git commit message のときは折りたたまない(diff で中途半端な折りたたみになりがち)
-" git commit message のときはスペルをチェックする
-autocmd MyVimrc FileType gitcommit setlocal nofoldenable spell
+    " *.md で読み込む filetype を変更（デフォルトは modula2）
+    autocmd BufRead,BufNew,BufNewFile *.md,*.markdown setlocal ft=markdown
+    " tmux
+    autocmd BufRead,BufNew,BufNewFile *tmux.conf setlocal ft=tmux
+    " git config file
+    autocmd BufRead,BufNew,BufNewFile gitconfig setlocal ft=gitconfig
+    " Gnuplot のファイルタイプを設定
+    autocmd BufRead,BufNew,BufNewFile *.plt,*.plot,*.gnuplot setlocal ft=gnuplot
+    " Ruby の guard 用ファイル
+    autocmd BufRead,BufNew,BufNewFile Guardfile setlocal ft=ruby
+
+    " カーソル位置の復元
+    autocmd BufReadPost *
+        \ if line("'\"") > 1 && line("'\"") <= line("$") |
+        \   exe "normal! g`\"" |
+        \ endif
+    " Hack #202: 自動的にディレクトリを作成する
+    " http://vim-users.jp/2011/02/hack202/
+    autocmd BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'), v:cmdbang)
+    function! s:auto_mkdir(dir, force)
+        if !isdirectory(a:dir) && (a:force ||
+                    \    input(printf('"%s" does not exist. Create? [y/N]', a:dir)) =~? '^y\%[es]$')
+            " call mkdir(iconv(a:dir, &encoding, &termencoding), 'p')
+            call mkdir(a:dir, 'p')
+        endif
+    endfunction
+    " ファイルタイプを書き込み時に自動判別
+    autocmd BufWritePost
+    \ * if &l:filetype ==# '' || exists('b:ftdetect')
+    \ |   unlet! b:ftdetect
+    \ |   filetype detect
+    \ | endif
+    " git commit message のときは折りたたまない(diff で中途半端な折りたたみになりがち)
+    " git commit message のときはスペルをチェックする
+    autocmd FileType gitcommit setlocal nofoldenable spell
+augroup END
 
 " tmux 用の設定
 "256 bitカラーモード(for tmux)
@@ -889,9 +892,16 @@ endfunction
 autocmd MyVimrc FileType help call s:on_FileType_help_define_mappings()
 
 " quickfix のマッピング
-autocmd MyVimrc FileType qf nnoremap <buffer><silent> q :q<CR>
-autocmd MyVimrc FileType qf nnoremap <buffer><silent> j :cn!<CR>
-autocmd MyVimrc FileType qf nnoremap <buffer><silent> k :cp!<CR>
+augroup MyVimrc
+    autocmd FileType qf nnoremap <buffer><silent> q :<C-u>cclose<CR>
+    autocmd FileType qf nnoremap <buffer><silent> j :<C-u>cnext!<CR>
+    autocmd FileType qf nnoremap <buffer><silent> k :<C-u>cprevious!<CR>
+    autocmd FileType qf nnoremap <buffer><silent> J :<C-u>cfirst<CR>
+    autocmd FileType qf nnoremap <buffer><silent> K :<C-u>clast<CR>
+    autocmd FileType qf nnoremap <buffer><silent> n :<C-u>cnewer<CR>
+    autocmd FileType qf nnoremap <buffer><silent> p :<C-u>colder<CR>
+    autocmd FileType qf nnoremap <buffer><silent> l :<C-u>clist<CR>
+augroup END
 
 augroup InitialMessage
     autocmd!
@@ -1098,11 +1108,13 @@ command! -nargs=0 EchoCurrentPath echo expand('%:p')
 "}}}
 
 " Ruby {{{
-autocmd MyVimrc FileType ruby setlocal tabstop=2 shiftwidth=2 softtabstop=2
-autocmd MyVimrc FileType ruby inoremap <buffer><C-s> self.
-autocmd MyVimrc FileType ruby inoremap <buffer>; <Bar>
-autocmd MyVimrc FileType ruby nnoremap <buffer>[unite]r :<C-u>Unite ruby/require<CR>
-autocmd MyVimrc BufRead  Guardfile set filetype=ruby
+augroup MyVimrc
+    autocmd FileType ruby setlocal tabstop=2 shiftwidth=2 softtabstop=2
+    autocmd FileType ruby inoremap <buffer><C-s> self.
+    autocmd FileType ruby inoremap <buffer>; <Bar>
+    autocmd FileType ruby nnoremap <buffer>[unite]r :<C-u>Unite ruby/require<CR>
+    autocmd BufRead  Guardfile set filetype=ruby
+augroup END
 if filereadable(expand('~/.vim/skeletons/ruby.skel'))
     autocmd MyVimrc BufNewFile *.rb 0r ~/.vim/skeletons/ruby.skel
 endif
@@ -1168,11 +1180,13 @@ endfunction
 
 command! -nargs=1 OpenCppReference OpenBrowser http://en.cppreference.com/mwiki/index.php?title=Special:Search&search=<args>
 
-autocmd MyVimrc FileType cpp nnoremap <buffer>K :<C-u>execute 'OpenCppReference' expand('<cword>')<CR>
-autocmd MyVimrc FileType cpp setlocal matchpairs+=<:>
-autocmd MyVimrc FileType cpp inoremap <buffer>,  ,<Space>
-autocmd MyVimrc FileType cpp nnoremap <buffer><Leader>ret :<C-u>call <SID>return_type_completion()<CR>
-autocmd MyVimrc FileType cpp inoremap <expr> e getline('.')[col('.') - 6:col('.') - 2] ==# 'const' ? 'expr ' : 'e'
+augroup MyVimrc
+    autocmd FileType cpp nnoremap <buffer>K :<C-u>execute 'OpenCppReference' expand('<cword>')<CR>
+    autocmd FileType cpp setlocal matchpairs+=<:>
+    autocmd FileType cpp inoremap <buffer>,  ,<Space>
+    autocmd FileType cpp nnoremap <buffer><Leader>ret :<C-u>call <SID>return_type_completion()<CR>
+    autocmd FileType cpp inoremap <expr> e getline('.')[col('.') - 6:col('.') - 2] ==# 'const' ? 'expr ' : 'e'
+augroup END
 " }}}
 
 " Haskell {{{
@@ -1254,13 +1268,15 @@ let g:neocomplete#filename#include#exprs = {
             \ 'ruby' : "substitute(substitute(v:fname,'::','/','g'),'$','.rb','')"
             \ }
 " オムニ補完を有効にする(ruby のオムニ補完は挙動が怪しいので off)
-autocmd MyVimrc FileType python     setlocal omnifunc=pythoncomplete#Complete
-autocmd MyVimrc FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd MyVimrc FileType html       setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd MyVimrc FileType css        setlocal omnifunc=csscomplete#CompleteCss
-autocmd MyVimrc FileType xml        setlocal omnifunc=xmlcomplete#CompleteTags
-autocmd MyVimrc FileType php        setlocal omnifunc=phpcomplete#CompletePHP
-autocmd MyVimrc FileType c          setlocal omnifunc=ccomplete#Complete
+augroup MyVimrc
+    autocmd FileType python     setlocal omnifunc=pythoncomplete#Complete
+    autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+    autocmd FileType html       setlocal omnifunc=htmlcomplete#CompleteTags
+    autocmd FileType css        setlocal omnifunc=csscomplete#CompleteCss
+    autocmd FileType xml        setlocal omnifunc=xmlcomplete#CompleteTags
+    autocmd FileType php        setlocal omnifunc=phpcomplete#CompletePHP
+    autocmd FileType c          setlocal omnifunc=ccomplete#Complete
+augroup END
 " オムニ補完を実行するパターン
 if !exists('g:neocomplete#sources#omni#input_patterns')
     let g:neocomplete#sources#omni#input_patterns = {}
@@ -1302,12 +1318,14 @@ inoremap <expr><C-y> neocomplete#cancel_popup()
 "    <Plug>(physical_key_return) hooked by vim-smartinput is used
 imap <expr><CR> (pumvisible() ? neocomplete#smart_close_popup() : "")."\<Plug>(physical_key_return)"
 " コマンドラインウィンドウでは Tab の挙動が変わるのでワークアラウンド
-autocmd MyVimrc CmdwinEnter * inoremap <silent><buffer><Tab> <C-n>
-autocmd MyVimrc CmdwinEnter * inoremap <expr><buffer><CR> (pumvisible() ? neocomplete#smart_close_popup() : "")."\<CR>"
-autocmd MyVimrc CmdwinEnter * inoremap <silent><buffer><expr><C-h> col('.') == 1 ?
-                                    \ "\<ESC>:quit\<CR>" : neocomplete#cancel_popup()."\<C-h>"
-autocmd MyVimrc CmdwinEnter * inoremap <silent><buffer><expr><BS> col('.') == 1 ?
-                                    \ "\<ESC>:quit\<CR>" : neocomplete#cancel_popup()."\<BS>"
+augroup MyVimrc
+    autocmd CmdwinEnter * inoremap <silent><buffer><Tab> <C-n>
+    autocmd CmdwinEnter * inoremap <expr><buffer><CR> (pumvisible() ? neocomplete#smart_close_popup() : "")."\<CR>"
+    autocmd CmdwinEnter * inoremap <silent><buffer><expr><C-h> col('.') == 1 ?
+                                        \ "\<ESC>:quit\<CR>" : neocomplete#cancel_popup()."\<C-h>"
+    autocmd CmdwinEnter * inoremap <silent><buffer><expr><BS> col('.') == 1 ?
+                                        \ "\<ESC>:quit\<CR>" : neocomplete#cancel_popup()."\<BS>"
+augroup END
 " }}}
 else
 " neocomplcache.vim {{{
@@ -1359,13 +1377,15 @@ let g:neocomplcache_include_exprs = {
             \ 'ruby' : "substitute(substitute(v:fname,'::','/','g'),'$','.rb','')"
             \ }
 " Enable omni completion.
-autocmd MyVimrc FileType python     setlocal omnifunc=pythoncomplete#Complete
-autocmd MyVimrc FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd MyVimrc FileType html       setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd MyVimrc FileType css        setlocal omnifunc=csscomplete#CompleteCss
-autocmd MyVimrc FileType xml        setlocal omnifunc=xmlcomplete#CompleteTags
-autocmd MyVimrc FileType php        setlocal omnifunc=phpcomplete#CompletePHP
-autocmd MyVimrc FileType c          setlocal omnifunc=ccomplete#Complete
+augroup MyVimrc
+    autocmd FileType python     setlocal omnifunc=pythoncomplete#Complete
+    autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+    autocmd FileType html       setlocal omnifunc=htmlcomplete#CompleteTags
+    autocmd FileType css        setlocal omnifunc=csscomplete#CompleteCss
+    autocmd FileType xml        setlocal omnifunc=xmlcomplete#CompleteTags
+    autocmd FileType php        setlocal omnifunc=phpcomplete#CompletePHP
+    autocmd FileType c          setlocal omnifunc=ccomplete#Complete
+augroup END
     " autocmd FileType ruby set omnifunc=rubycomplete#Complete
 " Enable heavy omni completion.
 if !exists('g:neocomplcache_omni_patterns')
@@ -1408,12 +1428,14 @@ inoremap <expr><C-y> neocomplcache#close_popup()
 "    <Plug>(physical_key_return) hooked by vim-smartinput is used
 imap <expr><CR> (pumvisible() ? neocomplcache#smart_close_popup() : "")."\<Plug>(physical_key_return)"
 " コマンドラインウィンドウでは Tab の挙動が変わるのでワークアラウンド
-autocmd MyVimrc CmdwinEnter * inoremap <silent><buffer><Tab> <C-n>
-autocmd MyVimrc CmdwinEnter * inoremap <expr><buffer><CR> (pumvisible() ? neocomplcache#smart_close_popup() : "")."\<CR>"
-autocmd MyVimrc CmdwinEnter * inoremap <silent><buffer><expr><C-h> col('.') == 1 ?
+augroup MyVimrc
+autocmd CmdwinEnter * inoremap <silent><buffer><Tab> <C-n>
+autocmd CmdwinEnter * inoremap <expr><buffer><CR> (pumvisible() ? neocomplcache#smart_close_popup() : "")."\<CR>"
+autocmd CmdwinEnter * inoremap <silent><buffer><expr><C-h> col('.') == 1 ?
                                     \ "\<ESC>:quit\<CR>" : neocomplcache#cancel_popup()."\<C-h>"
-autocmd MyVimrc CmdwinEnter * inoremap <silent><buffer><expr><BS> col('.') == 1 ?
+autocmd CmdwinEnter * inoremap <silent><buffer><expr><BS> col('.') == 1 ?
                                     \ "\<ESC>:quit\<CR>" : neocomplcache#cancel_popup()."\<BS>"
+augroup END
 " }}}
 endif
 
@@ -1515,21 +1537,23 @@ augroup END
 "}}}
 
 "unite.vimのキーマップ {{{
-"C-gでいつでもバッファを閉じられる（絞り込み欄が空の時はC-hでもOK）
-autocmd MyVimrc FileType unite imap <buffer><C-g> <Plug>(unite_exit)
-autocmd MyVimrc FileType unite nmap <buffer><C-g> <Plug>(unite_exit)
-"直前のパス削除
-autocmd MyVimrc FileType unite imap <buffer><C-w> <Plug>(unite_delete_backward_path)
-autocmd MyVimrc FileType unite nmap <buffer>h <Plug>(unite_delete_backward_path)
-"ファイル上にカーソルがある時，pでプレビューを見る
-autocmd MyVimrc FileType unite inoremap <buffer><expr>p unite#smart_map("p", unite#do_action('preview'))
-"C-xでクイックマッチ
-autocmd MyVimrc FileType unite imap <buffer><C-x> <Plug>(unite_quick_match_default_action)
-"lでデフォルトアクションを実行
-autocmd MyVimrc FileType unite nmap <buffer>l <Plug>(unite_do_default_action)
-autocmd MyVimrc FileType unite imap <buffer><expr>l unite#smart_map("l", unite#do_action(unite#get_current_unite().context.default_action))
-"jjで待ち時間が発生しないようにしていると候補が見えなくなるので対処
-autocmd MyVimrc FileType unite imap <buffer><silent>jj <Plug>(unite_insert_leave)
+augroup MyVimrc
+    "C-gでいつでもバッファを閉じられる（絞り込み欄が空の時はC-hでもOK）
+    autocmd FileType unite imap <buffer><C-g> <Plug>(unite_exit)
+    autocmd FileType unite nmap <buffer><C-g> <Plug>(unite_exit)
+    "直前のパス削除
+    autocmd FileType unite imap <buffer><C-w> <Plug>(unite_delete_backward_path)
+    autocmd FileType unite nmap <buffer>h <Plug>(unite_delete_backward_path)
+    "ファイル上にカーソルがある時，pでプレビューを見る
+    autocmd FileType unite inoremap <buffer><expr>p unite#smart_map("p", unite#do_action('preview'))
+    "C-xでクイックマッチ
+    autocmd FileType unite imap <buffer><C-x> <Plug>(unite_quick_match_default_action)
+    "lでデフォルトアクションを実行
+    autocmd FileType unite nmap <buffer>l <Plug>(unite_do_default_action)
+    autocmd FileType unite imap <buffer><expr>l unite#smart_map("l", unite#do_action(unite#get_current_unite().context.default_action))
+    "jjで待ち時間が発生しないようにしていると候補が見えなくなるので対処
+    autocmd FileType unite imap <buffer><silent>jj <Plug>(unite_insert_leave)
+augroup END
 
 noremap [unite] <Nop>
 map     <Space> [unite]
@@ -1561,12 +1585,13 @@ nnoremap <silent>[unite]s         :<C-u>Unite source -vertical<CR>
 " nnoremap <silent>[unite]nb      :<C-u>AutoNeoBundleTimestamp<CR>:Unite neobundle/update -auto-quit<CR>
 nnoremap <silent>[unite]nb        :<C-u>Unite neobundle/update:all -auto-quit -keep-focus -log<CR>
 " Haskell Import
-autocmd MyVimrc FileType haskell nnoremap <buffer>[unite]hd :<C-u>Unite haddock<CR>
-autocmd MyVimrc FileType haskell nnoremap <buffer>[unite]ho :<C-u>Unite hoogle<CR>
-autocmd MyVimrc FileType haskell
-\ nnoremap <buffer><expr>[unite]hi
-\        empty(expand("<cWORD>")) ? ":\<C-u>Unite haskellimport\<CR>"
-\                                 :":\<C-u>UniteWithCursorWord haskellimport\<CR>"
+augroup MyVimrc
+    autocmd FileType haskell nnoremap <buffer>[unite]hd :<C-u>Unite haddock<CR>
+    autocmd FileType haskell nnoremap <buffer>[unite]ho :<C-u>Unite hoogle<CR>
+    autocmd FileType haskell nnoremap <buffer><expr>[unite]hi
+                        \        empty(expand("<cWORD>")) ? ":\<C-u>Unite haskellimport\<CR>"
+                        \                                 :":\<C-u>UniteWithCursorWord haskellimport\<CR>"
+augroup END
 " Git のルートディレクトリを開く
 nnoremap <silent><expr>[unite]fg  ":\<C-u>Unite file -input=".fnamemodify(<SID>git_root_dir(),":p")
 " alignta (visual)
@@ -1671,23 +1696,25 @@ function! s:bundle.hooks.on_source(bundle)
     "VimShell のキーマッピング {{{
     " コマンド履歴の移動
     " バッファ移動の <C-n> <C-p> が潰されているので再マッピング
-    autocmd MyVimrc FileType vimshell nnoremap <buffer><silent><C-n> :<C-u>bn<CR>
-    autocmd MyVimrc FileType vimshell nnoremap <buffer><silent><C-p> :<C-u>bp<CR>
-    autocmd MyVimrc FileType vimshell nmap <buffer><silent>gn <Plug>(vimshell_next_prompt)
-    autocmd MyVimrc FileType vimshell nmap <buffer><silent>gp <Plug>(vimshell_previous_prompt)
-    " VimFiler 連携
-    autocmd MyVimrc FileType vimshell nnoremap <buffer><silent><Leader>ff :<C-u>VimFilerCurrentDir<CR>
-    autocmd MyVimrc FileType vimshell inoremap <buffer><silent><C-s> <Esc>:<C-u>VimFilerCurrentDir<CR>
-    " 親ディレクトリへ移動
-    autocmd MyVimrc FileType vimshell imap <buffer><silent><C-j> <C-u>..<Plug>(vimshell_enter)
-    " popd
-    autocmd MyVimrc FileType vimshell imap <buffer><silent><C-p> <C-u>popd<Plug>(vimshell_enter)
-    " git status
-    autocmd MyVimrc FileType vimshell imap <buffer><silent><C-q> <C-u>git status -sb<Plug>(vimshell_enter)
-    " zsh や bash の <C-d> っぽい挙動
-    autocmd MyVimrc FileType vimshell imap <buffer><silent><expr><C-d> vimshell#get_cur_text()=='' ? "\<Esc>\<Plug>(vimshell_exit)" : "\<Del>"
-    " 最新のプロンプトに移動
-    autocmd MyVimrc FileType vimshell nnoremap <buffer>a GA
+    augroup MyVimrc
+        autocmd FileType vimshell nnoremap <buffer><silent><C-n> :<C-u>bn<CR>
+        autocmd FileType vimshell nnoremap <buffer><silent><C-p> :<C-u>bp<CR>
+        autocmd FileType vimshell nmap <buffer><silent>gn <Plug>(vimshell_next_prompt)
+        autocmd FileType vimshell nmap <buffer><silent>gp <Plug>(vimshell_previous_prompt)
+        " VimFiler 連携
+        autocmd FileType vimshell nnoremap <buffer><silent><Leader>ff :<C-u>VimFilerCurrentDir<CR>
+        autocmd FileType vimshell inoremap <buffer><silent><C-s> <Esc>:<C-u>VimFilerCurrentDir<CR>
+        " 親ディレクトリへ移動
+        autocmd FileType vimshell imap <buffer><silent><C-j> <C-u>..<Plug>(vimshell_enter)
+        " popd
+        autocmd FileType vimshell imap <buffer><silent><C-p> <C-u>popd<Plug>(vimshell_enter)
+        " git status
+        autocmd FileType vimshell imap <buffer><silent><C-q> <C-u>git status -sb<Plug>(vimshell_enter)
+        " zsh や bash の <C-d> っぽい挙動
+        autocmd FileType vimshell imap <buffer><silent><expr><C-d> vimshell#get_cur_text()=='' ? "\<Esc>\<Plug>(vimshell_exit)" : "\<Del>"
+        " 最新のプロンプトに移動
+        autocmd FileType vimshell nnoremap <buffer>a GA
+    augroup END
 endfunction
 unlet s:bundle
 
@@ -1819,27 +1846,29 @@ let g:vimfiler_execute_file_list = { '_' : 'vim', 'pdf' : 'open', 'mp3' : 'open'
 let g:vimfiler_split_rule = 'botright'
 
 " vimfiler.vim のキーマップ {{{
-" smart s mapping for edit or cd
-autocmd MyVimrc FileType vimfiler nmap <buffer><silent><expr> l vimfiler#smart_cursor_map(
-            \ "\<Plug>(vimfiler_cd_file)",
-            \ "\<Plug>(vimfiler_edit_file)")
-" jump to VimShell
-autocmd MyVimrc FileType vimfiler nnoremap <buffer><silent><Leader>vs
-            \ :<C-u>VimShellCurrentDir<CR>
-" 'a'nother
-autocmd MyVimrc FileType vimfiler nmap <buffer><silent>a <Plug>(vimfiler_switch_to_another_vimfiler)
-" unite.vim に合わせる
-autocmd MyVimrc FileType vimfiler nmap <buffer><silent><Tab> <Plug>(vimfiler_choose_action)
-" <Space> の代わりに u を unite.vim のプレフィクスに使う
-autocmd MyVimrc FileType vimfiler nmap <buffer><silent>u [unite]
-" unite.vim の file_mru との連携
-autocmd MyVimrc FileType vimfiler nnoremap <buffer><silent><C-h> :<C-u>Unite file_mru directory_mru<CR>
-" unite.vim の file との連携
-autocmd MyVimrc FileType vimfiler
-            \ nnoremap <buffer><silent>/
-            \ :<C-u>execute 'Unite' 'file:'.vimfiler#get_current_vimfiler().current_dir '-default-action=open_or_vimfiler'<CR>
-" git リポジトリに登録されたすべてのファイルを開く
-autocmd MyVimrc FileType vimfiler nnoremap <buffer><expr>ga vimfiler#do_action('git_repo_files')
+augroup MyVimrc
+    " smart s mapping for edit or cd
+    autocmd FileType vimfiler nmap <buffer><silent><expr> l vimfiler#smart_cursor_map(
+                \ "\<Plug>(vimfiler_cd_file)",
+                \ "\<Plug>(vimfiler_edit_file)")
+    " jump to VimShell
+    autocmd FileType vimfiler nnoremap <buffer><silent><Leader>vs
+                \ :<C-u>VimShellCurrentDir<CR>
+    " 'a'nother
+    autocmd FileType vimfiler nmap <buffer><silent>a <Plug>(vimfiler_switch_to_another_vimfiler)
+    " unite.vim に合わせる
+    autocmd FileType vimfiler nmap <buffer><silent><Tab> <Plug>(vimfiler_choose_action)
+    " <Space> の代わりに u を unite.vim のプレフィクスに使う
+    autocmd FileType vimfiler nmap <buffer><silent>u [unite]
+    " unite.vim の file_mru との連携
+    autocmd FileType vimfiler nnoremap <buffer><silent><C-h> :<C-u>Unite file_mru directory_mru<CR>
+    " unite.vim の file との連携
+    autocmd FileType vimfiler
+                \ nnoremap <buffer><silent>/
+                \ :<C-u>execute 'Unite' 'file:'.vimfiler#get_current_vimfiler().current_dir '-default-action=open_or_vimfiler'<CR>
+    " git リポジトリに登録されたすべてのファイルを開く
+    autocmd FileType vimfiler nnoremap <buffer><expr>ga vimfiler#do_action('git_repo_files')
+augroup END
 
 nnoremap <Leader>f                <Nop>
 nnoremap <Leader>ff               :<C-u>VimFiler<CR>
@@ -2162,16 +2191,18 @@ let g:operator_clang_format_style_options = {
             \ "Standard" : "C++11",
             \ "BreakBeforeBraces" : "Stroustrup",
             \ }
-autocmd MyVimrc FileType c,cpp map <buffer><Leader>x <Plug>(operator-clang-format)
-"}}}
+augroup MyVimrc
+    autocmd FileType c,cpp map <buffer><Leader>x <Plug>(operator-clang-format)
+    "}}}
 
-" ghcmod-vim {{{
-autocmd MyVimrc FileType haskell nnoremap <buffer><silent><C-t> :<C-u>GhcModType<CR>
-autocmd MyVimrc BufWritePost *.hs GhcModCheckAndLintAsync
-autocmd MyVimrc FileType haskell let &l:statusline = '%{empty(getqflist()) ? "[No Errors] " : "[Errors Found] "}'
-                                            \ . (empty(&l:statusline) ? &statusline : &l:statusline)
-autocmd MyVimrc FileType haskell nnoremap <buffer><silent><Esc><Esc> :<C-u>nohlsearch<CR>:HierClear<CR>:GhcModTypeClear<CR>
-autocmd MyVimrc FileType haskell nnoremap <buffer><silent><Leader>cq :<C-u>cclose<CR>
+    " ghcmod-vim {{{
+    autocmd FileType haskell nnoremap <buffer><silent><C-t> :<C-u>GhcModType<CR>
+    autocmd BufWritePost *.hs GhcModCheckAndLintAsync
+    autocmd FileType haskell let &l:statusline = '%{empty(getqflist()) ? "[No Errors] " : "[Errors Found] "}'
+                                                \ . (empty(&l:statusline) ? &statusline : &l:statusline)
+    autocmd FileType haskell nnoremap <buffer><silent><Esc><Esc> :<C-u>nohlsearch<CR>:HierClear<CR>:GhcModTypeClear<CR>
+    autocmd FileType haskell nnoremap <buffer><silent><Leader>cq :<C-u>cclose<CR>
+augroup END
 "}}}
 
 " vim2hs.vim {{{
@@ -2317,46 +2348,48 @@ function! s:bundle.hooks.on_source(bundle)
 
     command -nargs=1 TweetVimFavorites call tweetvim#timeline('favorites', <q-args>)
 
-    " 行番号いらない
-    autocmd MyVimrc FileType tweetvim     setlocal nonumber
-    " マッピング
-    " 挿入・通常モードで閉じる
-    autocmd MyVimrc FileType tweetvim_say nnoremap <buffer><silent><C-g>    :<C-u>q!<CR>
-    autocmd MyVimrc FileType tweetvim_say inoremap <buffer><silent><C-g>    <C-o>:<C-u>q!<CR><Esc>
-    " ツイート履歴を <C-l> に
-    autocmd MyVimrc FileType tweetvim_say inoremap <buffer><silent><C-l>    <C-o>:<C-u>call unite#sources#tweetvim_tweet_history#start()<CR>
-    " <Tab> は補完で使う
-    autocmd MyVimrc FileType tweetvim_say iunmap   <buffer><Tab>
-    " 各種アクション
-    autocmd MyVimrc FileType tweetvim     nnoremap <buffer><Leader>s        :<C-u>TweetVimSay<CR>
-    autocmd MyVimrc FileType tweetvim     nmap     <buffer>c                <Plug>(tweetvim_action_in_reply_to)
-    autocmd MyVimrc FileType tweetvim     nnoremap <buffer>t                :<C-u>Unite tweetvim -no-start-insert -quick-match<CR>
-    autocmd MyVimrc FileType tweetvim     nmap     <buffer><Leader>F        <Plug>(tweetvim_action_remove_favorite)
-    autocmd MyVimrc FileType tweetvim     nmap     <buffer><Leader>d        <Plug>(tweetvim_action_remove_status)
-    " リロード後はカーソルを画面の中央に
-    autocmd MyVimrc FileType tweetvim     nmap     <buffer><Tab>            <Plug>(tweetvim_action_reload)
-    autocmd MyVimrc FileType tweetvim     nmap     <buffer><silent>gg       gg<Plug>(tweetvim_action_reload)
-    " ページ移動を ff/bb から f/b に
-    autocmd MyVimrc FileType tweetvim     nmap     <buffer>f                <Plug>(tweetvim_action_page_next)
-    autocmd MyVimrc FileType tweetvim     nmap     <buffer>b                <Plug>(tweetvim_action_page_previous)
-    " favstar や web UI で表示
-    autocmd MyVimrc FileType tweetvim     nnoremap <buffer><Leader><Leader> :<C-u>call <SID>tweetvim_favstar()<CR>
-    autocmd MyVimrc FileType tweetvim     nnoremap <buffer><Leader>u        :<C-u>call <SID>tweetvim_open_home()<CR>
-    " 縦移動
-    autocmd MyVimrc FileType tweetvim     nnoremap <buffer><silent>j        :<C-u>call <SID>tweetvim_vertical_move("j")<CR>zz
-    autocmd MyVimrc FileType tweetvim     nnoremap <buffer><silent>k        :<C-u>call <SID>tweetvim_vertical_move("k")<CR>zz
-    " タイムライン各種
-    autocmd MyVimrc FileType tweetvim     nnoremap <silent><buffer>gm       :<C-u>TweetVimMentions<CR>
-    autocmd MyVimrc FileType tweetvim     nnoremap <silent><buffer>gh       :<C-u>TweetVimHomeTimeline<CR>
-    autocmd MyVimrc FileType tweetvim     nnoremap <silent><buffer>gu       :<C-u>TweetVimUserTimeline<Space>
-    autocmd MyVimrc FileType tweetvim     nnoremap <silent><buffer>gp       :<C-u>TweetVimUserTimeline Linda_pp<CR>
-    autocmd MyVimrc FileType tweetvim     nnoremap <silent><buffer>gf       :<C-u>call <SID>open_favstar('')<CR>
-    " 不要なマップを除去
-    autocmd MyVimrc FileType tweetvim     nunmap   <buffer>ff
-    autocmd MyVimrc FileType tweetvim     nunmap   <buffer>bb
-    " 自動更新
-    autocmd MyVimrc FileType tweetvim     nnoremap <buffer><Leader>au :<C-u>TweetVimAutoUpdate<CR>
-    autocmd MyVimrc FileType tweetvim     nnoremap <buffer><Leader>as :<C-u>TweetVimStopAutoUpdate<CR>
+    augroup MyVimrc
+        " 行番号いらない
+        autocmd FileType tweetvim     setlocal nonumber
+        " マッピング
+        " 挿入・通常モードで閉じる
+        autocmd FileType tweetvim_say nnoremap <buffer><silent><C-g>    :<C-u>q!<CR>
+        autocmd FileType tweetvim_say inoremap <buffer><silent><C-g>    <C-o>:<C-u>q!<CR><Esc>
+        " ツイート履歴を <C-l> に
+        autocmd FileType tweetvim_say inoremap <buffer><silent><C-l>    <C-o>:<C-u>call unite#sources#tweetvim_tweet_history#start()<CR>
+        " <Tab> は補完で使う
+        autocmd FileType tweetvim_say iunmap   <buffer><Tab>
+        " 各種アクション
+        autocmd FileType tweetvim     nnoremap <buffer><Leader>s        :<C-u>TweetVimSay<CR>
+        autocmd FileType tweetvim     nmap     <buffer>c                <Plug>(tweetvim_action_in_reply_to)
+        autocmd FileType tweetvim     nnoremap <buffer>t                :<C-u>Unite tweetvim -no-start-insert -quick-match<CR>
+        autocmd FileType tweetvim     nmap     <buffer><Leader>F        <Plug>(tweetvim_action_remove_favorite)
+        autocmd FileType tweetvim     nmap     <buffer><Leader>d        <Plug>(tweetvim_action_remove_status)
+        " リロード後はカーソルを画面の中央に
+        autocmd FileType tweetvim     nmap     <buffer><Tab>            <Plug>(tweetvim_action_reload)
+        autocmd FileType tweetvim     nmap     <buffer><silent>gg       gg<Plug>(tweetvim_action_reload)
+        " ページ移動を ff/bb から f/b に
+        autocmd FileType tweetvim     nmap     <buffer>f                <Plug>(tweetvim_action_page_next)
+        autocmd FileType tweetvim     nmap     <buffer>b                <Plug>(tweetvim_action_page_previous)
+        " favstar や web UI で表示
+        autocmd FileType tweetvim     nnoremap <buffer><Leader><Leader> :<C-u>call <SID>tweetvim_favstar()<CR>
+        autocmd FileType tweetvim     nnoremap <buffer><Leader>u        :<C-u>call <SID>tweetvim_open_home()<CR>
+        " 縦移動
+        autocmd FileType tweetvim     nnoremap <buffer><silent>j        :<C-u>call <SID>tweetvim_vertical_move("j")<CR>zz
+        autocmd FileType tweetvim     nnoremap <buffer><silent>k        :<C-u>call <SID>tweetvim_vertical_move("k")<CR>zz
+        " タイムライン各種
+        autocmd FileType tweetvim     nnoremap <silent><buffer>gm       :<C-u>TweetVimMentions<CR>
+        autocmd FileType tweetvim     nnoremap <silent><buffer>gh       :<C-u>TweetVimHomeTimeline<CR>
+        autocmd FileType tweetvim     nnoremap <silent><buffer>gu       :<C-u>TweetVimUserTimeline<Space>
+        autocmd FileType tweetvim     nnoremap <silent><buffer>gp       :<C-u>TweetVimUserTimeline Linda_pp<CR>
+        autocmd FileType tweetvim     nnoremap <silent><buffer>gf       :<C-u>call <SID>open_favstar('')<CR>
+        " 不要なマップを除去
+        autocmd FileType tweetvim     nunmap   <buffer>ff
+        autocmd FileType tweetvim     nunmap   <buffer>bb
+        " 自動更新
+        autocmd FileType tweetvim     nnoremap <buffer><Leader>au :<C-u>TweetVimAutoUpdate<CR>
+        autocmd FileType tweetvim     nnoremap <buffer><Leader>as :<C-u>TweetVimStopAutoUpdate<CR>
+    augroup END
 
     " セパレータを飛ばして移動する
     function! s:tweetvim_vertical_move(cmd)
