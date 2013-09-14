@@ -463,7 +463,6 @@ NeoBundle 'chriskempson/tomorrow-theme', {'rtp' : 'vim'}
 
 " For testing
 set rtp+=~/Github/clever-f.vim
-" set rtp+=~/Github/vim-textobj-continuous-line
 set rtp+=~/Github/unite-ruby-require.vim
 set rtp+=~/Github/vim-operator-clang-format
 
@@ -608,6 +607,13 @@ NeoBundleLazy 'thinca/vim-textobj-comment', {
             \ 'depends' : 'kana/vim-textobj-user',
             \ 'autoload' : {
             \       'mappings' : [['xo', 'ac'], ['xo', 'ic']]
+            \   }
+            \ }
+
+NeoBundleLazy 'rhysd/vim-textobj-word-column', {
+            \ 'depends' : 'kana/vim-textobj-user',
+            \ 'autoload' : {
+            \       'mappings' : [['xo', 'av'], ['xo', 'aV'], ['xo', 'iv'], ['xo', 'iV']]
             \   }
             \ }
 
