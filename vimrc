@@ -144,6 +144,8 @@ let &formatlistpat .= '\|^\s*[*+-]\s*'
 " http://d.hatena.ne.jp/thinca/20090530/1243615055
 autocmd MyVimrc CursorMoved,CursorMovedI,WinLeave * setlocal nocursorline
 autocmd MyVimrc CursorHold,CursorHoldI,WinEnter * setlocal cursorline
+" スペルチェックを英単語のみに限定する
+syntax match Normal /[^!-~]/ contains=@NoSpell
 
 " *.md で読み込む filetype を変更（デフォルトは modula2）
 autocmd MyVimrc BufRead,BufNew,BufNewFile *.md,*.markdown setlocal ft=markdown
@@ -1529,8 +1531,8 @@ autocmd MyVimrc FileType unite imap <buffer><expr>l unite#smart_map("l", unite#d
 "jjで待ち時間が発生しないようにしていると候補が見えなくなるので対処
 autocmd MyVimrc FileType unite imap <buffer><silent>jj <Plug>(unite_insert_leave)
 
-nnoremap [unite] <Nop>
-nmap     <Space> [unite]
+noremap [unite] <Nop>
+map     <Space> [unite]
 " コマンドラインウィンドウで Unite コマンドを入力
 nnoremap [unite]u                 :<C-u>Unite source<CR>
 "バッファを開いた時のパスを起点としたファイル検索
@@ -2212,23 +2214,28 @@ let g:unite_source_alignta_preset_arguments = [
       \ ["Align at '['", '0 [' ],
       \ ["Align at '{'", '{'   ],
       \ ["Align at '<'", '0 <' ],
+      \ ["Align at ','", '01 ,' ],
       \ ["Align first spaces", '0 \s/1' ],
       \]
 
 let g:unite_source_alignta_preset_options = [
-      \ ["Justify Left",      '<<' ],
-      \ ["Justify Center",    '||' ],
-      \ ["Justify Right",     '>>' ],
-      \ ["Justify None",      '==' ],
-      \ ["Shift Left",        '<-' ],
-      \ ["Shift Right",       '->' ],
-      \ ["Shift Left  [Tab]", '<--'],
-      \ ["Shift Right [Tab]", '-->'],
-      \ ["Margin 0:0",        '0'  ],
-      \ ["Margin 0:1",        '01' ],
-      \ ["Margin 1:0",        '10' ],
-      \ ["Margin 1:1",        '1'  ],
+      \ ["Justify Left",             '<<' ],
+      \ ["Justify Center",           '||' ],
+      \ ["Justify Right",            '>>' ],
+      \ ["Justify None",             '==' ],
+      \ ["Shift Left",               '<-' ],
+      \ ["Shift Right",              '->' ],
+      \ ["Shift Left  [Tab]",        '<--'],
+      \ ["Shift Right [Tab]",        '-->'],
+      \ ["Margin 0:0",               '0'  ],
+      \ ["Margin 0:1",               '01' ],
+      \ ["Margin 1:0",               '10' ],
+      \ ["Margin 1:1",               '1'  ],
+      \ [" : (key: val)",            '01 :'],
+      \ [" , (ruby array #comment)", ',\zs 0:1 #'],
+      \ ["Not space",                '\S\+'],
       \]
+
 " }}}
 
 " endwize.vim "{{{
