@@ -1,18 +1,16 @@
-
 export PATH=/usr/local/texlive/2011/bin/x86_64-darwin:$PATH
 export PATH=$PATH:$HOME/Programs/c++/Qt5.0.2/5.0.2/clang_64/bin
 
 unalias ls
 alias ls='ls -G'
 alias g++='g++-4.8 -std=c++11 -Wall -Wextra -O2'
-# alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
-# alias gvim='open -n -a /Applications/MacVim.app'
 alias emacs='/usr/local/bin/emacs -nw'
 alias locate='/usr/bin/locate'
 alias vi="vim --cmd \"let g:linda_pp_startup_with_tiny = 1\""
 alias rm=grm
 alias update='brew update && gem update && vim -N -V1 -e -s --cmd "source ~/.vimrc" --cmd NeoBundleUpdate --cmd qall!'
 alias sshi='ssh -i $HOME/.ssh/id_rsa'
+alias github='open https://github.com'
 
 alias Vim=gvim
 
@@ -58,3 +56,4 @@ function up(){
 #     ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb update "$1"
 # }
 
+# vim: set ft=zsh fdm=marker ff=unix fileencoding=utf-8:
