@@ -207,8 +207,8 @@ nnoremap Y y$
 noremap j gj
 noremap k gk
 " 空行単位移動
-nnoremap <C-j> }
-nnoremap <C-k> {
+noremap <C-j> }
+noremap <C-k> {
 " インサートモードに入らずに1文字追加
 nnoremap <silent><expr>m "i".nr2char(getchar())."\<Esc>"
 " gm にマーク機能を退避
@@ -566,21 +566,21 @@ NeoBundleLazy 'glidenote/memolist.vim', {
 NeoBundleLazy 'kana/vim-textobj-indent', {
             \ 'depends' : 'kana/vim-textobj-user',
             \ 'autoload' : {
-            \       'mappings' : ['xo', 'ai', 'aI', 'ii', 'iI']
+            \       'mappings' : [['xo', 'ai'], ['xo', 'aI'], ['xo', 'ii'], ['xo', 'iI']]
             \   }
             \ }
 
 NeoBundleLazy 'kana/vim-textobj-line', {
             \ 'depends' : 'kana/vim-textobj-user',
             \ 'autoload' : {
-            \       'mappings' : ['xo', 'al', 'il']
+            \       'mappings' : [['xo', 'al'], ['xo', 'il']]
             \   }
             \ }
 
-NeoBundleLazy 'rhysd/textobj-wiw', {
+NeoBundleLazy 'rhysd/vim-textobj-wiw', {
             \ 'depends' : 'kana/vim-textobj-user',
             \ 'autoload' : {
-            \       'mappings' : ['xo', 'am', 'im']
+            \       'mappings' : [['xo', 'am'], ['xo', 'im']]
             \   }
             \ }
 
@@ -588,21 +588,21 @@ NeoBundleLazy 'rhysd/textobj-wiw', {
 NeoBundleLazy 'sgur/vim-textobj-parameter', {
             \ 'depends' : 'kana/vim-textobj-user',
             \ 'autoload' : {
-            \       'mappings' : ['xo', 'a,', 'i,']
+            \       'mappings' : [['xo', 'a,'], ['xo', 'i,']]
             \   }
             \ }
 
 NeoBundleLazy 'thinca/vim-textobj-between', {
             \ 'depends' : 'kana/vim-textobj-user',
             \ 'autoload' : {
-            \       'mappings' : ['xo', 'af', 'if']
+            \       'mappings' : [['xo', 'af'], ['xo', 'if']]
             \   }
             \ }
 
 NeoBundleLazy 'thinca/vim-textobj-comment', {
             \ 'depends' : 'kana/vim-textobj-user',
             \ 'autoload' : {
-            \       'mappings' : ['xo', 'ac', 'ic']
+            \       'mappings' : [['xo', 'ac'], ['xo', 'ic']]
             \   }
             \ }
 
@@ -2117,15 +2117,6 @@ map <Leader>c <Plug>(operator-caw)
 "}}}
 
 "}}}
-
-" text object "{{{
-" textobj-wiw {{{
-let g:textobj_wiw_no_default_key_mappings = 1 " デフォルトキーマップの解除
-omap am <Plug>(textobj-wiw-a)
-omap im <Plug>(textobj-wiw-i)
-xmap am <Plug>(textobj-wiw-a)
-xmap im <Plug>(textobj-wiw-i)
-" }}}
 
 " textobj-my-entire {{{
 if has('vim_starting')
