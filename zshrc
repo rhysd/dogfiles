@@ -48,6 +48,8 @@ alias vimshell='vim +VimShell'
 alias gvim='vim -g'
 alias sudo='sudo '
 alias memo='cat > /dev/null'
+alias memolist='vim +MemoList'
+alias memonew='vim +MemoNew'
 
 alias l=ls
 alias pd=popd
