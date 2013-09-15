@@ -3,7 +3,7 @@
 
 " 必須な基本設定 {{{
 function! s:get_SID()
-  return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeget_SID$')
+    return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeget_SID$')
 endfunction
 let s:SID = s:get_SID()
 delfunction s:get_SID
@@ -191,6 +191,259 @@ augroup END
 if !has('gui_running') && $TMUX !=# ''
     set t_Co=256
 endif
+
+" カーソル下のハイライトグループを取得
+command! -nargs=0 GetHighlightingGroup
+            \ echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '>trans<'
+            \ . synIDattr(synID(line('.'),col('.'),0),'name') . '>lo<'
+            \ . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
+
+
+" スクリプトに実行可能属性を自動で付ける
+if executable('chmod')
+    autocmd MyVimrc BufWritePost * call s:add_permission_x()
+
+    function! s:add_permission_x()
+        let file = expand('%:p')
+        if getline(1) =~# '^#!' && !executable(file)
+            silent! call vimproc#system('chmod a+x ' . shellescape(file))
+        endif
+    endfunction
+endif
+
+" help のマッピング
+function! s:on_FileType_help_define_mappings()
+    if &l:readonly
+        " カーソル下のタグへ飛ぶ
+        nnoremap <buffer>J <C-]>
+        " 戻る
+        nnoremap <buffer>K <C-t>
+        " リンクしている単語を選択する
+        nnoremap <buffer><silent><Tab> /\%(\_.\zs<Bar>[^ ]\+<Bar>\ze\_.\<Bar>CTRL-.\<Bar><[^ >]\+>\)<CR>
+        " そのた
+        nnoremap <buffer>u <C-u>
+        nnoremap <buffer>d <C-d>
+        nnoremap <buffer>q :<C-u>q<CR>
+        " カーソル下の単語を help で調べる
+        " autocmd MyVimrc FileType help nnoremap <buffer>K :<C-u>help <C-r><C-w><CR>
+        " TODO v で選択した範囲を help
+    endif
+endfunction
+autocmd MyVimrc FileType help call s:on_FileType_help_define_mappings()
+
+" quickfix のマッピング
+augroup MyVimrc
+    autocmd FileType qf nnoremap <buffer><silent> q :<C-u>cclose<CR>
+    autocmd FileType qf nnoremap <buffer><silent> j :<C-u>cnext!<CR>
+    autocmd FileType qf nnoremap <buffer><silent> k :<C-u>cprevious!<CR>
+    autocmd FileType qf nnoremap <buffer><silent> J :<C-u>cfirst<CR>
+    autocmd FileType qf nnoremap <buffer><silent> K :<C-u>clast<CR>
+    autocmd FileType qf nnoremap <buffer><silent> n :<C-u>cnewer<CR>
+    autocmd FileType qf nnoremap <buffer><silent> p :<C-u>colder<CR>
+    autocmd FileType qf nnoremap <buffer><silent> l :<C-u>clist<CR>
+augroup END
+
+augroup InitialMessage
+    autocmd!
+    " 起動時メッセージ．ｲﾇｩ…
+    autocmd VimEnter * echo "(U＾ω＾) enjoy vimming!"
+augroup END
+
+" ウィンドウ周りのユーティリティ "{{{
+function! s:close_window(winnr)
+    if winbufnr(a:winnr) !=# -1
+        execute a:winnr . 'wincmd w'
+        execute 'wincmd c'
+        return 1
+    else
+        return 0
+    endif
+endfunction
+
+function! s:get_winnr_like(expr)
+    let ret = []
+    let winnr = 1
+    while winnr <= winnr('$')
+        let bufnr = winbufnr(winnr)
+        if eval(a:expr)
+            call add(ret, winnr)
+        endif
+        let winnr = winnr + 1
+    endwhile
+    return ret
+endfunction
+
+function! s:close_windows_like(expr, ...)
+    let winnr_list = s:get_winnr_like(a:expr)
+    " Close current window if current matches a:expr.
+    " let winnr_list = s:move_current_winnr_to_head(winnr_list)
+    if empty(winnr_list)
+        return
+    endif
+
+    let first_only = exists('a:1')
+    let prev_winnr = winnr()
+    try
+        for winnr in reverse(sort(winnr_list))
+            call s:close_window(winnr)
+            if first_only
+                return 1
+            endif
+        endfor
+        return 0
+    finally
+        " Back to previous window.
+        let cur_winnr = winnr()
+        if cur_winnr !=# prev_winnr && winbufnr(prev_winnr) !=# -1
+            execute prev_winnr . 'wincmd w'
+        endif
+    endtry
+endfunction
+"}}}
+
+" あるウィンドウを他のウィンドウから閉じる "{{{
+function! s:is_target_window(winnr)
+    let target_filetype = ['ref', 'unite', 'vimfiler', 'vimshell']
+    let target_buftype  = ['help', 'quickfix']
+    let winbufnr = winbufnr(a:winnr)
+    return index(target_filetype, getbufvar(winbufnr, '&filetype')) >= 0 ||
+                \ index(target_buftype, getbufvar(winbufnr, '&buftype')) >= 0
+endfunction
+
+nnoremap <silent><C-q>
+            \ :<C-u>call <SID>close_windows_like('s:is_target_window(winnr)')<CR>
+inoremap <silent><C-q>
+            \ <Esc>:call <SID>close_windows_like('s:is_target_window(winnr)')<CR>
+nnoremap <silent><Leader>cp
+            \ :<C-u>call <SID>close_windows_like('s:is_target_window(winnr)', 'first_only')<CR>
+"}}}
+
+command! Date :call setline('.', getline('.') . strftime('%Y/%m/%d (%a) %H:%M'))
+
+" vimrc を開く
+command! Vimrc call s:edit_myvimrc()
+function! s:edit_myvimrc()
+    let files = ""
+    if isdirectory($HOME.'/Github/dotfiles')
+        if !empty($MYVIMRC)
+            let files .= substitute(expand('~/Github/dotfiles/vimrc*'),'\n',' ','g')
+        endif
+        if !empty($MYGVIMRC)
+            let files .= " " . substitute(expand('~/Github/dotfiles/gvimrc*'),'\n',' ','g')
+        endif
+    else
+        if !empty($MYVIMRC)
+            let files .= $MYVIMRC
+        endif
+        if !empty($MYGVIMRC)
+            let files .= " " . $MYGVIMRC
+        endif
+    endif
+    execute "args " . files
+endfunction
+
+" カレントパスをクリプボゥにコピー
+command! CopyCurrentPath :call s:copy_current_path()
+function! s:copy_current_path()
+    if has('win32') || has('win64')
+        let @*=substitute(expand('%:p'), '\\/', '\\', 'g')
+    elseif has('unix')
+        let @*=expand('%:p')
+    endif
+endfunction
+
+" エンコーディング指定オープン
+command! -bang -complete=file -nargs=? Utf8 edit<bang> ++enc=utf-8 <args>
+command! -bang -complete=file -nargs=? Sjis edit<bang> ++enc=cp932 <args>
+command! -bang -complete=file -nargs=? Euc edit<bang> ++enc=eucjp <args>
+
+" 横幅と縦幅を見て縦分割か横分割か決める
+command! -nargs=? -complete=command SmartSplit call <SID>smart_split(<q-args>)
+nnoremap <C-w><Space>      :<C-u>SmartSplit<CR>
+function! s:smart_split(cmd)
+    if winwidth(0) > winheight(0) * 2
+        vsplit
+    else
+        split
+    endif
+
+    if !empty(a:cmd)
+        execute a:cmd
+    endif
+endfunction
+
+" 縦幅と横幅を見て help の開き方を決める
+" set keywordprg=:SmartHelp
+command! -nargs=* -complete=help SmartHelp call <SID>smart_help(<q-args>)
+nnoremap <silent><Leader>h :<C-u>SmartHelp<Space><C-l>
+function! s:smart_help(args)
+    if winwidth(0) > winheight(0) * 2
+        " 縦分割
+        execute 'vertical topleft help ' . a:args
+    else
+        execute 'aboveleft help ' . a:args
+    endif
+    " 横幅を確保できないときはタブで開く
+    if winwidth(0) < 80
+        execute 'quit'
+        execute 'tab help ' . a:args
+    endif
+endfunction
+
+" 隣のウィンドウの上下移動
+nnoremap <silent>gj        :<C-u>call ScrollOtherWindow("\<lt>C-d>")<CR>
+nnoremap <silent>gk        :<C-u>call ScrollOtherWindow("\<lt>C-u>")<CR>
+function! ScrollOtherWindow(mapping)
+    execute 'wincmd' (winnr('#') == 0 ? 'w' : 'p')
+    execute 'normal!' a:mapping
+    wincmd p
+endfunction
+
+" CursorHoldTime ごとに自動でコマンドを実行
+function! s:set_auto_down()
+    augroup vimrc-auto-down
+        autocmd!
+        autocmd CursorHold * call feedkeys("2\<C-e>", 'n')
+    augroup END
+endfunction
+command! -nargs=0 AutoDown call <SID>set_auto_down()
+command! -nargs=0 StopAutoDown autocmd! vimrc-auto-down
+
+" 議事録用コマンド
+command! -nargs=* Proceeding call <SID>proceeding(<f-args>)
+function! s:proceeding(...)
+    let proceedings_dir = expand('~/Proceedings')
+
+    if ! isdirectory(expand(proceedings_dir))
+        call mkdir(proceedings_dir)
+    endif
+
+    let fname = "proceedings_" . (a:0 == 1 ? (a:1."_") : "") . strftime("%Y_%m_%d") . ".txt"
+    let fpath = proceedings_dir . '/' . fname
+
+    execute 'vsplit' '+edit' fpath
+endfunction
+
+function! s:cmd_lcd(count)
+    let dir = expand('%:p' . repeat(':h', a:count + 1))
+    if isdirectory(dir)
+        execute 'lcd' fnameescape(dir)
+    endif
+endfunction
+command! -nargs=0 -count=0 Lcd  call s:cmd_lcd(<count>)
+
+command! -nargs=0 Todo Unite line -input=TODO
+
+command! -nargs=0 EchoCurrentPath echo expand('%:p')
+
+" インデント
+function! s:set_indent(width, bang)
+    let local = a:bang !=# '!' ? 'local' : ''
+    set tabstop=4 shiftwidth=4 softtabstop=4
+    execute 'set'.local 'tabstop='.a:width 'shiftwidth='.a:width 'softtabstop='.a:width
+    if mode() == 'v'
+endfunction
+command! -bang -nargs=1 SetIndent call <SID>set_indent(<args>, <q-bang>)
 
 " 基本マッピング {{{
 " ; と : をスワップ
@@ -856,266 +1109,9 @@ endif
 syntax enable
 " }}}
 
-" その他の雑多な設定 {{{
-
-" カーソル下のハイライトグループを取得
-command! -nargs=0 GetHighlightingGroup
-            \ echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '>trans<'
-            \ . synIDattr(synID(line('.'),col('.'),0),'name') . '>lo<'
-            \ . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
-
-
-" スクリプトに実行可能属性を自動で付ける
-if executable('chmod')
-    autocmd MyVimrc BufWritePost * call s:add_permission_x()
-
-    function! s:add_permission_x()
-        let file = expand('%:p')
-        if getline(1) =~# '^#!' && !executable(file)
-            silent! call vimproc#system('chmod a+x ' . shellescape(file))
-        endif
-    endfunction
-endif
-
-" help のマッピング
-function! s:on_FileType_help_define_mappings()
-    if &l:readonly
-        " カーソル下のタグへ飛ぶ
-        nnoremap <buffer>J <C-]>
-        " 戻る
-        nnoremap <buffer>K <C-t>
-        " リンクしている単語を選択する
-        nnoremap <buffer><silent><Tab> /\%(\_.\zs<Bar>[^ ]\+<Bar>\ze\_.\<Bar>CTRL-.\<Bar><[^ >]\+>\)<CR>
-        " そのた
-        nnoremap <buffer>u <C-u>
-        nnoremap <buffer>d <C-d>
-        nnoremap <buffer>q :<C-u>q<CR>
-        " カーソル下の単語を help で調べる
-        " autocmd MyVimrc FileType help nnoremap <buffer>K :<C-u>help <C-r><C-w><CR>
-        " TODO v で選択した範囲を help
-    endif
-endfunction
-autocmd MyVimrc FileType help call s:on_FileType_help_define_mappings()
-
-" quickfix のマッピング
-augroup MyVimrc
-    autocmd FileType qf nnoremap <buffer><silent> q :<C-u>cclose<CR>
-    autocmd FileType qf nnoremap <buffer><silent> j :<C-u>cnext!<CR>
-    autocmd FileType qf nnoremap <buffer><silent> k :<C-u>cprevious!<CR>
-    autocmd FileType qf nnoremap <buffer><silent> J :<C-u>cfirst<CR>
-    autocmd FileType qf nnoremap <buffer><silent> K :<C-u>clast<CR>
-    autocmd FileType qf nnoremap <buffer><silent> n :<C-u>cnewer<CR>
-    autocmd FileType qf nnoremap <buffer><silent> p :<C-u>colder<CR>
-    autocmd FileType qf nnoremap <buffer><silent> l :<C-u>clist<CR>
-augroup END
-
-augroup InitialMessage
-    autocmd!
-    " 起動時メッセージ．ｲﾇｩ…
-    autocmd VimEnter * echo "(U＾ω＾) enjoy vimming!"
-augroup END
-
-" ウィンドウ周りのユーティリティ "{{{
-function! s:close_window(winnr)
-    if winbufnr(a:winnr) !=# -1
-        execute a:winnr . 'wincmd w'
-        execute 'wincmd c'
-        return 1
-    else
-        return 0
-    endif
-endfunction
-
-function! s:get_winnr_like(expr)
-    let ret = []
-    let winnr = 1
-    while winnr <= winnr('$')
-        let bufnr = winbufnr(winnr)
-        if eval(a:expr)
-            call add(ret, winnr)
-        endif
-        let winnr = winnr + 1
-    endwhile
-    return ret
-endfunction
-
-function! s:close_windows_like(expr, ...)
-    let winnr_list = s:get_winnr_like(a:expr)
-    " Close current window if current matches a:expr.
-    " let winnr_list = s:move_current_winnr_to_head(winnr_list)
-    if empty(winnr_list)
-        return
-    endif
-
-    let first_only = exists('a:1')
-    let prev_winnr = winnr()
-    try
-        for winnr in reverse(sort(winnr_list))
-            call s:close_window(winnr)
-            if first_only
-                return 1
-            endif
-        endfor
-        return 0
-    finally
-        " Back to previous window.
-        let cur_winnr = winnr()
-        if cur_winnr !=# prev_winnr && winbufnr(prev_winnr) !=# -1
-            execute prev_winnr . 'wincmd w'
-        endif
-    endtry
-endfunction
-"}}}
-
-" あるウィンドウを他のウィンドウから閉じる "{{{
-function! s:is_target_window(winnr)
-    let target_filetype = ['ref', 'unite', 'vimfiler', 'vimshell']
-    let target_buftype  = ['help', 'quickfix']
-    let winbufnr = winbufnr(a:winnr)
-    return index(target_filetype, getbufvar(winbufnr, '&filetype')) >= 0 ||
-                \ index(target_buftype, getbufvar(winbufnr, '&buftype')) >= 0
-endfunction
-
-nnoremap <silent><C-q>
-            \ :<C-u>call <SID>close_windows_like('s:is_target_window(winnr)')<CR>
-inoremap <silent><C-q>
-            \ <Esc>:call <SID>close_windows_like('s:is_target_window(winnr)')<CR>
-nnoremap <silent><Leader>cp
-            \ :<C-u>call <SID>close_windows_like('s:is_target_window(winnr)', 'first_only')<CR>
-"}}}
-
-" 行末のホワイトスペースおよびタブ文字の除去
-command! -nargs=0 CleanTrailingSpaces call <SID>clean_trailing_spaces()
-nnoremap <Leader>cl :<C-u>CleanTrailingSpaces<CR>
-function! s:clean_trailing_spaces()
-    let cursor = getpos(".")
-    retab!
-    %s/\s\+$//ge
-    call setpos(".", cursor)
-endfunction
-
-command! Date :call setline('.', getline('.') . strftime('%Y/%m/%d (%a) %H:%M'))
-
-" vimrc を開く
-command! Vimrc call s:edit_myvimrc()
-function! s:edit_myvimrc()
-    let files = ""
-    if isdirectory($HOME.'/Github/dotfiles')
-        if !empty($MYVIMRC)
-            let files .= substitute(expand('~/Github/dotfiles/vimrc*'),'\n',' ','g')
-        endif
-        if !empty($MYGVIMRC)
-            let files .= " " . substitute(expand('~/Github/dotfiles/gvimrc*'),'\n',' ','g')
-        endif
-    else
-        if !empty($MYVIMRC)
-            let files .= $MYVIMRC
-        endif
-        if !empty($MYGVIMRC)
-            let files .= " " . $MYGVIMRC
-        endif
-    endif
-    execute "args " . files
-endfunction
-
-" カレントパスをクリプボゥにコピー
-command! CopyCurrentPath :call s:copy_current_path()
-function! s:copy_current_path()
-    if has('win32') || has('win64')
-        let @*=substitute(expand('%:p'), '\\/', '\\', 'g')
-    elseif has('unix')
-        let @*=expand('%:p')
-    endif
-endfunction
-
-" エンコーディング指定オープン
-command! -bang -complete=file -nargs=? Utf8 edit<bang> ++enc=utf-8 <args>
-command! -bang -complete=file -nargs=? Sjis edit<bang> ++enc=cp932 <args>
-command! -bang -complete=file -nargs=? Euc edit<bang> ++enc=eucjp <args>
-
-" 横幅と縦幅を見て縦分割か横分割か決める
-command! -nargs=? -complete=command SmartSplit call <SID>smart_split(<q-args>)
-nnoremap <C-w><Space>      :<C-u>SmartSplit<CR>
-function! s:smart_split(cmd)
-    if winwidth(0) > winheight(0) * 2
-        vsplit
-    else
-        split
-    endif
-
-    if !empty(a:cmd)
-        execute a:cmd
-    endif
-endfunction
-
-" 縦幅と横幅を見て help の開き方を決める
-" set keywordprg=:SmartHelp
-command! -nargs=* -complete=help SmartHelp call <SID>smart_help(<q-args>)
-nnoremap <silent><Leader>h :<C-u>SmartHelp<Space><C-l>
-function! s:smart_help(args)
-    if winwidth(0) > winheight(0) * 2
-        " 縦分割
-        execute 'vertical topleft help ' . a:args
-    else
-        execute 'aboveleft help ' . a:args
-    endif
-    " 横幅を確保できないときはタブで開く
-    if winwidth(0) < 80
-        execute 'quit'
-        execute 'tab help ' . a:args
-    endif
-endfunction
-
-" 隣のウィンドウの上下移動
-nnoremap <silent>gj        :<C-u>call ScrollOtherWindow("\<lt>C-d>")<CR>
-nnoremap <silent>gk        :<C-u>call ScrollOtherWindow("\<lt>C-u>")<CR>
-function! ScrollOtherWindow(mapping)
-    execute 'wincmd' (winnr('#') == 0 ? 'w' : 'p')
-    execute 'normal!' a:mapping
-    wincmd p
-endfunction
-
-" CursorHoldTime ごとに自動でコマンドを実行
-function! s:set_auto_down()
-    augroup vimrc-auto-down
-        autocmd!
-        autocmd CursorHold * call feedkeys("2\<C-e>", 'n')
-    augroup END
-endfunction
-command! -nargs=0 AutoDown call <SID>set_auto_down()
-command! -nargs=0 StopAutoDown autocmd! vimrc-auto-down
-
-" 議事録用コマンド
-command! -nargs=* Proceeding call <SID>proceeding(<f-args>)
-function! s:proceeding(...)
-    let proceedings_dir = expand('~/Proceedings')
-
-    if ! isdirectory(expand(proceedings_dir))
-        call mkdir(proceedings_dir)
-    endif
-
-    let fname = "proceedings_" . (a:0 == 1 ? (a:1."_") : "") . strftime("%Y_%m_%d") . ".txt"
-    let fpath = proceedings_dir . '/' . fname
-
-    execute 'vsplit' '+edit' fpath
-endfunction
-
-function! s:cmd_lcd(count)
-  let dir = expand('%:p' . repeat(':h', a:count + 1))
-  if isdirectory(dir)
-    execute 'lcd' fnameescape(dir)
-  endif
-endfunction
-command! -nargs=0 -count=0 Lcd  call s:cmd_lcd(<count>)
-
-command! -nargs=0 Todo Unite line -input=TODO
-
-command! -nargs=0 EchoCurrentPath echo expand('%:p')
-"}}}
-
 " Ruby {{{
 augroup MyVimrc
-    autocmd FileType ruby setlocal tabstop=2 shiftwidth=2 softtabstop=2
+    autocmd FileType ruby SetIndent 2
     autocmd FileType ruby inoremap <buffer><C-s> self.
     autocmd FileType ruby inoremap <buffer>; <Bar>
     autocmd FileType ruby nnoremap <buffer>[unite]r :<C-u>Unite ruby/require<CR>
@@ -2175,7 +2171,6 @@ if has('vim_starting')
     endfunction
 endif
 "}}}
-"}}}
 
 " vim-operator {{{
 " operator-replace
@@ -2240,7 +2235,7 @@ vnoremap <Leader>a> :Alignta =><CR>
 vnoremap <expr>x ':Alignta 1:1 '.nr2char(getchar())."\<CR>"
 
 let g:unite_source_alignta_preset_arguments = [
-      \ ["Align at '='", '=>\='],
+      \ ["Align at '='", '11 =>\='],
       \ ["Align at ':'", '01 :'],
       \ ["Align at '|'", '|'   ],
       \ ["Align at ')'", '0 )' ],
@@ -2477,8 +2472,9 @@ nnoremap cr :<C-u>RCReset<CR>
 "}}}
 
 " clever-f.vim "{{{
-let g:clever_f_across_no_line = 1
-let g:clever_f_use_migemo = 1
+" let g:clever_f_across_no_line = 1
+let g:clever_f_chars_match_any_signs = ';'
+" let g:clever_f_use_migemo = 1
 map : <Plug>(clever-f-repeat-forward)
 "}}}
 
@@ -2600,54 +2596,18 @@ endif
 "}}}
 
 " プラットフォーム依存な設定をロードする "{{{
-if has('mac') && filereadable($HOME."/.mac.vimrc")
-    source $HOME/.mac.vimrc
-elseif has('unix') && filereadable($HOME.'/.linux.vimrc')
-    source $HOME/.linux.vimrc
-endif
-"}}}
+function! s:source(path)
+    if filereadable(a:path)
+        execute 'source' a:path
+    endif
+endfunction
 
-" 犬小屋 for experimental settings "{{{
-" let s:into_doghouse = 1
-if exists('s:into_doghouse') && filereadable($HOME."/.doghouse.vimrc")
-    augroup DogHouse
-        autocmd!
-        autocmd! InitialMessage
-        autocmd VimEnter * echohl Error | echo 'WARN: you are in a doghouse （°ω°U）' | echohl None
-    augroup END
-
-    try
-        source $HOME/.doghouse.vimrc
-    catch
-        " エラーメッセージの表示
-        echohl ErrorMsg
-        let msg =
-        \   "an error occurred... starting as debug mode.\n"
-        \   . "\n"
-        \   . 'v:exception = '.v:exception."\n"
-        \   . 'v:throwpoint = '.v:throwpoint
-        for l in split(msg, '\n', 1)
-            execute l !=# '' ? 'echomsg l' : 'echo "\n"'
-        endfor
-        echohl None
-
-        " エラー先の表示
-        let lnum = matchstr(v:throwpoint, '\C\%(line\|行\) \zs\d\+')
-        if ! empty(lnum)
-            call setqflist([{
-            \   'filename': expand('~/.doghouse.vimrc'),
-            \   'lnum': lnum,
-            \   'text': v:exception,
-            \   }])
-
-            silent execute 'edit '.expand('~/.doghouse.vimrc')
-            execute lnum
-
-            if exists('g:hier_enabled')
-                HierUpdate
-            endif
-        endif
-    endtry
+if has('mac')
+    call s:source($HOME."/.mac.vimrc")
+elseif has('unix')
+    call s:source($HOME.'/.linux.vimrc')
+elseif has('win32') || has('win64')
+    call s:source($HOME.'/_windows.vimrc')
 endif
 "}}}
 
