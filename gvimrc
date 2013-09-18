@@ -70,10 +70,12 @@ if isdirectory(expand('~/.cabal/bin'))
 endif
 
 " プラットフォーム依存な設定の読み込み
-if has('mac') && filereadable($HOME.'/.mac.gvimrc')
-    source $HOME/.mac.gvimrc
-elseif has('unix') && filereadable($HOME.'/.linux.gvimrc')
-    source $HOME/.linux.gvimrc
+if has('mac')
+    call SourceIfExist($HOME.'/.mac.gvimrc')
+elseif has('unix')
+    call SourceIfExist($HOME.'/.linux.gvimrc')
 endif
+
+call SourceIfExist($HOME.'/.local.gvimrc')
 
 " vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8 :

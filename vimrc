@@ -1,7 +1,7 @@
-" TODO vmap <CR> に割り当て
-" 直前の単語を大文字化するインサートモードマッピング（マクロ用）
-
 " 必須な基本設定 {{{
+" This is vim, not vi.
+set nocompatible
+
 function! s:get_SID()
     return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeget_SID$')
 endfunction
@@ -18,8 +18,6 @@ set encoding=utf-8
 set termencoding=utf-8
 set fileencoding=utf-8
 set fileencodings=utf-8,cp932,euc-jp
-" This is vim, not vi.
-set nocompatible
 " user-defined prefix
 let mapleader = ','
 "行番号表示
@@ -177,13 +175,14 @@ augroup MyVimrc
     endfunction
     " ファイルタイプを書き込み時に自動判別
     autocmd BufWritePost
-    \ * if &l:filetype ==# '' || exists('b:ftdetect')
-    \ |   unlet! b:ftdetect
-    \ |   filetype detect
-    \ | endif
+        \ * if &l:filetype ==# '' || exists('b:ftdetect')
+        \ |   unlet! b:ftdetect
+        \ |   filetype detect
+        \ | endif
     " git commit message のときは折りたたまない(diff で中途半端な折りたたみになりがち)
     " git commit message のときはスペルをチェックする
     autocmd FileType gitcommit setlocal nofoldenable spell
+    autocmd FileType diff setlocal nofoldenable
 augroup END
 
 " tmux 用の設定
@@ -391,8 +390,8 @@ function! s:smart_help(args)
 endfunction
 
 " 隣のウィンドウの上下移動
-nnoremap <silent>gj        :<C-u>call ScrollOtherWindow("\<lt>C-d>")<CR>
-nnoremap <silent>gk        :<C-u>call ScrollOtherWindow("\<lt>C-u>")<CR>
+nnoremap <silent>gj        :<C-u>call ScrollOtherWindow("\<C-d>")<CR>
+nnoremap <silent>gk        :<C-u>call ScrollOtherWindow("\<C-u>")<CR>
 function! ScrollOtherWindow(mapping)
     execute 'wincmd' (winnr('#') == 0 ? 'w' : 'p')
     execute 'normal!' a:mapping
@@ -737,7 +736,6 @@ NeoBundleLazy 'Shougo/unite.vim', {
             \     'commands' : [{'name': 'Unite', 'complete' : 'customlist,unite#complete_source'},
             \                   'UniteWithBufferDir',
             \                   'UniteWithCursorWord', 'UniteWithInput'],
-            \     'functions' : 'unite#start'
             \     }
             \ }
 
@@ -792,24 +790,15 @@ NeoBundleLazy 'Shougo/vimshell', {
             \     }
             \ }
 
-NeoBundleLazy 'kana/vim-altr', {
-            \ 'autoload' : {
-            \     'mappings' : '<Plug>(altr-'
-            \   }
-            \ }
+NeoBundleLazy 'kana/vim-altr'
 
 NeoBundleLazy 'tyru/open-browser.vim', {
             \ 'autoload' : {
             \     'commands' : ['OpenBrowser', 'OpenBrowserSearch', 'OpenBrowserSmartSearch'],
-            \     'functions' : ['openbrowser#open', 'openbrowser#search', 'openbrowser#smart_search']
             \   }
             \ }
 
-NeoBundleLazy 'rhysd/tmpwin.vim', {
-            \ 'autoload' : {
-            \     'functions' : 'tmpwin#toggle'
-            \   }
-            \ }
+NeoBundleLazy 'rhysd/tmpwin.vim'
 
 NeoBundleLazy 'kannokanno/previm', {
             \ 'depends' : 'tyru/open-browser.vim',
@@ -996,7 +985,7 @@ filetype plugin indent on     " required!
 " カーソル行で NeoBundle されたプラグインをブラウザで表示
 function! s:browse_neobundle_home(bundle_name)
     if match(a:bundle_name, '/') == -1
-        let url = 'http://www.google.com/cse?cx=partner-pub-3005259998294962%3Abvyni59kjr1&q=sudo.vim#gsc.tab=0&gsc.q='.a:bundle_name.'&gsc.page=1'
+        let url = 'http://www.google.jp/search?q='.a:bundle_name
     else
         let url = 'https://github.com/'.a:bundle_name
     endif
@@ -2542,7 +2531,25 @@ call submode#map('move-to-fold', 'n', '', 'k', 'zk')
 " }}}
 
 " vim-altr {{{
-nmap <C-t> <Plug>(altr-forward)
+function! s:incr_or_altrforward()
+    let l = getline('.')
+    normal! "\<C-a>"
+    if l ==# getline('.')
+        call altr#forward()
+        redraw!
+    endif
+endfunction
+function! s:decr_or_altrback()
+    let l = getline('.')
+    normal! "\<C-x>"
+    if l ==# getline('.')
+        call altr#back()
+        redraw!
+    endif
+endfunction
+nnoremap <C-a> :<C-u>call <SID>incr_or_altrforward()<CR>
+nnoremap <C-x> :<C-u>call <SID>decr_or_altrback()<CR>
+
 let s:bundle = neobundle#get("vim-altr")
 function! s:bundle.hooks.on_source(bundle)
     " for vimrc
@@ -2614,19 +2621,21 @@ endif
 "}}}
 
 " プラットフォーム依存な設定をロードする "{{{
-function! s:source(path)
+function! SourceIfExist(path)
     if filereadable(a:path)
         execute 'source' a:path
     endif
 endfunction
 
 if has('mac')
-    call s:source($HOME."/.mac.vimrc")
+    call SourceIfExist($HOME."/.mac.vimrc")
 elseif has('unix')
-    call s:source($HOME.'/.linux.vimrc')
+    call SourceIfExist($HOME.'/.linux.vimrc')
 elseif has('win32') || has('win64')
-    call s:source($HOME.'/_windows.vimrc')
+    call SourceIfExist($HOME.'/_windows.vimrc')
 endif
+
+call SourceIfExist($HOME.'/.local.vimrc')
 "}}}
 
 " vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8:
