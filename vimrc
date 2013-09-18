@@ -359,7 +359,7 @@ command! -bang -complete=file -nargs=? Euc edit<bang> ++enc=eucjp <args>
 
 " 横幅と縦幅を見て縦分割か横分割か決める
 command! -nargs=? -complete=command SmartSplit call <SID>smart_split(<q-args>)
-nnoremap <C-w><Space>      :<C-u>SmartSplit<CR>
+nnoremap <C-w><Space> :<C-u>SmartSplit<CR>
 function! s:smart_split(cmd)
     if winwidth(0) > winheight(0) * 2
         vsplit
@@ -441,7 +441,6 @@ function! s:set_indent(width, bang)
     let local = a:bang !=# '!' ? 'local' : ''
     set tabstop=4 shiftwidth=4 softtabstop=4
     execute 'set'.local 'tabstop='.a:width 'shiftwidth='.a:width 'softtabstop='.a:width
-    if mode() == 'v'
 endfunction
 command! -bang -nargs=1 SetIndent call <SID>set_indent(<args>, <q-bang>)
 
@@ -489,8 +488,6 @@ cnoremap <expr>/ getcmdtype() == '/' ? '\/' : '/'
 cnoremap <expr>/ getcmdtype() == '?' ? '\/' : '/'
 " 空行挿入
 nnoremap <silent><CR> :<C-u>call append('.', '')<CR>j
-"ヘルプ表示
-nnoremap <Leader>h :<C-u>vert to help<Space>
 " スペースを挿入
 nnoremap <C-Space> i<Space><Esc><Right>
 "Emacsライクなバインディング．ポップアップが出ないように移動．
@@ -702,7 +699,7 @@ NeoBundle 'thinca/vim-visualstar'
 NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'rhysd/gem-gist.vim'
 NeoBundle 'daisuzu/rainbowcyclone.vim'
-" NeoBundle 'rhysd/clever-f.vim'
+" NeoBundle 'rhysd/clever-f.vim', 'dev'
 NeoBundle 'rhysd/unite-zsh-cdr.vim'
 NeoBundle 'airblade/vim-gitgutter'
     " NeoBundle 'ujihisa/vimshell-ssh'
@@ -715,9 +712,18 @@ NeoBundle 'rhysd/vim-vspec-matchers'
 NeoBundle 'chriskempson/tomorrow-theme', {'rtp' : 'vim'}
 
 " For testing
-set rtp+=~/Github/clever-f.vim
-set rtp+=~/Github/unite-ruby-require.vim
-set rtp+=~/Github/vim-operator-clang-format
+function! s:test_bundle(name)
+    let plugin = matchstr(a:name, '/\zs.\+$')
+    if isdirectory(expand('~/Github/'.plugin))
+        execute 'set' 'rtp+=~/Github/'.plugin
+    else
+        execute 'NeoBundle' a:name
+    endif
+endfunction
+
+call s:test_bundle('rhysd/clever-f.vim')
+call s:test_bundle('rhysd/unite-ruby-require.vim')
+call s:test_bundle('rhysd/vim-clang-format')
 
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
@@ -869,6 +875,21 @@ NeoBundleLazy 'rhysd/vim-textobj-word-column', {
             \       'mappings' : [['xo', 'av'], ['xo', 'aV'], ['xo', 'iv'], ['xo', 'iV']]
             \   }
             \ }
+
+NeoBundleLazy 'kana/vim-textobj-entire', {
+            \ 'depends' : 'kana/vim-textobj-user',
+            \ 'autoload' : {
+            \       'mappings' : [['xo', 'ae'], ['xo', 'ie']]
+            \   }
+            \ }
+
+NeoBundleLazy 'osyo-manga/vim-textobj-multiblock', {
+            \ 'depends' : 'kana/vim-textobj-user',
+            \ 'autoload' : {
+            \       'mappings' : [['xo', '<Plug>(textobj-multiblock-']]
+            \   }
+            \ }
+
 
 " if_lua プラグイン
 function! s:meet_neocomplete_requirements()
@@ -1113,13 +1134,15 @@ syntax enable
 augroup MyVimrc
     autocmd FileType ruby SetIndent 2
     autocmd FileType ruby inoremap <buffer><C-s> self.
-    autocmd FileType ruby inoremap <buffer>; <Bar>
+    autocmd FileType ruby inoremap <buffer>;; ::
     autocmd FileType ruby nnoremap <buffer>[unite]r :<C-u>Unite ruby/require<CR>
-    autocmd BufRead  Guardfile set filetype=ruby
+    autocmd BufRead Guardfile setlocal filetype=ruby
 augroup END
+
 if filereadable(expand('~/.vim/skeletons/ruby.skel'))
     autocmd MyVimrc BufNewFile *.rb 0r ~/.vim/skeletons/ruby.skel
 endif
+
 function! s:start_irb()
     VimShell -split-command=vsplit
     VimShellSendString irb
@@ -2151,25 +2174,21 @@ map <Leader>c <Plug>(operator-caw)
 
 "}}}
 
-" textobj-my-entire {{{
-if has('vim_starting')
-    " define once
-    call textobj#user#plugin('myentire', {
-                \   '-' : {
-                \        '*sfile*' : expand('<sfile>:p'),
-                \        'select' : ['ae', 'ie'],
-                \        '*select-function*' : 's:entire_select',
-                \   }
-                \ })
-
-    function! s:entire_select()
-        normal! gg0
-        let start_pos = getpos('.')
-        normal! G$
-        let endpos = getpos('.')
-        return ['V', start_pos, endpos]
-    endfunction
-endif
+" textobj-multiblock {{{
+let g:textobj_multiblock_no_default_key_mappings = 1
+omap ab <Plug>(textobj-multiblock-a)
+omap ib <Plug>(textobj-multiblock-i)
+vmap ab <Plug>(textobj-multiblock-a)
+vmap ib <Plug>(textobj-multiblock-i)
+let g:textobj_multiblock_blocks = [
+                    \   [ '(', ')' ],
+                    \   [ '[', ']' ],
+                    \   [ '{', '}' ],
+                    \   [ '"', '"' ],
+                    \   [ "'", "'" ],
+                    \   [ '<', '>' ],
+                    \   [ '`', '`' ],
+                    \ ]
 "}}}
 
 " vim-operator {{{
@@ -2182,19 +2201,20 @@ map <silent><Leader>k <Plug>(operator-trailingspace-killer)
 " operator-filled-with-blank
 map <silent><Leader>b <Plug>(operator-filled-with-blank)
 " vim-operator-evalruby
-let g:operator_evalruby_command = $HOME . '/.rbenv/shims/ruby'
+if executable($HOME.'/.rbenv/shims/ruby')
+    let g:operator_evalruby_command = $HOME . '/.rbenv/shims/ruby'
+endif
 map <silent><Leader>x <Plug>(operator-evalruby)
-" vim-operator-clang-format
-let g:operator_clang_format_style_options = {
-            \ "AccessModifierOffset" : -4,
-            \ "AllowShortIfStatementsOnASingleLine" : "true",
-            \ "AlwaysBreakTemplateDeclarations" : "true",
-            \ "Standard" : "C++11",
-            \ "BreakBeforeBraces" : "Stroustrup",
+" vim-clang-format
+let g:clang_format#style_options = {
+            \ 'AccessModifierOffset' : -4,
+            \ 'AllowShortIfStatementsOnASingleLine' : 'true',
+            \ 'AlwaysBreakTemplateDeclarations' : 'true',
+            \ 'Standard' : 'C++11',
+            \ 'BreakBeforeBraces' : 'Stroustrup',
             \ }
-augroup MyVimrc
-    autocmd FileType c,cpp map <buffer><Leader>x <Plug>(operator-clang-format)
-    "}}}
+autocmd MyVimrc FileType c,cpp map <buffer><Leader>x <Plug>(operator-clang-format)
+"}}}
 
     " ghcmod-vim {{{
     autocmd FileType haskell nnoremap <buffer><silent><C-t> :<C-u>GhcModType<CR>
@@ -2218,7 +2238,7 @@ let g:haskell_xml = 0
 let g:haskell_hsp = 0
 " }}}
 
-" 自作スニペット {{{
+" inu-snippets {{{
 let g:neosnippet#snippets_directory=$HOME.'/.vim/bundle/inu-snippets/snippets'
 "}}}
 
@@ -2278,10 +2298,6 @@ let g:endwize_add_verbose_info_filetypes = ['c', 'cpp']
 " open-browser.vim "{{{
 nnoremap <Leader>o :<C-u>execute 'OpenBrowserSmartSearch' expand('<cWORD>')<CR>
 vnoremap <Leader>o y:OpenBrowserSmartSearch <C-r>+<CR>
-" OpenBrowser
-if !exists('g:openbrowser_open_rules')
-    let g:openbrowser_open_rules = {}
-endif
 "}}}
 
 " vim-vspec {{{
@@ -2472,10 +2488,11 @@ nnoremap cr :<C-u>RCReset<CR>
 "}}}
 
 " clever-f.vim "{{{
-" let g:clever_f_across_no_line = 1
-let g:clever_f_chars_match_any_signs = ';'
-" let g:clever_f_use_migemo = 1
-map : <Plug>(clever-f-repeat-forward)
+let g:clever_f_smart_case = 1
+let g:clever_f_across_no_line = 1
+" let g:clever_f_chars_match_any_signs = ';'
+let g:clever_f_use_migemo = 1
+" map : <Plug>(clever-f-repeat-forward)
 "}}}
 
 " ZoomWin {{{
@@ -2567,6 +2584,7 @@ autocmd MyVimrc BufWritePost *.md,*.markdown call previm#refresh()
 nnoremap <Leader>mn :<C-u>MemoNew<CR>
 nnoremap <Leader>ml :<C-u>MemoList<CR>
 nnoremap <Leader>mg :<C-u>MemoGrep<CR>
+nnoremap <Leader>mu :<C-u>execute 'Unite' 'file:'.g:memolist_path '-auto-preview -no-start-insert'<CR>
 
 if isdirectory(expand('~/Dropbox/memo'))
     let g:memolist_path = expand('~/Dropbox/memo')
@@ -2578,8 +2596,8 @@ else
 endif
 
 let g:memolist_memo_suffix = 'md'
-let g:memolist_vimfiler = 1
-let g:memolist_vimfiler_option = ''
+let g:memolist_unite = 1
+let g:memolist_unite_option = '-no-start-insert'
 "}}}
 
 " vim-numberstar {{{

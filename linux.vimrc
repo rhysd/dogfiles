@@ -70,7 +70,14 @@ endfunction
 
 " openbrowser
 let s:browser = executable('google-chrome') ? 'google-chrome' : 'firefox'
-let g:openbrowser_open_commands = [s:browser, 'xdg-open', 'w3m']
-let g:openbrowser_open_rules[s:browser] = "{browser} {shellescape(uri)}"
+let g:openbrowser_open_commands = [
+        \   {'name': s:browser,
+        \    'args': ['{browser}', '{uri}']},
+        \   {'name': 'xdg-open',
+        \    'args': ['{browser}', '{uri}']},
+        \   {'name': 'w3m',
+        \    'args': ['{browser}', '{uri}']},
+        \]
+unlet s:browser
 
 " vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8 :
