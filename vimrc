@@ -953,6 +953,10 @@ NeoBundleLazy 'rhysd/neco-ruby-keyword-args', {
 "             \ 'autoload' : {'filetypes' : 'ruby'}
 "             \ }
 
+" Tmux ハイライト
+NeoBundleLazy 'zaiste/tmux.vim', {
+        \ 'autoload' : {'filetypes' : 'tmux'}
+        \ }
 " TweetVim
 NeoBundleLazy 'basyura/twibill.vim'
 NeoBundleLazy 'yomi322/neco-tweetvim'
