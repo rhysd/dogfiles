@@ -2294,6 +2294,9 @@ vnoremap <Leader>o y:OpenBrowserSmartSearch <C-r>+<CR>
 "}}}
 
 " vim-vspec {{{
+" filetype definition
+autocmd MyVimrc BufRead,BufNew,BufNewFile *_spec.vim setlocal ft=vim.vspec
+
 function! s:vspec(file, opts)
     if ! isdirectory($HOME.'/.vim/bundle/vim-vspec')
         echoerr "Error: vspec is not found."
@@ -2308,7 +2311,7 @@ function! s:vspec(file, opts)
 endfunction
 command! -nargs=* Vspec call <SID>vspec(expand('%:p'), <q-args>)
 
-let g:quickrun_config['vim/vspec'] = {
+let g:quickrun_config['vim.vspec'] = {
         \ 'exec' : '%c %o',
         \ 'cmdopt' :  '-u NONE -i NONE -N -e -s -S'
         \ . ' %{' . s:SID.'vspec_helper([getcwd(), isdirectory($HOME."/.vim/bundle/vim-vspec-matchers") ? $HOME."/.vim/bundle/vim-vspec-matchers" : ""], expand("%"))}',
