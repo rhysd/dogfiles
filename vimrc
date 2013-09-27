@@ -387,6 +387,7 @@ function! s:smart_help(args)
         execute 'quit'
         execute 'tab help ' . a:args
     endif
+    silent ResizeWindowWidth
 endfunction
 
 " 隣のウィンドウの上下移動
@@ -2386,7 +2387,7 @@ function! s:vspec_helper(paths, target)
         \ , '"''".substitute(v:val, "\\", "/", "g")."''"')
     let target = substitute(a:target, "\\", "/", "g")
     let lines =
-        \ ['function s:main()'
+        \ ['function! s:main()'
         \ , '  let standard_paths = split(&runtimepath, ",")[1:-2]'
         \ , '  let non_standard_paths = [' . join(reverse(paths), ",") . ']'
         \ , '  let all_paths = copy(standard_paths)'
