@@ -1250,8 +1250,31 @@ command! Ghci call <SID>start_ghci()
 "}}}
 
 " Vim script "{{{
-autocmd MyVimrc FileType vim inoremap , ,<Space>
-autocmd MyVimrc FileType vim call <SID>matchit()
+" gf を拡張し，autoload 関数を開けるように対応
+function! s:jump_to_autoload_function_definition()
+    let current_line = getline('.')
+    let name_pattern = '\h\k*\%(#\h\k*\)*\ze#\h\k*('
+    let begin = match(current_line, name_pattern)
+    let end = match(current_line, name_pattern)
+    let cursor = col('.')-1
+    if begin <= cursor && cursor <= end
+        let fname = globpath(&rtp, 'autoload/'.substitute(matchstr(current_line, name_pattern), '#', '/', 'g').'.vim')
+        if filereadable(fname)
+            execute 'edit' fname
+            call search('\<fu\%[nction]\>!\=\s\+'.matchstr(current_line, '\h\k*\%(#\h\k*\)*#\h\k*('), 'cw')
+        else
+            echoerr fname.' is not found in runtimepath'
+        endif
+    else
+        normal! gf
+    endif
+endfunction
+
+augroup MyVimrc
+    autocmd FileType vim inoremap , ,<Space>
+    autocmd FileType vim call <SID>matchit()
+    autocmd FileType vim nnoremap <silent><buffer>gf :<C-u>call <SID>jump_to_autoload_function_definition()<CR>
+augroup END
 "}}}
 
 if s:meet_neocomplete_requirements()
