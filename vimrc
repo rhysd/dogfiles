@@ -372,7 +372,7 @@ function! s:smart_split(cmd)
 endfunction
 
 " 縦幅と横幅を見て help の開き方を決める
-" set keywordprg=:SmartHelp
+" set keywordprg=SmartHelp
 command! -nargs=* -complete=help SmartHelp call <SID>smart_help(<q-args>)
 nnoremap <silent><Leader>h :<C-u>SmartHelp<Space><C-l>
 function! s:smart_help(args)
@@ -1275,6 +1275,7 @@ augroup MyVimrc
     autocmd FileType vim inoremap , ,<Space>
     autocmd FileType vim call <SID>matchit()
     autocmd FileType vim nnoremap <silent><buffer>gf :<C-u>call <SID>jump_to_autoload_function_definition()<CR>
+    autocmd FileType vim nnoremap <silent><buffer>K :<C-u>call <SID>smart_help(expand('<cword>'))<CR>
 augroup END
 "}}}
 
@@ -2706,7 +2707,7 @@ endif
 
 " vim-fugitive {{{
 nnoremap <Leader>gs :<C-u>Gstatus<CR>
-nnoremap <Leader>gc :<C-u>Gcommit<CR>
+nnoremap <Leader>gc :<C-u>Gcommit -v<CR>
 nnoremap <Leader>gl :<C-u>QuickRun sh -src 'git log --graph --oneline'<CR>
 nnoremap <Leader>ga :<C-u>Gwrite<CR>
 nnoremap <Leader>gd :<C-u>Gdiff<CR>
