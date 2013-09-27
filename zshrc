@@ -50,6 +50,7 @@ alias sudo='sudo '
 alias memo='cat > /dev/null'
 alias memolist='vim +MemoList'
 alias memonew='vim +MemoNew'
+alias flavor='vim-flavor test'
 
 alias l=ls
 alias pd=popd
@@ -96,7 +97,7 @@ function t(){
     if [[ $TMUX == "" ]]; then
         tmux new-session \; split-window -h \; select-pane -t 0
     else
-        tmux $0
+        tmux $@
     fi
 }
 
