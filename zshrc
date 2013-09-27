@@ -94,7 +94,7 @@ fi
 
 #tmux wrapper
 function t(){
-    if [[ $TMUX == "" ]]; then
+    if [[ $TMUX == "" && $# == 0 ]]; then
         tmux new-session \; split-window -h \; select-pane -t 0
     else
         tmux $@
