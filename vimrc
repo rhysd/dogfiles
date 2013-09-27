@@ -1080,12 +1080,12 @@ nnoremap <Leader>gp :<C-u>GitPush<CR>
     " s:has_linux = executable('lsb_release')
 
 " 本体に同梱されている matchit.vim のロードと matchpair の追加
-function! s:matchit(pairs)
-    if !exists('g:matchit_loaded')
+function! s:matchit(...)
+    if !exists('s:matchit_loaded')
         runtime macros/matchit.vim
-        let g:matchit_loaded = 1
+        let s:matchit_loaded = 1
     endif
-    let b:match_words = &matchpairs . ',' . join(a:pairs, ',')
+    let b:match_words = get(b:, 'match_words', '') . ',' . &matchpairs . ',' . join(a:000, ',')
 endfunction
 
 " アサーション
@@ -1130,6 +1130,7 @@ augroup MyVimrc
     autocmd FileType ruby inoremap <buffer>;; ::
     autocmd FileType ruby nnoremap <buffer>[unite]r :<C-u>Unite ruby/require<CR>
     autocmd BufRead Guardfile setlocal filetype=ruby
+    autocmd FileType ruby call s:matchit()
 augroup END
 
 if filereadable(expand('~/.vim/skeletons/ruby.skel'))
@@ -1223,7 +1224,7 @@ command! Ghci call <SID>start_ghci()
 
 " Vim script "{{{
 autocmd MyVimrc FileType vim inoremap , ,<Space>
-autocmd MyVimrc FileType vim call <SID>matchit([])
+autocmd MyVimrc FileType vim call <SID>matchit()
 "}}}
 
 if s:meet_neocomplete_requirements()
@@ -2311,6 +2312,18 @@ function! s:vspec(file, opts)
 endfunction
 command! -nargs=* Vspec call <SID>vspec(expand('%:p'), <q-args>)
 
+if executable('vim-flavor')
+    function! s:flavor()
+        let t = fnamemodify(finddir('t', '.;'), ':h')
+        if t == ''
+            echoerr "a directory named 't' is not found"
+            return
+        endif
+        execute 'QuickRun' 'sh' '-src' '''PATH=/usr/local/bin:$PATH cd '.t.' && vim-flavor test'''
+    endfunction
+    command! -nargs=0 Flavor call <SID>flavor()
+endif
+
 let g:quickrun_config['vim.vspec'] = {
         \ 'exec' : '%c %o',
         \ 'cmdopt' :  '-u NONE -i NONE -N -e -s -S'
@@ -2598,7 +2611,6 @@ autocmd MyVimrc BufWritePost *.md,*.markdown call previm#refresh()
 nnoremap <Leader>mn :<C-u>MemoNew<CR>
 nnoremap <Leader>ml :<C-u>MemoList<CR>
 nnoremap <Leader>mg :<C-u>MemoGrep<CR>
-nnoremap <Leader>mu :<C-u>execute 'Unite' 'file:'.g:memolist_path '-auto-preview -no-start-insert'<CR>
 
 if isdirectory(expand('~/Dropbox/memo'))
     let g:memolist_path = expand('~/Dropbox/memo')
@@ -2611,7 +2623,7 @@ endif
 
 let g:memolist_memo_suffix = 'md'
 let g:memolist_unite = 1
-let g:memolist_unite_option = '-no-start-insert'
+let g:memolist_unite_option = '-auto-preview -no-start-insert'
 "}}}
 
 " vim-numberstar {{{
