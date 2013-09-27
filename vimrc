@@ -443,6 +443,21 @@ function! s:set_indent(width, bang)
 endfunction
 command! -bang -nargs=1 SetIndent call <SID>set_indent(<args>, <q-bang>)
 
+" 横幅 リサイズ
+function! s:resize_width()
+    let max_col = 0
+    for lnum in range(1, line('$'))
+        let len = len(getline(lnum))
+        if max_col < len
+            let max_col = len
+        endif
+    endfor
+    execute 'vertical resize' max_col
+    echo 'width: '.max_col
+endfunction
+command! -nargs=0 ResizeWindowWidth call <SID>resize_width()
+
+
 " 基本マッピング {{{
 " ; と : をスワップ
 noremap : ;
@@ -524,6 +539,8 @@ endfunction
 nmap     s <C-w>
 " 現在のウィンドウのみを残す
 nnoremap <C-w>O <C-w>o
+" カレントウィンドウをリサイズ
+nnoremap <silent><C-w>r :<C-u>ResizeWindowWidth<CR>
 "インサートモードで次の行に直接改行
 inoremap <C-j> <Esc>o
 "<BS>の挙動
@@ -592,7 +609,7 @@ function! s:cmdline_window_settings()
     nnoremap <silent><buffer><Esc>      :<C-u>q<CR>
     nnoremap <silent><buffer><Esc><Esc> :<C-u>q<CR>
     inoremap <silent><buffer><C-g>      <Esc>:q<CR>
-    nnoremap <silent><buffer><CR> A<CR>
+    nnoremap <silent><buffer><CR>       A<CR>
 endfunction
 autocmd MyVimrc CmdwinEnter * call s:cmdline_window_settings()
 " 対応する括弧間の移動
@@ -879,6 +896,12 @@ NeoBundleLazy 'osyo-manga/vim-textobj-multiblock', {
             \   }
             \ }
 
+NeoBundleLazy 'tpope/vim-fugitive', {
+            \ 'autoload' : {
+            \       'commands' : ['Gstatus', 'Gcommit', 'Gwrite', 'Gdiff', 'Gblame', 'Git', 'Ggrep']
+            \   }
+            \ }
+
 
 " if_lua プラグイン
 function! s:meet_neocomplete_requirements()
@@ -918,6 +941,10 @@ NeoBundleLazy 'Rip-Rip/clang_complete', {
 NeoBundleLazy 'rhysd/unite-n3337', {
             \ 'autoload' : {'filetypes' : 'cpp'}
             \ }
+" NeoBundleLazy 'rhysd/vim-clang-format', {
+"             \ 'depends' : 'kana/vim-operator-user',
+"             \ 'autoload' : {'filetypes' : ['c', 'cpp', 'objc']}
+"             \ }
 
 " Haskell 用プラグイン
 NeoBundleLazy 'ujihisa/unite-haskellimport', {
@@ -1712,7 +1739,7 @@ function! s:bundle.hooks.on_source(bundle)
         let g:vimshell_external_history_path = expand('~/.zsh/zsh_history')
     endif
 
-    "VimShell のキーマッピング {{{
+    " VimShell のキーマッピング {{{
     " コマンド履歴の移動
     " バッファ移動の <C-n> <C-p> が潰されているので再マッピング
     augroup MyVimrc
@@ -1734,10 +1761,10 @@ function! s:bundle.hooks.on_source(bundle)
         " 最新のプロンプトに移動
         autocmd FileType vimshell nnoremap <buffer>a GA
     augroup END
+    " }}}
+
 endfunction
 unlet s:bundle
-
-" }}}
 
 " }}}
 
@@ -2519,6 +2546,7 @@ let g:gitgutter_realtime_line_limit = 1000
 " }}}
 
 " submode.vim {{{
+let g:submode_keep_leaving_key = 1
 " タブ移動
 call submode#enter_with('changetab', 'n', '', 'gt', 'gt')
 call submode#enter_with('changetab', 'n', '', 'gT', 'gT')
@@ -2548,27 +2576,40 @@ call submode#enter_with('move-to-fold', 'n', '', 'zj', 'zj')
 call submode#enter_with('move-to-fold', 'n', '', 'zk', 'zk')
 call submode#map('move-to-fold', 'n', '', 'j', 'zj')
 call submode#map('move-to-fold', 'n', '', 'k', 'zk')
+" 上下移動
+call submode#enter_with('updown-move', 'nv', '', '<C-d>', '<C-d>')
+call submode#enter_with('updown-move', 'nv', '', '<C-u>', '<C-u>')
+call submode#enter_with('updown-move', 'nv', '', '<C-f>', '<C-f>')
+call submode#enter_with('updown-move', 'nv', '', '<C-b>', '<C-b>')
+call submode#map('updown-move', 'nv', '', 'd', '<C-d>')
+call submode#map('updown-move', 'nv', '', 'u', '<C-u>')
+call submode#map('updown-move', 'nv', '', 'f', '<C-f>')
+call submode#map('updown-move', 'nv', '', 'b', '<C-b>')
+call submode#map('updown-move', 'nv', '', '<C-d>', '<C-d>')
+call submode#map('updown-move', 'nv', '', '<C-u>', '<C-u>')
+call submode#map('updown-move', 'nv', '', '<C-f>', '<C-f>')
+call submode#map('updown-move', 'nv', '', '<C-b>', '<C-b>')
 " }}}
 
 " vim-altr {{{
 function! s:incr_or_altrforward()
     let l = getline('.')
-    normal! "\<C-a>"
+    execute "normal! \<C-a>"
     if l ==# getline('.')
         call altr#forward()
-        redraw!
+        redraw!1
     endif
 endfunction
 function! s:decr_or_altrback()
     let l = getline('.')
-    normal! "\<C-x>"
+    execute "normal! \<C-x>"
     if l ==# getline('.')
         call altr#back()
         redraw!
     endif
 endfunction
-nnoremap <C-a> :<C-u>call <SID>incr_or_altrforward()<CR>
-nnoremap <C-x> :<C-u>call <SID>decr_or_altrback()<CR>
+nnoremap <silent><C-a> :<C-u>call <SID>incr_or_altrforward()<CR>
+nnoremap <silent><C-x> :<C-u>call <SID>decr_or_altrback()<CR>
 
 let s:bundle = neobundle#get("vim-altr")
 function! s:bundle.hooks.on_source(bundle)
@@ -2638,6 +2679,25 @@ if executable('cmigemo')
     cnoremap <expr><CR> getcmdtype() =~# '^[/?]$' ? migemosearch#replace_search_word()."\<CR>zv" : "\<CR>"
 endif
 "}}}
+
+" vim-fugitive {{{
+nnoremap <Leader>gs :<C-u>Gstatus<CR>
+nnoremap <Leader>gc :<C-u>Gcommit<CR>
+nnoremap <Leader>gl :<C-u>QuickRun sh -src 'git log --graph --oneline'<CR>
+nnoremap <Leader>ga :<C-u>Gwrite<CR>
+nnoremap <Leader>gd :<C-u>Gdiff<CR>
+nnoremap <Leader>gb :<C-u>Gblame<CR>
+
+let s:bundle = neobundle#get("vim-fugitive")
+function! s:bundle.hooks.on_post_source(bundle)
+    doautoall fugitive BufReadPost
+    augroup MyVimrc
+        autocmd FileType fugitiveblame nnoremap <buffer>? :<C-u>SmartHelp :Gblame<CR>
+        autocmd FileType gitcommit     if expand('%:t') ==# 'index' | nnoremap <buffer>? :<C-u>SmartHelp :Gstatus<CR> | endif
+    augroup END
+endfunction
+unlet s:bundle
+" }}}
 
 " プラットフォーム依存な設定をロードする "{{{
 function! SourceIfExist(path)
