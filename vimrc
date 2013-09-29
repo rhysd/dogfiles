@@ -539,12 +539,6 @@ cnoremap <C-g> <C-u><BS>
 "バッファ切り替え
 nnoremap <silent><C-n>   :<C-u>bnext<CR>
 nnoremap <silent><C-p>   :<C-u>bprevious<CR>
-"CTRL-hjklでウィンドウ移動．横幅が小さすぎる場合は自動でリサイズする．
-function! s:good_width()
-    if winwidth(0) < 84
-        vertical resize 84
-    endif
-endfunction
 " <C-w> -> s
 nmap     s <C-w>
 " 現在のウィンドウのみを残す
@@ -552,7 +546,13 @@ nnoremap <C-w>O <C-w>o
 " カレントウィンドウをリサイズ
 nnoremap <silent><C-w>r :<C-u>ResizeWindowWidth<CR>
 " バッファを削除
-nnoremap <C-w>d :<C-u>enew <Bar> bdelete #<CR>
+function! s:delete_current_buf()
+    let bufnr = bufnr('%')
+    bnext
+    if bufnr == bufnr('%') | enew | endif
+    bdelete #
+endfunction
+nnoremap <C-w>d :<C-u>call <SID>delete_current_buf()<CR>
 nnoremap <C-w>D :<C-u>bdelete<CR>
 "インサートモードで次の行に直接改行
 inoremap <C-j> <Esc>o
