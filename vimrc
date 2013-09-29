@@ -114,6 +114,9 @@ set foldmethod=marker
 set ambiwidth=double
 " 読み込んでいるファイルが変更された時自動で読み直す
 set autoread
+" h と l で行を跨げるようにする
+set whichwrap +=h
+set whichwrap +=l
 " 編集履歴を保存して終了する
 if has('persistent_undo') && isdirectory($HOME.'/.vim/undo')
     set undodir=~/.vim/undo
@@ -482,13 +485,13 @@ noremap k gk
 noremap <C-j> }
 noremap <C-k> {
 " インサートモードに入らずに1文字追加
-nnoremap <silent><expr>m "i".nr2char(getchar())."\<Esc>"
+nnoremap <silent><expr>m 'i'.nr2char(getchar())."\<Esc>"
 " gm にマーク機能を退避
 nnoremap gm m
 "Esc->Escで検索結果とエラーハイライトをクリア
 nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>
 "{数値}<Tab>でその行へ移動．それ以外だと通常の<Tab>の動きに
-nnoremap <expr><Tab> v:count !=0 ? "G" : "\<Tab>zvzz"
+noremap <expr><Tab> v:count !=0 ? "G" : "\<Tab>zvzz"
 " 検索に very matching を使う
 nnoremap / /\v
 nnoremap ? ?\v
@@ -502,7 +505,13 @@ nnoremap # *zvzz
 cnoremap <expr>/ getcmdtype() == '/' ? '\/' : '/'
 cnoremap <expr>/ getcmdtype() == '?' ? '\/' : '/'
 " 空行挿入
-nnoremap <silent><CR> :<C-u>call append('.', '')<CR>j
+function! s:cmd_cr_n(count)
+    for _ in range(a:count)
+        call append('.', '')
+    endfor
+    execute 'normal!' a:count.'j'
+endfunction
+nnoremap <silent><CR> :<C-u>call <SID>cmd_cr_n(v:count1)<CR>
 " スペースを挿入
 nnoremap <C-Space> i<Space><Esc><Right>
 "Emacsライクなバインディング．ポップアップが出ないように移動．
@@ -542,6 +551,9 @@ nmap     s <C-w>
 nnoremap <C-w>O <C-w>o
 " カレントウィンドウをリサイズ
 nnoremap <silent><C-w>r :<C-u>ResizeWindowWidth<CR>
+" バッファを削除
+nnoremap <C-w>d :<C-u>enew <Bar> bdelete #<CR>
+nnoremap <C-w>D :<C-u>bdelete<CR>
 "インサートモードで次の行に直接改行
 inoremap <C-j> <Esc>o
 "<BS>の挙動
@@ -590,8 +602,6 @@ vnoremap gl L
 vnoremap gm M
 " スペルチェック
 nnoremap <Leader>s :<C-u>setl spell! spell?<CR>
-" バッファを削除
-nnoremap <C-w>d :<C-u>bdelete<CR>
 " カーソル付近の文字列で検索（新規ウィンドウ）
 nnoremap <C-w>*  <C-w>s*
 nnoremap <C-w>#  <C-w>s#
@@ -617,6 +627,9 @@ autocmd MyVimrc CmdwinEnter * call s:cmdline_window_settings()
 nmap 0 %
 " タブ文字を入力
 inoremap <C-Tab> <C-v><Tab>
+" 畳み込みを開く
+nnoremap <expr>h col('.') == 1 && foldlevel(line('.')) > 0 ? 'zc' : 'h'
+nnoremap <expr>l foldclosed(line('.')) != -1 ? 'zo' : 'l'
 
 " 初回のみ a:cmd の動きをして，それ以降は行内をローテートする
 let s:smart_line_pos = -1
@@ -813,6 +826,7 @@ NeoBundleLazy 'kana/vim-altr'
 NeoBundleLazy 'tyru/open-browser.vim', {
             \ 'autoload' : {
             \     'commands' : ['OpenBrowser', 'OpenBrowserSearch', 'OpenBrowserSmartSearch'],
+            \     'mappings' : '<Plug>(openbrowser-',
             \   }
             \ }
 
@@ -2224,8 +2238,8 @@ map <Leader>c <Plug>(operator-caw)
 let g:textobj_multiblock_no_default_key_mappings = 1
 omap ab <Plug>(textobj-multiblock-a)
 omap ib <Plug>(textobj-multiblock-i)
-vmap ab <Plug>(textobj-multiblock-a)
-vmap ib <Plug>(textobj-multiblock-i)
+xmap ab <Plug>(textobj-multiblock-a)
+xmap ib <Plug>(textobj-multiblock-i)
 let g:textobj_multiblock_blocks = [
                     \   [ '(', ')' ],
                     \   [ '[', ']' ],
@@ -2342,8 +2356,8 @@ let g:endwize_add_verbose_info_filetypes = ['c', 'cpp']
 "}}}
 
 " open-browser.vim "{{{
-nnoremap <Leader>o :<C-u>execute 'OpenBrowserSmartSearch' expand('<cWORD>')<CR>
-vnoremap <Leader>o y:OpenBrowserSmartSearch <C-r>+<CR>
+nmap <Leader>o <Plug>(openbrowser-smart-search)
+xmap <Leader>o <Plug>(openbrowser-smart-search)
 "}}}
 
 " vim-vspec {{{
@@ -2377,7 +2391,7 @@ if executable('vim-flavor')
 endif
 
 let g:quickrun_config['vim.vspec'] = {
-        \ 'exec' : '%c %o',
+        \ 'exec' : 'PATH=/usr/local/bin:$PATH %c %o',
         \ 'cmdopt' :  '-u NONE -i NONE -N -e -s -S'
         \ . ' %{' . s:SID.'vspec_helper([getcwd(), isdirectory($HOME."/.vim/bundle/vim-vspec-matchers") ? $HOME."/.vim/bundle/vim-vspec-matchers" : ""], expand("%"))}',
         \ 'command' : 'vim',
@@ -2622,7 +2636,7 @@ function! s:incr_or_altrforward()
     execute "normal! \<C-a>"
     if l ==# getline('.')
         call altr#forward()
-        redraw!1
+        redraw!
     endif
 endfunction
 function! s:decr_or_altrback()
@@ -2707,7 +2721,8 @@ endif
 
 " vim-fugitive {{{
 nnoremap <Leader>gs :<C-u>Gstatus<CR>
-nnoremap <Leader>gc :<C-u>Gcommit -v<CR>
+nnoremap <Leader>gC :<C-u>Gcommit -v<CR>
+nnoremap <Leader>gc :<C-u>Gcommit -v<CR>:only<CR>
 nnoremap <Leader>gl :<C-u>QuickRun sh -src 'git log --graph --oneline'<CR>
 nnoremap <Leader>ga :<C-u>Gwrite<CR>
 nnoremap <Leader>gd :<C-u>Gdiff<CR>

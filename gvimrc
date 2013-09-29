@@ -1,11 +1,11 @@
-" GUI のみで読み込むプラグイン
-
+" GUI のみで読み込むプラグイン 
 NeoBundleSource unite-colorscheme
                 \ molokai
                 \ vim-colors-solarized
                 \ earendel
                 \ rdark
                 \ vim-color-github
+
 
 " 基本設定
 "ツールバーの非表示
@@ -61,7 +61,7 @@ function! s:prepare_indent_guides()
 endfunction
 "}}}
 
-nnoremap <Space>C :<C-u>Unite -auto-preview colorscheme<CR>
+nnoremap [unite]C :<C-u>Unite -auto-preview colorscheme<CR>
 
 let g:haskell_conceal = 1
 
