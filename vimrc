@@ -919,10 +919,8 @@ NeoBundleLazy 'tpope/vim-fugitive', {
 
 
 " if_lua プラグイン
-function! s:meet_neocomplete_requirements()
-    return has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
-endfunction
-if s:meet_neocomplete_requirements()
+let s:meet_neocomplete_requirements = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
+if s:meet_neocomplete_requirements
     NeoBundle 'Shougo/neocomplete.vim'
     NeoBundleFetch 'Shougo/neocomplcache.vim'
 else
@@ -1175,9 +1173,11 @@ augroup MyVimrc
     autocmd FileType ruby call s:matchit()
 augroup END
 
-if filereadable(expand('~/.vim/skeletons/ruby.skel'))
-    autocmd MyVimrc BufNewFile *.rb 0r ~/.vim/skeletons/ruby.skel
-endif
+let s:ruby_template = [ '#!/usr/bin/env ruby', '# encoding: utf-8', '', '' ]
+autocmd MyVimrc BufNewFile *.rb for l in range(1, len(s:ruby_template)) |
+                              \     call setline(l, s:ruby_template[l-1]) |
+                              \ endfor |
+                              \ normal! G
 
 function! s:start_irb()
     VimShell -split-command=vsplit
@@ -1293,7 +1293,7 @@ augroup MyVimrc
 augroup END
 "}}}
 
-if s:meet_neocomplete_requirements()
+if s:meet_neocomplete_requirements
 " neocomplete.vim {{{
 "AutoComplPopを無効にする
 let g:acp_enableAtStartup = 0
