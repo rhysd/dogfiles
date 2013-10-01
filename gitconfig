@@ -29,6 +29,7 @@
 	re  = remote
 	ad  = add
 	co  = checkout
+	cob = checkout -b
 	sh  = show
 	lsf = ls-files
 	lst = ls-tree
