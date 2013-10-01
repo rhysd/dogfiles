@@ -482,8 +482,8 @@ nnoremap Y y$
 noremap j gj
 noremap k gk
 " 空行単位移動
-noremap <C-j> }
-noremap <C-k> {
+noremap <C-j> :<C-u>keepjumps normal! }<CR>
+noremap <C-k> :<C-u>keepjumps normal! {<CR>
 " インサートモードに入らずに1文字追加
 nnoremap <silent><expr>m 'i'.nr2char(getchar())."\<Esc>"
 " gm にマーク機能を退避
@@ -550,7 +550,7 @@ function! s:delete_current_buf()
     let bufnr = bufnr('%')
     bnext
     if bufnr == bufnr('%') | enew | endif
-    bdelete #
+    silent! bdelete #
 endfunction
 nnoremap <C-w>d :<C-u>call <SID>delete_current_buf()<CR>
 nnoremap <C-w>D :<C-u>bdelete<CR>
@@ -575,7 +575,7 @@ nnoremap P "0P
 " タブの設定
 nnoremap ge :<C-u>tabedit<Space>
 nnoremap gn :<C-u>tabnew<CR>
-nnoremap <silent>gc :<C-u>tabclose<CR>
+nnoremap <silent>gx :<C-u>tabclose<CR>
 nnoremap <silent><A-h> gT
 nnoremap <silent><A-l> gt
 " 行表示・非表示の切り替え．少しでも横幅が欲しい時は OFF に
@@ -1270,7 +1270,7 @@ function! s:jump_to_autoload_function_definition()
     let current_line = getline('.')
     let name_pattern = '\h\k*\%(#\h\k*\)*\ze#\h\k*('
     let begin = match(current_line, name_pattern)
-    let end = match(current_line, name_pattern)
+    let end = matchend(current_line, name_pattern)
     let cursor = col('.')-1
     if begin <= cursor && cursor <= end
         let fname = globpath(&rtp, 'autoload/'.substitute(matchstr(current_line, name_pattern), '#', '/', 'g').'.vim')
@@ -1389,7 +1389,6 @@ call neocomplete#custom#source('neosnippet', 'min_pattern_length', 1)
 "neocompleteのマッピング
 inoremap <expr><C-g> neocomplete#undo_completion()
 inoremap <expr><C-s> neocomplete#complete_common_string()
-" <CR>: close popup and save indent.
 " <Tab>: completion
 inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 "<C-h>, <BS>: close popup and delete backword char.
@@ -2275,6 +2274,12 @@ let g:clang_format#style_options = {
             \ }
 autocmd MyVimrc FileType c,cpp map <buffer><Leader>x <Plug>(operator-clang-format)
 "}}}
+map <silent>gy <Plug>(operator-surround-append)
+map <silent>gd <Plug>(operator-surround-delete)
+map <silent>gc <Plug>(operator-surround-replace)
+nmap <silent>gD <Plug>(operator-surround-delete)<Plug>(textobj-multiblock-a)
+nmap <silent>gC <Plug>(operator-surround-replace)<Plug>(textobj-multiblock-a)
+
 
     " ghcmod-vim {{{
     autocmd FileType haskell nnoremap <buffer><silent><C-t> :<C-u>GhcModType<CR>
@@ -2628,27 +2633,16 @@ call submode#map('updown-move', 'nv', '', '<C-d>', '<C-d>')
 call submode#map('updown-move', 'nv', '', '<C-u>', '<C-u>')
 call submode#map('updown-move', 'nv', '', '<C-f>', '<C-f>')
 call submode#map('updown-move', 'nv', '', '<C-b>', '<C-b>')
+" vim-altr
+call submode#enter_with('altr', 'n', 's', 'sa', ':<C-u>call altr#forward()<CR>')
+call submode#enter_with('altr', 'n', 's', 'sA', ':<C-u>call altr#back()<CR>')
+call submode#map('altr', 'n', 'r', 'a', 'sa')
+call submode#map('altr', 'n', 'r', 'A', 'sA')
 " }}}
 
 " vim-altr {{{
-function! s:incr_or_altrforward()
-    let l = getline('.')
-    execute "normal! \<C-a>"
-    if l ==# getline('.')
-        call altr#forward()
-        redraw!
-    endif
-endfunction
-function! s:decr_or_altrback()
-    let l = getline('.')
-    execute "normal! \<C-x>"
-    if l ==# getline('.')
-        call altr#back()
-        redraw!
-    endif
-endfunction
-nnoremap <silent><C-a> :<C-u>call <SID>incr_or_altrforward()<CR>
-nnoremap <silent><C-x> :<C-u>call <SID>decr_or_altrback()<CR>
+nnoremap <silent><C-w>a :<C-u>call altr#forward()<CR>
+nnoremap <silent><C-w>A :<C-u>call altr#back()<CR>
 
 let s:bundle = neobundle#get("vim-altr")
 function! s:bundle.hooks.on_source(bundle)
