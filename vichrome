@@ -26,8 +26,8 @@ nmap <Space>fm :TabOpenNew http://ja.favstar.fm/me
 
 nmap j :PageHalfDown
 nmap k :PageHalfUp
-nmap d :ScrollDown
-nmap u :ScrollUp
+nmap n :ScrollDown
+nmap p :ScrollUp
 nmap w :TabFocusNext
 nmap b :TabFocusPrev
 
