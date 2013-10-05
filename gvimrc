@@ -23,6 +23,8 @@ set guioptions-=m
 set guioptions-=g
 " autoselect いらない
 set guioptions-=a
+" メニューを読み込まない
+set guioptions+=M
 
 " メニューにアクセスしない
 set winaltkeys=no

@@ -107,6 +107,8 @@ set ttyfast
 set path=.,/usr/include,/usr/local/include
 " 補完でプレビューウィンドウを開かない
 set completeopt=menuone,menu
+" メニューの言語
+set langmenu=none
 " foldingの設定
 set foldenable
 set foldmethod=marker
@@ -118,7 +120,10 @@ set autoread
 set whichwrap +=h
 set whichwrap +=l
 " 編集履歴を保存して終了する
-if has('persistent_undo') && isdirectory($HOME.'/.vim/undo')
+if has('persistent_undo')
+    if ! isdirectory($HOME.'/.vim/undo')
+        call mkdir($HOME.'/.vim/undo', 'p')
+    endif
     set undodir=~/.vim/undo
     set undofile
 endif
@@ -482,8 +487,8 @@ nnoremap Y y$
 noremap j gj
 noremap k gk
 " 空行単位移動
-noremap <C-j> :<C-u>keepjumps normal! }<CR>
-noremap <C-k> :<C-u>keepjumps normal! {<CR>
+noremap <silent><C-j> :<C-u>keepjumps normal! }<CR>
+noremap <silent><C-k> :<C-u>keepjumps normal! {<CR>
 " インサートモードに入らずに1文字追加
 nnoremap <silent><expr>m 'i'.nr2char(getchar())."\<Esc>"
 " gm にマーク機能を退避
@@ -711,7 +716,7 @@ NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'Shougo/unite-outline'
 NeoBundle 'osyo-manga/unite-quickfix'
 NeoBundle 'rhysd/quickrun-unite-quickfix-outputter'
-NeoBundle 'tsukkee/unite-help'
+NeoBundle 'Shougo/unite-help'
 NeoBundle 'thinca/vim-unite-history'
 NeoBundle 'rhysd/open-pdf.vim'
 NeoBundle 'vim-jp/vimdoc-ja'
@@ -817,7 +822,7 @@ NeoBundleLazy 'vim-scripts/ZoomWin', {
 
 NeoBundleLazy 'Shougo/vimshell', {
             \ 'autoload' : {
-            \     'commands' : ['VimShell', 'VimShellSendString', 'VimShellCurrentDir'],
+            \     'commands' : ['VimShell', 'VimShellSendString', 'VimShellCurrentDir', 'VimShellInteractive'],
             \     }
             \ }
 
@@ -904,6 +909,12 @@ NeoBundleLazy 'kana/vim-textobj-entire', {
             \   }
             \ }
 
+NeoBundleLazy 'kana/vim-textobj-fold', {
+            \ 'depends' : 'kana/vim-textobj-user',
+            \ 'autoload' : {
+            \       'mappings' : [['xo', 'az'], ['xo', 'iz']]
+            \ }
+            \ }
 NeoBundleLazy 'osyo-manga/vim-textobj-multiblock', {
             \ 'depends' : 'kana/vim-textobj-user',
             \ 'autoload' : {
@@ -1152,7 +1163,6 @@ function! EchoError(messages)
     echohl None
 endfunction
 command! -nargs=+ EchoError call EchoError([<f-args>])
-
 "}}}
 
 " カラースキーム "{{{
