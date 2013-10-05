@@ -461,8 +461,30 @@ function! s:resize_width()
             let max_col = len
         endif
     endfor
-    execute 'vertical resize' max_col
-    echo 'width: '.max_col
+
+    " add line number width
+    if &number
+        let digit = 1
+        let l = line('$')
+        while l > 10
+            let digit += 1
+            let l = l / 10
+        endwhile
+        let max_col += digit + 2
+    endif
+
+    " add sign width
+    redir => this_buffer_sign
+        silent execute 'sign place buffer='.bufnr('%')
+    redir END
+    if this_buffer_sign !~# '^\n--- Signs ---\n$'
+        let max_col += 2
+    endif
+
+    if max_col < winwidth(0)
+        execute 'vertical resize' max_col
+        echo 'width: '.max_col
+    endif
 endfunction
 command! -nargs=0 ResizeWindowWidth call <SID>resize_width()
 
@@ -745,6 +767,7 @@ NeoBundle 'rhysd/vim-numberstar'
 NeoBundle 'rhysd/migemo-search.vim'
 NeoBundle 'rhysd/vim-vspec-matchers'
 NeoBundle 'chriskempson/tomorrow-theme', {'rtp' : 'vim'}
+NeoBundle 'tpope/vim-repeat'
 
 " For testing
 function! s:test_bundle(name)
@@ -2287,8 +2310,8 @@ autocmd MyVimrc FileType c,cpp map <buffer><Leader>x <Plug>(operator-clang-forma
 map <silent>gy <Plug>(operator-surround-append)
 map <silent>gd <Plug>(operator-surround-delete)
 map <silent>gc <Plug>(operator-surround-replace)
-nmap <silent>gD <Plug>(operator-surround-delete)<Plug>(textobj-multiblock-a)
-nmap <silent>gC <Plug>(operator-surround-replace)<Plug>(textobj-multiblock-a)
+nmap <silent>gdd <Plug>(operator-surround-delete)<Plug>(textobj-multiblock-a)
+nmap <silent>gcc <Plug>(oprator-surround-replace)<Plug>(textobj-multiblock-a)
 
 
     " ghcmod-vim {{{
@@ -2726,7 +2749,14 @@ endif
 " vim-fugitive {{{
 nnoremap <Leader>gs :<C-u>Gstatus<CR>
 nnoremap <Leader>gC :<C-u>Gcommit -v<CR>
-nnoremap <Leader>gc :<C-u>Gcommit -v<CR>:only<CR>
+function! s:fugitive_commit()
+    Gcommit
+    only
+    if getline('.') == ''
+        startinsert
+    endif
+endfunction
+nnoremap <Leader>gc :<C-u>call <SID>fugitive_commit()<CR>
 nnoremap <Leader>gl :<C-u>QuickRun sh -src 'git log --graph --oneline'<CR>
 nnoremap <Leader>ga :<C-u>Gwrite<CR>
 nnoremap <Leader>gd :<C-u>Gdiff<CR>
