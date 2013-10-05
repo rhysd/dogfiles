@@ -2751,7 +2751,7 @@ endif
 nnoremap <Leader>gs :<C-u>Gstatus<CR>
 nnoremap <Leader>gC :<C-u>Gcommit -v<CR>
 function! s:fugitive_commit()
-    Gcommit
+    Gcommit -v
     only
     if getline('.') == ''
         startinsert
