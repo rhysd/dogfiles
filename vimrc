@@ -767,7 +767,6 @@ NeoBundle 'rhysd/vim-numberstar'
 NeoBundle 'rhysd/migemo-search.vim'
 NeoBundle 'rhysd/vim-vspec-matchers'
 NeoBundle 'chriskempson/tomorrow-theme', {'rtp' : 'vim'}
-NeoBundle 'tpope/vim-repeat'
 
 " For testing
 function! s:test_bundle(name)
@@ -782,6 +781,8 @@ endfunction
 call s:test_bundle('rhysd/clever-f.vim')
 call s:test_bundle('rhysd/unite-ruby-require.vim')
 call s:test_bundle('rhysd/vim-clang-format')
+call s:test_bundle('rhysd/vim-operator-surround')
+
 
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
@@ -951,6 +952,7 @@ NeoBundleLazy 'tpope/vim-fugitive', {
             \   }
             \ }
 
+NeoBundleLazy 'tpope/vim-repeat'
 
 " if_lua プラグイン
 let s:meet_neocomplete_requirements = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
@@ -2312,7 +2314,6 @@ map <silent>gd <Plug>(operator-surround-delete)
 map <silent>gc <Plug>(operator-surround-replace)
 nmap <silent>gdd <Plug>(operator-surround-delete)<Plug>(textobj-multiblock-a)
 nmap <silent>gcc <Plug>(oprator-surround-replace)<Plug>(textobj-multiblock-a)
-
 
     " ghcmod-vim {{{
     autocmd FileType haskell nnoremap <buffer><silent><C-t> :<C-u>GhcModType<CR>
