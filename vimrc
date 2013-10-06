@@ -2313,7 +2313,7 @@ map <silent>gy <Plug>(operator-surround-append)
 map <silent>gd <Plug>(operator-surround-delete)
 map <silent>gc <Plug>(operator-surround-replace)
 nmap <silent>gdd <Plug>(operator-surround-delete)<Plug>(textobj-multiblock-a)
-nmap <silent>gcc <Plug>(oprator-surround-replace)<Plug>(textobj-multiblock-a)
+nmap <silent>gcc <Plug>(operator-surround-replace)<Plug>(textobj-multiblock-a)
 
     " ghcmod-vim {{{
     autocmd FileType haskell nnoremap <buffer><silent><C-t> :<C-u>GhcModType<CR>
