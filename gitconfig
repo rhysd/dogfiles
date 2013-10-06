@@ -33,6 +33,7 @@
 	sh  = show
 	lsf = ls-files
 	lst = ls-tree
-	he  = git help
+	he  = help
+	gr  = grep
 [push]
 	default = simple
