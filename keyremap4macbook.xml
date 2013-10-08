@@ -19,8 +19,8 @@
             <autogen>__KeyToKey__ KeyCode::I, ModifierFlag::FN, KeyCode::F8, ModifierFlag::FN</autogen>
             <autogen>__KeyToKey__ KeyCode::O, ModifierFlag::FN, KeyCode::F9, ModifierFlag::FN</autogen>
             <autogen>__KeyToKey__ KeyCode::P, ModifierFlag::FN, KeyCode::F10, ModifierFlag::FN</autogen>
-            <autogen>__KeyToKey__ KeyCode::BRACKET_LEFT, ModifierFlag::FN, KeyCode::F11, ModifierFlag::FN</autogen>
-            <autogen>__KeyToKey__ KeyCode::BRACKET_RIGHT, ModifierFlag::FN, KeyCode::F12, ModifierFlag::FN</autogen>
+            <autogen>__KeyToKey__ KeyCode::A, ModifierFlag::FN, KeyCode::F11, ModifierFlag::FN</autogen>
+            <autogen>__KeyToKey__ KeyCode::S, ModifierFlag::FN, KeyCode::F12, ModifierFlag::FN</autogen>
         </item>
 
         <item>
@@ -39,7 +39,7 @@
         </item>
 
         <item>
-            <name>Alt + hjkl to Arrow keys</name>
+            <name>Option_L + hjkl to Arrow keys</name>
             <identifier>remap.my_hhkb_alt_hjkl_to_arrow</identifier>
             <autogen>__KeyToKey__ KeyCode::H, ModifierFlag::OPTION_L, KeyCode::CURSOR_LEFT</autogen>
             <autogen>__KeyToKey__ KeyCode::J, ModifierFlag::OPTION_L, KeyCode::CURSOR_DOWN</autogen>
