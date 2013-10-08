@@ -218,38 +218,6 @@ if executable('chmod')
     endfunction
 endif
 
-" help のマッピング
-function! s:on_FileType_help_define_mappings()
-    if &l:readonly
-        " カーソル下のタグへ飛ぶ
-        nnoremap <buffer>J <C-]>
-        " 戻る
-        nnoremap <buffer>K <C-t>
-        " リンクしている単語を選択する
-        nnoremap <buffer><silent><Tab> /\%(\_.\zs<Bar>[^ ]\+<Bar>\ze\_.\<Bar>CTRL-.\<Bar><[^ >]\+>\)<CR>
-        " そのた
-        nnoremap <buffer>u <C-u>
-        nnoremap <buffer>d <C-d>
-        nnoremap <buffer>q :<C-u>q<CR>
-        " カーソル下の単語を help で調べる
-        " autocmd MyVimrc FileType help nnoremap <buffer>K :<C-u>help <C-r><C-w><CR>
-        " TODO v で選択した範囲を help
-    endif
-endfunction
-autocmd MyVimrc FileType help call s:on_FileType_help_define_mappings()
-
-" quickfix のマッピング
-augroup MyVimrc
-    autocmd FileType qf nnoremap <buffer><silent> q :<C-u>cclose<CR>
-    autocmd FileType qf nnoremap <buffer><silent> j :<C-u>cnext!<CR>
-    autocmd FileType qf nnoremap <buffer><silent> k :<C-u>cprevious!<CR>
-    autocmd FileType qf nnoremap <buffer><silent> J :<C-u>cfirst<CR>
-    autocmd FileType qf nnoremap <buffer><silent> K :<C-u>clast<CR>
-    autocmd FileType qf nnoremap <buffer><silent> n :<C-u>cnewer<CR>
-    autocmd FileType qf nnoremap <buffer><silent> p :<C-u>colder<CR>
-    autocmd FileType qf nnoremap <buffer><silent> l :<C-u>clist<CR>
-augroup END
-
 augroup InitialMessage
     autocmd!
     " 起動時メッセージ．ｲﾇｩ…
@@ -509,8 +477,10 @@ nnoremap Y y$
 noremap j gj
 noremap k gk
 " 空行単位移動
-noremap <silent><C-j> :<C-u>keepjumps normal! }<CR>
-noremap <silent><C-k> :<C-u>keepjumps normal! {<CR>
+nnoremap <silent><C-j> :<C-u>keepjumps normal! }<CR>
+nnoremap <silent><C-k> :<C-u>keepjumps normal! {<CR>
+vnoremap <C-j> }
+vnoremap <C-k> {
 " インサートモードに入らずに1文字追加
 nnoremap <silent><expr>m 'i'.nr2char(getchar())."\<Esc>"
 " gm にマーク機能を退避
@@ -658,6 +628,39 @@ inoremap <C-Tab> <C-v><Tab>
 nnoremap <expr>h col('.') == 1 && foldlevel(line('.')) > 0 ? 'zc' : 'h'
 nnoremap <expr>l foldclosed(line('.')) != -1 ? 'zo' : 'l'
 
+" help のマッピング
+function! s:on_FileType_help_define_mappings()
+    if &l:readonly
+        " カーソル下のタグへ飛ぶ
+        nnoremap <buffer>J <C-]>
+        " 戻る
+        nnoremap <buffer>K <C-t>
+        " リンクしている単語を選択する
+        nnoremap <buffer><silent><Tab> /\%(\_.\zs<Bar>[^ ]\+<Bar>\ze\_.\<Bar>CTRL-.\<Bar><[^ >]\+>\)<CR>
+        " そのた
+        nnoremap <buffer>u <C-u>
+        nnoremap <buffer>d <C-d>
+        nnoremap <buffer>q :<C-u>q<CR>
+        " カーソル下の単語を help で調べる
+        " autocmd MyVimrc FileType help nnoremap <buffer>K :<C-u>help <C-r><C-w><CR>
+        " TODO v で選択した範囲を help
+    endif
+endfunction
+autocmd MyVimrc FileType help call s:on_FileType_help_define_mappings()
+
+" quickfix のマッピング
+augroup MyVimrc
+    autocmd FileType qf nnoremap <buffer><silent> q :<C-u>cclose<CR>
+    autocmd FileType qf nnoremap <buffer><silent> j :<C-u>cnext!<CR>
+    autocmd FileType qf nnoremap <buffer><silent> k :<C-u>cprevious!<CR>
+    autocmd FileType qf nnoremap <buffer><silent> J :<C-u>cfirst<CR>
+    autocmd FileType qf nnoremap <buffer><silent> K :<C-u>clast<CR>
+    autocmd FileType qf nnoremap <buffer><silent> n :<C-u>cnewer<CR>
+    autocmd FileType qf nnoremap <buffer><silent> p :<C-u>colder<CR>
+    autocmd FileType qf nnoremap <buffer><silent> l :<C-u>clist<CR>
+augroup END
+
+
 " 初回のみ a:cmd の動きをして，それ以降は行内をローテートする
 let s:smart_line_pos = -1
 function! s:smart_move(cmd)
@@ -782,6 +785,7 @@ call s:test_bundle('rhysd/clever-f.vim')
 call s:test_bundle('rhysd/unite-ruby-require.vim')
 call s:test_bundle('rhysd/vim-clang-format')
 call s:test_bundle('rhysd/vim-operator-surround')
+call s:test_bundle('rhysd/vim-window-adjuster')
 
 
 " vim-scripts上のリポジトリ
@@ -908,7 +912,7 @@ NeoBundleLazy 'sgur/vim-textobj-parameter', {
 NeoBundleLazy 'thinca/vim-textobj-between', {
             \ 'depends' : 'kana/vim-textobj-user',
             \ 'autoload' : {
-            \       'mappings' : [['xo', 'af'], ['xo', 'if']]
+            \       'mappings' : [['xo', 'af'], ['xo', 'if'], ['xo', '<Plug>(textobj-between-']]
             \   }
             \ }
 
@@ -2314,6 +2318,8 @@ map <silent>gd <Plug>(operator-surround-delete)
 map <silent>gc <Plug>(operator-surround-replace)
 nmap <silent>gdd <Plug>(operator-surround-delete)<Plug>(textobj-multiblock-a)
 nmap <silent>gcc <Plug>(operator-surround-replace)<Plug>(textobj-multiblock-a)
+nmap <silent>gdb <Plug>(operator-surround-delete)<Plug>(textobj-between-a)
+nmap <silent>gcb <Plug>(operator-surround-replace)<Plug>(textobj-between-a)
 
     " ghcmod-vim {{{
     autocmd FileType haskell nnoremap <buffer><silent><C-t> :<C-u>GhcModType<CR>
