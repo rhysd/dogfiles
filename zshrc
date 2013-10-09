@@ -70,6 +70,7 @@ alias e='emacs -nw'
 alias -g G='| grep'
 alias -g L='| less'
 alias -g V='| view -R -'
+alias -g H='| head'
 
 # suffix alias
 alias -s cpp=g++

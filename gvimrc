@@ -63,8 +63,6 @@ function! s:prepare_indent_guides()
 endfunction
 "}}}
 
-nnoremap [unite]C :<C-u>Unite -auto-preview colorscheme<CR>
-
 let g:haskell_conceal = 1
 
 if isdirectory(expand('~/.cabal/bin'))

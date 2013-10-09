@@ -119,6 +119,8 @@ set autoread
 " h と l で行を跨げるようにする
 set whichwrap +=h
 set whichwrap +=l
+" コマンド履歴サイズ
+set history=100
 " 編集履歴を保存して終了する
 if has('persistent_undo')
     if ! isdirectory($HOME.'/.vim/undo')
@@ -338,6 +340,9 @@ nnoremap <C-w><Space> :<C-u>SmartSplit<CR>
 function! s:smart_split(cmd)
     if winwidth(0) > winheight(0) * 2
         vsplit
+        if exists(':AdjustWindowWidth')
+            AdjustWindowWidth
+        endif
     else
         split
     endif
@@ -363,7 +368,7 @@ function! s:smart_help(args)
         execute 'quit'
         execute 'tab help ' . a:args
     endif
-    silent ResizeWindowWidth
+    silent! AdjustWindowWidth
 endfunction
 
 " 隣のウィンドウの上下移動
@@ -420,43 +425,6 @@ function! s:set_indent(width, bang)
 endfunction
 command! -bang -nargs=1 SetIndent call <SID>set_indent(<args>, <q-bang>)
 
-" 横幅 リサイズ
-function! s:resize_width()
-    let max_col = 0
-    for lnum in range(1, line('$'))
-        let len = len(getline(lnum))
-        if max_col < len
-            let max_col = len
-        endif
-    endfor
-
-    " add line number width
-    if &number
-        let digit = 1
-        let l = line('$')
-        while l > 10
-            let digit += 1
-            let l = l / 10
-        endwhile
-        let max_col += digit + 2
-    endif
-
-    " add sign width
-    redir => this_buffer_sign
-        silent execute 'sign place buffer='.bufnr('%')
-    redir END
-    if this_buffer_sign !~# '^\n--- Signs ---\n$'
-        let max_col += 2
-    endif
-
-    if max_col < winwidth(0)
-        execute 'vertical resize' max_col
-        echo 'width: '.max_col
-    endif
-endfunction
-command! -nargs=0 ResizeWindowWidth call <SID>resize_width()
-
-
 " 基本マッピング {{{
 " ; と : をスワップ
 noremap : ;
@@ -483,8 +451,10 @@ vnoremap <C-j> }
 vnoremap <C-k> {
 " インサートモードに入らずに1文字追加
 nnoremap <silent><expr>m 'i'.nr2char(getchar())."\<Esc>"
+" 選択領域の頭に入力する（vim-niceblock を使うために vmap）
+vmap m I
 " gm にマーク機能を退避
-nnoremap gm m
+noremap gm m
 "Esc->Escで検索結果とエラーハイライトをクリア
 nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>
 "{数値}<Tab>でその行へ移動．それ以外だと通常の<Tab>の動きに
@@ -540,8 +510,6 @@ nnoremap <silent><C-p>   :<C-u>bprevious<CR>
 nmap     s <C-w>
 " 現在のウィンドウのみを残す
 nnoremap <C-w>O <C-w>o
-" カレントウィンドウをリサイズ
-nnoremap <silent><C-w>r :<C-u>ResizeWindowWidth<CR>
 " バッファを削除
 function! s:delete_current_buf()
     let bufnr = bufnr('%')
@@ -770,6 +738,8 @@ NeoBundle 'rhysd/vim-numberstar'
 NeoBundle 'rhysd/migemo-search.vim'
 NeoBundle 'rhysd/vim-vspec-matchers'
 NeoBundle 'chriskempson/tomorrow-theme', {'rtp' : 'vim'}
+NeoBundle 'ujihisa/unite-colorscheme'
+NeoBundle 'junegunn/seoul256.vim'
 
 " For testing
 function! s:test_bundle(name)
@@ -969,7 +939,6 @@ else
 endif
 
 " GUI オンリーなプラグイン
-NeoBundleLazy 'ujihisa/unite-colorscheme'
 NeoBundleLazy 'nathanaelkane/vim-indent-guides'
 NeoBundleLazy 'tomasr/molokai'
 NeoBundleLazy 'altercation/vim-colors-solarized'
@@ -1200,6 +1169,8 @@ if !has('gui_running')
 endif
 " シンタックスハイライト
 syntax enable
+" seoul256 バックグラウンドカラーの明るさ
+let g:seoul256_background = 233
 " }}}
 
 " Ruby {{{
@@ -1737,6 +1708,8 @@ nnoremap <silent>[unite]p         :<C-u>Unite file_rec:! file/new<CR>
 nnoremap <silent><expr> [unite]/ line('$') > 5000 ?
             \ ":\<C-u>Unite -buffer-name=search -no-split -start-insert line/fast\<CR>" :
             \ ":\<C-u>Unite -buffer-name=search -start-insert line\<CR>"
+" カラースキーム
+nnoremap [unite]C :<C-u>Unite -auto-preview colorscheme<CR>
 " }}}
 
 " }}}
@@ -2724,7 +2697,7 @@ autocmd MyVimrc BufWritePost *.md,*.markdown call previm#refresh()
 " memolist.vim "{{{
 nnoremap <Leader>mn :<C-u>MemoNew<CR>
 nnoremap <Leader>ml :<C-u>MemoList<CR>
-nnoremap <Leader>mg :<C-u>MemoGrep<CR>
+nnoremap <Leader>mg :<C-u>execute 'Unite' 'grep:'.g:memolist_path '-auto-preview'<CR>
 
 if isdirectory(expand('~/Dropbox/memo'))
     let g:memolist_path = expand('~/Dropbox/memo')
@@ -2779,6 +2752,11 @@ function! s:bundle.hooks.on_post_source(bundle)
 endfunction
 unlet s:bundle
 " }}}
+
+" vim-window-adjuster {{{
+" カレントウィンドウをリサイズ
+nnoremap <silent><C-w>r :<C-u>AdjustWindowWidth --margin=1<CR>
+"}}}
 
 " プラットフォーム依存な設定をロードする "{{{
 function! SourceIfExist(path)
