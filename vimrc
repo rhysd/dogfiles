@@ -1144,7 +1144,8 @@ function! s:matchit(...)
         runtime macros/matchit.vim
         let s:matchit_loaded = 1
     endif
-    let b:match_words = get(b:, 'match_words', '') . ',' . &matchpairs . ',' . join(a:000, ',')
+    let default_pairs = [&matchpairs, '^<<<<<<<:^=======$:^>>>>>>>']
+    let b:match_words = get(b:, 'match_words', '') . ',' . join(default_pairs, ',') . ',' . join(a:000, ',')
 endfunction
 
 " アサーション
