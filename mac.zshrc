@@ -5,7 +5,6 @@ unalias ls
 alias ls='ls -G'
 alias g++='g++-4.8 -std=c++11 -Wall -Wextra -O2'
 alias emacs='/usr/local/bin/emacs -nw'
-alias locate='/usr/bin/locate'
 alias vi="vim --cmd \"let g:linda_pp_startup_with_tiny = 1\""
 alias rm=grm
 alias top=htop

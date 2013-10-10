@@ -11,17 +11,9 @@ if has('kaoriya')
     let g:plugin_dicwin_disable = 1
 endif
 
-filetype off
-filetype plugin indent off
-NeoBundle 'choplin/unite-spotlight'
-filetype plugin indent on     " required!
-
 " option キーを Alt として使う．
 set macmeta
 
-"ctagsへのパス
-let g:neocomplcache_ctags_program = '/usr/local/bin/ctags'
-nnoremap <silent>[unite]l :<C-u>UniteWithInput spotlight<CR>
 let g:quickrun_config.cpp.command = 'g++-4.8'
 let g:quickrun_config.ruby = { 'exec' : $HOME.'/.rbenv/shims/ruby %o %s' }
 " let g:quickrun_config['syntax/cpp'].command = 'g++-4.8'

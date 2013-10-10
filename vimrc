@@ -142,7 +142,7 @@ set cmdwinheight=3
     "   autocmd BufWritePost <buffer> call s:ExecuteMake()
     " augroup END
 " ステータスライン
-set ruf=%45(%12f%=\ %m%{'['.(&fenc!=''?&fenc:&enc).']'}\ %l-%v\ %p%%\ [%02B]%)
+set rulerformat=%45(%12f%=\ %m%{'['.(&fenc!=''?&fenc:&enc).']'}\ %l-%v\ %p%%\ [%02B]%)
 set statusline=%f:\ %{substitute(getcwd(),'.*/','','')}\ %m%=%{(&fenc!=''?&fenc:&enc).':'.strpart(&ff,0,1)}\ %l-%v\ %p%%\ %02B
 " リストヘッダ
 set formatlistpat&
@@ -418,22 +418,28 @@ command! -nargs=0 Todo Unite line -input=TODO
 command! -nargs=0 EchoCurrentPath echo expand('%:p')
 
 " インデント
-function! s:set_indent(width, bang)
-    let local = a:bang !=# '!' ? 'local' : ''
-    set tabstop=4 shiftwidth=4 softtabstop=4
-    execute 'set'.local 'tabstop='.a:width 'shiftwidth='.a:width 'softtabstop='.a:width
-endfunction
-command! -bang -nargs=1 SetIndent call <SID>set_indent(<args>, <q-bang>)
+command! -bang -nargs=1 SetIndent
+            \ execute <bang>0 ? 'set' : 'setlocal'
+            \         'tabstop='.<q-args>
+            \         'shiftwidth='.<q-args>
+            \         'softtabstop='.<q-args>
 
 " 基本マッピング {{{
 " ; と : をスワップ
 noremap : ;
 if has('cmdline_hist')
-    noremap ; q:i
+    " コマンドラインウィンドウを使う
+    " Note:
+    "   noremap ; q:i は使えない
+    "   マクロ記録中に q を記録終了に食われてしまう
+    "   eval() にそのまま通すのは怖いので事前に &cedit をチェック
+    noremap <silent><expr>; &cedit =~# '^<C-\a>$' ? ':'.eval('"\'.&cedit.'"').'i' : ':'
     noremap <Leader>; :
 else
     noremap ; :
 endif
+noremap @; @:
+noremap @: @;
 "モードから抜ける
 inoremap <expr> j getline('.')[col('.') - 2] ==# 'j' ? "\<BS>\<ESC>" : 'j'
 cnoremap <expr> j getcmdline()[getcmdpos() - 2] ==# 'j' ? "\<BS>\<ESC>" : 'j'
@@ -721,7 +727,6 @@ NeoBundle 'kana/vim-vspec'
 NeoBundle 'rhysd/accelerated-jk'
 NeoBundle 'kana/vim-smartinput'
 NeoBundle 'kana/vim-niceblock'
-NeoBundle 'rhysd/wombat256.vim'
 NeoBundle 'thinca/vim-scouter'
 NeoBundle 'thinca/vim-visualstar'
 NeoBundle 'h1mesuke/vim-alignta'
@@ -737,9 +742,18 @@ NeoBundle 'bling/vim-airline'
 NeoBundle 'rhysd/vim-numberstar'
 NeoBundle 'rhysd/migemo-search.vim'
 NeoBundle 'rhysd/vim-vspec-matchers'
-NeoBundle 'chriskempson/tomorrow-theme', {'rtp' : 'vim'}
 NeoBundle 'ujihisa/unite-colorscheme'
+NeoBundle 'rhysd/unite-locate'
+
+" カラースキーム
+NeoBundle 'rhysd/wombat256.vim'
+NeoBundle 'chriskempson/tomorrow-theme', {'rtp' : 'vim'}
 NeoBundle 'junegunn/seoul256.vim'
+NeoBundle 'tomasr/molokai'
+NeoBundle 'altercation/vim-colors-solarized'
+NeoBundle 'earendel'
+NeoBundle 'rdark'
+NeoBundle 'telamon/vim-color-github'
 
 " For testing
 function! s:test_bundle(name)
@@ -940,11 +954,7 @@ endif
 
 " GUI オンリーなプラグイン
 NeoBundleLazy 'nathanaelkane/vim-indent-guides'
-NeoBundleLazy 'tomasr/molokai'
-NeoBundleLazy 'altercation/vim-colors-solarized'
-NeoBundleLazy 'earendel'
-NeoBundleLazy 'rdark'
-NeoBundleLazy 'telamon/vim-color-github'
+NeoBundleLazy 'tyru/restart.vim'
 
 " 特定のファイルタイプで読み込む
 NeoBundleLazy 'rhysd/endwize.vim', {
@@ -1328,6 +1338,8 @@ let g:neocomplete#keyword_patterns['default'] = '\h\w*'
 " ctags は自分の用意したものを使う
 if executable('/usr/local/bin/ctags')
     let g:neocomplete#ctags_command = '/usr/local/bin/ctags'
+elseif executable('/usr/bin/ctags')
+    let g:neocomplete#ctags_command = '/usr/bin/gctags'
 endif
 " Ruby の外部ファイルの拡張子
 let g:neocomplete#sources#file_include#exts
@@ -1504,6 +1516,12 @@ if !exists('g:neocomplcache_force_omni_patterns')
     let g:neocomplcache_force_omni_patterns = {}
 endif
 let g:neocomplcache_force_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|::'
+"ctagsへのパス
+if executable('/usr/local/bin/ctags')
+    let g:neocomplcache_ctags_program = '/usr/local/bin/ctags'
+elseif executable('/usr/bin/ctags')
+    let g:neocomplcache_ctags_program = '/usr/bin/ctags'
+endif
 
 "neocomplcacheのマッピング
 inoremap <expr><C-g> neocomplcache#undo_completion()
@@ -1710,6 +1728,8 @@ nnoremap <silent><expr> [unite]/ line('$') > 5000 ?
             \ ":\<C-u>Unite -buffer-name=search -start-insert line\<CR>"
 " カラースキーム
 nnoremap [unite]C :<C-u>Unite -auto-preview colorscheme<CR>
+" locate
+nnoremap <silent>[unite]l :<C-u>UniteWithInput locate<CR>
 " }}}
 
 " }}}
@@ -2294,7 +2314,8 @@ nmap <silent>gcc <Plug>(operator-surround-replace)<Plug>(textobj-multiblock-a)
 nmap <silent>gdb <Plug>(operator-surround-delete)<Plug>(textobj-between-a)
 nmap <silent>gcb <Plug>(operator-surround-replace)<Plug>(textobj-between-a)
 
-    " ghcmod-vim {{{
+" ghcmod-vim {{{
+augroup MyVimrc
     autocmd FileType haskell nnoremap <buffer><silent><C-t> :<C-u>GhcModType<CR>
     autocmd BufWritePost *.hs GhcModCheckAndLintAsync
     autocmd FileType haskell let &l:statusline = '%{empty(getqflist()) ? "[No Errors] " : "[Errors Found] "}'

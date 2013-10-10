@@ -1,4 +1,7 @@
 colorscheme molokai
+
+NeoBundleSource restart.vim
+
 " IM の起動キーを gVim に教える
 " set imactivatekey=S-space
 set iminsert=2
