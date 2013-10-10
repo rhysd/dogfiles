@@ -18,6 +18,7 @@ set encoding=utf-8
 set termencoding=utf-8
 set fileencoding=utf-8
 set fileencodings=utf-8,cp932,euc-jp
+scriptencoding utf-8
 " user-defined prefix
 let mapleader = ','
 "行番号表示
@@ -1131,13 +1132,6 @@ nnoremap <Leader>gp :<C-u>GitPush<CR>
 "}}}
 
 " 他の helper {{{
-" Linux かどうか判定
-    " let s:has_linux = !has('mac') && has('unix')
-" 本当はこっちのほうが良いが，速度面で難あり
-    " s:has_linux = executable('uname') && system('uname') == "Linux\n"
-" これは Arch Linux だと使えない
-    " s:has_linux = executable('lsb_release')
-
 " 本体に同梱されている matchit.vim のロードと matchpair の追加
 function! s:matchit(...)
     if !exists('s:matchit_loaded')
@@ -1166,12 +1160,24 @@ command! -nargs=+ Assert
 "}}}
 
 " エラー表示
-function! EchoError(messages)
+function! EchoError(...)
     echohl Error
-    execute 'echomsg' join(a:messages)
+    execute 'echomsg' join(map(copy(a:000), 'string(v:val)'), ' ')
     echohl None
 endfunction
-command! -nargs=+ EchoError call EchoError([<f-args>])
+command! -nargs=+ EchoError call EchoError(<f-args>)
+"}}}
+
+" 追加のハイライト {{{
+augroup MyVimrc
+    " コンフリクトマーカー
+    autocmd ColorScheme * highlight link ConflictMarker Error
+    autocmd VimEnter,WinEnter * syntax match ConflictMarker containedin=ALL /^\%(<<<<<<< \|=======$\|>>>>>>> \)/
+
+    " 全角スペース
+    autocmd ColorScheme * highlight link ZenkakuSpace Error
+    autocmd VimEnter,WinEnter * syntax match ZenkakuSpace containedin=ALL /　/
+augroup END
 "}}}
 
 " カラースキーム "{{{
