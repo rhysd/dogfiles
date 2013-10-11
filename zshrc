@@ -63,7 +63,6 @@ alias k=kill
 alias ng=noglob
 alias d=dirs
 alias g=git
-alias gp=gnuplot
 alias e='emacs -nw'
 
 # global alias

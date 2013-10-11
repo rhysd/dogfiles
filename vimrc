@@ -1169,6 +1169,7 @@ command! -nargs=+ EchoError call EchoError(<f-args>)
 "}}}
 
 " 追加のハイライト {{{
+let s:zenkaku_no_highlight_filetypes = []
 augroup MyVimrc
     " コンフリクトマーカー
     autocmd ColorScheme * highlight link ConflictMarker Error
@@ -1176,9 +1177,9 @@ augroup MyVimrc
 
     " 全角スペース
     autocmd ColorScheme * highlight link ZenkakuSpace Error
-    autocmd VimEnter,WinEnter * syntax match ZenkakuSpace containedin=ALL /　/
+    autocmd VimEnter,WinEnter * if index(s:zenkaku_no_highlight_filetypes, &filetype) == -1 | syntax match ZenkakuSpace containedin=ALL /　/ | endif
 augroup END
-"}}}
+" }}}
 
 " カラースキーム "{{{
 if !has('gui_running')
@@ -1201,10 +1202,7 @@ augroup MyVimrc
 augroup END
 
 let s:ruby_template = [ '#!/usr/bin/env ruby', '# encoding: utf-8', '', '' ]
-autocmd MyVimrc BufNewFile *.rb for l in range(1, len(s:ruby_template)) |
-                              \     call setline(l, s:ruby_template[l-1]) |
-                              \ endfor |
-                              \ normal! G
+autocmd MyVimrc BufNewFile *.rb call append(0, s:ruby_template) | normal! G
 
 function! s:start_irb()
     VimShell -split-command=vsplit
@@ -1215,7 +1213,7 @@ command! Irb call <SID>start_irb()
 
 function! s:toggle_binding_pry()
     if getline('.') =~# '^\s*binding\.pry\s*$'
-        normal! ddk
+        normal! "_ddk
     else
         normal! obinding.pry
     endif
@@ -2472,6 +2470,7 @@ nnoremap <silent><Leader>th :<C-u>TweetVimHomeTimeline<CR>
 nnoremap <silent><Leader>tm :<C-u>TweetVimMentions<CR>
 nnoremap <silent><Leader>ts :<C-u>TweetVimSay<CR>
 nnoremap <silent><Leader>tu :<C-u>TweetVimUserTimeline<Space>
+let s:zenkaku_no_highlight_filetypes += ['tweetvim', 'tweetvim_say']
 
 " TweetVim 読み込み時に設定する
 let s:bundle = neobundle#get("TweetVim")
@@ -2759,8 +2758,8 @@ nnoremap <Leader>gs :<C-u>Gstatus<CR>
 nnoremap <Leader>gC :<C-u>Gcommit -v<CR>
 function! s:fugitive_commit()
     Gcommit -v
-    only
     if getline('.') == ''
+        only
         startinsert
     endif
 endfunction
@@ -2783,7 +2782,7 @@ unlet s:bundle
 
 " vim-window-adjuster {{{
 " カレントウィンドウをリサイズ
-nnoremap <silent><C-w>r :<C-u>AdjustWindowWidth --margin=1<CR>
+nnoremap <silent><C-w>r :<C-u>AdjustWindowWidth --margin=1 --direction=shrink<CR>
 "}}}
 
 " プラットフォーム依存な設定をロードする "{{{
