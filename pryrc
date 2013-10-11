@@ -1,7 +1,7 @@
-# vim:ft=ruby:
-
 # libraries
 require 'awesome_print'
+
+Pry.config.editor = 'vim'
 
 # user defined commands
 if RUBY_PLATFORM.include? 'darwin'
@@ -20,3 +20,5 @@ end
 
 # aliases
 alias :r :require
+
+# vim: set ft=ruby:
