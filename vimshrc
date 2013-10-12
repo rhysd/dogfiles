@@ -33,4 +33,9 @@ alias d=dirs
 alias g=git
 alias cl=clang++
 alias i=iexe
-alias vspec='$HOME/.vim/bundle/vim-vspec/bin/vspec $HOME/.vim/bundle/vim-vspec'
+alias vspec='$HOME/.vim/bundle/vim-vspec/bin/vspec $HOME/.vim/bundle/vim-vspec $HOME/.vim/bundle/vim-vspec-matchers'
+alias be='bundle exec'
+galias G='| grep'
+galias V='| vim'
+
+# vim: ft=vimshrc

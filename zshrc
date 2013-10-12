@@ -70,6 +70,9 @@ alias -g G='| grep'
 alias -g L='| less'
 alias -g V='| view -R -'
 alias -g H='| head'
+alias -g S='| sed'
+alias -g A='| awk'
+alias -g N='> /dev/null 2>&1'
 
 # suffix alias
 alias -s cpp=g++
@@ -131,6 +134,15 @@ function kiritori(){
 function run-gcc(){
     set -e
     g++ $* && ./a.out
+}
+
+function source-file(){
+    [[ -s "$1" ]] && source "$1"
+}
+
+function reload(){
+    source-file $HOME/.zshrc
+    source-file $HOME/.zshenv
 }
 # }}}
 

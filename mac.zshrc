@@ -20,6 +20,11 @@ alias -s html='open -a Google\ Chrome'
 alias -s cpp=g++-4.8
 alias -s cc=g++-4.8
 
+# completions
+if [ -d /usr/local/share/zsh-completions ]; then
+    fpath=($HOME/brew/share/zsh-completions $fpath)
+fi
+
 #Homebrew
 export HOMEBREW_VERBOSE=true
 export HOMEBREW_EDITOR=vim
