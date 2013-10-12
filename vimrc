@@ -771,6 +771,7 @@ call s:test_bundle('rhysd/unite-ruby-require.vim')
 call s:test_bundle('rhysd/vim-clang-format')
 call s:test_bundle('rhysd/vim-operator-surround')
 call s:test_bundle('rhysd/vim-window-adjuster')
+call s:test_bundle('rhysd/conflict-marker.vim')
 
 
 " vim-scripts上のリポジトリ
@@ -789,10 +790,11 @@ NeoBundleLazy 'Shougo/unite.vim', {
             \ }
 
 NeoBundleLazy 'Shougo/vimfiler.vim', {
+            \ 'depends' : 'Shougo/vimfiler.vim',
             \ 'autoload' : {
             \     'commands' : ['VimFiler', 'VimFilerCurrentDir',
             \                   'VimFilerBufferDir', 'VimFilerSplit',
-            \                   'VimFilerExplorer']
+            \                   'VimFilerExplorer', 'VimFilerDouble']
             \     }
             \ }
 
@@ -968,7 +970,11 @@ NeoBundleLazy 'rhysd/endwize.vim', {
 NeoBundleLazy 'vim-jp/cpp-vim', {
             \ 'autoload' : {'filetypes' : 'cpp'}
             \ }
-NeoBundleLazy 'Rip-Rip/clang_complete', {
+" NeoBundleLazy 'Rip-Rip/clang_complete', {
+"             \ 'autoload' : {'filetypes' : ['c', 'cpp']}
+"             \ }
+NeoBundleLazy 'osyo-manga/vim-marching', {
+            \ 'depends' : ['Shougo/vimproc.vim', 'osyo-manga/vim-reunions'],
             \ 'autoload' : {'filetypes' : ['c', 'cpp']}
             \ }
 NeoBundleLazy 'rhysd/unite-n3337', {
@@ -1138,7 +1144,7 @@ function! s:matchit(...)
         runtime macros/matchit.vim
         let s:matchit_loaded = 1
     endif
-    let default_pairs = [&matchpairs, '^<<<<<<<:^=======$:^>>>>>>>']
+    let default_pairs = [&matchpairs]
     let b:match_words = get(b:, 'match_words', '') . ',' . join(default_pairs, ',') . ',' . join(a:000, ',')
 endfunction
 
@@ -1171,10 +1177,6 @@ command! -nargs=+ EchoError call EchoError(<f-args>)
 " 追加のハイライト {{{
 let s:zenkaku_no_highlight_filetypes = []
 augroup MyVimrc
-    " コンフリクトマーカー
-    autocmd ColorScheme * highlight link ConflictMarker Error
-    autocmd VimEnter,WinEnter * syntax match ConflictMarker containedin=ALL /^\%(<<<<<<< \|=======$\|>>>>>>> \)/
-
     " 全角スペース
     autocmd ColorScheme * highlight link ZenkakuSpace Error
     autocmd VimEnter,WinEnter * if index(s:zenkaku_no_highlight_filetypes, &filetype) == -1 | syntax match ZenkakuSpace containedin=ALL /　/ | endif
@@ -2001,6 +2003,7 @@ nnoremap <Leader>fc               :<C-u>VimFilerCurrentDir<CR>
 nnoremap <Leader>fb               :<C-u>VimFilerBufferDir<CR>
 nnoremap <silent><expr><Leader>fg ":\<C-u>VimFiler " . <SID>git_root_dir() . '\<CR>'
 nnoremap <silent><expr><Leader>fe ":\<C-u>VimFilerExplorer " . <SID>git_root_dir() . '\<CR>'
+nnoremap <Leader>fd               :<C-u>VimFilerDouble -tab<CR>
 "        }}}
 " }}}
 
@@ -2008,9 +2011,18 @@ nnoremap <silent><expr><Leader>fe ":\<C-u>VimFilerExplorer " . <SID>git_root_dir
 let g:clang_hl_errors=1
 let g:clang_conceal_snippets=1
 let g:clang_exec="/usr/bin/clang"
-let g:clang_user_options='-std=c++11 -I /usr/local/include -I /usr/include  2>/dev/null || exit 0'
+let g:clang_user_options='-std=c++11 -stdlib=libc++ -I /usr/lib/c++/v1 -I /usr/local/include 2>/dev/null || exit 0'
 let g:clang_complete_auto = 0
 " }}}
+
+" vim-marching
+let g:marching_command_option = '-std=c++0x -stdlib=libc++'
+let g:marching_include_paths = [
+            \ '/usr/lib/c++/v1',
+            \ '/usr/local/include',
+            \ ]
+let g:marching_enable_neocomplete = 1
+let g:neocomplete#force_omni_input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\w*\|\h\w*::\w*'
 
 " vim-smartinput"{{{
 " 括弧内のスペース
@@ -2344,6 +2356,7 @@ let g:haskell_hsp = 0
 
 " inu-snippets {{{
 let g:neosnippet#snippets_directory=$HOME.'/.vim/bundle/inu-snippets/snippets'
+" let g:neosnippet#snippets_directory=$HOME.'/Github/inu-snippets/snippets'
 "}}}
 
 " vim-alignta {{{
