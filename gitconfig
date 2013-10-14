@@ -35,5 +35,6 @@
 	lst = ls-tree
 	he  = help
 	gr  = grep
+	lop = log -p
 [push]
 	default = simple
