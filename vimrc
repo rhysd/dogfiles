@@ -945,6 +945,12 @@ NeoBundleLazy 'tpope/vim-fugitive', {
 
 NeoBundleLazy 'tpope/vim-repeat'
 
+NeoBundleLazy 'rbtnn/puyo.vim', {
+        \ 'autoload' : {
+        \       'commands' : 'Puyo'
+        \   }
+        \ }
+
 " if_lua プラグイン
 let s:meet_neocomplete_requirements = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
 if s:meet_neocomplete_requirements
@@ -2796,6 +2802,10 @@ unlet s:bundle
 " vim-window-adjuster {{{
 " カレントウィンドウをリサイズ
 nnoremap <silent><C-w>r :<C-u>AdjustWindowWidth --margin=1 --direction=shrink<CR>
+"}}}
+
+" ぷよ.vim {{{
+let g:puyo#updatetime = 500
 "}}}
 
 " プラットフォーム依存な設定をロードする "{{{
