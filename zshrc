@@ -72,7 +72,11 @@ alias -g V='| view -R -'
 alias -g H='| head'
 alias -g S='| sed'
 alias -g A='| awk'
-alias -g N='> /dev/null 2>&1'
+alias -g D='> /dev/null 2>&1'
+
+if [[ $TMUX != "" ]]; then
+    alias -g BG=' 2>&1 | tmux display-message &'
+fi
 
 # suffix alias
 alias -s cpp=g++

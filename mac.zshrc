@@ -11,7 +11,6 @@ alias top=htop
 alias update='brew update && gem update && vim -N -V1 -e -s --cmd "source ~/.vimrc" --cmd NeoBundleUpdate --cmd qall!'
 alias sshi='ssh -i $HOME/.ssh/id_rsa'
 alias github='open https://github.com'
-
 alias Vim=gvim
 
 # suffix alias
@@ -19,6 +18,10 @@ alias -s pdf='open -a Preview'
 alias -s html='open -a Google\ Chrome'
 alias -s cpp=g++-4.8
 alias -s cc=g++-4.8
+
+if which terminal-notifier > /dev/null; then
+    alias -g BG=' 2>&1 | terminal-notifier &'
+fi
 
 # completions
 if [ -d /usr/local/share/zsh-completions ]; then

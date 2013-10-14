@@ -75,3 +75,8 @@ alias tweetvim='gvim +TweetVimHomeTimeline'
 alias -s html='google-chrome'
 alias -s plt='gnuplot'
 alias -s plot='gnuplot'
+
+# global alias
+if which notify-send > /dev/null; then
+    alias -g BG=' 2>&1 | notify-send &'
+fi
