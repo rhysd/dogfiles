@@ -36,5 +36,6 @@
 	he  = help
 	gr  = grep
 	lop = log -p
+	bg  = background
 [push]
 	default = simple
