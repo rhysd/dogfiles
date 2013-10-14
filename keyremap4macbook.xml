@@ -60,6 +60,12 @@
             <autogen>__KeyOverlaidModifier__ KeyCode::OPTION_L, KeyCode::OPTION_L, KeyCode::CURSOR_UP, ModifierFlag::CONTROL_L</autogen>
             <autogen>__KeyOverlaidModifier__ KeyCode::OPTION_R, KeyCode::OPTION_R, KeyCode::CURSOR_DOWN, ModifierFlag::CONTROL_L</autogen>
         </item>
+
+        <item>
+            <name>Control + Escape to F4 (Launch Pad)</name>
+            <identifier>remap.my_hhkb_control_esc_to_f4</identifier>
+            <autogen>__KeyToKey__ KeyCode::ESCAPE, ModifierFlag::CONTROL_L, KeyCode::F4</autogen>
+        </item>
     </item>
 
     <item>
