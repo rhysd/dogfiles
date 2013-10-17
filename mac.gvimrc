@@ -1,5 +1,9 @@
 set background=light
-colorscheme solarized "カラースキーマの指定
+colorscheme solarized
+let g:airline_theme = 'solarized'
+" do not load togglebg
+let g:loaded_togglebg = 1
+
 set fuoptions=maxvert,maxhorz
 set guifont=Ricty:h16
 " F12 で透過率を3段階に切り替え(0, 40, 80)

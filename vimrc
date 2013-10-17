@@ -747,7 +747,7 @@ NeoBundle 'ujihisa/unite-colorscheme'
 NeoBundle 'rhysd/unite-locate'
 
 " カラースキーム
-NeoBundle 'rhysd/wombat256.vim'
+NeoBundle 'rhysd/wombat256rhysd.vim'
 NeoBundle 'chriskempson/tomorrow-theme', {'rtp' : 'vim'}
 NeoBundle 'junegunn/seoul256.vim'
 NeoBundle 'tomasr/molokai'
@@ -1191,7 +1191,15 @@ augroup END
 
 " カラースキーム "{{{
 if !has('gui_running')
-    colorscheme wombat256rhysd
+    if &t_Co < 256
+        colorscheme default
+    else
+        try
+            colorscheme wombat256rhysd
+        catch
+            colorscheme desert
+        endtry
+    endif
 endif
 " シンタックスハイライト
 syntax enable
@@ -1966,6 +1974,7 @@ for arg in argv()
 endfor
 "}}}
 
+let g:loaded_netrwPlugin = 1
 let g:vimfiler_as_default_explorer = 1
 let g:vimfiler_safe_mode_by_default = 0
 let g:vimfiler_split_command = 'vertical rightbelow vsplit'
@@ -2021,14 +2030,12 @@ let g:clang_user_options='-std=c++11 -stdlib=libc++ -I /usr/lib/c++/v1 -I /usr/l
 let g:clang_complete_auto = 0
 " }}}
 
-" vim-marching
-let g:marching_command_option = '-std=c++0x -stdlib=libc++'
-let g:marching_include_paths = [
-            \ '/usr/lib/c++/v1',
-            \ '/usr/local/include',
-            \ ]
-let g:marching_enable_neocomplete = 1
-let g:neocomplete#force_omni_input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\w*\|\h\w*::\w*'
+" vim-marching "{{{
+if s:meet_neocomplete_requirements
+    let g:marching_enable_neocomplete = 1
+    let g:neocomplete#force_omni_input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\w*\|\h\w*::\w*'
+endif
+"}}}
 
 " vim-smartinput"{{{
 " 括弧内のスペース
@@ -2727,9 +2734,7 @@ unlet s:bundle
 " }}}
 
 " vim-airline "{{{
-if has('gui_running')
-    let g:airline_theme = 'solarized'
-else
+if ! has('gui_running')
     let g:airline_theme = 'wombat'
 endif
 let g:airline#extensions#whitespace#enabled = 0

@@ -68,3 +68,10 @@ let g:unite_source_ruby_require_ruby_command = '$HOME/.rbenv/shims/ruby'
 " airline
 let g:airline_left_sep = '»'
 let g:airline_right_sep = '«'
+
+" vim-marching
+let g:marching_command_option = '-std=c++0x -stdlib=libc++'
+let g:marching_include_paths = [
+            \ '/usr/lib/c++/v1',
+            \ '/usr/local/include',
+            \ ]

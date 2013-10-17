@@ -70,4 +70,11 @@ let g:openbrowser_open_commands = [
         \]
 unlet s:browser
 
+" vim-marching
+let g:marching_command_option = '-std=c++11'
+let g:marching_include_paths = [
+            \ '/usr/include/c++/4.8.1',
+            \ '/usr/local/include',
+            \ ]
+
 " vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8 :
