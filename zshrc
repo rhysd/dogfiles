@@ -27,7 +27,7 @@ alias ls='ls --color=auto'
 alias lr='ls -R'
 alias ll='ls -lah'
 alias llr='ls -laRh'
-alias la='ls -a'
+alias la='ls -A'
 alias gr='grep -nl --color'
 alias pg='ps aux | grep'
 alias md='mkdir -pv'
@@ -461,10 +461,10 @@ _ls_abbrev() {
     local -a opt_ls
     case "${OSTYPE}" in
         freebsd*|darwin*)
-            opt_ls=('-aCFG')
+            opt_ls=('-ACFG')
             ;;
         *)
-            opt_ls=('-aCF' '--color=always')
+            opt_ls=('-ACF' '--color=always')
             ;;
     esac
 

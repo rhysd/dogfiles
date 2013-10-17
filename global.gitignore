@@ -1,6 +1,7 @@
 # Editors' backup files
 .\#*
-.*.swp
+.*.sw?
+.sw?
 
 # Platform-dependant data
 .DS_Store

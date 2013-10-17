@@ -3,7 +3,7 @@
 	email = lin90162@yahoo.co.jp
 [core]
 	editor = vim
-	excludesfile = /Users/rhayasd/.global.gitignore
+	excludesfile = ~/.global.gitignore
 [color]
 	ui = true
 [alias]
