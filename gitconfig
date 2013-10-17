@@ -37,5 +37,9 @@
 	gr  = grep
 	lop = log -p
 	bg  = background
+	bps = background push
+	bpl = background pull
+	bplr = background pull --rebase
+	bcl = background clone
 [push]
 	default = simple
