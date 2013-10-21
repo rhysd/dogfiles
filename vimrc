@@ -364,12 +364,14 @@ function! s:smart_help(args)
     else
         execute 'aboveleft help ' . a:args
     endif
-    " 横幅を確保できないときはタブで開く
-    if winwidth(0) < 80
-        execute 'quit'
-        execute 'tab help ' . a:args
+    if &buftype ==# 'help'
+        " 横幅を確保できないときはタブで開く
+        if winwidth(0) < 80
+            execute 'quit'
+            execute 'tab help ' . a:args
+        endif
+        silent! AdjustWindowWidth
     endif
-    silent! AdjustWindowWidth
 endfunction
 
 " 隣のウィンドウの上下移動
