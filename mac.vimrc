@@ -75,3 +75,8 @@ let g:marching_include_paths = [
             \ '/usr/lib/c++/v1',
             \ '/usr/local/include',
             \ ]
+
+" vim-clang-format
+if ! executable('clang-format') && executable('clang-format-HEAD')
+    let g:clang_format#command = 'clang-format-HEAD'
+endif
