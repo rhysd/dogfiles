@@ -18,7 +18,7 @@ let g:quickrun_config.cpp.command = 'g++-4.8'
 let g:quickrun_config.ruby = { 'exec' : $HOME.'/.rbenv/shims/ruby %o %s' }
 " let g:quickrun_config['syntax/cpp'].command = 'g++-4.8'
 " clang のライブラリ
-let g:clang_user_options='-stdlib=libc++ -I /usr/local/include -I /usr/include -I /usr/local/Cellar/gcc48/4.8.1/gcc/include/c++/4.8.1 2>/dev/null || exit 0'
+let g:clang_user_options='-stdlib=libc++ -I /usr/local/include -I /usr/include -I /usr/local/Cellar/gcc48/4.8.2/gcc/include/c++/4.8.2 2>/dev/null || exit 0'
 
 " open-pdf で brew の findutils を使う
 let g:unite_pdf_search_cmd = '/usr/local/bin/locate -l 30 "*%s*.pdf"'

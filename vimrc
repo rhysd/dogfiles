@@ -1387,7 +1387,7 @@ let g:neocomplete#delimiter_patterns.cpp = ['::']
 if !exists('g:neocomplete#sources#include#paths')
     let g:neocomplete#sources#include#paths = {}
 endif
-let g:neocomplete#sources#include#paths.cpp  = '.,/usr/local/include,/usr/local/Cellar/gcc/4.8.1/gcc/include/c++/4.8.1,/usr/include'
+let g:neocomplete#sources#include#paths.cpp  = '.,/usr/local/include,/usr/local/Cellar/gcc/4.8.2/gcc/include/c++/4.8.2,/usr/include'
 let g:neocomplete#sources#include#paths.c    = '.,/usr/include'
 let g:neocomplete#sources#include#paths.perl = '.,/System/Library/Perl,/Users/rhayasd/Programs'
 let g:neocomplete#sources#include#paths.ruby = expand('~/.rbenv/versions/2.0.0-p195/lib/ruby/2.0.0')
@@ -1495,7 +1495,7 @@ let g:neocomplcache_delimiter_patterns.cpp = ['::']
 if !exists('g:neocomplcache_include_paths')
     let g:neocomplcache_include_paths = {}
 endif
-let g:neocomplcache_include_paths.cpp  = '.,/usr/local/include,/usr/local/Cellar/gcc/4.8.1/gcc/include/c++/4.8.1,/usr/include'
+let g:neocomplcache_include_paths.cpp  = '.,/usr/local/include,/usr/local/Cellar/gcc/4.8.2/gcc/include/c++/4.8.2,/usr/include'
 let g:neocomplcache_include_paths.c    = '.,/usr/include'
 let g:neocomplcache_include_paths.perl = '.,/System/Library/Perl,/Users/rhayasd/Programs'
 let g:neocomplcache_include_paths.ruby = expand('~/.rbenv/versions/2.0.0-p195/lib/ruby/2.0.0')
