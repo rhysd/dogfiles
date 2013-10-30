@@ -28,6 +28,7 @@
 	rbc = rebase --continue
 	re  = remote
 	ad  = add
+	adp = add -p
 	co  = checkout
 	cob = checkout -b
 	sh  = show
