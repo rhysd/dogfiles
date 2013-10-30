@@ -2057,6 +2057,7 @@ call smartinput#define_rule({
             \   'input' : '<Space><Space><Left>',
             \   })
 
+call smartinput#map_to_trigger('i', '<BS>', '<BS>', '<BS>')
 call smartinput#define_rule({
             \   'at'    : '( \%# )',
             \   'char'  : '<BS>',
@@ -2108,9 +2109,9 @@ call smartinput#define_rule({
 " Ruby ブロック引数 ||
 call smartinput#map_to_trigger('i', '<Bar>', '<Bar>', '<Bar>')
 call smartinput#define_rule({
-            \   'at' : '\({\|\<do\>\)\s*\%#',
-            \   'char' : '<Bar>',
-            \   'input' : '<Bar><Bar><Left>',
+            \   'at' : '\%({\|\<do\>\)\s*\%#',
+            \   'char' : '|',
+            \   'input' : '||<Left>',
             \   'filetype' : ['ruby'],
             \    })
 
@@ -2272,6 +2273,32 @@ call smartinput#define_rule(
     \ , 'filetype' : ['vim']
     \ })
 
+" Vim help
+call smartinput#define_rule(
+    \ { 'at'    : '\%#'
+    \ , 'char'  : '|'
+    \ , 'input' : '||<Left>'
+    \ , 'filetype' : ['help']
+    \ })
+call smartinput#define_rule(
+    \ { 'at'    : '|\%#|'
+    \ , 'char'  : '<BS>'
+    \ , 'input' : '<Del><BS>'
+    \ , 'filetype' : ['help']
+    \ })
+call smartinput#map_to_trigger('i', '*', '*', '*')
+call smartinput#define_rule(
+    \ { 'at'    : '\%#'
+    \ , 'char'  : '*'
+    \ , 'input' : '**<Left>'
+    \ , 'filetype' : ['help']
+    \ })
+call smartinput#define_rule(
+    \ { 'at'    : '\*\%#\*'
+    \ , 'char'  : '<BS>'
+    \ , 'input' : '<Del><BS>'
+    \ , 'filetype' : ['help']
+    \ })
 "}}}
 
 " caw.vim {{{
