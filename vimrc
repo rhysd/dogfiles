@@ -370,7 +370,7 @@ function! s:smart_help(args)
             execute 'quit'
             execute 'tab help ' . a:args
         endif
-        silent! AdjustWindowWidth
+        silent! AdjustWindowWidth --direction=shrink
     endif
 endfunction
 
@@ -774,6 +774,7 @@ call s:test_bundle('rhysd/vim-clang-format')
 call s:test_bundle('rhysd/vim-operator-surround')
 call s:test_bundle('rhysd/vim-window-adjuster')
 call s:test_bundle('rhysd/conflict-marker.vim')
+call s:test_bundle('rhysd/puyo.vim')
 
 
 " vim-scripts上のリポジトリ
@@ -932,10 +933,18 @@ NeoBundleLazy 'kana/vim-textobj-fold', {
             \       'mappings' : [['xo', 'az'], ['xo', 'iz']]
             \ }
             \ }
+
 NeoBundleLazy 'osyo-manga/vim-textobj-multiblock', {
             \ 'depends' : 'kana/vim-textobj-user',
             \ 'autoload' : {
             \       'mappings' : [['xo', '<Plug>(textobj-multiblock-']]
+            \   }
+            \ }
+
+NeoBundleLazy 'rhysd/vim-textobj-anyblock', {
+            \ 'depends' : 'kana/vim-textobj-user',
+            \ 'autoload' : {
+            \       'mappings' : [['xo', 'ab'], ['xo', 'ib']]
             \   }
             \ }
 
@@ -947,11 +956,11 @@ NeoBundleLazy 'tpope/vim-fugitive', {
 
 NeoBundleLazy 'tpope/vim-repeat'
 
-NeoBundleLazy 'rbtnn/puyo.vim', {
-        \ 'autoload' : {
-        \       'commands' : 'Puyo'
-        \   }
-        \ }
+" NeoBundleLazy 'rbtnn/puyo.vim', {
+"         \ 'autoload' : {
+"         \       'commands' : 'Puyo'
+"         \   }
+"         \ }
 
 " if_lua プラグイン
 let s:meet_neocomplete_requirements = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
@@ -2298,20 +2307,10 @@ map <Leader>c <Plug>(operator-caw)
 "}}}
 
 " textobj-multiblock {{{
-let g:textobj_multiblock_no_default_key_mappings = 1
-omap ab <Plug>(textobj-multiblock-a)
-omap ib <Plug>(textobj-multiblock-i)
-xmap ab <Plug>(textobj-multiblock-a)
-xmap ib <Plug>(textobj-multiblock-i)
-let g:textobj_multiblock_blocks = [
-                    \   [ '(', ')' ],
-                    \   [ '[', ']' ],
-                    \   [ '{', '}' ],
-                    \   [ '"', '"' ],
-                    \   [ "'", "'" ],
-                    \   [ '<', '>' ],
-                    \   [ '`', '`' ],
-                    \ ]
+let g:textobj#anyblock#blocks = [ '(', '{', '[', '"', "'", '<', 'f`']
+augroup MyVimrc
+    autocmd FileType help,markdown let b:textobj_anyblock_local_blocks = ['f*', 'f|']
+augroup END
 "}}}
 
 " vim-operator {{{
@@ -2783,9 +2782,10 @@ endif
 nnoremap <Leader>gs :<C-u>Gstatus<CR>
 nnoremap <Leader>gC :<C-u>Gcommit -v<CR>
 function! s:fugitive_commit()
+    ZoomWin
     Gcommit -v
+    silent only
     if getline('.') == ''
-        only
         startinsert
     endif
 endfunction
