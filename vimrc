@@ -1191,6 +1191,7 @@ endfunction
 command! -nargs=+ EchoError call EchoError(<f-args>)
 "}}}
 
+
 " 追加のハイライト {{{
 let s:zenkaku_no_highlight_filetypes = []
 augroup MyVimrc
@@ -1754,14 +1755,16 @@ nnoremap <silent>[unite]hs        :<C-u>Unite -buffer-name=lines history/search<
 nnoremap <silent>[unite]hy        :<C-u>Unite -buffer-name=lines history/yank<CR>
 " プロジェクトのファイル一覧
 nnoremap <silent>[unite]p         :<C-u>Unite file_rec:! file/new<CR>
-" 検索に unite-lines を使う
-nnoremap <silent><expr> [unite]/ line('$') > 5000 ?
+" unite-lines ファイル内インクリメンタル検索
+nnoremap <silent><expr> [unite]L line('$') > 5000 ?
             \ ":\<C-u>Unite -buffer-name=search -no-split -start-insert line/fast\<CR>" :
-            \ ":\<C-u>Unite -buffer-name=search -start-insert line\<CR>"
+            \ ":\<C-u>Unite -buffer-name=search -start-insert line:all\<CR>"
 " カラースキーム
 nnoremap [unite]C :<C-u>Unite -auto-preview colorscheme<CR>
 " locate
 nnoremap <silent>[unite]l :<C-u>UniteWithInput locate<CR>
+" 検索
+nnoremap <silent>[unite]/ :<C-u>execute 'Unite grep:'.expand('%:p').' -input='.escape(substitute(@/, '^\\v', '', ''), ' \')<CR>
 " }}}
 
 " }}}
@@ -1820,7 +1823,6 @@ autocmd MyVimrc FileType cpp nnoremap <buffer>[unite]n :<C-u>Unite n3337<CR>
 "}}}
 
 " VimShellの設定 {{{
-
 " 実行キーマッピング
 nnoremap <silent><Leader>vs :<C-u>VimShell -split-command=vsplit<CR>
 nnoremap <Leader>vc :<C-u>VimShellSendString<Space>
