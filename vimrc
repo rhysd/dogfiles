@@ -604,6 +604,8 @@ inoremap <C-Tab> <C-v><Tab>
 " 畳み込みを開く
 nnoremap <expr>h col('.') == 1 && foldlevel(line('.')) > 0 ? 'zc' : 'h'
 nnoremap <expr>l foldclosed(line('.')) != -1 ? 'zo' : 'l'
+" colorcolumn
+nnoremap <expr><Leader>cl ":\<C-u>set colorcolumn=".(&cc == 0 ? v:count == 0 ? col('.') : v:count : 0)."\<CR>"
 
 " help のマッピング
 function! s:on_FileType_help_define_mappings()
@@ -764,7 +766,7 @@ function! s:test_bundle(name)
     if isdirectory(expand('~/Github/'.plugin))
         execute 'set' 'rtp+=~/Github/'.plugin
     else
-        execute 'NeoBundle' a:name
+        execute 'NeoBundle' string(a:name)
     endif
 endfunction
 
@@ -2777,7 +2779,7 @@ autocmd MyVimrc BufWritePost *.md,*.markdown call previm#refresh()
 
 " memolist.vim "{{{
 nnoremap <Leader>mn :<C-u>MemoNew<CR>
-nnoremap <Leader>ml :<C-u>MemoList<CR>
+nnoremap <silent><Leader>ml :<C-u>call <SID>memolist()<CR>
 nnoremap <Leader>mg :<C-u>execute 'Unite' 'grep:'.g:memolist_path '-auto-preview'<CR>
 
 if isdirectory(expand('~/Dropbox/memo'))
@@ -2792,6 +2794,17 @@ endif
 let g:memolist_memo_suffix = 'md'
 let g:memolist_unite = 1
 let g:memolist_unite_option = '-auto-preview -no-start-insert'
+
+function! s:memolist()
+    " delete swap files because they make unite auto preview hung up
+    for swap in glob(g:memolist_path.'/.*.sw?', 1, 1)
+        if swap !~# '^\.\+$' && filereadable(swap)
+            call delete(swap)
+        endif
+    endfor
+
+    MemoList
+endfunction
 "}}}
 
 " vim-numberstar {{{
