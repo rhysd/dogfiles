@@ -776,8 +776,6 @@ call s:test_bundle('rhysd/vim-clang-format')
 call s:test_bundle('rhysd/vim-operator-surround')
 call s:test_bundle('rhysd/vim-window-adjuster')
 call s:test_bundle('rhysd/conflict-marker.vim')
-call s:test_bundle('rhysd/puyo.vim')
-
 
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
@@ -958,11 +956,18 @@ NeoBundleLazy 'tpope/vim-fugitive', {
 
 NeoBundleLazy 'tpope/vim-repeat'
 
-" NeoBundleLazy 'rbtnn/puyo.vim', {
-"         \ 'autoload' : {
-"         \       'commands' : 'Puyo'
-"         \   }
-"         \ }
+NeoBundleLazy 'rbtnn/puyo.vim', {
+        \ 'autoload' : {
+        \       'commands' : 'Puyo'
+        \   }
+        \ }
+
+NeoBundleLazy 'osyo-manga/vim-over', {
+        \ 'autoload' : {
+        \       'mappings' : ',/',
+        \       'commands' : 'OverCommandLine',
+        \   }
+        \ }
 
 " if_lua プラグイン
 let s:meet_neocomplete_requirements = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
@@ -2856,6 +2861,13 @@ nnoremap <silent><C-w>r :<C-u>AdjustWindowWidth --margin=1 --direction=shrink<CR
 " ぷよ.vim {{{
 let g:puyo#updatetime = 500
 "}}}
+
+" vim-over
+
+let s:bundle = neobundle#get("vim-over")
+function! s:bundle.hooks.on_post_source(bundle)
+    nnoremap ,/ q:i%s/
+endfunction
 
 " プラットフォーム依存な設定をロードする "{{{
 function! SourceIfExist(path)
