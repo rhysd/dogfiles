@@ -429,11 +429,11 @@ zstyle ':filter-select' max-lines $(($LINES / 2))
 # 絞り込みをcase-insensitiveに
 zstyle ':filter-select' case-insensitive yes
 # キーバインド
-bindkey '^Xc' zaw-cdr
-bindkey '^Xh' zaw-history
-bindkey '^@'  zaw-history
-bindkey '^Xg' zaw-git-files
-bindkey '^Xt' zaw-tmux
+bindkey -M viins '^Xc' zaw-cdr
+bindkey -M viins '^Xh' zaw-history
+bindkey -M viins '^@'  zaw-history
+bindkey -M viins '^Xg' zaw-git-files
+bindkey -M viins '^Xt' zaw-tmux
 # 空行の状態で Tab を入れると zaw-cdr する
 function _advanced_tab(){
   if [[ $#BUFFER == 0 ]]; then
@@ -444,7 +444,7 @@ function _advanced_tab(){
   fi
 }
 zle -N _advanced_tab
-bindkey "^I" _advanced_tab
+bindkey -M viins '^I' _advanced_tab
 
 # zsh-syntax-highlighting
 # https://github.com/zsh-users/zsh-syntax-highlighting
