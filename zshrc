@@ -8,6 +8,9 @@ export EDITOR=vim
 
 export PATH=/usr/local/bin:$PATH
 
+# ワード単位移動の挙動
+export WORDCHARS=
+
 # Haskell executables
 if [ -d $HOME/.cabal ]; then
     export PATH=$HOME/.cabal/bin:$PATH
@@ -67,6 +70,7 @@ alias e='emacs -nw'
 
 # global alias
 alias -g G='| grep'
+alias -g GI='| grep -i'
 alias -g L='| less'
 alias -g V='| view -R -'
 alias -g H='| head'
@@ -319,7 +323,7 @@ bindkey '^[^i' reverse-menu-complete
 # history pattern matching
 # zsh 4.3.10 or later is required
 bindkey '^R' history-incremental-pattern-search-backward
-bindkey '^S' history-incremental-pattern-search-forward
+bindkey '\er' history-incremental-pattern-search-forward
 
 # ^J で parent directory に移動
 function _parent() {
@@ -336,13 +340,6 @@ function _pop_hist(){
 }
 zle -N _pop_hist
 bindkey "^O" _pop_hist
-
-# tmux 起動
-# function _tmux(){
-#   tmux
-# }
-# zle -N _tmux
-# bindkey "^T" _tmux
 
 # 前のコマンドで最後に打った単語の挿入
 zle -N insert-last-word smart-insert-last-word
@@ -364,6 +361,9 @@ _quote-previous-word-in-double() {
 }
 zle -N _quote-previous-word-in-double
 bindkey '^Xq' _quote-previous-word-in-double
+
+# Shift + Tab で逆順選択
+bindkey "$terminfo[kcbt]" reverse-menu-complete
 # }}}
 
 ####################
@@ -399,9 +399,9 @@ zstyle ':filter-select' case-insensitive yes
 # キーバインド
 bindkey '^Xc' zaw-cdr
 bindkey '^Xh' zaw-history
-bindkey '^@' zaw-history
+bindkey '^@'  zaw-history
 bindkey '^Xg' zaw-git-files
-bindkey '^St' zaw-tmux
+bindkey '^Xt' zaw-tmux
 # 空行の状態で Tab を入れると zaw-cdr する
 function _advanced_tab(){
   if [[ $#BUFFER == 0 ]]; then
@@ -414,12 +414,15 @@ function _advanced_tab(){
 zle -N _advanced_tab
 bindkey "^I" _advanced_tab
 
-
-
 # zsh-syntax-highlighting
 # https://github.com/zsh-users/zsh-syntax-highlighting
 if [ -d $ZSHPLUGIN/zsh-syntax-highlighting ]; then
     source $ZSHPLUGIN/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
+
+# zsh-bundle-exec
+if [ -d ~/Github/zsh-bundle-exec ]; then
+    source ~/Github/zsh-bundle-exec/zsh-bundle-exec.zsh
 fi
 # }}}
 
@@ -502,4 +505,3 @@ case $OSTYPE in
     ;;
 esac
 # }}}
-
