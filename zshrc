@@ -310,20 +310,52 @@ zstyle ':completion:*' recent-dirs-insert both
 #   キーバインド   #
 ####################
 # {{{
-# Emacs like keybind
-bindkey -e
+# Vim like keybinds as base
+bindkey -v
 
-# <C-N>と<C-P>：複数行の処理と通常時で使い分る
+# 単語削除や文字削除はどこでも消せるようにする
+zle -A .backward-kill-word vi-backward-kill-word
+zle -A .backward-delete-char vi-backward-delete-char
+
+# <C-N>と<C-P>：複数行の処理と通常時で使い分ける
 zle -N history-beginning-search-backward-end history-search-end
 zle -N history-beginning-search-forward-end history-search-end
-bindkey "^P" history-beginning-search-backward-end
-bindkey "^N" history-beginning-search-forward-end
-bindkey '^[^i' reverse-menu-complete
 
-# history pattern matching
-# zsh 4.3.10 or later is required
-bindkey '^R' history-incremental-pattern-search-backward
-bindkey '\er' history-incremental-pattern-search-forward
+# Emacsバインディング（インサートモード）
+bindkey -M viins '^F'    forward-char
+bindkey -M viins '^B'    backward-char
+bindkey -M viins '^P'    up-line-or-history
+bindkey -M viins '^N'    down-line-or-history
+bindkey -M viins '^A'    beginning-of-line
+bindkey -M viins '^E'    end-of-line
+bindkey -M viins '^K'    kill-line
+bindkey -M viins '^R'    history-incremental-pattern-search-backward
+bindkey -M viins '\er'   history-incremental-pattern-search-forward
+bindkey -M viins '^Y'    yank
+bindkey -M viins '^W'    backward-kill-word
+bindkey -M viins '^U'    backward-kill-line
+bindkey -M viins '^H'    backward-delete-char
+bindkey -M viins '^?'    backward-delete-char
+
+# Emacsバインディング（コマンドラインモード）
+bindkey -M vicmd '^A'    beginning-of-line
+bindkey -M vicmd '^E'    end-of-line
+bindkey -M vicmd '^K'    kill-line
+bindkey -M vicmd '^R'    history-incremental-pattern-search-backward
+bindkey -M vicmd '^S'    history-incremental-pattern-search-forward
+bindkey -M vicmd '^P'    up-line-or-history
+bindkey -M vicmd '^N'    down-line-or-history
+bindkey -M vicmd '^Y'    yank
+bindkey -M vicmd '^W'    backward-kill-word
+bindkey -M vicmd '^U'    backward-kill-line
+bindkey -M vicmd '/'     vi-history-search-forward
+bindkey -M vicmd '?'     vi-history-search-backward
+bindkey -M vicmd '\ef'   forward-word                      # Alt-f
+bindkey -M vicmd '\eb'   backward-word                     # Alt-b
+bindkey -M vicmd '\ed'   kill-word                         # Alt-d
+
+# jj でノーマルモードに戻る
+bindkey -M viins -s 'jj' '\e'
 
 # ^J で parent directory に移動
 function _parent() {
@@ -331,7 +363,7 @@ function _parent() {
   zle reset-prompt
 }
 zle -N _parent
-bindkey "^J" _parent
+bindkey -M viins "^J" _parent
 
 # ^O で popd する
 function _pop_hist(){
@@ -339,12 +371,12 @@ function _pop_hist(){
   zle reset-prompt
 }
 zle -N _pop_hist
-bindkey "^O" _pop_hist
+bindkey -M viins "^O" _pop_hist
 
 # 前のコマンドで最後に打った単語の挿入
 zle -N insert-last-word smart-insert-last-word
 zstyle :insert-last-word match '*([^[:space:]][[:alpha:]/\\]|[[:alpha:]/\\][^[:space:]])*'
-bindkey '^]' insert-last-word
+bindkey -M viins '^]' insert-last-word
 
 # 1つ前の単語をシングルクォートで囲む
 _quote-previous-word-in-single() {
@@ -352,7 +384,7 @@ _quote-previous-word-in-single() {
     zle vi-forward-blank-word
 }
 zle -N _quote-previous-word-in-single
-bindkey '^Q' _quote-previous-word-in-single
+bindkey -M viins '^Q' _quote-previous-word-in-single
 
 # 1つ前の単語をダブルクォートで囲む
 _quote-previous-word-in-double() {
@@ -360,10 +392,10 @@ _quote-previous-word-in-double() {
     zle vi-forward-blank-word
 }
 zle -N _quote-previous-word-in-double
-bindkey '^Xq' _quote-previous-word-in-double
+bindkey -M viins '^Xq' _quote-previous-word-in-double
 
 # Shift + Tab で逆順選択
-bindkey "$terminfo[kcbt]" reverse-menu-complete
+bindkey -M viins "$terminfo[kcbt]" reverse-menu-complete
 # }}}
 
 ####################
