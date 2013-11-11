@@ -336,6 +336,7 @@ bindkey -M viins '^W'    backward-kill-word
 bindkey -M viins '^U'    backward-kill-line
 bindkey -M viins '^H'    backward-delete-char
 bindkey -M viins '^?'    backward-delete-char
+bindkey -M viins '^G'    send-break
 
 # Emacsバインディング（コマンドラインモード）
 bindkey -M vicmd '^A'    beginning-of-line
@@ -356,6 +357,8 @@ bindkey -M vicmd '\ed'   kill-word                         # Alt-d
 
 # jj でノーマルモードに戻る
 bindkey -M viins -s 'jj' '\e'
+
+# TODO: 対応するクオート自動挿入
 
 # ^J で parent directory に移動
 function _parent() {
