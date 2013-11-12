@@ -289,6 +289,17 @@ PROMPT="%{$terminfo_down_sc$PROMPT_2$terminfo[rc]%}%{$fg_bold[green]%}%~%{$reset
 
 # 右プロンプト
 RPROMPT='[%{$fg_bold[red]%}${HOST}%{$reset_color%}][%{$fg_bold[red]%}%D{%m/%d %H:%M}%{$reset_color%}]'
+
+# モードでプロンプトの色を変える
+function zle-keymap-select () {
+    case $KEYMAP in
+        vicmd) PROMPT="%{$terminfo_down_sc$PROMPT_2$terminfo[rc]%}%{$fg_bold[yellow]%}%~%{$reset_color%} %# ";;
+        main) PROMPT="%{$terminfo_down_sc$PROMPT_2$terminfo[rc]%}%{$fg_bold[green]%}%~%{$reset_color%} %# ";;
+        viins) PROMPT="%{$terminfo_down_sc$PROMPT_2$terminfo[rc]%}%{$fg_bold[magenta]%}%~%{$reset_color%} %# ";;
+    esac
+    zle reset-prompt
+}
+zle -N zle-keymap-select
 # }}}
 
 #######################
@@ -337,6 +348,8 @@ bindkey -M viins '^U'    backward-kill-line
 bindkey -M viins '^H'    backward-delete-char
 bindkey -M viins '^?'    backward-delete-char
 bindkey -M viins '^G'    send-break
+bindkey -M viins '^D'    delete-char-or-list
+
 
 # Emacsバインディング（コマンドラインモード）
 bindkey -M vicmd '^A'    beginning-of-line
