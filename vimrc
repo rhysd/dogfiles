@@ -71,6 +71,8 @@ set noimdisable
 set iminsert=0 imsearch=0
 " 検索結果をハイライト
 set hlsearch
+" インクリメンタルなマッチング
+set incsearch
 "コマンドラインでのIM無効化
 set noimcmdline
 " コマンドラインで cmd window を出すキー
@@ -749,9 +751,10 @@ NeoBundle 'rhysd/migemo-search.vim'
 NeoBundle 'rhysd/vim-vspec-matchers'
 NeoBundle 'ujihisa/unite-colorscheme'
 NeoBundle 'rhysd/unite-locate'
+NeoBundle 'thinca/vim-showtime'
 
 " カラースキーム
-NeoBundle 'rhysd/wombat256rhysd.vim'
+NeoBundle 'rhysd/wallaby.vim'
 NeoBundle 'chriskempson/tomorrow-theme', {'rtp' : 'vim'}
 NeoBundle 'junegunn/seoul256.vim'
 NeoBundle 'tomasr/molokai'
@@ -1198,7 +1201,6 @@ endfunction
 command! -nargs=+ EchoError call EchoError(<f-args>)
 "}}}
 
-
 " 追加のハイライト {{{
 let s:zenkaku_no_highlight_filetypes = []
 augroup MyVimrc
@@ -1214,7 +1216,7 @@ if !has('gui_running')
         colorscheme default
     else
         try
-            colorscheme wombat256rhysd
+            colorscheme wallaby
         catch
             colorscheme desert
         endtry
@@ -2862,12 +2864,12 @@ nnoremap <silent><C-w>r :<C-u>AdjustWindowWidth --margin=1 --direction=shrink<CR
 let g:puyo#updatetime = 500
 "}}}
 
-" vim-over
-
+" vim-over "{{{
 let s:bundle = neobundle#get("vim-over")
 function! s:bundle.hooks.on_post_source(bundle)
     nnoremap ,/ q:i%s/
 endfunction
+"}}}
 
 " プラットフォーム依存な設定をロードする "{{{
 function! SourceIfExist(path)
