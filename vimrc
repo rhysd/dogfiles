@@ -937,13 +937,6 @@ NeoBundleLazy 'kana/vim-textobj-fold', {
             \ }
             \ }
 
-NeoBundleLazy 'osyo-manga/vim-textobj-multiblock', {
-            \ 'depends' : 'kana/vim-textobj-user',
-            \ 'autoload' : {
-            \       'mappings' : [['xo', '<Plug>(textobj-multiblock-']]
-            \   }
-            \ }
-
 NeoBundleLazy 'rhysd/vim-textobj-anyblock', {
             \ 'depends' : 'kana/vim-textobj-user',
             \ 'autoload' : {
@@ -2344,7 +2337,7 @@ map <Leader>c <Plug>(operator-caw)
 
 "}}}
 
-" textobj-multiblock {{{
+" textobj-anyblock {{{
 let g:textobj#anyblock#blocks = [ '(', '{', '[', '"', "'", '<', 'f`']
 augroup MyVimrc
     autocmd FileType help,markdown let b:textobj_anyblock_local_blocks = ['f*', 'f|']
@@ -2378,8 +2371,8 @@ autocmd MyVimrc FileType c,cpp map <buffer><Leader>x <Plug>(operator-clang-forma
 map <silent>gy <Plug>(operator-surround-append)
 map <silent>gd <Plug>(operator-surround-delete)
 map <silent>gc <Plug>(operator-surround-replace)
-nmap <silent>gdd <Plug>(operator-surround-delete)<Plug>(textobj-multiblock-a)
-nmap <silent>gcc <Plug>(operator-surround-replace)<Plug>(textobj-multiblock-a)
+nmap <silent>gdd <Plug>(operator-surround-delete)<Plug>(textobj-anyblock-a)
+nmap <silent>gcc <Plug>(operator-surround-replace)<Plug>(textobj-anyblock-a)
 nmap <silent>gdb <Plug>(operator-surround-delete)<Plug>(textobj-between-a)
 nmap <silent>gcb <Plug>(operator-surround-replace)<Plug>(textobj-between-a)
 
