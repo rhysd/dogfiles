@@ -103,15 +103,16 @@ else
     alias vspec='PATH=/usr/local/bin:$PATH ~/.vim/bundle/vim-vspec/bin/vspec ~/.vim/bundle/vim-vspec'
 fi
 
-#tmux wrapper
-function t(){
-    if [[ $TMUX == "" && $# == 0 ]]; then
-        tmux new-session \; split-window -h \; select-pane -t 0
-    else
-        tmux $@
-    fi
-}
-
+# tmux wrapper
+if which tmux > /dev/null; then
+    function t(){
+        if [[ $TMUX == "" && $# == 0 ]]; then
+            tmux new-session \; split-window -h \; select-pane -t 0
+        else
+            tmux $@
+        fi
+    }
+fi
 # }}}
 
 ############

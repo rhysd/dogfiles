@@ -80,3 +80,18 @@ alias -s plot='gnuplot'
 if which notify-send > /dev/null; then
     alias -g BG=' 2>&1 | notify-send &'
 fi
+
+# cleverer umount command
+if ! which um > /dev/null; then
+    function um(){
+        local dirs_in_media
+        dirs_in_media=$(ls -l /media/ | grep -e ^d)
+        if [[ "$(echo "$dirs_in_media" | wc -l)" == 1 ]]; then
+            local media_dir
+            media_dir=${"$(echo "$dirs_in_media" | head -n 1)"##* }
+            umount $@ /media/"$media_dir"
+        else
+            umount $@
+        fi
+    }
+fi
