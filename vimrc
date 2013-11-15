@@ -641,6 +641,15 @@ augroup MyVimrc
     autocmd FileType qf nnoremap <buffer><silent> l :<C-u>clist<CR>
 augroup END
 
+" git-rebase
+augroup MyVimrc
+    autocmd FileType gitrebase nnoremap <buffer>p :<C-u>Pick<CR>
+    autocmd FileType gitrebase nnoremap <buffer>s :<C-u>Squash<CR>
+    autocmd FileType gitrebase nnoremap <buffer>e :<C-u>Edit<CR>
+    autocmd FileType gitrebase nnoremap <buffer>r :<C-u>Reword<CR>
+    autocmd FileType gitrebase nnoremap <buffer>f :<C-u>Fixup<CR>
+augroup END
+
 
 " 初回のみ a:cmd の動きをして，それ以降は行内をローテートする
 let s:smart_line_pos = -1
