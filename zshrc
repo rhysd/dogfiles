@@ -313,9 +313,8 @@ SAVEHIST=1000000
 
 # ワーキングディレクトリ履歴
 add-zsh-hook chpwd chpwd_recent_dirs
+zstyle ':completion:*:*:cdr:*:*' menu selection
 zstyle ':chpwd:*' recent-dirs-max 5000
-zstyle ':chpwd:*' recent-dirs-default yes
-zstyle ':completion:*' recent-dirs-insert both
 # }}}
 
 ####################
