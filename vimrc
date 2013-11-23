@@ -1203,7 +1203,9 @@ augroup MyVimrc
 augroup END
 " }}}
 
-" カラースキーム "{{{
+" カラースキーム {{{
+" シンタックスハイライト
+syntax enable
 if !has('gui_running')
     if &t_Co < 256
         colorscheme default
@@ -1215,8 +1217,7 @@ if !has('gui_running')
         endtry
     endif
 endif
-" シンタックスハイライト
-syntax enable
+
 " seoul256 バックグラウンドカラーの明るさ
 let g:seoul256_background = 233
 " }}}
