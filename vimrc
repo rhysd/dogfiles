@@ -49,8 +49,6 @@ set ruler
 "最下ウィンドウにステータス行が表示される時
 "1: ウィンドウの数が2以上 2:常
 set laststatus=2
-"モードライン無効化
-set modelines=0
 "スクロール時の余白確保
 set scrolloff=5
 "いろいろスマート
@@ -150,8 +148,8 @@ set statusline=%f:\ %{substitute(getcwd(),'.*/','','')}\ %m%=%{(&fenc!=''?&fenc:
 " リストヘッダ
 set formatlistpat&
 let &formatlistpat .= '\|^\s*[*+-]\s*'
-" スペルチェックを英単語のみに限定する
-syntax match Normal /[^!-~]/ contains=@NoSpell
+" spell チェックで日本語をチェックしない
+set spelllang=en,cjk
 
 augroup MyVimrc
     " 一定時間カーソルを移動しないとカーソルラインを表示（ただし，ウィンドウ移動時
@@ -760,7 +758,7 @@ NeoBundle 'rhysd/migemo-search.vim'
 NeoBundle 'rhysd/vim-vspec-matchers'
 NeoBundle 'ujihisa/unite-colorscheme'
 NeoBundle 'rhysd/unite-locate'
-NeoBundle 'thinca/vim-showtime'
+NeoBundle 'vim-jp/vital.vim'
 
 " カラースキーム
 NeoBundle 'rhysd/wallaby.vim'
@@ -788,6 +786,7 @@ call s:test_bundle('rhysd/vim-clang-format')
 call s:test_bundle('rhysd/vim-operator-surround')
 call s:test_bundle('rhysd/vim-window-adjuster')
 call s:test_bundle('rhysd/conflict-marker.vim')
+call s:test_bundle('rhysd/wandbox-vim')
 
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
@@ -2872,6 +2871,10 @@ function! s:bundle.hooks.on_post_source(bundle)
     nnoremap ,/ q:i%s/
 endfunction
 "}}}
+
+" wandbox-vim
+let g:wandbox#echo_command = 'echomsg'
+let g:wandbox#default_compiler = {'cpp' : 'gcc-head,clang-head'}
 
 " プラットフォーム依存な設定をロードする "{{{
 function! SourceIfExist(path)

@@ -537,6 +537,8 @@ add-zsh-hook chpwd _ls_abbrev
 
 # }}}
 
+[[ -f ~/Github/zsh-bundle-exec/zsh-bundle-exec.zsh ]] && source ~/Github/zsh-bundle-exec/zsh-bundle-exec.zsh
+
 ##########################################
 #   source platform-dependant settings   #
 ##########################################
