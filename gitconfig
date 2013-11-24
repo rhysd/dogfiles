@@ -42,5 +42,6 @@
 	bpl = background pull
 	bplr = background pull --rebase
 	bcl = background clone
+	rmr = rm -r
 [push]
 	default = simple
