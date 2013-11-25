@@ -1149,20 +1149,15 @@ nnoremap <silent><Leader>gb :<C-u>GitBlameThisLine<CR>
 vnoremap <silent><Leader>gb :GitBlameRange<CR>
 "}}}
 
-" git commit 用
-function! s:git_commit(args)
-    let msg = shellescape(a:args)
-    execute '!git' 'commit -m' msg
-endfunction
-command! -nargs=+ GitCommit call <SID>git_commit(<q-args>)
-nnoremap <Leader>gc :<C-u>GitCommit<Space>
-
 " git push 用
 function! s:git_push(args)
     execute "QuickRun sh -cmd sh -src 'git push ".a:args."' -runner vimproc"
 endfunction
 command! -nargs=* GitPush call <SID>git_push(<q-args>)
 nnoremap <Leader>gp :<C-u>GitPush<CR>
+
+" git commit ではインサートモードに入る
+autocmd MyVimrc VimEnter COMMIT_EDITMSG if getline(1) == '' | execute 1 | startinsert | endif
 "}}}
 
 " 他の helper {{{
