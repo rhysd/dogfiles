@@ -292,6 +292,7 @@ PROMPT="%{$terminfo_down_sc$PROMPT_2$terminfo[rc]%}%{$fg_bold[green]%}%~%{$reset
 RPROMPT='[%{$fg_bold[red]%}${HOST}%{$reset_color%}][%{$fg_bold[red]%}%D{%m/%d %H:%M}%{$reset_color%}]'
 
 # モードでプロンプトの色を変える
+# XXX: vicmd で ^M や ^C 押下時に insert モードに入っても色が戻らない
 function zle-keymap-select () {
     case $KEYMAP in
         vicmd) PROMPT="%{$terminfo_down_sc$PROMPT_2$terminfo[rc]%}%{$fg_bold[yellow]%}%~%{$reset_color%} %# ";;
@@ -380,6 +381,7 @@ function _parent() {
 }
 zle -N _parent
 bindkey -M viins "^J" _parent
+bindkey -M vicmd "h"  _parent
 
 # ^O で popd する
 function _pop_hist(){
@@ -388,6 +390,7 @@ function _pop_hist(){
 }
 zle -N _pop_hist
 bindkey -M viins "^O" _pop_hist
+bindkey -M vicmd "l"  _pop_hist
 
 # 前のコマンドで最後に打った単語の挿入
 zle -N insert-last-word smart-insert-last-word
@@ -412,6 +415,25 @@ bindkey -M viins '^Xq' _quote-previous-word-in-double
 
 # Shift + Tab で逆順選択
 bindkey -M viins "$terminfo[kcbt]" reverse-menu-complete
+
+# ファイルを確認する
+function _ls() {
+    echo
+    local -a opt_ls
+    case "${OSTYPE}" in
+        freebsd*|darwin*)
+            opt_ls=('-ACFG')
+            ;;
+        *)
+            opt_ls=('-ACF' '--color=always')
+            ;;
+    esac
+
+    command ls ${opt_ls[@]}
+    zle reset-prompt
+}
+zle -N _ls
+bindkey -M vicmd 'k' _ls
 # }}}
 
 ####################
@@ -450,6 +472,8 @@ bindkey -M viins '^Xh' zaw-history
 bindkey -M viins '^@'  zaw-history
 bindkey -M viins '^Xg' zaw-git-files
 bindkey -M viins '^Xt' zaw-tmux
+bindkey -M viins '^Xo' zaw-open-file
+bindkey -M vicmd 'j'   zaw-open-file
 # 空行の状態で Tab を入れると zaw-cdr する
 function _advanced_tab(){
   if [[ $#BUFFER == 0 ]]; then
@@ -461,6 +485,7 @@ function _advanced_tab(){
 }
 zle -N _advanced_tab
 bindkey -M viins '^I' _advanced_tab
+bindkey -M vicmd '^I' _advanced_tab
 
 # zsh-syntax-highlighting
 # https://github.com/zsh-users/zsh-syntax-highlighting
