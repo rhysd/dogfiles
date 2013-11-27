@@ -461,7 +461,64 @@ function zsh-plugin-update(){
 # https://github.com/zsh-users/zaw
 if [ -d $ZSHPLUGIN/zaw ]; then
     source $ZSHPLUGIN/zaw/zaw.zsh
+
+    # zaw-cd-or-edit
+    # zaw source to open file or cd cwd
+    function zaw-src-cd-or-edit() { # {{{
+        local root parent d f
+        setopt local_options null_glob
+
+        if (( $# == 0 )); then
+            root="${PWD}/"
+        else
+            root="$1"
+        fi
+
+        parent="${root:h}"
+        if [[ "${parent}" != */ ]]; then
+            parent="${parent}/"
+        fi
+        candidates+=("${parent}")
+        cand_descriptions+=("../")
+
+        for d in "${root%/}"/*(/); do
+            candidates+=("${d}/")
+            cand_descriptions+=("${d:t}/")
+        done
+
+        for f in "${root%/}"/*(^/); do
+            candidates+=("${f}")
+            cand_descriptions+=("${f:t}")
+        done
+
+        actions=( "zaw-callback-cd-or-edit" "zaw-callback-append-to-buffer" )
+        act_descriptions=( "cd directory or edit file" "append to edit buffer" )
+        #options=( "-m" )
+        options=( "-t" "${root}" )
+    }
+
+    zaw-register-src -n cd-or-edit zaw-src-cd-or-edit
+
+    function zaw-callback-cd-or-edit() {
+        local editor
+        if [[ "$EDITOR" == "" ]]; then
+            editor="vim"
+        else
+            editor="$EDITOR"
+        fi
+
+        if [[ -d "$1" ]]; then
+            echo
+            cd "$1"
+            zle reset-prompt
+        else
+            BUFFER="${editor} ${(q)1}"
+            zle accept-line
+        fi
+    }
+    # }}}
 fi
+
 # 最大でも画面の縦幅半分までしか使わない
 zstyle ':filter-select' max-lines $(($LINES / 2))
 # 絞り込みをcase-insensitiveに
@@ -473,7 +530,7 @@ bindkey -M viins '^@'  zaw-history
 bindkey -M viins '^Xg' zaw-git-files
 bindkey -M viins '^Xt' zaw-tmux
 bindkey -M viins '^Xo' zaw-open-file
-bindkey -M vicmd 'j'   zaw-open-file
+bindkey -M vicmd 'j'   zaw-cd-or-edit
 # 空行の状態で Tab を入れると zaw-cdr する
 function _advanced_tab(){
   if [[ $#BUFFER == 0 ]]; then
