@@ -356,8 +356,6 @@ bindkey -M viins '^D'    delete-char-or-list
 bindkey -M vicmd '^A'    beginning-of-line
 bindkey -M vicmd '^E'    end-of-line
 bindkey -M vicmd '^K'    kill-line
-bindkey -M vicmd '^R'    history-incremental-pattern-search-backward
-bindkey -M vicmd '^S'    history-incremental-pattern-search-forward
 bindkey -M vicmd '^P'    up-line-or-history
 bindkey -M vicmd '^N'    down-line-or-history
 bindkey -M vicmd '^Y'    yank
@@ -517,32 +515,34 @@ if [ -d $ZSHPLUGIN/zaw ]; then
         fi
     }
     # }}}
-fi
 
-# 最大でも画面の縦幅半分までしか使わない
-zstyle ':filter-select' max-lines $(($LINES / 2))
-# 絞り込みをcase-insensitiveに
-zstyle ':filter-select' case-insensitive yes
-# キーバインド
-bindkey -M viins '^Xc' zaw-cdr
-bindkey -M viins '^Xh' zaw-history
-bindkey -M viins '^@'  zaw-history
-bindkey -M viins '^Xg' zaw-git-files
-bindkey -M viins '^Xt' zaw-tmux
-bindkey -M viins '^Xo' zaw-open-file
-bindkey -M vicmd 'j'   zaw-cd-or-edit
-# 空行の状態で Tab を入れると zaw-cdr する
-function _advanced_tab(){
-  if [[ $#BUFFER == 0 ]]; then
-    zaw-cdr
-    zle redisplay
-  else
-    zle expand-or-complete
-  fi
-}
-zle -N _advanced_tab
-bindkey -M viins '^I' _advanced_tab
-bindkey -M vicmd '^I' _advanced_tab
+    # 最大でも画面の縦幅半分までしか使わない
+    zstyle ':filter-select' max-lines $(($LINES / 2))
+    # 絞り込みをcase-insensitiveに
+    zstyle ':filter-select' case-insensitive yes
+    # キーバインド
+    bindkey -M viins '^Xc' zaw-cdr
+    bindkey -M viins '^Xh' zaw-history
+    bindkey -M viins '^@'  zaw-history
+    bindkey -M viins '^Xg' zaw-git-files
+    bindkey -M viins '^Xt' zaw-tmux
+    bindkey -M viins '^Xo' zaw-open-file
+    bindkey -M vicmd 'j'   zaw-cd-or-edit
+    bindkey -M vicmd '^R'  zaw-history
+    bindkey -M vicmd '^M'  zaw-applications
+    # 空行の状態で Tab を入れると zaw-cdr する
+    function _advanced_tab(){
+    if [[ $#BUFFER == 0 ]]; then
+        zaw-cdr
+        zle redisplay
+    else
+        zle expand-or-complete
+    fi
+    }
+    zle -N _advanced_tab
+    bindkey -M viins '^I' _advanced_tab
+    bindkey -M vicmd '^I' _advanced_tab
+fi
 
 # zsh-syntax-highlighting
 # https://github.com/zsh-users/zsh-syntax-highlighting
