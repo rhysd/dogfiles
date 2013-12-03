@@ -748,7 +748,7 @@ NeoBundle 'rhysd/gem-gist.vim'
 NeoBundle 'daisuzu/rainbowcyclone.vim'
 " NeoBundle 'rhysd/clever-f.vim', 'dev'
 NeoBundle 'rhysd/unite-zsh-cdr.vim'
-NeoBundle 'airblade/vim-gitgutter'
+NeoBundle 'mhinz/vim-signify'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'ujihisa/neco-look'
 NeoBundle 'kana/vim-submode'
@@ -2685,12 +2685,6 @@ nnoremap <C-w>o :<C-u>ZoomWin<CR>
 nnoremap <silent><Leader>tt :<C-u>call tmpwin#toggle({'open_post' : ['normal! gg', 'setl nohidden']}, 'TweetVimHomeTimeline')<CR>
 "}}}
 
-" vim-gitgutter {{{
-let g:gitgutter_realtime = 0
-let g:gitgutter_eager = 0
-let g:gitgutter_realtime_line_limit = 1000
-" }}}
-
 " submode.vim {{{
 let g:submode_keep_leaving_key = 1
 " タブ移動
@@ -2871,6 +2865,14 @@ endfunction
 " wandbox-vim
 let g:wandbox#echo_command = 'echomsg'
 let g:wandbox#default_compiler = {'cpp' : 'gcc-head,clang-head'}
+
+" vim-signify "{{{
+let g:signify_vcs_list = ['git', 'svn']
+let g:signify_update_on_bufenter = 0
+let g:signify_update_on_focusgained = 0
+let g:signify_cursorhold_normal = 0
+let g:signify_cursorhold_insert = 0
+"}}}
 
 " プラットフォーム依存な設定をロードする "{{{
 function! SourceIfExist(path)
