@@ -76,7 +76,11 @@ let g:marching_include_paths = [
             \ '/usr/local/include',
             \ ]
 
+" vim-snowdrop
+let g:snowdrop#include_paths = {'cpp' : g:marching_include_paths}
+let g:snowdrop#libclang_path = '/Library/Developer/CommandLineTools/usr/lib'
+
 " vim-clang-format
-if ! executable('clang-format') && executable('clang-format-HEAD')
-    let g:clang_format#command = 'clang-format-HEAD'
+if ! executable('clang-format') && executable('clang-format-3.5')
+    let g:clang_format#command = 'clang-format-3.5'
 endif

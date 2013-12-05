@@ -1012,6 +1012,9 @@ NeoBundleLazy 'rhysd/unite-n3337', {
 "             \ 'depends' : 'kana/vim-operator-user',
 "             \ 'autoload' : {'filetypes' : ['c', 'cpp', 'objc']}
 "             \ }
+NeoBundleLazy 'osyo-manga/vim-snowdrop', {
+            \ 'autoload' : {'filetypes' : ['c', 'cpp']}
+            \ }
 
 " Haskell 用プラグイン
 NeoBundleLazy 'ujihisa/unite-haskellimport', {
