@@ -1050,6 +1050,43 @@ NeoBundleLazy 'rhysd/neco-ruby-keyword-args', {
 "             \ 'autoload' : {'filetypes' : 'ruby'}
 "             \ }
 
+" JavaScript 用プラグイン
+NeoBundleLazy 'jiangmiao/simple-javascript-indenter', {
+            \ 'autoload' : {'filetypes' : 'javascript'}
+            \ }
+let s:enable_tern_for_vim = has('python') && executable('npm')
+if s:enable_tern_for_vim
+    NeoBundleLazy 'marijnh/tern_for_vim', {
+                \ 'build' : {
+                \     'windows' : 'echo "Please build tern manually."',
+                \     'cygwin'  : 'echo "Please build tern manually."',
+                \     'mac'     : 'npm install',
+                \     'unix'    : 'npm install',
+                \   },
+                \ 'autoload' : {
+                \     'functions' : ['tern#Complete', 'tern#Enable'],
+                \     'filetypes' : 'javascript'
+                \   },
+                \ 'commands' : ['TernDef', 'TernDoc', 'TernType', 'TernRefs', 'TernRename']
+                \ }
+endif
+
+" HTML 用プラグイン
+NeoBundleLazy 'mattn/emmet-vim', {
+      \ 'autoload': {
+      \     'function_prefix': 'emmet',
+      \     'filetypes': ['html', 'haml', 'xhtml', 'liquid', 'css', 'scss', 'sass'],
+      \     'mappings' : ['i', '<Plug>(EmmetExpandAbbr)']
+      \   }
+      \ }
+NeoBundleLazy 'othree/html5.vim', {
+            \ 'autoload' : {
+            \     'filetypes' : ['html', 'xhtml'],
+            \     'commands' : ['HtmlIndentGet']
+            \   }
+            \ }
+
+
 " Tmux ハイライト
 NeoBundleLazy 'zaiste/tmux.vim', {
         \ 'autoload' : {'filetypes' : 'tmux'}
@@ -1419,12 +1456,14 @@ let g:neocomplete#filename#include#exprs = {
 " オムニ補完を有効にする(ruby のオムニ補完は挙動が怪しいので off)
 augroup MyVimrc
     autocmd FileType python     setlocal omnifunc=pythoncomplete#Complete
-    autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
     autocmd FileType html       setlocal omnifunc=htmlcomplete#CompleteTags
     autocmd FileType css        setlocal omnifunc=csscomplete#CompleteCss
     autocmd FileType xml        setlocal omnifunc=xmlcomplete#CompleteTags
     autocmd FileType php        setlocal omnifunc=phpcomplete#CompletePHP
     autocmd FileType c          setlocal omnifunc=ccomplete#Complete
+    if ! s:enable_tern_for_vim
+        autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+    endif
 augroup END
 " オムニ補完を実行するパターン
 if !exists('g:neocomplete#sources#omni#input_patterns')
@@ -1449,6 +1488,11 @@ endif
 let g:neocomplete#force_omni_input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|::'
 " neosnippet だけは短いキーワードでも候補に出す
 call neocomplete#custom#source('neosnippet', 'min_pattern_length', 1)
+" オムニ補完に使う関数
+let g:neocomplete#sources#omni#functions = get(g:, 'neocomplete#sources#omni#functions', {})
+if s:enable_tern_for_vim
+    let g:neocomplete#sources#omni#functions.javascript = 'tern#Complete'
+endif
 
 "neocompleteのマッピング
 inoremap <expr><C-g> neocomplete#undo_completion()
@@ -1917,9 +1961,16 @@ let g:quickrun_config['syntax/ruby'] = {
             \ 'command' : 'ruby',
             \ 'exec' : '%c -c %s:p %o',
             \ }
-
+if executable('jshint')
+    let g:quickrun_config['syntax/javascript'] = {
+                \ 'command' : 'jshint',
+                \ 'exec'    : '%c %o %s:p',
+                \ 'errorformat' : '%f: line %l\, col %c\, %m',
+                \ }
+    autocmd MyVimrc BufWritePost *.js QuickRun -outputter quickfix -type syntax/javascript
+endif
 " autocmd BufWritePost *.cpp,*.cc,*.hpp,*.hh QuickRun -type syntax/cpp
-autocmd MyVimrc BufWritePost *.rb                  QuickRun -outputter quickfix -type syntax/ruby
+autocmd MyVimrc BufWritePost *.rb QuickRun -outputter quickfix -type syntax/ruby
 
 "QuickRunのキーマップ {{{
 nnoremap <Leader>q  <Nop>
@@ -2868,6 +2919,7 @@ endfunction
 " wandbox-vim
 let g:wandbox#echo_command = 'echomsg'
 let g:wandbox#default_compiler = {'cpp' : 'gcc-head,clang-head'}
+call wandbox#quickrun#add_type_with_runner(g:quickrun_config)
 
 " vim-signify "{{{
 let g:signify_vcs_list = ['git', 'svn']
@@ -2876,6 +2928,34 @@ let g:signify_update_on_focusgained = 0
 let g:signify_cursorhold_normal = 0
 let g:signify_cursorhold_insert = 0
 "}}}
+
+" tern_for_vim {{{
+let s:hooks = neobundle#get_hooks('tern_for_vim')
+" function! s:hooks.on_post_source(bundle)
+"     call tern#Disable()
+" endfunction
+unlet s:hooks
+function! s:setup_tern()
+    nnoremap <buffer><Leader>td :<C-u>TernDef<CR>
+    nnoremap <buffer><Leader>tk :<C-u>TernDoc<CR>
+    nnoremap <buffer><silent><Leader>tt :<C-u>TernType<CR>
+    nnoremap <buffer><Leader>tK :<C-u>TernRefs<CR>
+    nnoremap <buffer><Leader>tr :<C-u>TernRename<CR>
+endfunction
+autocmd MyVimrc FileType javascript call s:setup_tern()
+"}}}
+
+" emmet-vim {{{
+let s:hooks = neobundle#get_hooks('emmet-vim')
+function! s:hooks.on_source(bundle)
+    let g:user_emmet_mode = 'ivn'
+    let g:user_emmet_leader_key = '<C-Y>'
+    let g:use_emmet_complete_tag = 1
+    let g:user_emmet_settings = { 'lang' : 'ja' }
+endfunction
+unlet s:hooks
+"}}}
+
 
 " プラットフォーム依存な設定をロードする "{{{
 function! SourceIfExist(path)
