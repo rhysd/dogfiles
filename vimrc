@@ -1508,10 +1508,14 @@ else
 endif
 " completeopt 拡張パッチを有効にする
 " https://github.com/vim-jp/issues/issues/385
-set completeopt-=noselect
-set completeopt+=noinsert
-let g:neocomplete#enable_auto_select = 1
-let g:neocomplete#enable_complete_select = 1
+try
+    set completeopt-=noselect
+    set completeopt+=noinsert
+    let g:neocomplete#enable_auto_select = 1
+    let g:neocomplete#enable_complete_select = 1
+catch /^Vim\%((\a\+)\)\=:E474/
+    " when the patch isn't applied
+endtry
 
 "neocompleteのマッピング
 inoremap <expr><C-g> neocomplete#undo_completion()
