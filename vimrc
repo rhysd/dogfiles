@@ -1,4 +1,8 @@
 " 必須な基本設定 {{{
+
+" tiny と small では vimrc を読み込まない
+if !1 | finish | endif
+
 " This is vim, not vi.
 set nocompatible
 
@@ -150,6 +154,9 @@ set formatlistpat&
 let &formatlistpat .= '\|^\s*[*+-]\s*'
 " spell チェックで日本語をチェックしない
 set spelllang=en,cjk
+if exists('+breakindent')
+    set breakindent
+endif
 
 augroup MyVimrc
     " 一定時間カーソルを移動しないとカーソルラインを表示（ただし，ウィンドウ移動時
@@ -1499,6 +1506,12 @@ else
     let g:neocomplete#sources#omni#functions.javascript = 'jscomplete#CompleteJS'
     autocmd MyVimrc FileType javascript setlocal omnifunc=jscomplete#CompleteJS
 endif
+" completeopt 拡張パッチを有効にする
+" https://github.com/vim-jp/issues/issues/385
+set completeopt-=noselect
+set completeopt+=noinsert
+let g:neocomplete#enable_auto_select = 1
+let g:neocomplete#enable_complete_select = 1
 
 "neocompleteのマッピング
 inoremap <expr><C-g> neocomplete#undo_completion()
