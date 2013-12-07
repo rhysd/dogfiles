@@ -1069,6 +1069,10 @@ if s:enable_tern_for_vim
                 \   },
                 \ 'commands' : ['TernDef', 'TernDoc', 'TernType', 'TernRefs', 'TernRename']
                 \ }
+else
+    NeoBundleLazy 'mattn/jscomplete-vim', {
+                \ 'autoload' : {'filetypes' : 'javascript'}
+                \ }
 endif
 
 " HTML 用プラグイン
@@ -1461,9 +1465,6 @@ augroup MyVimrc
     autocmd FileType xml        setlocal omnifunc=xmlcomplete#CompleteTags
     autocmd FileType php        setlocal omnifunc=phpcomplete#CompletePHP
     autocmd FileType c          setlocal omnifunc=ccomplete#Complete
-    if ! s:enable_tern_for_vim
-        autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-    endif
 augroup END
 " オムニ補完を実行するパターン
 if !exists('g:neocomplete#sources#omni#input_patterns')
@@ -1492,6 +1493,11 @@ call neocomplete#custom#source('neosnippet', 'min_pattern_length', 1)
 let g:neocomplete#sources#omni#functions = get(g:, 'neocomplete#sources#omni#functions', {})
 if s:enable_tern_for_vim
     let g:neocomplete#sources#omni#functions.javascript = 'tern#Complete'
+    let g:neocomplete#sources#omni#functions.coffee = 'tern#Complete'
+    autocmd MyVimrc FileType javascript setlocal omnifunc=tern#Complete
+else
+    let g:neocomplete#sources#omni#functions.javascript = 'jscomplete#CompleteJS'
+    autocmd MyVimrc FileType javascript setlocal omnifunc=jscomplete#CompleteJS
 endif
 
 "neocompleteのマッピング
