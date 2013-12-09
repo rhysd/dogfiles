@@ -24,7 +24,7 @@ let g:clang_user_options='-stdlib=libc++ -I /usr/local/include -I /usr/include -
 let g:unite_pdf_search_cmd = '/usr/local/bin/locate -l 30 "*%s*.pdf"'
 
 " VimShell で g++ のエイリアス
-autocmd MyVimrc FileType vimshell call vimshell#set_alias('gpp', 'g++-4.8 -std=c++11 -O2 -g -Wall -Wextra')
+AutocmdFT vimshell call vimshell#set_alias('gpp', 'g++-4.8 -std=c++11 -O2 -g -Wall -Wextra')
 
 " Mac の辞書.appで開く {{{
 " 引数に渡したワードを検索
@@ -59,7 +59,7 @@ command! -nargs=0 KobitoClose call system("osascript -e 'tell application \"Kobi
 " Kobito にフォーカスを移す
 command! -nargs=0 KobitoActivate call system("osascript -e 'tell application \"Kobito\" to activate'")
 " QuickRun の代わりに Kobito を開く
-autocmd MyVimrc FileType markdown nnoremap <buffer><Leader>qr :<C-u>Kobito<CR>
+AutocmdFT markdown nnoremap <buffer><Leader>qr :<C-u>Kobito<CR>
 "}}}
 
 " unite-ruby-require.vim

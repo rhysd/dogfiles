@@ -4,7 +4,7 @@ set listchars=tab:>-,trail:-,eol:$,extends:>,precedes:<,nbsp:%
 set t_Co=256
 
 " プラグインの設定
-autocmd MyVimrc FileType vimshell call vimshell#set_alias('gpp', 'g++ -std=c++11 -O2 -g -Wall -Wextra')
+AutocmdFT vimshell call vimshell#set_alias('gpp', 'g++ -std=c++11 -O2 -g -Wall -Wextra')
 
 " waf でビルド
 command! -nargs=* Waf call s:waf(<f-args>)
@@ -22,7 +22,7 @@ endfunction
 
 " pdf ファイルを開く
 command! -nargs=0 TeXPdfOpen call <SID>tex_pdf_open(expand('%'))
-autocmd MyVimrc FileType tex nnoremap <buffer><Leader>tp :<C-u>TeXPdfOpen<CR>
+AutocmdFT tex nnoremap <buffer><Leader>tp :<C-u>TeXPdfOpen<CR>
 
 function! s:tex_pdf_open(fname)
     if fnamemodify(a:fname, ':e') !=# 'tex'
@@ -40,7 +40,7 @@ function! s:tex_pdf_open(fname)
 endfunction
 
 command! -nargs=0 TeXMakePdf call <SID>tex_make_pdf(expand('%:p'))
-autocmd MyVimrc FileType tex nnoremap <buffer><Leader>tm :<C-u>TeXMakePdf<CR>
+AutocmdFT tex nnoremap <buffer><Leader>tm :<C-u>TeXMakePdf<CR>
 function! s:tex_make_pdf(path)
     execute 'lcd' fnamemodify(a:path, ':h')
     let base = fnamemodify(a:path, ':r')
