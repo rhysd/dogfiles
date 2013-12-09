@@ -1,3 +1,4 @@
+scriptencoding utf-8
 " 必須な基本設定 {{{
 
 " tiny と small では vimrc を読み込まない
@@ -24,9 +25,8 @@ set encoding=utf-8
 set termencoding=utf-8
 set fileencoding=utf-8
 set fileencodings=utf-8,cp932,euc-jp
-scriptencoding utf-8
 " user-defined prefix
-let mapleader = ','
+let g:mapleader = ','
 "行番号表示
 set number
 "バックアップファイルいらない
