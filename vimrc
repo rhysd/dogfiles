@@ -1082,7 +1082,7 @@ else
                 \ }
 endif
 
-" HTML 用プラグイン
+" html, sass, scss 用プラグイン
 NeoBundleLazy 'mattn/emmet-vim', {
       \ 'autoload': {
       \     'function_prefix': 'emmet',
@@ -1096,7 +1096,11 @@ NeoBundleLazy 'othree/html5.vim', {
             \     'commands' : ['HtmlIndentGet']
             \   }
             \ }
-
+NeoBundleLazy 'tpope/vim-haml', {
+            \ 'autoload' : {
+            \     'filetypes' : ['haml', 'sass', 'scss'],
+            \   }
+            \ }
 
 " Tmux ハイライト
 NeoBundleLazy 'zaiste/tmux.vim', {
@@ -1401,6 +1405,21 @@ augroup MyVimrc
     autocmd FileType vim nnoremap <silent><buffer>gf :<C-u>call <SID>jump_to_autoload_function_definition()<CR>
     autocmd FileType vim nnoremap <silent><buffer>K :<C-u>call <SID>smart_help(expand('<cword>'))<CR>
 augroup END
+"}}}
+
+" html, css, sass, scss, haml {{{
+autocmd MyVimrc FileType html,javascript
+            \ if expand('%:e') ==# 'html' |
+            \   nnoremap <buffer><silent><C-t>
+            \       :<C-u>if &filetype ==# 'javascript' <Bar>
+            \               setf html <Bar>
+            \             else <Bar>
+            \               setf javascript <Bar>
+            \             endif<CR>
+            \ endif
+
+autocmd MyVimrc FileType haml inoremap <expr> k getline('.')[col('.') - 2] ==# 'k' ? "\<BS>%" : 'k'
+autocmd MyVimrc FileType haml SetIndent 2
 "}}}
 
 if s:meet_neocomplete_requirements
@@ -1953,12 +1972,15 @@ unlet s:bundle
 let g:quickrun_no_default_key_mappings = 1
 " quickrun_configの初期化
 let g:quickrun_config = get(g:, 'quickrun_config', {})
+"QuickRun 結果の開き方
+let g:quickrun_config._ = {
+            \ 'outputter' : 'unite_quickfix',
+            \ 'split' : 'rightbelow 10sp',
+            \ 'hook/hier_update/enable' : 1,
+            \ 'runner/vimproc/updatetime' : 500,
+            \ }
 "C++
 let g:quickrun_config.cpp = { 'command' : 'g++', 'cmdopt' : '-std=c++11 -Wall -Wextra -O2' }
-"QuickRun 結果の開き方
-let g:quickrun_config._ = { 'outputter' : 'unite_quickfix', 'split' : 'rightbelow 10sp', 'hook/hier_update/enable' : 1 }
-" runner vimproc で結果の polling の間隔
-let g:quickrun_config['_']['runner/vimproc/updatetime'] = 500
 "outputter
 let g:quickrun_unite_quickfix_outputter_unite_context = { 'no_empty' : 1 }
 " runner vimproc における polling 間隔
@@ -1988,26 +2010,33 @@ if executable('jshint')
     let g:quickrun_config['syntax/javascript'] = {
                 \ 'command' : 'jshint',
                 \ 'exec'    : '%c %o %s:p',
+                \ 'runner' : 'vimproc',
                 \ 'errorformat' : '%f: line %l\, col %c\, %m',
                 \ }
     autocmd MyVimrc BufWritePost *.js QuickRun -outputter quickfix -type syntax/javascript
 endif
+if executable('haml')
+    let g:quickrun_config['syntax/haml'] = {
+                \ 'runner' : 'vimproc',
+                \ 'command' : 'haml',
+                \  'exec'    : '%c -c %o %s:p',
+                \  'errorformat' : 'Haml error on line %l: %m,Syntax error on line %l: %m,%-G%.%#',
+                \ }
+    autocmd MyVimrc BufWritePost *.haml QuickRun -outputter quickfix -type syntax/haml
+endif
+
 " autocmd BufWritePost *.cpp,*.cc,*.hpp,*.hh QuickRun -type syntax/cpp
 autocmd MyVimrc BufWritePost *.rb QuickRun -outputter quickfix -type syntax/ruby
 
 "QuickRunのキーマップ {{{
 nnoremap <Leader>q  <Nop>
 nnoremap <silent><Leader>qr :<C-u>QuickRun<CR>
-nnoremap <silent><Leader>qf :<C-u>QuickRun >quickfix -runner vimproc<CR>
 vnoremap <silent><Leader>qr :QuickRun<CR>
-vnoremap <silent><Leader>qf :QuickRun >quickfix -runner vimproc<CR>
 nnoremap <silent><Leader>qR :<C-u>QuickRun<Space>
 " clang で実行する
 let g:quickrun_config['cpp/clang'] = { 'command' : 'clang++', 'cmdopt' : '-stdlib=libc++ -std=c++11 -Wall -Wextra -O2' }
 autocmd MyVimrc FileType cpp nnoremap <silent><buffer><Leader>qc :<C-u>QuickRun -type cpp/clang<CR>
-
 " }}}
-
 " }}}
 
 " accelerated-jk "{{{
@@ -2942,7 +2971,6 @@ endfunction
 " wandbox-vim
 let g:wandbox#echo_command = 'echomsg'
 let g:wandbox#default_compiler = {'cpp' : 'gcc-head,clang-head'}
-call wandbox#quickrun#add_type_with_runner(g:quickrun_config)
 
 " vim-signify "{{{
 let g:signify_vcs_list = ['git', 'svn']
@@ -2978,7 +3006,6 @@ function! s:hooks.on_source(bundle)
 endfunction
 unlet s:hooks
 "}}}
-
 
 " プラットフォーム依存な設定をロードする "{{{
 function! SourceIfExist(path)
