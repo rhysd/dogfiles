@@ -1,6 +1,5 @@
 scriptencoding utf-8
 " 必須な基本設定 {{{
-
 " tiny と small では vimrc を読み込まない
 if !1 | finish | endif
 
@@ -13,12 +12,15 @@ endfunction
 let s:SID = s:get_SID()
 delfunction s:get_SID
 
-" Vimrc 共通の augroup
+" Vimrc augroup
 augroup MyVimrc
     autocmd!
 augroup END
 command! -nargs=* Autocmd autocmd MyVimrc <args>
 command! -nargs=* AutocmdFT autocmd MyVimrc FileType <args>
+Autocmd Colorscheme *vimrc highlight def link myVimAutocmd vimAutoCmd
+Autocmd VimEnter,WinEnter *vimrc match myVimAutocmd /\<\(Autocmd\|AutocmdFT\)\>/
+
 
 "エンコーディング
 set encoding=utf-8
