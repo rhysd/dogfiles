@@ -3,9 +3,6 @@
 " 不可視文字
 set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
 " brew と rbenv のパスを追加
-if has('vim_starting')
-    set path+=/usr/local/Cellar/gcc48/4.8.0/gcc/include/c++/4.8.0,/Users/rhayasd/.rbenv/versions/1.9.3-p362/lib/ruby/1.9.1/,/Users/rhayasd/Programs/**
-endif
 "MacVim Kaoriyaに標準で入っている辞書を無効化
 if has('kaoriya')
     let g:plugin_dicwin_disable = 1
@@ -14,7 +11,12 @@ endif
 " option キーを Alt として使う．
 set macmeta
 
-let g:quickrun_config.cpp.command = 'g++-4.8'
+AutocmdFT cpp setlocal path=.,/usr/local/Cellar/llvm35/HEAD/lib/llvm-3.5/include/c++/v1,/Library/Developer/CommandLineTools/usr/lib/c++/v1,/usr/lib/c++/v1,/usr/local/Cellar/gcc48/4.8.2/gcc/include/c++/4.8.2,/usr/local/include,/usr/include
+
+let g:quickrun_config.cpp = {
+            \ 'command' : 'clang++-3.5',
+            \ 'cmdopt' : '-std=c++1y -Wall -Wextra -O2',
+            \ }
 let g:quickrun_config.ruby = { 'exec' : $HOME.'/.rbenv/shims/ruby %o %s' }
 " let g:quickrun_config['syntax/cpp'].command = 'g++-4.8'
 " clang のライブラリ
@@ -72,6 +74,7 @@ let g:airline_right_sep = '«'
 " vim-marching
 let g:marching_command_option = '-std=c++0x -stdlib=libc++'
 let g:marching_include_paths = [
+            \ '/Library/Developer/CommandLineTools/usr/lib/c++/v1',
             \ '/usr/lib/c++/v1',
             \ '/usr/local/include',
             \ ]
