@@ -1357,9 +1357,33 @@ function! s:return_type_completion()
     endif
 endfunction
 
-command! -nargs=1 OpenCppReference OpenBrowser http://en.cppreference.com/mwiki/index.php?title=Special:Search&search=<args>
+function! s:open_online_cpp_doc()
+    let l = getline('.')
 
-AutocmdFT cpp nnoremap <buffer>K :<C-u>execute 'OpenCppReference' expand('<cword>')<CR>
+    if l =~# '^\s*#\s*include\s\+<.\+>'
+        let header = matchstr(l, '^\s*#\s*include\s\+<\zs.\+\ze>')
+        if header =~# '^boost'
+            execute 'OpenBrowser' 'http://www.google.com/cse?cx=011577717147771266991:jigzgqluebe&q='.matchstr(header, 'boost/\zs[^/>]\+\ze')
+        else
+            execute 'OpenBrowser' 'http://en.cppreference.com/mwiki/index.php?title=Special:Search&search='.matchstr(header, '\zs[^/>]\+\ze')
+        endif
+    else
+        let cword = expand('<cword>')
+        if cword ==# ''
+            return
+        endif
+        let line_head = getline('.')[:col('.')-1]
+        if line_head =~# 'boost::[[:alnum:]:]*$'
+            execute 'OpenBrowser' 'http://www.google.com/cse?cx=011577717147771266991:jigzgqluebe&q='.cword
+        elseif line_head =~# 'std::[[:alnum:]:]*$'
+            execute 'OpenBrowser' 'http://en.cppreference.com/mwiki/index.php?title=Special:Search&search='.cword
+        else
+            normal! K
+        endif
+    endif
+endfunction
+
+AutocmdFT cpp nnoremap <silent><buffer>K :<C-u>call <SID>open_online_cpp_doc()<CR>
 AutocmdFT cpp setlocal matchpairs+=<:>
 AutocmdFT cpp inoremap <buffer>,  ,<Space>
 AutocmdFT cpp nnoremap <buffer><Leader>ret :<C-u>call <SID>return_type_completion()<CR>
