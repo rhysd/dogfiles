@@ -18,8 +18,9 @@ augroup MyVimrc
 augroup END
 command! -nargs=* Autocmd autocmd MyVimrc <args>
 command! -nargs=* AutocmdFT autocmd MyVimrc FileType <args>
-Autocmd Colorscheme *vimrc highlight def link myVimAutocmd vimAutoCmd
-Autocmd VimEnter,WinEnter *vimrc match myVimAutocmd /\<\(Autocmd\|AutocmdFT\)\>/
+" XXX
+AutocmdFT vim highlight def link myVimAutocmd vimAutoCmd
+AutocmdFT vim match myVimAutocmd /\<\(Autocmd\|AutocmdFT\)\>/
 
 
 "エンコーディング
