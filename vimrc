@@ -179,6 +179,8 @@ Autocmd BufRead,BufNew,BufNewFile gitconfig setlocal ft=gitconfig
 Autocmd BufRead,BufNew,BufNewFile *.plt,*.plot,*.gnuplot setlocal ft=gnuplot
 " Ruby の guard 用ファイル
 Autocmd BufRead,BufNew,BufNewFile Guardfile setlocal ft=ruby
+" JSON
+Autocmd BufRead,BufNew,BufNewFile *.json,*.jsonp setlocal ft=json
 
 " カーソル位置の復元
 Autocmd BufReadPost *
@@ -1059,6 +1061,9 @@ NeoBundleLazy 'rhysd/neco-ruby-keyword-args', {
 NeoBundleLazy 'jiangmiao/simple-javascript-indenter', {
             \ 'autoload' : {'filetypes' : 'javascript'}
             \ }
+NeoBundleLazy 'othree/javascript-libraries-syntax.vim', {
+            \ 'autoload' : {'filetypes' : 'javascript'}
+            \ }
 let s:enable_tern_for_vim = has('python') && executable('npm')
 if s:enable_tern_for_vim
     NeoBundleLazy 'marijnh/tern_for_vim', {
@@ -1104,6 +1109,13 @@ NeoBundleLazy 'tpope/vim-haml', {
 NeoBundleLazy 'zaiste/tmux.vim', {
         \ 'autoload' : {'filetypes' : 'tmux'}
         \ }
+
+" JSON
+" JSON
+NeoBundleLazy 'elzr/vim-json', {
+        \ 'autoload' : {'filetypes' : 'json'}
+        \ }
+
 " TweetVim
 NeoBundleLazy 'basyura/twibill.vim'
 NeoBundleLazy 'yomi322/neco-tweetvim'
@@ -1405,11 +1417,17 @@ AutocmdFT html,javascript
             \               setf html <Bar>
             \             else <Bar>
             \               setf javascript <Bar>
-            \             endif<CR>
+            \             endif<CR> |
             \ endif
 
 AutocmdFT haml inoremap <expr> k getline('.')[col('.') - 2] ==# 'k' ? "\<BS>%" : 'k'
 AutocmdFT haml SetIndent 2
+AutocmdFT javascript nnoremap <buffer><silent><Leader>no :<C-u>VimShellInteractive node<CR>
+"}}}
+
+" Markdown {{{
+AutocmdFT markdown nnoremap <buffer><silent><Leader>= :<C-u>call append('.', repeat('=', strdisplaywidth(getline('.'))))<CR>
+AutocmdFT markdown nnoremap <buffer><silent><Leader>- :<C-u>call append('.', repeat('-', strdisplaywidth(getline('.'))))<CR>
 "}}}
 
 if s:meet_neocomplete_requirements
@@ -1487,6 +1505,7 @@ endif
 let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
 let g:neocomplete#sources#omni#input_patterns.c   = '\%(\.\|->\)\h\w*'
 let g:neocomplete#sources#omni#input_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
+let g:neocomplete#sources#omni#input_patterns.javascript = '\%(\h\w*\|[^. \t]\.\w*\)'
 " neocomplete 補完用関数
 let g:neocomplete#sources#vim#complete_functions = {
     \ 'Unite' : 'unite#complete_source',
@@ -2969,6 +2988,11 @@ function! s:hooks.on_source(bundle)
     let g:user_emmet_settings = { 'lang' : 'ja' }
 endfunction
 unlet s:hooks
+"}}}
+
+" javascript-libraries-syntax.vim {{{
+" ハイライトサポートするライブラリ
+let g:used_javascript_libs = 'jquery,underscore'
 "}}}
 
 " プラットフォーム依存な設定をロードする "{{{
