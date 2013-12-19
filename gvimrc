@@ -21,9 +21,9 @@ set guioptions+=M
 set winaltkeys=no
 
 " GUI autocmds
-Autocmd VimEnter * call <SID>vimfiler_at_start()
+Autocmd VimEnter * call Vimfiler_at_start()
 
-function! s:vimfiler_at_start()
+function! Vimfiler_at_start()
     if empty(bufname('%'))
         VimFilerCurrentDir
     endif
