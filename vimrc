@@ -984,9 +984,7 @@ NeoBundleLazy 'osyo-manga/vim-over', {
 let s:meet_neocomplete_requirements = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
 if s:meet_neocomplete_requirements
     NeoBundle 'Shougo/neocomplete.vim'
-    NeoBundleFetch 'Shougo/neocomplcache.vim'
 else
-    NeoBundleFetch 'Shougo/neocomplete.vim'
     NeoBundle 'Shougo/neocomplcache.vim'
 endif
 
@@ -1532,16 +1530,6 @@ else
     let g:neocomplete#sources#omni#functions.javascript = 'jscomplete#CompleteJS'
     AutocmdFT javascript setlocal omnifunc=jscomplete#CompleteJS
 endif
-" completeopt 拡張パッチを有効にする
-" https://github.com/vim-jp/issues/issues/385
-try
-    set completeopt-=noselect
-    set completeopt+=noinsert
-    let g:neocomplete#enable_auto_select = 1
-    let g:neocomplete#enable_complete_select = 1
-catch /^Vim\%((\a\+)\)\=:E474/
-    " when the patch isn't applied
-endtry
 
 "neocompleteのマッピング
 inoremap <expr><C-g> neocomplete#undo_completion()
@@ -1890,21 +1878,21 @@ function! s:rails_mvc_name()
 endfunction
 
 " unite-rails コマンド {{{
-command! -nargs=0    RModels      Unite rails/model -no-start-insert
-command! -nargs=0    RControllers Unite rails/controller -no-start-insert
-command! -nargs=0    RViews       Unite rails/view -no-start-insert
-command! -nargs=0    RMVC         Unite rails/model rails/controller rails/view
-command! -nargs=0    RHelpers     Unite rails/helpers -no-start-insert
-command! -nargs=0    RMailers     Unite rails/mailers -no-start-insert
-command! -nargs=0    RLib         Unite rails/lib -no-start-insert
-command! -nargs=0    RDb          Unite rails/db -no-start-insert
-command! -nargs=0    RConfig      Unite rails/config -no-start-insert
-command! -nargs=0    RLog         Unite rails/log -no-start-insert
-command! -nargs=0    RJapascripts Unite rails/javascripts -no-start-insert
-command! -nargs=0    RStylesheets Unite rails/stylesheets -no-start-insert
-command! -nargs=0    RBundle      Unite rails/bundle -no-start-insert
-command! -nargs=0    RGems        Unite rails/bundled_gem -no-start-insert
-command! -nargs=0    R            execute 'Unite rails/model rails/controller rails/view -no-start-insert -input=' . s:rails_mvc_name()
+command! -nargs=0 RModels      Unite rails/model -no-start-insert
+command! -nargs=0 RControllers Unite rails/controller -no-start-insert
+command! -nargs=0 RViews       Unite rails/view -no-start-insert
+command! -nargs=0 RMVC         Unite rails/model rails/controller rails/view
+command! -nargs=0 RHelpers     Unite rails/helpers -no-start-insert
+command! -nargs=0 RMailers     Unite rails/mailers -no-start-insert
+command! -nargs=0 RLib         Unite rails/lib -no-start-insert
+command! -nargs=0 RDb          Unite rails/db -no-start-insert
+command! -nargs=0 RConfig      Unite rails/config -no-start-insert
+command! -nargs=0 RLog         Unite rails/log -no-start-insert
+command! -nargs=0 RJapascripts Unite rails/javascripts -no-start-insert
+command! -nargs=0 RStylesheets Unite rails/stylesheets -no-start-insert
+command! -nargs=0 RBundle      Unite rails/bundle -no-start-insert
+command! -nargs=0 RGems        Unite rails/bundled_gem -no-start-insert
+command! -nargs=0 R            execute 'Unite rails/model rails/controller rails/view -no-start-insert -input=' . s:rails_mvc_name()
 "}}}
 "}}}
 
@@ -1973,7 +1961,11 @@ let g:quickrun_config._ = {
             \ 'runner/vimproc/updatetime' : 500,
             \ }
 "C++
-let g:quickrun_config.cpp = { 'command' : 'g++', 'cmdopt' : '-std=c++11 -Wall -Wextra -O2' }
+let g:quickrun_config.cpp = {
+            \ 'command' : 'clang++',
+            \ 'cmdopt' : '-std=c++1y -Wall -Wextra -O2',
+            \ 'hook/quickrunex/enable' : 1,
+            \ }
 "outputter
 let g:quickrun_unite_quickfix_outputter_unite_context = { 'no_empty' : 1 }
 " runner vimproc における polling 間隔
@@ -2466,7 +2458,7 @@ let g:clang_format#style_options = {
             \ 'BreakBeforeBraces' : 'Stroustrup',
             \ }
 AutocmdFT c,cpp map <buffer><Leader>x <Plug>(operator-clang-format)
-"}}}
+" vim-operator-surround {{{
 map <silent>gy <Plug>(operator-surround-append)
 map <silent>gd <Plug>(operator-surround-delete)
 map <silent>gc <Plug>(operator-surround-replace)
@@ -2474,6 +2466,8 @@ nmap <silent>gdd <Plug>(operator-surround-delete)<Plug>(textobj-anyblock-a)
 nmap <silent>gcc <Plug>(operator-surround-replace)<Plug>(textobj-anyblock-a)
 nmap <silent>gdb <Plug>(operator-surround-delete)<Plug>(textobj-between-a)
 nmap <silent>gcb <Plug>(operator-surround-replace)<Plug>(textobj-between-a)
+"}}}
+"}}}
 
 " ghcmod-vim {{{
 AutocmdFT haskell nnoremap <buffer><silent><C-t> :<C-u>GhcModType<CR>
@@ -2951,9 +2945,11 @@ function! s:bundle.hooks.on_post_source(bundle)
 endfunction
 "}}}
 
-" wandbox-vim
+" wandbox-vim {{{
 let g:wandbox#echo_command = 'echomsg'
-let g:wandbox#default_compiler = {'cpp' : 'gcc-head,clang-head'}
+let g:wandbox#default_compiler = get(g:, 'wandbox#default_compiler', {'cpp' : 'gcc-head,clang-head', 'ruby' : 'mruby'})
+AutocmdFT cpp noremap <buffer><Leader>wb :<C-u>Wandbox<CR>
+"}}}
 
 " vim-signify "{{{
 let g:signify_vcs_list = ['git', 'svn']
