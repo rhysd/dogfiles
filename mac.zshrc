@@ -1,6 +1,3 @@
-export PATH=/usr/local/texlive/2011/bin/x86_64-darwin:$PATH
-export PATH=$PATH:$HOME/Programs/c++/Qt5.0.2/5.0.2/clang_64/bin
-
 unalias ls
 alias ls='ls -G'
 alias g++='g++-4.8 -std=c++11 -Wall -Wextra -O2'
@@ -12,6 +9,8 @@ alias update='brew update && gem update && vim -N -V1 -e -s --cmd "source ~/.vim
 alias sshi='ssh -i $HOME/.ssh/id_rsa'
 alias github='open https://github.com'
 alias Vim=gvim
+alias clang++='clang++-3.5 -stdlib=libc++ -std=c++1y -O2 -Wall -Wextra'
+alias cl='clang++-3.5 -std=c++1y -stdlib=libc++ -O2 -Wall -Wextra'
 
 # suffix alias
 alias -s pdf='open -a Preview'
