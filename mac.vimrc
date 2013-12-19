@@ -20,13 +20,14 @@ let g:quickrun_config.cpp = {
 let g:quickrun_config.ruby = { 'exec' : $HOME.'/.rbenv/shims/ruby %o %s' }
 " let g:quickrun_config['syntax/cpp'].command = 'g++-4.8'
 " clang のライブラリ
-let g:clang_user_options='-stdlib=libc++ -I /usr/local/include -I /usr/include -I /usr/local/Cellar/gcc48/4.8.2/gcc/include/c++/4.8.2 2>/dev/null || exit 0'
+let g:clang_user_options='-stdlib=libc++ -I /usr/local/include -I /usr/include -I /Library/Developer/CommandLineTools/usr/lib/c++/v1 2>/dev/null || exit 0'
 
 " open-pdf で brew の findutils を使う
 let g:unite_pdf_search_cmd = '/usr/local/bin/locate -l 30 "*%s*.pdf"'
 
 " VimShell で g++ のエイリアス
 AutocmdFT vimshell call vimshell#set_alias('gpp', 'g++-4.8 -std=c++11 -O2 -g -Wall -Wextra')
+AutocmdFT vimshell call vimshell#set_alias('cl', 'clang++-3.5 -std=c++1y -O2 -g -Wall -Wextra')
 
 " Mac の辞書.appで開く {{{
 " 引数に渡したワードを検索
@@ -72,7 +73,8 @@ let g:airline_left_sep = '»'
 let g:airline_right_sep = '«'
 
 " vim-marching
-let g:marching_command_option = '-std=c++0x -stdlib=libc++'
+let g:marching_clang_command = 'clang++-3.5'
+let g:marching_command_option = '-std=c++11 -stdlib=libc++'
 let g:marching_include_paths = [
             \ '/Library/Developer/CommandLineTools/usr/lib/c++/v1',
             \ '/usr/lib/c++/v1',
@@ -84,6 +86,6 @@ let g:snowdrop#include_paths = {'cpp' : g:marching_include_paths}
 let g:snowdrop#libclang_path = '/Library/Developer/CommandLineTools/usr/lib'
 
 " vim-clang-format
-if ! executable('clang-format') && executable('clang-format-3.5')
+if executable('clang-format-3.5')
     let g:clang_format#command = 'clang-format-3.5'
 endif
