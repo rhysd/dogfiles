@@ -43,6 +43,7 @@ nnoremap <silent><Leader>do :<C-u>MacDictCWord<CR>
 vnoremap <silent><Leader>do y:<C-u>MacDict<Space><C-r>*<CR>
 nnoremap <silent><Leader>dc :<C-u>MacDictClose<CR>
 nnoremap <silent><Leader>df :<C-u>MacDictFocus<CR>
+AutocmdFT gitcommit,markdown nnoremap <buffer>K :<C-u>MacDictCWord<CR>
 "}}}
 
 " Kobito.app {{{
