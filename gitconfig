@@ -10,7 +10,7 @@
 	st  = status -sb
 	bl  = blame
 	br  = branch
-	cm  = commit
+	cm  = commit -v
 	cmv = commit -v
 	cmm = commit -m
 	cma = commit --amend
