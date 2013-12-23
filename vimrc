@@ -159,9 +159,12 @@ set formatlistpat&
 let &formatlistpat .= '\|^\s*[*+-]\s*'
 " spell チェックで日本語をチェックしない
 set spelllang=en,cjk
+" 折り返しでインデントを保持
 if exists('+breakindent')
     set breakindent
 endif
+" 一時ディレクトリではバックアップを取らない
+set backupskip=/tmp/*,/private/tmp/*
 
 " 一定時間カーソルを移動しないとカーソルラインを表示（ただし，ウィンドウ移動時
 " はなぜか切り替わらない
