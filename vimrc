@@ -1062,9 +1062,6 @@ NeoBundleLazy 'rhysd/neco-ruby-keyword-args', {
 NeoBundleLazy 'jiangmiao/simple-javascript-indenter', {
             \ 'autoload' : {'filetypes' : 'javascript'}
             \ }
-NeoBundleLazy 'othree/javascript-libraries-syntax.vim', {
-            \ 'autoload' : {'filetypes' : 'javascript'}
-            \ }
 let s:enable_tern_for_vim = has('python') && executable('npm')
 if s:enable_tern_for_vim
     NeoBundleLazy 'marijnh/tern_for_vim', {
@@ -3011,11 +3008,6 @@ function! s:hooks.on_source(bundle)
     let g:user_emmet_settings = { 'lang' : 'ja' }
 endfunction
 unlet s:hooks
-"}}}
-
-" javascript-libraries-syntax.vim {{{
-" ハイライトサポートするライブラリ
-let g:used_javascript_libs = 'jquery,underscore'
 "}}}
 
 " プラットフォーム依存な設定をロードする "{{{
