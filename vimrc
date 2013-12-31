@@ -875,6 +875,13 @@ NeoBundleLazy 'tyru/open-browser.vim', {
             \   }
             \ }
 
+NeoBundleLazy 'tyru/open-browser-github.vim', {
+            \ 'depends' : 'tyru/open-browser.vim',
+            \ 'autoload' : {
+            \       'commands' : 'OpenGithubFile'
+            \   }
+            \ }
+
 NeoBundleLazy 'rhysd/tmpwin.vim'
 
 NeoBundleLazy 'kannokanno/previm', {
@@ -1470,6 +1477,7 @@ function! s:cmake()
 endfunction
 
 command! -nargs=0 CMake call <SID>cmake()
+nnoremap <Leader>cm :<C-u>CMake<CR>
 "}}}
 
 if s:meet_neocomplete_requirements
@@ -2595,6 +2603,8 @@ let g:endwize_add_verbose_info_filetypes = ['c', 'cpp']
 " open-browser.vim "{{{
 nmap <Leader>o <Plug>(openbrowser-smart-search)
 xmap <Leader>o <Plug>(openbrowser-smart-search)
+nnoremap <Leader>O :<C-u>OpenGithubFile<CR>
+vnoremap <Leader>O :OpenGithubFile<CR>
 "}}}
 
 " vim-vspec {{{
