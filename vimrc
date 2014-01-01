@@ -1338,7 +1338,7 @@ command! Pry call <SID>start_pry()
 " C++ {{{
 
 " C++ ラベル字下げ設定
-set cinoptions& cinoptions+=:0,g0
+set cinoptions& cinoptions+=:0,g0,N-1,m1
 
 " -> decltype(expr) の補完
 " constexpr auto func_name(...) を仮定
