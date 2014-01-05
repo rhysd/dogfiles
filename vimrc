@@ -756,8 +756,9 @@ NeoBundle 'thinca/vim-visualstar'
 NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'rhysd/gem-gist.vim'
 NeoBundle 'daisuzu/rainbowcyclone.vim'
-" NeoBundle 'rhysd/clever-f.vim', 'dev'
+NeoBundle 'rhysd/clever-f.vim', 'dev'
 NeoBundle 'rhysd/unite-zsh-cdr.vim'
+NeoBundle 'rhysd/unite-ruby-require.vim'
 NeoBundle 'mhinz/vim-signify'
     " NeoBundle 'ujihisa/vimshell-ssh'
     " NeoBundle 'ujihisa/neco-look'
@@ -770,6 +771,7 @@ NeoBundle 'ujihisa/unite-colorscheme'
 NeoBundle 'rhysd/unite-locate'
 NeoBundle 'vim-jp/vital.vim'
 NeoBundle 'rhysd/conflict-marker.vim'
+NeoBundle 'rhysd/vim-window-adjuster'
 
 " カラースキーム
 NeoBundle 'rhysd/wallaby.vim'
@@ -791,13 +793,6 @@ function! s:test_bundle(name)
         execute 'NeoBundle' string(a:name)
     endif
 endfunction
-
-call s:test_bundle('rhysd/clever-f.vim')
-call s:test_bundle('rhysd/unite-ruby-require.vim')
-call s:test_bundle('rhysd/vim-clang-format')
-call s:test_bundle('rhysd/vim-operator-surround')
-call s:test_bundle('rhysd/vim-window-adjuster')
-call s:test_bundle('rhysd/wandbox-vim')
 
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
@@ -845,6 +840,16 @@ NeoBundleLazy 'rhysd/vim-operator-evalruby', {
             \ 'autoload' : {
             \     'mappings' : '<Plug>(operator-evalruby)'
             \     }
+            \ }
+
+NeoBundleLazy 'rhysd/vim-operator-surround', {
+            \ 'autoload' : {
+            \   'mappings' : [
+            \           '<Plug>(operator-surround-append)',
+            \           '<Plug>(operator-surround-delete)',
+            \           '<Plug>(operator-surround-replace)',
+            \       ]
+            \   }
             \ }
 
 NeoBundleLazy 'tyru/caw.vim', {
@@ -1006,6 +1011,11 @@ NeoBundleLazy 'rhysd/unite-codic.vim', {
             \   },
             \ }
 
+NeoBundleLazy 'rhysd/wandbox-vim', {
+            \ 'autoload' : {
+            \       'commands' : 'Wandbox'
+            \   }
+            \ }
 
 " if_lua プラグイン
 let s:meet_neocomplete_requirements = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
@@ -1040,10 +1050,10 @@ NeoBundleLazy 'osyo-manga/vim-marching', {
 NeoBundleLazy 'rhysd/unite-n3337', {
             \ 'autoload' : {'filetypes' : 'cpp'}
             \ }
-" NeoBundleLazy 'rhysd/vim-clang-format', {
-"             \ 'depends' : 'kana/vim-operator-user',
-"             \ 'autoload' : {'filetypes' : ['c', 'cpp', 'objc']}
-"             \ }
+NeoBundleLazy 'rhysd/vim-clang-format', {
+            \ 'depends' : 'kana/vim-operator-user',
+            \ 'autoload' : {'filetypes' : ['c', 'cpp', 'objc']}
+            \ }
 NeoBundleLazy 'osyo-manga/vim-snowdrop', {
             \ 'autoload' : {'filetypes' : ['c', 'cpp']}
             \ }
