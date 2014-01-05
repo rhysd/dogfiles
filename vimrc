@@ -984,13 +984,6 @@ NeoBundleLazy 'rbtnn/puyo.vim', {
         \   }
         \ }
 
-NeoBundleLazy 'osyo-manga/vim-over', {
-        \ 'autoload' : {
-        \       'mappings' : ',/',
-        \       'commands' : 'OverCommandLine',
-        \   }
-        \ }
-
 NeoBundleLazy 'itchyny/calendar.vim', {
             \ 'autoload' : {
             \       'commands' : 'Calendar',
@@ -3014,13 +3007,6 @@ nnoremap <silent><C-w>r :<C-u>AdjustWindowWidth --margin=1 --direction=shrink<CR
 
 " ぷよ.vim {{{
 let g:puyo#updatetime = 500
-"}}}
-
-" vim-over "{{{
-let s:bundle = neobundle#get("vim-over")
-function! s:bundle.hooks.on_post_source(bundle)
-    nnoremap ,/ q:i%s/
-endfunction
 "}}}
 
 " wandbox-vim {{{
