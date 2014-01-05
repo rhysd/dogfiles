@@ -3033,6 +3033,22 @@ endfunction
 unlet s:hooks
 "}}}
 
+" calendar.vim {{{
+command! -nargs=* Cal call <SID>launch_calendar(<q-args>)
+function! s:launch_calendar(q_args)
+    if ! has('gui_running')
+        if has('mac')
+            call system('open -a Calendar.app')
+        else
+            OpenBrowser https://www.google.com/calendar/render
+        endif
+    else
+        " when gui is running
+        execute 'Calendar' a:q_args
+    endif
+endfunction
+" }}}
+
 " プラットフォーム依存な設定をロードする "{{{
 function! SourceIfExist(path)
     if filereadable(a:path)
