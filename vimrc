@@ -769,6 +769,7 @@ NeoBundle 'rhysd/vim-vspec-matchers'
 NeoBundle 'ujihisa/unite-colorscheme'
 NeoBundle 'rhysd/unite-locate'
 NeoBundle 'vim-jp/vital.vim'
+NeoBundle 'rhysd/conflict-marker.vim'
 
 " カラースキーム
 NeoBundle 'rhysd/wallaby.vim'
@@ -795,7 +796,6 @@ call s:test_bundle('rhysd/unite-ruby-require.vim')
 call s:test_bundle('rhysd/vim-clang-format')
 call s:test_bundle('rhysd/vim-operator-surround')
 call s:test_bundle('rhysd/vim-window-adjuster')
-call s:test_bundle('rhysd/conflict-marker.vim')
 call s:test_bundle('rhysd/wandbox-vim')
 
 " vim-scripts上のリポジトリ
@@ -982,6 +982,29 @@ NeoBundleLazy 'osyo-manga/vim-over', {
         \       'commands' : 'OverCommandLine',
         \   }
         \ }
+
+NeoBundleLazy 'itchyny/calendar.vim', {
+            \ 'autoload' : {
+            \       'commands' : 'Calendar',
+            \   }
+            \ }
+
+NeoBundleLazy 'koron/codic-vim', {
+            \ 'autoload' : {
+            \       'commands' : 'Codic',
+            \   }
+            \ }
+
+NeoBundleLazy 'rhysd/unite-codic.vim', {
+            \ 'depends' : [
+            \       'Shougo/unite.vim',
+            \       'koron/codic-vim',
+            \   ],
+            \ 'autoload' : {
+            \       'unite_sources' : 'codic',
+            \   },
+            \ }
+
 
 " if_lua プラグイン
 let s:meet_neocomplete_requirements = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
