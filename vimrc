@@ -780,6 +780,7 @@ NeoBundle 'altercation/vim-colors-solarized'
 NeoBundle 'earendel'
 NeoBundle 'rdark'
 NeoBundle 'telamon/vim-color-github'
+NeoBundle 'chriskempson/base16-vim'
 
 " For testing
 function! s:test_bundle(name)
@@ -871,6 +872,13 @@ NeoBundleLazy 'tyru/open-browser.vim', {
             \ 'autoload' : {
             \     'commands' : ['OpenBrowser', 'OpenBrowserSearch', 'OpenBrowserSmartSearch'],
             \     'mappings' : '<Plug>(openbrowser-',
+            \   }
+            \ }
+
+NeoBundleLazy 'tyru/open-browser-github.vim', {
+            \ 'depends' : 'tyru/open-browser.vim',
+            \ 'autoload' : {
+            \       'commands' : 'OpenGithubFile'
             \   }
             \ }
 
@@ -1353,7 +1361,7 @@ command! Pry call <SID>start_pry()
 " C++ {{{
 
 " C++ ラベル字下げ設定
-set cinoptions& cinoptions+=:0,g0
+set cinoptions& cinoptions+=:0,g0,N-1,m1
 
 " -> decltype(expr) の補完
 " constexpr auto func_name(...) を仮定
@@ -1473,6 +1481,26 @@ AutocmdFT javascript nnoremap <buffer><silent><Leader>no :<C-u>VimShellInteracti
 " Markdown {{{
 AutocmdFT markdown nnoremap <buffer><silent><Leader>= :<C-u>call append('.', repeat('=', strdisplaywidth(getline('.'))))<CR>
 AutocmdFT markdown nnoremap <buffer><silent><Leader>- :<C-u>call append('.', repeat('-', strdisplaywidth(getline('.'))))<CR>
+"}}}
+
+" CMake {{{
+function! s:cmake()
+    let project_root = unite#util#path2project_directory(expand('%:p'))
+    if empty(project_root)
+        echomsg "Project directory is not found."
+        return
+    endif
+
+    if ! filereadable(project_root.'/CMakeLists.txt')
+        echomsg "CMakeLists.txt is not found in root directory of the project."
+        return
+    endif
+
+    execute 'QuickRun sh -src "cd '.shellescape(project_root).' && cmake ."'
+endfunction
+
+command! -nargs=0 CMake call <SID>cmake()
+nnoremap <Leader>cm :<C-u>CMake<CR>
 "}}}
 
 if s:meet_neocomplete_requirements
@@ -2598,6 +2626,8 @@ let g:endwize_add_verbose_info_filetypes = ['c', 'cpp']
 " open-browser.vim "{{{
 nmap <Leader>o <Plug>(openbrowser-smart-search)
 xmap <Leader>o <Plug>(openbrowser-smart-search)
+nnoremap <Leader>O :<C-u>OpenGithubFile<CR>
+vnoremap <Leader>O :OpenGithubFile<CR>
 "}}}
 
 " vim-vspec {{{
@@ -2706,6 +2736,7 @@ function! s:bundle.hooks.on_source(bundle)
     " favstar や web UI で表示
     AutocmdFT tweetvim     nnoremap <buffer><Leader><Leader> :<C-u>call <SID>tweetvim_favstar()<CR>
     AutocmdFT tweetvim     nnoremap <buffer><Leader>u        :<C-u>call <SID>tweetvim_open_home()<CR>
+    AutocmdFT tweetvim     nnoremap <buffer><Space><Space>   :<C-u>OpenBrowser https://twitter.com/i/connect<CR>
     " 縦移動
     AutocmdFT tweetvim     nnoremap <buffer><silent>j        :<C-u>call <SID>tweetvim_vertical_move("j")<CR>zz
     AutocmdFT tweetvim     nnoremap <buffer><silent>k        :<C-u>call <SID>tweetvim_vertical_move("k")<CR>zz
