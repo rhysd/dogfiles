@@ -3061,6 +3061,8 @@ unlet s:hooks
 "}}}
 
 " calendar.vim {{{
+let g:calendar_google_calendar = 1
+
 command! -nargs=* Cal call <SID>launch_calendar(<q-args>)
 function! s:launch_calendar(q_args)
     if ! has('gui_running')
