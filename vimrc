@@ -442,6 +442,16 @@ command! -bang -nargs=1 SetIndent
             \         'shiftwidth='.<q-args>
             \         'softtabstop='.<q-args>
 
+" カレンダーを開く
+command! -nargs=0 CalendarApp call <SID>open_calendar_app()
+function! s:open_calendar_app()
+    if has('mac')
+        call system('open -a Calendar.app')
+    else
+        OpenBrowser https://www.google.com/calendar/render
+    endif
+endfunction
+
 " 基本マッピング {{{
 " ; と : をスワップ
 noremap : ;
@@ -802,11 +812,12 @@ endfunction
 
 " 読み込みを遅延する
 NeoBundleLazy 'Shougo/unite.vim', {
-            \ 'autoload' : {
+            \   'autoload' : {
             \     'commands' : [{'name': 'Unite', 'complete' : 'customlist,unite#complete_source'},
-            \                   'UniteWithBufferDir',
-            \                   'UniteWithCursorWord', 'UniteWithInput'],
-            \     }
+            \                   {'name': 'UniteWithBufferDir', 'complete' : 'customlist,unite#complete_source'},
+            \                   {'name': 'UniteWithCursorWord', 'complete' : 'customlist,unite#complete_source'},
+            \                   {'name': 'UniteWithWithInput', 'complete' : 'customlist,unite#complete_source'}]
+            \   }
             \ }
 
 NeoBundleLazy 'Shougo/vimfiler.vim', {
@@ -991,7 +1002,7 @@ NeoBundleLazy 'rbtnn/puyo.vim', {
 
 NeoBundleLazy 'itchyny/calendar.vim', {
             \ 'autoload' : {
-            \       'commands' : 'Calendar',
+            \       'commands' : {'name' : 'Calendar', 'complete' : 'customlist,calendar#argument#complete'},
             \   }
             \ }
 
@@ -1479,6 +1490,7 @@ AutocmdFT html,javascript
 AutocmdFT haml inoremap <expr> k getline('.')[col('.') - 2] ==# 'k' ? "\<BS>%" : 'k'
 AutocmdFT haml SetIndent 2
 AutocmdFT javascript nnoremap <buffer><silent><Leader>no :<C-u>VimShellInteractive node<CR>
+Autocmd BufRead,BufNew,BufNewFile *.ejs setlocal ft=html
 "}}}
 
 " Markdown {{{
@@ -1761,6 +1773,7 @@ imap <expr><C-S-l> neosnippet#expandable() \|\| neosnippet#jumpable() ?
 smap <expr><C-S-l> neosnippet#expandable() \|\| neosnippet#jumpable() ?
             \ "\<Plug>(neosnippet_expand_or_jump)" :
             \ "\<C-s>"
+AutocmdFT neosnippet setlocal noexpandtab
 "}}}
 
 " unite.vim {{{
@@ -2486,7 +2499,7 @@ nmap <Leader>cc <Plug>(caw:i:toggle)
 " 行末尾コメント
 nmap <Leader>ca <Plug>(caw:a:toggle)
 " ブロックコメント
-nmap <Leader>cw <Plug>(caw:wrap:toggle)
+nmap <Leader>cb <Plug>(caw:wrap:toggle)
 " 改行後コメント
 nmap <Leader>co <Plug>(caw:jump:comment-next)
 nmap <Leader>cO <Plug>(caw:jump:comment-prev)
@@ -3062,20 +3075,19 @@ unlet s:hooks
 
 " calendar.vim {{{
 let g:calendar_google_calendar = 1
+let g:calendar_date_endian = 'big'
 
-command! -nargs=* Cal call <SID>launch_calendar(<q-args>)
-function! s:launch_calendar(q_args)
-    if ! has('gui_running')
-        if has('mac')
-            call system('open -a Calendar.app')
-        else
-            OpenBrowser https://www.google.com/calendar/render
-        endif
-    else
-        " when gui is running
-        execute 'Calendar' a:q_args
-    endif
-endfunction
+" カーソルライン表示設定を打ち消す
+AutocmdFT puyo,calendar Autocmd CursorHold,CursorHoldI,WinEnter <buffer> setlocal nocursorline
+
+AutocmdFT calendar nmap <buffer>l w
+AutocmdFT calendar nmap <buffer>h b
+
+nnoremap <silent><Leader>cw :<C-u>Calendar -view=week -split=horizontal -height=18<CR>
+
+if ! has('gui_running')
+    let g:calendar_frame = 'default'
+endif
 " }}}
 
 " プラットフォーム依存な設定をロードする "{{{
