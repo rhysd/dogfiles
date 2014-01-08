@@ -1529,6 +1529,30 @@ command! -nargs=0 CMake call <SID>cmake()
 nnoremap <Leader>cm :<C-u>CMake<CR>
 "}}}
 
+" JSON {{{
+" 自動的にオブジェクトのキーをクォートで囲む
+function! s:json_colon()
+    let current_line = getline('.')
+    if current_line[col('.')-1] !=# ':' || current_line !~# '\w\+\s*:$'
+        return
+    endif
+
+    " check if in String or not
+    let syn_id_attr_on_colon = synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name')
+    if syn_id_attr_on_colon ==# 'String'
+        return
+    endif
+
+    let [prefix, key] = matchlist(current_line, '\(^\|.*\s\)\(\w\+\)\s*:$')[1:2]
+    call setline('.', prefix . '"' . key . '" : ')
+    let diff = len(getline('.')) - len(current_line)
+    execute 'normal!' (diff > 0 ? diff . 'l' : -diff . 'h')
+endfunction
+
+AutocmdFT json inoremap <buffer>: :<C-o>:call <SID>json_colon()<CR>
+AutocmdFT json inoremap <buffer><C-j> <End>,<CR>
+" }}}
+
 if s:meet_neocomplete_requirements
 " neocomplete.vim {{{
 "AutoComplPopを無効にする
