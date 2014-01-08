@@ -751,7 +751,6 @@ NeoBundle 'osyo-manga/unite-quickfix'
 NeoBundle 'rhysd/quickrun-unite-quickfix-outputter'
 NeoBundle 'Shougo/unite-help'
 NeoBundle 'thinca/vim-unite-history'
-NeoBundle 'rhysd/open-pdf.vim'
 NeoBundle 'vim-jp/vimdoc-ja'
 NeoBundle 'jceb/vim-hier'
 NeoBundle 'kana/vim-textobj-user'
@@ -762,10 +761,8 @@ NeoBundle 'rhysd/accelerated-jk'
 NeoBundle 'kana/vim-smartinput'
 NeoBundle 'kana/vim-niceblock'
 NeoBundle 'thinca/vim-scouter'
-NeoBundle 'thinca/vim-visualstar'
 NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'rhysd/gem-gist.vim'
-NeoBundle 'daisuzu/rainbowcyclone.vim'
 NeoBundle 'rhysd/clever-f.vim', 'dev'
 NeoBundle 'rhysd/unite-zsh-cdr.vim'
 NeoBundle 'rhysd/unite-ruby-require.vim'
@@ -1027,6 +1024,34 @@ NeoBundleLazy 'rhysd/wandbox-vim', {
             \       'commands' : 'Wandbox'
             \   }
             \ }
+
+NeoBundleLazy 'rhysd/open-pdf.vim', {
+            \ 'autoload' : {
+            \     'commands' : ['Pdf', 'PdfRead', 'PdfEdit', 'PdfCacheClean', 'PdfCacheReload'],
+            \      'unite_sources' : ['pdf/history', 'pdf/search'],
+            \   }
+            \ }
+
+NeoBundleLazy 'thinca/vim-visualstar', {
+            \ 'autoload' : {
+            \     'mappings' : [['x', '*'], ['x' , '#'], ['x', 'g*'], ['x', 'g#']],
+            \   }
+            \ }
+
+
+NeoBundleLazy 'daisuzu/rainbowcyclone.vim', {
+            \   'autoload' : {
+            \     'mappings' : [
+            \       '<Plug>(rc_search_forward)',
+            \       '<Plug>(rc_search_backward)',
+            \       '<Plug>(rc_search_forward_with_cursor)',
+            \       '<Plug>(rc_search_backward_with_cursor)',
+            \       '<Plug>(rc_search_forward_with_last_pattern)',
+            \       '<Plug>(rc_search_backward_with_last_pattern)',
+            \     ],
+            \   },
+            \ }
+
 
 " if_lua プラグイン
 let s:meet_neocomplete_requirements = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
@@ -2174,6 +2199,9 @@ endif
 function! g:pdf_hooks.on_opened()
     setlocal nowrap nonumber nolist
 endfunction
+
+Autocmd BufRead,BufNew *.pdf NeoBundleSource open-pdf.vim
+
 "}}}
 
 " Hier.vim {{{
