@@ -2103,14 +2103,21 @@ if executable('jshint')
                 \ }
     Autocmd BufWritePost *.js QuickRun -outputter quickfix -type syntax/javascript
 endif
-if executable('haml')
-    let g:quickrun_config['syntax/haml'] = {
+let g:quickrun_config['syntax/haml'] = {
+            \ 'runner' : 'vimproc',
+            \ 'command' : 'haml',
+            \ 'exec'    : '%c -c %o %s:p',
+            \ 'errorformat' : 'Haml error on line %l: %m,Syntax error on line %l: %m,%-G%.%#',
+            \ }
+Autocmd BufWritePost *.haml QuickRun -outputter quickfix -type syntax/haml
+if executable('pyflakes')
+    let g:quickrun_config['syntax/python'] = {
+                \ 'command' : 'pyflakes',
+                \ 'exec' : '%c %o %s:p',
                 \ 'runner' : 'vimproc',
-                \ 'command' : 'haml',
-                \  'exec'    : '%c -c %o %s:p',
-                \  'errorformat' : 'Haml error on line %l: %m,Syntax error on line %l: %m,%-G%.%#',
+                \ 'errorformat' : '%f:%l:%m',
                 \ }
-    Autocmd BufWritePost *.haml QuickRun -outputter quickfix -type syntax/haml
+    Autocmd BufWritePost *.py QuickRun -outputter quickfix -type syntax/python
 endif
 
 " autocmd BufWritePost *.cpp,*.cc,*.hpp,*.hh QuickRun -type syntax/cpp
