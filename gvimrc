@@ -29,29 +29,6 @@ function! Vimfiler_at_start()
     endif
 endfunction
 
-" IndentGuides はインデント指向言語を扱う時だけ読み込む "{{{
-augroup IndentGuidesAutoCmd
-    autocmd!
-augroup END
-autocmd IndentGuidesAutoCmd FileType haskell,python,haml call s:prepare_indent_guides()
-
-function! s:prepare_indent_guides()
-
-    " 一度読みこめばもういらないのでリセット
-    augroup IndentGuidesAutoCmd
-        autocmd!
-    augroup END
-
-    NeoBundleSource vim-indent-guides
-    let g:indent_guides_guide_size = 1
-    let g:indent_guides_auto_colors = 1
-    if !has('gui_running') && &t_Co >= 256
-        let g:indent_guides_auto_colors = 0
-        autocmd IndentGuidesAutoCmd VimEnter,Colorscheme * hi IndentGuidesOdd  ctermbg=233
-        autocmd IndentGuidesAutoCmd VimEnter,Colorscheme * hi IndentGuidesEven ctermbg=240
-    endif
-    call indent_guides#enable()
-endfunction
 "}}}
 
 let g:haskell_conceal = 1

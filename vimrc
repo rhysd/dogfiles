@@ -1037,7 +1037,11 @@ else
 endif
 
 " GUI オンリーなプラグイン
-NeoBundleLazy 'nathanaelkane/vim-indent-guides'
+NeoBundleLazy 'nathanaelkane/vim-indent-guides', {
+            \   'autoload' : {
+            \     'filetypes' : ['haskell', 'python']
+            \   }
+            \ }
 NeoBundleLazy 'tyru/restart.vim'
 
 " 特定のファイルタイプで読み込む
@@ -3088,6 +3092,21 @@ nnoremap <silent><Leader>cw :<C-u>Calendar -view=week -split=horizontal -height=
 if ! has('gui_running')
     let g:calendar_frame = 'default'
 endif
+" }}}
+
+" IndentGuide {{{
+let s:bundle = neobundle#get("vim-indent-guides")
+function! s:bundle.hooks.on_post_source(bundle)
+    let g:indent_guides_guide_size = 1
+    let g:indent_guides_auto_colors = 1
+    if !has('gui_running') && &t_Co >= 256
+        let g:indent_guides_auto_colors = 0
+        Autocmd VimEnter,Colorscheme * hi IndentGuidesOdd  ctermbg=233
+        Autocmd VimEnter,Colorscheme * hi IndentGuidesEven ctermbg=240
+    endif
+    call indent_guides#enable()
+endfunction
+unlet s:bundle
 " }}}
 
 " プラットフォーム依存な設定をロードする "{{{
