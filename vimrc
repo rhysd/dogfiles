@@ -184,6 +184,8 @@ Autocmd BufRead,BufNew,BufNewFile *.plt,*.plot,*.gnuplot setlocal ft=gnuplot
 Autocmd BufRead,BufNew,BufNewFile Guardfile setlocal ft=ruby
 " JSON
 Autocmd BufRead,BufNew,BufNewFile *.json,*.jsonp setlocal ft=json
+" jade
+Autocmd BufRead,BufNew,BufNewFile *.jade setlocal ft=jade
 
 " カーソル位置の復元
 Autocmd BufReadPost *
@@ -1181,6 +1183,16 @@ NeoBundleLazy 'tpope/vim-haml', {
 NeoBundleLazy 'davidhalter/jedi-vim', {
         \ 'autoload' : {
         \     'filetypes' : 'python',
+        \   }
+        \ }
+NeoBundleLazy 'hynek/vim-python-pep8-indent', {
+        \ 'autoload' : {
+        \     'filetypes' : 'python',
+        \   }
+        \ }
+NeoBundleLazy 'digitaltoad/vim-jade', {
+        \ 'autoload' : {
+        \     'filetypes' : 'jade',
         \   }
         \ }
 
@@ -3147,6 +3159,7 @@ unlet s:hooks
 " calendar.vim {{{
 let g:calendar_google_calendar = 1
 let g:calendar_date_endian = 'big'
+let g:calendar_first_day = 'sun_day'
 
 " カーソルライン表示設定を打ち消す
 AutocmdFT puyo,calendar Autocmd CursorHold,CursorHoldI,WinEnter <buffer> setlocal nocursorline
@@ -3185,7 +3198,7 @@ function! s:python_settings()
     nnoremap <buffer><Leader>jr :<C-u>call jedi#rename()<CR>
     nnoremap <buffer><Leader>jg :<C-u>call jedi#goto_assignments()<CR>
     nnoremap <buffer><Leader>jd :<C-u>call jedi#goto_definitions()<CR>
-    nnoremap <buffer>K :<C-u>jedi#show_documentation()<CR>
+    nnoremap <buffer>K :<C-u>call jedi#show_documentation()<CR>
     nnoremap <buffer><Leader>ju :<C-u>call jedi#usages()<CR>
     nnoremap <buffer><Leader>ji :<C-u>Pyimport<Space>
     setlocal omnifunc=jedi#completions
