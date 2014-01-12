@@ -22,7 +22,6 @@ command! -nargs=* AutocmdFT autocmd MyVimrc FileType <args>
 AutocmdFT vim highlight def link myVimAutocmd vimAutoCmd
 AutocmdFT vim match myVimAutocmd /\<\(Autocmd\|AutocmdFT\)\>/
 
-
 "エンコーディング
 set encoding=utf-8
 set termencoding=utf-8
@@ -30,8 +29,6 @@ set fileencoding=utf-8
 set fileencodings=utf-8,cp932,euc-jp
 " user-defined prefix
 let g:mapleader = ','
-"行番号表示
-set number
 "バックアップファイルいらない
 set nobackup
 " 言語設定
@@ -186,6 +183,9 @@ Autocmd BufRead,BufNew,BufNewFile Guardfile setlocal ft=ruby
 Autocmd BufRead,BufNew,BufNewFile *.json,*.jsonp setlocal ft=json
 " jade
 Autocmd BufRead,BufNew,BufNewFile *.jade setlocal ft=jade
+
+" 行数が少ない時だけ行数表示
+Autocmd BufEnter * if line('$') > 10000 | setlocal nonumber | else | setlocal number | endif
 
 " カーソル位置の復元
 Autocmd BufReadPost *
@@ -746,6 +746,7 @@ NeoBundle 'Shougo/vimproc.vim', {
             \   }
             \ }
 NeoBundle 'Shougo/neosnippet'
+NeoBundle 'Shougo/neosnippet-snippets'
 NeoBundle 'rhysd/inu-snippets'
 NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'Shougo/unite-outline'
