@@ -69,7 +69,7 @@ fi
 
 alias x=startx
 alias gp=gnuplot
-alias tweetvim='gvim +TweetVimHomeTimeline'
+alias xo=xdg-open
 
 # suffix alias
 alias -s html='google-chrome'

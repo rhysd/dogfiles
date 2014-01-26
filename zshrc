@@ -32,7 +32,6 @@ alias ll='ls -lah'
 alias llr='ls -laRh'
 alias la='ls -A'
 alias gr='grep -nl --color'
-alias pg='ps aux | grep'
 alias md='mkdir -pv'
 alias rmr='rm -R'
 alias rm!='rm -f'
@@ -113,6 +112,10 @@ if which tmux > /dev/null; then
         fi
     }
 fi
+
+function pg(){
+    ps aux | grep "$1" | grep -v grep
+}
 # }}}
 
 ############
