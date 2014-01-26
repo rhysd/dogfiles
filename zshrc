@@ -60,12 +60,13 @@ alias v=vim
 alias gv=gvim
 alias c=cd
 alias s=sudo
-alias h='history 0'
+alias hi='history 0'
 alias k=kill
 alias ng=noglob
 alias d=dirs
 alias g=git
 alias e='emacs -nw'
+alias h=hg
 
 # global alias
 alias -g G='| grep'

@@ -1,0 +1,35 @@
+[ui]
+username = rhysd <lin90162@yahoo.co.jp>
+editor = vim
+[extensions]
+color =
+histedit =
+pager =
+graphlog =
+fetch =
+rebase =
+record =
+[pager]
+pager = LESS='FRX' less
+attend = annotate, cat, diff, export, glog, log, qdiff, lo, di
+[alias]
+st = status
+cm = commit
+cmm = commit -m
+up = update
+cl = clone
+mg = merge
+ps = push
+pl = pull
+lo = glog --template '{node|short} | {date|shortdate} | {author|user}: {desc|strip|firstline}\n'
+ad = add
+adp = record
+gr = grep
+br = branch
+brs = branches
+he = histedit
+rb = rebase
+rbi = histedit
+di = diff
+gl = glog
+rec = record
