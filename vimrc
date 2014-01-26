@@ -1024,7 +1024,7 @@ NeoBundleLazy 'rhysd/unite-codic.vim', {
 
 NeoBundleLazy 'rhysd/wandbox-vim', {
             \ 'autoload' : {
-            \       'commands' : 'Wandbox'
+            \       'commands' : ['Wandbox', 'WandboxOptionList']
             \   }
             \ }
 
@@ -1091,7 +1091,7 @@ NeoBundleLazy 'osyo-manga/vim-marching', {
             \ 'autoload' : {'filetypes' : ['c', 'cpp']}
             \ }
 NeoBundleLazy 'rhysd/unite-n3337', {
-            \ 'autoload' : {'filetypes' : 'cpp'}
+            \ 'autoload' : {'unite_sources' : 'n3337'}
             \ }
 NeoBundleLazy 'rhysd/vim-clang-format', {
             \ 'depends' : 'kana/vim-operator-user',
@@ -1137,6 +1137,9 @@ NeoBundleLazy 'rhysd/neco-ruby-keyword-args', {
 
 " JavaScript 用プラグイン
 NeoBundleLazy 'jiangmiao/simple-javascript-indenter', {
+            \ 'autoload' : {'filetypes' : 'javascript'}
+            \ }
+NeoBundleLazy 'jelera/vim-javascript-syntax', {
             \ 'autoload' : {'filetypes' : 'javascript'}
             \ }
 let s:enable_tern_for_vim = has('python') && executable('npm')
@@ -1202,7 +1205,6 @@ NeoBundleLazy 'zaiste/tmux.vim', {
         \ 'autoload' : {'filetypes' : 'tmux'}
         \ }
 
-" JSON
 " JSON
 NeoBundleLazy 'elzr/vim-json', {
         \ 'autoload' : {'filetypes' : 'json'}
