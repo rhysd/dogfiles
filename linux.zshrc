@@ -3,6 +3,11 @@ export BROWSER=google-chrome:firefox:$BROWSER
 export PATH=$PATH:$HOME/.gem/ruby/1.9.1/bin
 export PATH=/usr/lib/colorgcc/bin:$PATH
 
+# for Tmux 256 bit color
+if [[ $TERM == "xterm" ]]; then
+export TERM=xterm-256color
+fi
+
 # Arch Linux environment
 if which pacman > /dev/null; then
 
@@ -53,7 +58,6 @@ fi
 # Debian development
 if which apt-get > /dev/null; then
   export LANG=ja_JP.UTF-8
-  export TERM=xterm-256color
   export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
   alias synergy='synergyc r-hysd-arch'
   alias -s pdf='acroread'
@@ -95,3 +99,5 @@ if ! which um > /dev/null; then
         fi
     }
 fi
+
+# vim: set ft=zsh fdm=marker ff=unix fileencoding=utf-8:

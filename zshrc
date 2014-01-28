@@ -113,10 +113,6 @@ if which tmux > /dev/null; then
         fi
     }
 fi
-
-function pg(){
-    ps aux | grep "$1" | grep -v grep
-}
 # }}}
 
 ############
@@ -156,6 +152,10 @@ function source-file(){
 function reload(){
     source-file $HOME/.zshrc
     source-file $HOME/.zshenv
+}
+
+function pg(){
+    ps aux | grep "$1" | grep -v grep
 }
 # }}}
 
