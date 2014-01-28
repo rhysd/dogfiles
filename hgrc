@@ -1,6 +1,7 @@
 [ui]
 username = rhysd <lin90162@yahoo.co.jp>
 editor = vim
+merge = internal:merge
 [extensions]
 color =
 histedit =
@@ -16,6 +17,7 @@ attend = annotate, cat, diff, export, glog, log, qdiff, lo, di
 st = status
 cm = commit
 cmm = commit -m
+cma = commit --amend
 up = update
 cl = clone
 mg = merge
