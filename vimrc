@@ -2157,43 +2157,51 @@ let g:quickrun_config['tmux'] = {
 " シンタックスチェック
 let g:quickrun_config['syntax/cpp'] = {
             \ 'runner' : 'vimproc',
+            \ 'outputter' : 'unite_quickfix',
             \ 'command' : 'g++',
             \ 'cmdopt' : '-std=c++11 -Wall -Wextra -O2',
             \ 'exec' : '%c %o -fsyntax-only %s:p'
             \ }
+" autocmd BufWritePost *.cpp,*.cc,*.hpp,*.hh QuickRun -type syntax/cpp
+
 let g:quickrun_config['syntax/ruby'] = {
             \ 'runner' : 'vimproc',
+            \ 'outputter' : 'unite_quickfix',
             \ 'command' : 'ruby',
             \ 'exec' : '%c -c %s:p %o',
             \ }
+Autocmd BufWritePost *.rb QuickRun -type syntax/ruby
+
 if executable('jshint')
     let g:quickrun_config['syntax/javascript'] = {
                 \ 'command' : 'jshint',
+                \ 'outputter' : 'unite_quickfix',
                 \ 'exec'    : '%c %o %s:p',
                 \ 'runner' : 'vimproc',
                 \ 'errorformat' : '%f: line %l\, col %c\, %m',
                 \ }
-    Autocmd BufWritePost *.js QuickRun -outputter quickfix -type syntax/javascript
+    Autocmd BufWritePost *.js QuickRun -type syntax/javascript
 endif
+
 let g:quickrun_config['syntax/haml'] = {
             \ 'runner' : 'vimproc',
             \ 'command' : 'haml',
+            \ 'outputter' : 'unite_quickfix',
             \ 'exec'    : '%c -c %o %s:p',
             \ 'errorformat' : 'Haml error on line %l: %m,Syntax error on line %l: %m,%-G%.%#',
             \ }
-Autocmd BufWritePost *.haml QuickRun -outputter quickfix -type syntax/haml
+Autocmd BufWritePost *.haml QuickRun -type syntax/haml
+
 if executable('pyflakes')
     let g:quickrun_config['syntax/python'] = {
                 \ 'command' : 'pyflakes',
                 \ 'exec' : '%c %o %s:p',
+                \ 'outputter' : 'unite_quickfix',
                 \ 'runner' : 'vimproc',
                 \ 'errorformat' : '%f:%l:%m',
                 \ }
-    Autocmd BufWritePost *.py QuickRun -outputter quickfix -type syntax/python
+    Autocmd BufWritePost *.py QuickRun -type syntax/python
 endif
-
-" autocmd BufWritePost *.cpp,*.cc,*.hpp,*.hh QuickRun -type syntax/cpp
-Autocmd BufWritePost *.rb QuickRun -outputter quickfix -type syntax/ruby
 
 "QuickRunのキーマップ {{{
 nnoremap <Leader>q  <Nop>
