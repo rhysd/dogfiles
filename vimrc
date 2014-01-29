@@ -572,7 +572,8 @@ nnoremap <expr>gp '`['.strpart(getregtype(),0,1).'`]'
     " nnoremap p P
 " 最後にヤンクしたテキストを貼り付け．
 nnoremap P "0P
-
+" indent を下げる
+inoremap <C-q> <C-d>
 " タブの設定
 nnoremap ge :<C-u>tabedit<Space>
 nnoremap gn :<C-u>tabnew<CR>
@@ -580,7 +581,7 @@ nnoremap <silent>gx :<C-u>tabclose<CR>
 nnoremap <silent><A-h> gT
 nnoremap <silent><A-l> gt
 " 行表示・非表示の切り替え．少しでも横幅が欲しい時は OFF に
-nnoremap <Leader>nu :<C-u>set number! number?<CR>
+nnoremap : :<C-u>set number! number?<CR>
 " クリップボードから貼り付け
 inoremap <C-r>+ <C-o>:set paste<CR><C-r>+<C-o>:set nopaste<CR>
 " 貼り付けはインデントを揃える
@@ -1593,6 +1594,13 @@ AutocmdFT json inoremap <buffer>: :<C-o>:call <SID>json_colon()<CR>
 AutocmdFT json inoremap <buffer><C-j> <End>,<CR>
 " }}}
 
+" Python {{{
+function! s:python_settings()
+    setlocal noautoindent nosmartindent nocindent
+endfunction
+AutocmdFT python call <SID>python_settings()
+"}}}
+
 if s:meet_neocomplete_requirements
 " neocomplete.vim {{{
 "AutoComplPopを無効にする
@@ -1849,7 +1857,7 @@ imap <expr><C-S-l> neosnippet#expandable() \|\| neosnippet#jumpable() ?
 smap <expr><C-S-l> neosnippet#expandable() \|\| neosnippet#jumpable() ?
             \ "\<Plug>(neosnippet_expand_or_jump)" :
             \ "\<C-s>"
-AutocmdFT neosnippet setlocal noexpandtab
+AutocmdFT neosnippet,gitconfig setlocal noexpandtab
 "}}}
 
 " unite.vim {{{
@@ -3197,7 +3205,7 @@ let g:jedi#auto_initialization = 0
 let g:jedi#auto_vim_configuration = 0
 let g:jedi#popup_select_first = 0
 
-function! s:python_settings()
+function! s:jedi_settings()
     nnoremap <buffer><Leader>jr :<C-u>call jedi#rename()<CR>
     nnoremap <buffer><Leader>jg :<C-u>call jedi#goto_assignments()<CR>
     nnoremap <buffer><Leader>jd :<C-u>call jedi#goto_definitions()<CR>
@@ -3208,7 +3216,7 @@ function! s:python_settings()
     command! -nargs=0 JediRename call jedi#rename()
 endfunction
 
-AutocmdFT python call <SID>python_settings()
+AutocmdFT python call <SID>jedi_settings()
 " }}}
 
 " プラットフォーム依存な設定をロードする "{{{
