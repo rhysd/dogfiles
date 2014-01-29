@@ -2655,12 +2655,16 @@ nmap <silent>gcb <Plug>(operator-surround-replace)<Plug>(textobj-between-a)
 "}}}
 
 " ghcmod-vim {{{
-AutocmdFT haskell nnoremap <buffer><silent><C-t> :<C-u>GhcModType<CR>
+AutocmdFT haskell nnoremap <buffer><C-t> :<C-u>GhcModType<CR>
 AutocmdFT haskell let &l:statusline = '%{empty(getqflist()) ? "[No Errors] " : "[Errors Found] "}'
                                             \ . (empty(&l:statusline) ? &statusline : &l:statusline)
 AutocmdFT haskell nnoremap <buffer><silent><Esc><Esc> :<C-u>nohlsearch<CR>:HierClear<CR>:GhcModTypeClear<CR>
-AutocmdFT haskell nnoremap <buffer><silent><Leader>cq :<C-u>cclose<CR>
+AutocmdFT haskell nnoremap <buffer><Leader>ge :<C-u>GhcModExpand<CR>
 Autocmd BufWritePost *.hs GhcModCheckAndLintAsync
+let g:ghcmod_open_quickfix_function = s:SID . 'open_quickfix_with_unite'
+function! s:open_quickfix_with_unite()
+    Unite -no-empty -no-start-insert quickfix
+endfunction
 "}}}
 
 " vim2hs.vim {{{
