@@ -42,6 +42,7 @@ set tabstop=4 shiftwidth=4 softtabstop=4
 set shiftround
 "タブの代わりにスペースを使う
 set expandtab
+AutocmdFT neosnippet,gitconfig setlocal noexpandtab
 "長い行で折り返す
 set wrap
 "ウィンドウの横幅をなるべく30文字以上に
@@ -1857,7 +1858,8 @@ imap <expr><C-S-l> neosnippet#expandable() \|\| neosnippet#jumpable() ?
 smap <expr><C-S-l> neosnippet#expandable() \|\| neosnippet#jumpable() ?
             \ "\<Plug>(neosnippet_expand_or_jump)" :
             \ "\<C-s>"
-AutocmdFT neosnippet,gitconfig setlocal noexpandtab
+" C++ と Python の標準のスニペットを読み込まない
+let g:neosnippet#disable_runtime_snippets = {'cpp' : 1, 'python' : 1}
 "}}}
 
 " unite.vim {{{
@@ -2141,6 +2143,10 @@ let g:quickrun_config.cpp = {
             \ 'cmdopt' : '-std=c++1y -Wall -Wextra -O2',
             \ 'hook/quickrunex/enable' : 1,
             \ }
+" プリプロセスのみ
+let g:quickrun_config['cpp/preprocess/g++'] = { 'type' : 'cpp/g++', 'exec' : '%c -P -E %s' }
+let g:quickrun_config['cpp/preprocess/clang++'] = { 'type' : 'cpp/clang++', 'exec' : '%c -P -E %s' }
+let g:quickrun_config['cpp/preprocess'] = { 'type' : 'cpp', 'exec' : '%c -P -E %s' }
 "outputter
 let g:quickrun_unite_quickfix_outputter_unite_context = { 'no_empty' : 1 }
 " runner vimproc における polling 間隔
