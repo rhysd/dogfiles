@@ -83,8 +83,6 @@ if [[ $TMUX != "" ]]; then
 fi
 
 # suffix alias
-alias -s cpp=g++
-alias -s cc=g++
 alias -s tex=platex
 alias -s dvi=dvipdfmx
 alias -s bib=bibtex
