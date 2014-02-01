@@ -806,6 +806,8 @@ function! s:test_bundle(name)
     endif
 endfunction
 
+call s:test_bundle('rhysd/libclang-vim')
+
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
 
@@ -863,6 +865,14 @@ NeoBundleLazy 'rhysd/vim-operator-surround', {
             \           '<Plug>(operator-surround-replace)',
             \       ]
             \   }
+            \ }
+NeoBundleLazy 'deris/vim-operator-insert', {
+            \ 'autoload' : {
+            \   'mappings' : [
+            \       '<Plug>(operator-insert-i)',
+            \       '<Plug>(operator-insert-a)',
+            \   ],
+            \   },
             \ }
 
 NeoBundleLazy 'tyru/caw.vim', {
@@ -988,6 +998,13 @@ NeoBundleLazy 'rhysd/vim-textobj-anyblock', {
             \   }
             \ }
 
+NeoBundleLazy 'rhysd/vim-textobj-clang', {
+            \ 'depends' : 'kana/vim-textobj-user',
+            \ 'autoload' : {
+            \       'mappings' : [['xo', 'a;'], ['xo', 'i;']]
+            \   }
+            \ }
+
 NeoBundleLazy 'tpope/vim-fugitive', {
             \ 'autoload' : {
             \       'commands' : ['Gstatus', 'Gcommit', 'Gwrite', 'Gdiff', 'Gblame', 'Git', 'Ggrep']
@@ -1101,6 +1118,11 @@ NeoBundleLazy 'rhysd/vim-clang-format', {
             \ }
 NeoBundleLazy 'osyo-manga/vim-snowdrop', {
             \ 'autoload' : {'filetypes' : ['c', 'cpp']}
+            \ }
+NeoBundleLazy 'rhysd/clang-extent-selector.vim', {
+            \ 'autoload' : {
+            \       'filetypes' : ['c', 'cpp']
+            \   }
             \ }
 
 " Haskell 用プラグイン
@@ -2666,6 +2688,9 @@ nmap <silent>gcc <Plug>(operator-surround-replace)<Plug>(textobj-anyblock-a)
 nmap <silent>gdb <Plug>(operator-surround-delete)<Plug>(textobj-between-a)
 nmap <silent>gcb <Plug>(operator-surround-replace)<Plug>(textobj-between-a)
 "}}}
+" vim-operator-insert
+map <silent><Leader>i <Plug>(operator-insert-i)
+map <silent><Leader>a <Plug>(operator-insert-a)
 "}}}
 
 " ghcmod-vim {{{
