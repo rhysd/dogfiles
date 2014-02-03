@@ -32,6 +32,15 @@ fi
 export HOMEBREW_VERBOSE=true
 export HOMEBREW_EDITOR=vim
 
+# Go
+if which go > /dev/null; then
+    if [ ! -d "$HOME/.go" ]; then
+        mkdir -p "$HOME/.go"
+    fi
+    export GOPATH=$HOME/.go
+    export PATH=$GOPATH/bin:$PATH
+fi
+
 function Emacs(){
     if [ "$1" != "" ]; then
         touch $1

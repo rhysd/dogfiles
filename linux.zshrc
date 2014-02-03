@@ -8,6 +8,16 @@ if [[ $TERM == "xterm" ]]; then
 export TERM=xterm-256color
 fi
 
+# Go
+if [ -d "/usr/local/go" ]; then
+    export GOROOT=/usr/local/go
+    if [ ! -d "$HOME/.go" ]; then
+        mkdir -p $HOME/.go
+    fi
+    export GOPATH=$HOME/.go
+    export PATH=$GOROOT/bin:$GOPATH/bin:$PATH
+fi
+
 # Arch Linux environment
 if which pacman > /dev/null; then
 
@@ -55,20 +65,8 @@ if which pacman > /dev/null; then
   }
 fi
 
-# Debian development
-if which apt-get > /dev/null; then
-  export LANG=ja_JP.UTF-8
-  export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
-  alias synergy='synergyc r-hysd-arch'
-  alias -s pdf='acroread'
-  if [ -f ~/.zshrc.lab ]; then
-    source ~/.zshrc.lab
-  fi
-fi
-
 if which awesome > /dev/null; then
   alias configawesome='vim $HOME/.config/awesome/rc.lua'
-  alias apt-up='sudo apt-get update && sudo apt-get upgrade'
 fi
 
 alias x=startx
