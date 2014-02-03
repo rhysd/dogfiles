@@ -171,7 +171,7 @@ Autocmd CursorMoved,CursorMovedI,WinLeave * setlocal nocursorline
 Autocmd CursorHold,CursorHoldI,WinEnter * setlocal cursorline
 
 " *.md で読み込む filetype を変更（デフォルトは modula2）
-Autocmd BufRead,BufNew,BufNewFile *.md,*.markdown setlocal ft=markdown
+Autocmd BufRead,BufNew,BufNewFile *.md,*.markdown,*.mkd setlocal ft=markdown
 " tmux
 Autocmd BufRead,BufNew,BufNewFile *tmux.conf setlocal ft=tmux
 " git config file
@@ -184,6 +184,8 @@ Autocmd BufRead,BufNew,BufNewFile Guardfile setlocal ft=ruby
 Autocmd BufRead,BufNew,BufNewFile *.json,*.jsonp setlocal ft=json
 " jade
 Autocmd BufRead,BufNew,BufNewFile *.jade setlocal ft=jade
+" Go
+Autocmd BufRead,BufNew,BufNewFile *.go setlocal ft=go
 
 " 行数が少ない時だけ行数表示
 Autocmd BufEnter * if line('$') > 10000 | setlocal nonumber | else | setlocal number | endif
@@ -1224,7 +1226,7 @@ NeoBundleLazy 'digitaltoad/vim-jade', {
         \   }
         \ }
 
-" Tmux ハイライト
+" Tmux
 NeoBundleLazy 'zaiste/tmux.vim', {
         \ 'autoload' : {'filetypes' : 'tmux'}
         \ }
@@ -1233,6 +1235,14 @@ NeoBundleLazy 'zaiste/tmux.vim', {
 NeoBundleLazy 'elzr/vim-json', {
         \ 'autoload' : {'filetypes' : 'json'}
         \ }
+" Go
+NeoBundleLazy 'Blackrush/vim-gocode', {
+        \ 'autoload' : {
+        \       'filetypes' : 'go',
+        \       'commands' : 'Godoc',
+        \   }
+        \ }
+
 
 " TweetVim
 NeoBundleLazy 'basyura/twibill.vim'
@@ -1623,6 +1633,31 @@ function! s:python_settings()
 endfunction
 AutocmdFT python call <SID>python_settings()
 "}}}
+
+" Go {{{
+function! s:golang_settings()
+    " Godoc でカーソル下のワードを調べる
+    nnoremap <buffer><silent>K :<C-u>execute 'Godoc' expand('<cword>')<CR>
+    "   Note: 'fmt.Printf' -> 'fmt Printf'
+    vnoremap <buffer><silent>K y:<C-u>execute 'Godoc' substitute(getreg('+'), '\.', ' ', 'g')<CR>
+    " カーソル下のワードをインポート
+    nnoremap <buffer><silent>:gi :<C-u>execute 'GoImport' expand('<cword>')<CR>
+    " インポートをやめる
+    nnoremap <buffer>:gd :<C-u>GoDrop<Space>
+    " フォーマット
+    nnoremap <buffer>:gf :<C-u>Fmt<CR>
+    " インサートモード中にインポート
+    inoremap <buffer><silent><C-g>i <C-o>:<C-u>execute 'GoImport' matchstr(getline('.')[:col('.')-1], '\h\w*\ze\W*$')<CR><Right>
+    " ハードタブ推奨
+    setlocal noexpandtab
+    let g:go_fmt_autofmt = 1
+endfunction
+
+AutocmdFT go call <SID>golang_settings()
+AutocmdFT godoc nnoremap<buffer>q :<C-u>quit<CR>
+AutocmdFT godoc nnoremap<buffer>d <C-d>
+AutocmdFT godoc nnoremap<buffer>u <C-u>
+" }}}
 
 if s:meet_neocomplete_requirements
 " neocomplete.vim {{{
@@ -2229,6 +2264,17 @@ if executable('pyflakes')
                 \ 'errorformat' : '%f:%l:%m',
                 \ }
     Autocmd BufWritePost *.py QuickRun -type syntax/python
+endif
+
+if executable('go')
+    let g:quickrun_config['syntax/go'] = {
+                \ 'command' : 'go',
+                \ 'exec' : '%c vet %o %s:p',
+                \ 'outputter' : 'quickfix',
+                \ 'runner' : 'vimproc',
+                \ 'errorformat' : '%Evet: %.%\+: %f:%l:%c: %m,%W%f:%l: %m,%-G%.%#',
+                \ }
+    Autocmd BufWritePost *.go QuickRun -type syntax/go
 endif
 
 "QuickRunのキーマップ {{{
