@@ -1253,6 +1253,7 @@ NeoBundleLazy 'zaiste/tmux.vim', {
 NeoBundleLazy 'elzr/vim-json', {
         \ 'autoload' : {'filetypes' : 'json'}
         \ }
+
 " Go
 NeoBundleLazy 'Blackrush/vim-gocode', {
         \ 'autoload' : {
@@ -1261,6 +1262,12 @@ NeoBundleLazy 'Blackrush/vim-gocode', {
         \   }
         \ }
 
+NeoBundleLazy 'rhysd/unite-go-import.vim', {
+        \ 'autoload' : {
+        \     'depends' : ['Shougo/unite.vim', 'Blackrush/vim-gocode'],
+        \     'unite_sources' : 'go/import',
+        \   }
+        \ }
 
 " TweetVim
 NeoBundleLazy 'basyura/twibill.vim'
@@ -1659,16 +1666,17 @@ function! s:golang_settings()
     "   Note: 'fmt.Printf' -> 'fmt Printf'
     vnoremap <buffer><silent>K y:<C-u>execute 'Godoc' substitute(getreg('+'), '\.', ' ', 'g')<CR>
     " カーソル下のワードをインポート
-    nnoremap <buffer><silent>:gi :<C-u>execute 'GoImport' expand('<cword>')<CR>
+    nnoremap <buffer><silent>:gi :<C-u>execute 'Import' expand('<cword>')<CR>
     " インポートをやめる
-    nnoremap <buffer>:gd :<C-u>GoDrop<Space>
+    nnoremap <buffer>:gd :<C-u>Drop<Space>
     " フォーマット
     nnoremap <buffer>:gf :<C-u>Fmt<CR>
     " インサートモード中にインポート
-    inoremap <buffer><silent><C-g>i <C-o>:<C-u>execute 'GoImport' matchstr(getline('.')[:col('.')-1], '\h\w*\ze\W*$')<CR><Right>
+    inoremap <buffer><silent><C-g>i <C-o>:<C-u>execute 'Import' matchstr(getline('.')[:col('.')-1], '\h\w*\ze\W*$')<CR><Right>
     " ハードタブ推奨
     setlocal noexpandtab
     let g:go_fmt_autofmt = 1
+    nnoremap <buffer><Space>i :<C-u>Unite go/import<CR>
 endfunction
 
 AutocmdFT go call <SID>golang_settings()
@@ -2238,7 +2246,7 @@ let g:quickrun_config['tmux'] = {
 " シンタックスチェック
 let g:quickrun_config['syntax/cpp'] = {
             \ 'runner' : 'vimproc',
-            \ 'outputter' : 'unite_quickfix',
+            \ 'outputter' : 'quickfix',
             \ 'command' : 'g++',
             \ 'cmdopt' : '-std=c++11 -Wall -Wextra -O2',
             \ 'exec' : '%c %o -fsyntax-only %s:p'
@@ -2247,7 +2255,7 @@ let g:quickrun_config['syntax/cpp'] = {
 
 let g:quickrun_config['syntax/ruby'] = {
             \ 'runner' : 'vimproc',
-            \ 'outputter' : 'unite_quickfix',
+            \ 'outputter' : 'quickfix',
             \ 'command' : 'ruby',
             \ 'exec' : '%c -c %s:p %o',
             \ }
@@ -2256,7 +2264,7 @@ Autocmd BufWritePost *.rb QuickRun -type syntax/ruby
 if executable('jshint')
     let g:quickrun_config['syntax/javascript'] = {
                 \ 'command' : 'jshint',
-                \ 'outputter' : 'unite_quickfix',
+                \ 'outputter' : 'quickfix',
                 \ 'exec'    : '%c %o %s:p',
                 \ 'runner' : 'vimproc',
                 \ 'errorformat' : '%f: line %l\, col %c\, %m',
@@ -2267,7 +2275,7 @@ endif
 let g:quickrun_config['syntax/haml'] = {
             \ 'runner' : 'vimproc',
             \ 'command' : 'haml',
-            \ 'outputter' : 'unite_quickfix',
+            \ 'outputter' : 'quickfix',
             \ 'exec'    : '%c -c %o %s:p',
             \ 'errorformat' : 'Haml error on line %l: %m,Syntax error on line %l: %m,%-G%.%#',
             \ }
@@ -2277,7 +2285,7 @@ if executable('pyflakes')
     let g:quickrun_config['syntax/python'] = {
                 \ 'command' : 'pyflakes',
                 \ 'exec' : '%c %o %s:p',
-                \ 'outputter' : 'unite_quickfix',
+                \ 'outputter' : 'quickfix',
                 \ 'runner' : 'vimproc',
                 \ 'errorformat' : '%f:%l:%m',
                 \ }
