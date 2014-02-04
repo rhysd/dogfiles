@@ -46,3 +46,5 @@
 	mgn = merge --no-ff
 [push]
 	default = simple
+[github]
+	user = rhysd
