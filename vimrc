@@ -801,7 +801,6 @@ NeoBundle 'rhysd/migemo-search.vim'
 NeoBundle 'rhysd/vim-vspec-matchers'
 NeoBundle 'ujihisa/unite-colorscheme'
 NeoBundle 'rhysd/unite-locate'
-NeoBundle 'vim-jp/vital.vim'
 NeoBundle 'rhysd/conflict-marker.vim'
 NeoBundle 'rhysd/vim-window-adjuster'
 
@@ -810,11 +809,14 @@ NeoBundle 'rhysd/wallaby.vim'
 NeoBundle 'chriskempson/tomorrow-theme', {'rtp' : 'vim'}
 NeoBundle 'junegunn/seoul256.vim'
 NeoBundle 'tomasr/molokai'
-NeoBundle 'altercation/vim-colors-solarized'
-NeoBundle 'earendel'
-NeoBundle 'rdark'
 NeoBundle 'telamon/vim-color-github'
 NeoBundle 'chriskempson/base16-vim'
+
+NeoBundle 'altercation/vim-colors-solarized', {'gui' : 1}
+NeoBundle 'rdark', {'gui' : 1}
+NeoBundle 'jonathanfilip/vim-lucius', {'gui' : 1}
+NeoBundle 'vyshane/vydark-vim-color', {'gui' : 1}
+NeoBundle '29decibel/codeschool-vim-theme', {'gui' : 1}
 
 " For testing
 function! s:test_bundle(name)
@@ -915,6 +917,8 @@ NeoBundleLazy 'Shougo/vimshell', {
             \ }
 
 NeoBundleLazy 'kana/vim-altr'
+
+" NeoBundleLazy 'vim-jp/vital.vim'
 
 NeoBundleLazy 'tyru/open-browser.vim', {
             \ 'autoload' : {
