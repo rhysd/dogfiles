@@ -526,8 +526,7 @@ nnoremap N Nzvzz
 nnoremap * *zvzz
 nnoremap # *zvzz
 " 検索で / をエスケープしなくて良くする（素の / を入力したくなったら<C-v>/）
-cnoremap <expr>/ getcmdtype() == '/' ? '\/' : '/'
-cnoremap <expr>/ getcmdtype() == '?' ? '\/' : '/'
+cnoremap <expr>/ getcmdtype() == '/' <Bar><Bar> getcmdtype() == '?' ? '\/' : '/'
 " 空行挿入
 function! s:cmd_cr_n(count)
     for _ in range(a:count)
@@ -552,7 +551,7 @@ inoremap <silent><expr><C-f> pumvisible() ? "\<C-y>\<Right>" : "\<Right>"
 cnoremap <C-f> <Right>
 cnoremap <C-b> <Left>
 inoremap <C-d> <Del>
-cnoremap <C-d> <Del>
+cnoremap <expr><C-d> len(getcmdline()) == getcmdpos()-1 ? "\<C-d>" : "\<Del>"
 " Emacsライク<C-k> http//vim.g.hatena.ne.jp/tyru/20100116
 inoremap <silent><expr><C-k> "\<C-g>u".(col('.') == col('$') ? '<C-o>gJ' : '<C-o>D')
 cnoremap <C-k> <C-\>e getcmdpos() == 1 ? '' : getcmdline()[:getcmdpos()-2]<CR>
@@ -918,7 +917,11 @@ NeoBundleLazy 'Shougo/vimshell', {
 
 NeoBundleLazy 'kana/vim-altr'
 
-" NeoBundleLazy 'vim-jp/vital.vim'
+NeoBundleLazy 'vim-jp/vital.vim', {
+            \ 'autoload' : {
+            \       'commands' : 'Vitalize',
+            \   }
+            \ }
 
 NeoBundleLazy 'tyru/open-browser.vim', {
             \ 'autoload' : {
@@ -1067,7 +1070,7 @@ NeoBundleLazy 'rhysd/unite-codic.vim', {
 
 NeoBundleLazy 'rhysd/wandbox-vim', {
             \ 'autoload' : {
-            \       'commands' : ['Wandbox', 'WandboxOptionList']
+            \       'commands' : [{'name' : 'Wandbox', 'complete' : 'customlist,wandbox#complete_command'}, 'WandboxOptionList']
             \   }
             \ }
 
@@ -3248,7 +3251,7 @@ let g:puyo#updatetime = 500
 " wandbox-vim {{{
 let g:wandbox#echo_command = 'echomsg'
 let g:wandbox#default_compiler = get(g:, 'wandbox#default_compiler', {'cpp' : 'gcc-head,clang-head', 'ruby' : 'mruby'})
-AutocmdFT cpp noremap <buffer><Leader>wb :<C-u>Wandbox<CR>
+noremap <Leader>wb :<C-u>Wandbox<CR>
 "}}}
 
 " vim-signify "{{{
