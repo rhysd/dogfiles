@@ -609,12 +609,18 @@ inoremap <C-r>+ <C-o>:set paste<CR><C-r>+<C-o>:set nopaste<CR>
 " コンマ後には空白を入れる
 inoremap , ,<Space>
 " 賢く行頭・非空白行頭・行末の移動
-nnoremap <silent>M :<C-u>call <SID>smart_move('g^')<CR>
-nnoremap <silent>H :<C-u>call <SID>smart_move('g0')<CR>
-nnoremap <silent>L :<C-u>call <SID>smart_move('g$')<CR>
+nnoremap <silent>M :<C-u>call <SID>rotate_horizontal_move('g^')<CR>
+nnoremap <silent>H :<C-u>call <SID>rotate_horizontal_move('g0')<CR>
+nnoremap <silent>L :<C-u>call <SID>rotate_horizontal_move('g$')<CR>
 vnoremap M g^
 vnoremap H g0
 vnoremap L g$
+nnoremap gM ^
+nnoremap gH 0
+nnoremap gL $
+vnoremap gM ^
+vnoremap gH 0
+vnoremap gL $
 " スクリーン内移動
 nnoremap gh H
 nnoremap gl L
@@ -694,7 +700,7 @@ AutocmdFT gitrebase nnoremap <buffer><C-f> :<C-u>Fixup<CR>
 
 " 初回のみ a:cmd の動きをして，それ以降は行内をローテートする
 let s:smart_line_pos = -1
-function! s:smart_move(cmd)
+function! s:rotate_horizontal_move(cmd)
     let line = line('.')
     if s:smart_line_pos == line . a:cmd
         call <SID>rotate_in_line()
@@ -786,7 +792,6 @@ NeoBundle 'kana/vim-smartinput'
 NeoBundle 'kana/vim-niceblock'
 NeoBundle 'thinca/vim-scouter'
 NeoBundle 'h1mesuke/vim-alignta'
-NeoBundle 'rhysd/gem-gist.vim'
 NeoBundle 'rhysd/clever-f.vim', 'dev'
 NeoBundle 'rhysd/unite-zsh-cdr.vim'
 NeoBundle 'rhysd/unite-ruby-require.vim'
@@ -879,14 +884,12 @@ NeoBundleLazy 'rhysd/vim-operator-evalruby', {
             \ }
 
 NeoBundleLazy 'rhysd/vim-operator-surround', {
+            \ 'depends' : 'tpope/vim-repeat',
             \ 'autoload' : {
-            \   'mappings' : [
-            \           '<Plug>(operator-surround-append)',
-            \           '<Plug>(operator-surround-delete)',
-            \           '<Plug>(operator-surround-replace)',
-            \       ]
+            \       'mappings' : '<Plug>(operator-surround-'
             \   }
             \ }
+
 NeoBundleLazy 'deris/vim-operator-insert', {
             \ 'autoload' : {
             \   'mappings' : [
@@ -1037,8 +1040,6 @@ NeoBundleLazy 'tpope/vim-fugitive', {
             \       'commands' : ['Gstatus', 'Gcommit', 'Gwrite', 'Gdiff', 'Gblame', 'Git', 'Ggrep']
             \   }
             \ }
-
-NeoBundleLazy 'tpope/vim-repeat'
 
 NeoBundleLazy 'rbtnn/puyo.vim', {
         \ 'autoload' : {
@@ -1608,6 +1609,16 @@ AutocmdFT haml inoremap <expr> k getline('.')[col('.') - 2] ==# 'k' ? "\<BS>%" :
 AutocmdFT haml SetIndent 2
 AutocmdFT javascript nnoremap <buffer><silent><Leader>no :<C-u>VimShellInteractive node<CR>
 Autocmd BufRead,BufNew,BufNewFile *.ejs setlocal ft=html
+
+" 保存時に html 自動生成
+function! s:generate_html()
+    if &filetype ==# 'haml' && executable('haml')
+        let html = expand('%:p:r') . '.html'
+        let cmdline = join(['haml', expand('%'), '>', html], ' ')
+        call vimproc#system_bg(cmdline)
+    endif
+endfunction
+Autocmd BufWritePost *.haml call <SID>generate_html()
 "}}}
 
 " Markdown {{{
