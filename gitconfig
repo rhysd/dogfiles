@@ -15,8 +15,8 @@
 	cmm = commit -m
 	cma = commit --amend
 	cl  = clone
-	di  = diff
-	dic = diff --cached
+	di  = diff --color-words
+	dic = diff --cached --color-words
 	fe  = fetch
 	lo  = log --graph --pretty=format:'%C(Yellow)%h %C(Cyan)%ad %C(White)%s%C(Green)%d %C(Red)[%an]' --date=short
 	mg  = merge
