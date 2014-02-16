@@ -823,16 +823,13 @@ NeoBundle 'vyshane/vydark-vim-color', {'gui' : 1}
 NeoBundle '29decibel/codeschool-vim-theme', {'gui' : 1}
 
 " For testing
-function! s:test_bundle(name)
-    let plugin = matchstr(a:name, '/\zs.\+$')
-    if isdirectory(expand('~/Github/'.plugin))
-        execute 'set' 'rtp+=~/Github/'.plugin
-    else
-        execute 'NeoBundle' string(a:name)
-    endif
-endfunction
+command! -nargs=1 NeoBundleMyPlugin
+            \ NeoBundle <args>, {
+            \   'base' : '~/Github/',
+            \   'type' : 'nosync',
+            \ }
 
-call s:test_bundle('rhysd/libclang-vim')
+NeoBundleMyPlugin 'libclang-vim'
 
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
@@ -1117,7 +1114,12 @@ NeoBundleLazy 'nathanaelkane/vim-indent-guides', {
             \     'filetypes' : ['haskell', 'python']
             \   }
             \ }
-NeoBundleLazy 'tyru/restart.vim'
+NeoBundleLazy 'tyru/restart.vim', {
+            \   'gui' : 1,
+            \   'autoload' : {
+            \     'commands' : 'Restart'
+            \   }
+            \ }
 
 " 特定のファイルタイプで読み込む
 NeoBundleLazy 'rhysd/endwize.vim', {
@@ -1148,6 +1150,11 @@ NeoBundleLazy 'osyo-manga/vim-snowdrop', {
             \ 'autoload' : {'filetypes' : ['c', 'cpp']}
             \ }
 NeoBundleLazy 'rhysd/clang-extent-selector.vim', {
+            \ 'autoload' : {
+            \       'filetypes' : ['c', 'cpp']
+            \   }
+            \ }
+NeoBundleLazy 'rhysd/clang-type-inspector.vim', {
             \ 'autoload' : {
             \       'filetypes' : ['c', 'cpp']
             \   }
@@ -1959,8 +1966,8 @@ imap <expr><C-S-l> neosnippet#expandable() \|\| neosnippet#jumpable() ?
 smap <expr><C-S-l> neosnippet#expandable() \|\| neosnippet#jumpable() ?
             \ "\<Plug>(neosnippet_expand_or_jump)" :
             \ "\<C-s>"
-" C++ と Python の標準のスニペットを読み込まない
-let g:neosnippet#disable_runtime_snippets = {'cpp' : 1, 'python' : 1}
+" C++ と Python と D の標準のスニペットを読み込まない
+let g:neosnippet#disable_runtime_snippets = {'cpp' : 1, 'python' : 1, 'd' : 1}
 "}}}
 
 " unite.vim {{{
@@ -3351,6 +3358,9 @@ endfunction
 
 AutocmdFT python call <SID>jedi_settings()
 " }}}
+
+" clang-type-inspector.vim
+AutocmdFT cpp nmap <Leader>t <Plug>(clang-inspect-type-at-cursor)
 
 " プラットフォーム依存な設定をロードする "{{{
 function! SourceIfExist(path)
