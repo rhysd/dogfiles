@@ -807,6 +807,7 @@ NeoBundle 'ujihisa/unite-colorscheme'
 NeoBundle 'rhysd/unite-locate'
 NeoBundle 'rhysd/conflict-marker.vim'
 NeoBundle 'rhysd/vim-window-adjuster'
+NeoBundle 'Shougo/neomru.vim'
 
 " カラースキーム
 NeoBundle 'rhysd/wallaby.vim'
@@ -1088,14 +1089,7 @@ NeoBundleLazy 'thinca/vim-visualstar', {
 
 NeoBundleLazy 'daisuzu/rainbowcyclone.vim', {
             \   'autoload' : {
-            \     'mappings' : [
-            \       '<Plug>(rc_search_forward)',
-            \       '<Plug>(rc_search_backward)',
-            \       '<Plug>(rc_search_forward_with_cursor)',
-            \       '<Plug>(rc_search_backward_with_cursor)',
-            \       '<Plug>(rc_search_forward_with_last_pattern)',
-            \       '<Plug>(rc_search_backward_with_last_pattern)',
-            \     ],
+            \     'mappings' : '<Plug>(rc_search_'
             \   },
             \ }
 

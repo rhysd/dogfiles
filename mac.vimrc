@@ -90,6 +90,3 @@ let g:snowdrop#libclang_path = '/Library/Developer/CommandLineTools/usr/lib'
 if executable('clang-format-3.5')
     let g:clang_format#command = 'clang-format-3.5'
 endif
-
-" # が％エンコーディングされてしまうので vimproc を使わない
-let g:openbrowser_use_vimproc = 0
