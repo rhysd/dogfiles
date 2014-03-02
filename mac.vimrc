@@ -11,10 +11,10 @@ endif
 " option キーを Alt として使う．
 set macmeta
 
-AutocmdFT cpp setlocal path=.,/usr/local/Cellar/llvm35/HEAD/lib/llvm-3.5/include/c++/v1,/Library/Developer/CommandLineTools/usr/lib/c++/v1,/usr/lib/c++/v1,/usr/local/Cellar/gcc48/4.8.2/gcc/include/c++/4.8.2,/usr/local/include,/usr/include
+AutocmdFT cpp setlocal path=.,/usr/local/Cellar/llvm34/HEAD/lib/llvm-3.4/include/c++/v1,/Library/Developer/CommandLineTools/usr/lib/c++/v1,/usr/lib/c++/v1,/usr/local/Cellar/gcc48/4.8.2/gcc/include/c++/4.8.2,/usr/local/include,/usr/include
 
 let g:quickrun_config.cpp = {
-            \ 'command' : 'clang++-3.5',
+            \ 'command' : 'clang++-3.4',
             \ 'cmdopt' : '-std=c++1y -Wall -Wextra -O2',
             \ }
 let g:quickrun_config.ruby = { 'exec' : $HOME.'/.rbenv/shims/ruby %o %s' }
@@ -27,7 +27,7 @@ let g:unite_pdf_search_cmd = '/usr/local/bin/locate -l 30 "*%s*.pdf"'
 
 " VimShell で g++ のエイリアス
 AutocmdFT vimshell call vimshell#set_alias('gpp', 'g++-4.8 -std=c++11 -O2 -g -Wall -Wextra')
-AutocmdFT vimshell call vimshell#set_alias('cl', 'clang++-3.5 -std=c++1y -O2 -g -Wall -Wextra')
+AutocmdFT vimshell call vimshell#set_alias('cl', 'clang++-3.4 -std=c++1y -O2 -g -Wall -Wextra')
 
 " Mac の辞書.appで開く {{{
 " 引数に渡したワードを検索
@@ -74,7 +74,7 @@ let g:airline_left_sep = '»'
 let g:airline_right_sep = '«'
 
 " vim-marching
-let g:marching_clang_command = 'clang++-3.5'
+let g:marching_clang_command = 'clang++-3.4'
 let g:marching_command_option = '-std=c++11 -stdlib=libc++'
 let g:marching_include_paths = [
             \ '/Library/Developer/CommandLineTools/usr/lib/c++/v1',
@@ -87,6 +87,6 @@ let g:snowdrop#include_paths = {'cpp' : g:marching_include_paths}
 let g:snowdrop#libclang_path = '/Library/Developer/CommandLineTools/usr/lib'
 
 " vim-clang-format
-if executable('clang-format-3.5')
-    let g:clang_format#command = 'clang-format-3.5'
+if executable('clang-format-3.4')
+    let g:clang_format#command = 'clang-format-3.4'
 endif
