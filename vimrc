@@ -3355,6 +3355,7 @@ AutocmdFT python call <SID>jedi_settings()
 
 " clang-type-inspector.vim
 AutocmdFT cpp nmap <Leader>t <Plug>(clang-inspect-type-at-cursor)
+let g:clang_type_inspector#automatic_inspection = 0
 
 " プラットフォーム依存な設定をロードする "{{{
 function! SourceIfExist(path)
