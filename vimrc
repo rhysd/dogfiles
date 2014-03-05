@@ -1277,6 +1277,11 @@ NeoBundleLazy 'rhysd/unite-go-import.vim', {
         \     'unite_sources' : 'go/import',
         \   }
         \ }
+NeoBundle 'dgryski/vim-godef', {
+        \ 'autoload' : {
+        \     'filetypes' : 'go'
+        \   }
+        \ }
 
 " TweetVim
 NeoBundleLazy 'basyura/twibill.vim'
@@ -1696,6 +1701,8 @@ function! s:golang_settings()
     setlocal noexpandtab
     let g:go_fmt_autofmt = 1
     nnoremap <buffer><Space>i :<C-u>Unite go/import<CR>
+    let g:godef_split = 0
+    let g:godef_same_file_in_same_window = 1
 endfunction
 
 AutocmdFT go call <SID>golang_settings()
