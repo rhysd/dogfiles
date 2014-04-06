@@ -73,19 +73,6 @@ let g:unite_source_ruby_require_ruby_command = '$HOME/.rbenv/shims/ruby'
 let g:airline_left_sep = '»'
 let g:airline_right_sep = '«'
 
-" vim-marching
-let g:marching_clang_command = 'clang++-3.4'
-let g:marching_command_option = '-std=c++11 -stdlib=libc++'
-let g:marching_include_paths = [
-            \ '/Library/Developer/CommandLineTools/usr/lib/c++/v1',
-            \ '/usr/lib/c++/v1',
-            \ '/usr/local/include',
-            \ ]
-
-" vim-snowdrop
-let g:snowdrop#include_paths = {'cpp' : g:marching_include_paths}
-let g:snowdrop#libclang_path = '/Library/Developer/CommandLineTools/usr/lib'
-
 " vim-clang-format
 if executable('clang-format-3.4')
     let g:clang_format#command = 'clang-format-3.4'

@@ -553,9 +553,9 @@ if [ -d $ZSHPLUGIN/zsh-syntax-highlighting ]; then
 fi
 
 # zsh-bundle-exec
-if [ -d ~/Github/zsh-bundle-exec ]; then
-    source ~/Github/zsh-bundle-exec/zsh-bundle-exec.zsh
-fi
+# if [ -d ~/Github/zsh-bundle-exec ]; then
+#     source ~/Github/zsh-bundle-exec/zsh-bundle-exec.zsh
+# fi
 # }}}
 
 ##############

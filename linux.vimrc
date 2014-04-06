@@ -70,17 +70,4 @@ let g:openbrowser_open_commands = [
         \]
 unlet s:browser
 
-" vim-marching
-let g:marching_command_option = '-std=c++1y'
-let g:marching_include_paths = [
-            \ '/usr/include/c++/4.8.1',
-            \ '/usr/local/include',
-            \ ]
-if filereadable('/usr/include/i386-linux-gnu/c++/4.8/bits/c++config.h')
-    call add(g:marching_include_paths, '/usr/include/i386-linux-gnu/c++/4.8')
-elseif filereadable('/usr/include/c++/4.8.2/x86_64-unknown-linux-gnu/bits/c++config.h')
-    call add(g:marching_include_paths, '/usr/include/c++/4.8.2/x86_64-unknown-linux-gnu')
-endif
-
-
 " vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8 :
