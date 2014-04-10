@@ -129,6 +129,11 @@ set whichwrap +=h
 set whichwrap +=l
 " コマンド履歴サイズ
 set history=100
+" swap ファイル
+if ! isdirectory($HOME.'/.vim/swap')
+    call mkdir($HOME.'/.vim/swap', 'p')
+endif
+set directory=~/.vim/swap
 " 編集履歴を保存して終了する
 if has('persistent_undo')
     if ! isdirectory($HOME.'/.vim/undo')
