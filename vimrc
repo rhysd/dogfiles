@@ -1050,6 +1050,12 @@ NeoBundleLazy 'rbtnn/puyo.vim', {
         \   }
         \ }
 
+NeoBundleLazy 'thinca/vim-threes', {
+        \ 'autoload' : {
+        \       'commands' : 'ThreesStart'
+        \   }
+        \ }
+
 NeoBundleLazy 'itchyny/calendar.vim', {
             \ 'autoload' : {
             \       'commands' : {'name' : 'Calendar', 'complete' : 'customlist,calendar#argument#complete'},
