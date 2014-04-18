@@ -3025,10 +3025,10 @@ function! s:bundle.hooks.on_source(bundle)
     endfunction
 
     function! s:open_favstar(user)
-        if empty(user)
+        if empty(a:user)
             OpenBrowser http://ja.favstar.fm/me
         else
-            execute "OpenBrowser http://ja.favstar.fm/users/" . user
+            execute "OpenBrowser http://ja.favstar.fm/users/" . a:user
         endif
     endfunction
     command! OpenFavstar call <SID>open_favstar(expand('<cword>'))
