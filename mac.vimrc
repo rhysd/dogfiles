@@ -11,14 +11,13 @@ endif
 " option キーを Alt として使う．
 set macmeta
 
-AutocmdFT cpp setlocal path=.,/usr/local/Cellar/llvm34/HEAD/lib/llvm-3.4/include/c++/v1,/Library/Developer/CommandLineTools/usr/lib/c++/v1,/usr/lib/c++/v1,/usr/local/Cellar/gcc48/4.8.2/gcc/include/c++/4.8.2,/usr/local/include,/usr/include
+AutocmdFT cpp setlocal path=.,/usr/local/Cellar/llvm34/HEAD/lib/llvm-3.4/include/c++/v1,/Library/Developer/CommandLineTools/usr/lib/c++/v1,/usr/local/opt/gcc49/lib/gcc/x86_64-apple-darwin13.1.0/4.9.0/include/c++,/usr/local/include,/usr/include
 
 let g:quickrun_config.cpp = {
             \ 'command' : 'clang++-3.4',
             \ 'cmdopt' : '-std=c++1y -Wall -Wextra -O2',
             \ }
 let g:quickrun_config.ruby = { 'exec' : $HOME.'/.rbenv/shims/ruby %o %s' }
-" let g:quickrun_config['syntax/cpp'].command = 'g++-4.8'
 " clang のライブラリ
 let g:clang_user_options='-stdlib=libc++ -I /usr/local/include -I /usr/include -I /Library/Developer/CommandLineTools/usr/lib/c++/v1 2>/dev/null || exit 0'
 
@@ -26,7 +25,7 @@ let g:clang_user_options='-stdlib=libc++ -I /usr/local/include -I /usr/include -
 let g:unite_pdf_search_cmd = '/usr/local/bin/locate -l 30 "*%s*.pdf"'
 
 " VimShell で g++ のエイリアス
-AutocmdFT vimshell call vimshell#set_alias('gpp', 'g++-4.8 -std=c++11 -O2 -g -Wall -Wextra')
+AutocmdFT vimshell call vimshell#set_alias('gpp', 'g++-4.9 -std=c++11 -O2 -g -Wall -Wextra')
 AutocmdFT vimshell call vimshell#set_alias('cl', 'clang++-3.4 -std=c++1y -O2 -g -Wall -Wextra')
 
 " Mac の辞書.appで開く {{{

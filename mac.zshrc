@@ -1,6 +1,6 @@
 unalias ls
 alias ls='ls -G'
-alias g++='g++-4.8 -std=c++11 -Wall -Wextra -O2'
+alias g++='g++-4.9 -std=c++11 -Wall -Wextra -O2'
 alias emacs='/usr/local/bin/emacs -nw'
 alias vi="vim --cmd \"let g:linda_pp_startup_with_tiny = 1\""
 alias rm=grm
