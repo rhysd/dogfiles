@@ -16,8 +16,6 @@ alias cl='clang++-3.5 -std=c++1y -stdlib=libc++ -O2 -Wall -Wextra'
 # suffix alias
 alias -s pdf='open -a Preview'
 alias -s html='open -a Google\ Chrome'
-alias -s cpp=g++-4.8
-alias -s cc=g++-4.8
 
 if which terminal-notifier > /dev/null; then
     alias -g BG=' 2>&1 | terminal-notifier &'

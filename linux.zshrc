@@ -91,7 +91,9 @@ if ! which um > /dev/null; then
         if [[ "$(echo "$dirs_in_media" | wc -l)" == 1 ]]; then
             local media_dir
             media_dir=${"$(echo "$dirs_in_media" | head -n 1)"##* }
+            echo -n "unmounting ${media_dir}... "
             umount $@ /media/"$media_dir"
+            $? && echo "done."
         else
             umount $@
         fi
