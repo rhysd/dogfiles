@@ -817,7 +817,6 @@ if neobundle#load_cache()
     NeoBundle 'Shougo/neomru.vim'
     NeoBundle 'rhysd/committia.vim'
     NeoBundle 'rhysd/vim-dachs'
-    NeoBundle 'rhysd/BoostTest-log.vim'
     NeoBundle 'rust-lang/rust.vim'
     NeoBundle 'rhysd/rust-doc.vim'
     NeoBundle 'cespare/vim-toml'
