@@ -18,6 +18,7 @@
 	di  = diff --color-words
 	dic = diff --cached --color-words
 	dicn = diff --cached
+	dis = diff --stat
 	fe  = fetch
 	lo  = log --graph --pretty=format:'%C(Yellow)%h %C(Cyan)%ad %C(White)%s%C(Green)%d %C(Red)[%an]' --date=short
 	mg  = merge
