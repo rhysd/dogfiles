@@ -768,7 +768,7 @@ endif
 call neobundle#rc(expand('~/.vim/bundle'))
 
 " GitHub上のリポジトリ
-NeoBundle 'Shougo/neobundle.vim'
+NeoBundleFetch 'Shougo/neobundle.vim'
 NeoBundle 'Shougo/vimproc.vim', {
             \ 'build' : {
             \       'windows' : 'echo "Please build vimproc manually."',
