@@ -67,6 +67,7 @@ alias d=dirs
 alias g=git
 alias e='emacs -nw'
 alias h=hg
+alias m=make
 
 # global alias
 alias -g G='| grep'

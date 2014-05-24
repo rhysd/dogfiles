@@ -1264,13 +1264,13 @@ NeoBundleLazy 'zaiste/tmux.vim', {
 
 " JSON
 NeoBundleLazy 'elzr/vim-json', {
-        \ 'autoload' : {'filetypes' : 'json'}
+        \ 'autoload' : {'filetypes' : ['json', 'markdown']}
         \ }
 
 " Go
 NeoBundleLazy 'Blackrush/vim-gocode', {
         \ 'autoload' : {
-        \       'filetypes' : 'go',
+        \       'filetypes' : ['go', 'markdown'],
         \       'commands' : 'Godoc',
         \   }
         \ }
@@ -1561,6 +1561,8 @@ AutocmdFT cpp setlocal matchpairs+=<:>
 AutocmdFT cpp inoremap <buffer>,  ,<Space>
 AutocmdFT cpp nnoremap <buffer><Leader>ret :<C-u>call <SID>return_type_completion()<CR>
 AutocmdFT cpp inoremap <expr> e getline('.')[col('.') - 6:col('.') - 2] ==# 'const' ? 'expr ' : 'e'
+
+let g:c_syntax_for_h = 1
 " }}}
 
 " Haskell {{{
@@ -1634,6 +1636,15 @@ Autocmd BufWritePost *.haml call <SID>generate_html()
 " Markdown {{{
 AutocmdFT markdown nnoremap <buffer><silent><Leader>= :<C-u>call append('.', repeat('=', strdisplaywidth(getline('.'))))<CR>
 AutocmdFT markdown nnoremap <buffer><silent><Leader>- :<C-u>call append('.', repeat('-', strdisplaywidth(getline('.'))))<CR>
+let g:markdown_fenced_languages = [
+            \  'cpp',
+            \  'ruby',
+            \  'vim',
+            \  'd',
+            \  'go',
+            \  'haskell',
+            \  'json',
+            \ ]
 "}}}
 
 " CMake {{{
