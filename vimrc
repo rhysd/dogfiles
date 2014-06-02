@@ -3306,14 +3306,10 @@ AutocmdFT javascript call s:setup_tern()
 "}}}
 
 " emmet-vim {{{
-let s:hooks = neobundle#get_hooks('emmet-vim')
-function! s:hooks.on_source(bundle)
-    let g:user_emmet_mode = 'ivn'
-    let g:user_emmet_leader_key = '<C-Y>'
-    let g:use_emmet_complete_tag = 1
-    let g:user_emmet_settings = { 'lang' : 'ja' }
-endfunction
-unlet s:hooks
+let g:user_emmet_mode = 'ivn'
+let g:user_emmet_leader_key = '<C-Y>'
+let g:use_emmet_complete_tag = 1
+let g:user_emmet_settings = { 'lang' : 'ja' }
 "}}}
 
 " calendar.vim {{{
