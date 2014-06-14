@@ -813,6 +813,7 @@ NeoBundle 'rhysd/unite-locate'
 NeoBundle 'rhysd/conflict-marker.vim'
 NeoBundle 'rhysd/vim-window-adjuster'
 NeoBundle 'Shougo/neomru.vim'
+NeoBundle 'rhysd/committia.vim'
 
 " カラースキーム
 NeoBundle 'rhysd/wallaby.vim'
@@ -3367,6 +3368,19 @@ AutocmdFT python call <SID>jedi_settings()
 " clang-type-inspector.vim
 AutocmdFT cpp nmap <Leader>t <Plug>(clang-inspect-type-at-cursor)
 let g:clang_type_inspector#automatic_inspection = 0
+
+" committia.vim {{{
+let g:committia_hooks = {}
+function! g:committia_hooks.edit_open()
+    " Additional settings
+    setlocal spell
+
+    " If no commit message, start with insert mode
+    if getline(1) ==# ''
+        startinsert
+    end
+endfunction
+" }}}
 
 " プラットフォーム依存な設定をロードする "{{{
 function! SourceIfExist(path)
