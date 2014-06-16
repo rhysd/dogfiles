@@ -837,6 +837,8 @@ command! -nargs=1 NeoBundleMyPlugin
             \ }
 
 NeoBundleMyPlugin 'libclang-vim'
+NeoBundleMyPlugin 'vim-crystal'
+NeoBundleMyPlugin 'vim-dachs'
 
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
@@ -3371,7 +3373,7 @@ let g:clang_type_inspector#automatic_inspection = 0
 
 " committia.vim {{{
 let g:committia_hooks = {}
-function! g:committia_hooks.edit_open()
+function! g:committia_hooks.edit_open(info)
     " Additional settings
     setlocal spell
 
