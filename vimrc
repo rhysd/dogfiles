@@ -837,8 +837,6 @@ command! -nargs=1 NeoBundleMyPlugin
             \ }
 
 NeoBundleMyPlugin 'libclang-vim'
-NeoBundleMyPlugin 'vim-crystal'
-NeoBundleMyPlugin 'vim-dachs'
 
 " vim-scripts上のリポジトリ
     " NeoBundle 'Align'
@@ -1284,11 +1282,14 @@ NeoBundleLazy 'rhysd/unite-go-import.vim', {
         \     'unite_sources' : 'go/import',
         \   }
         \ }
-NeoBundle 'dgryski/vim-godef', {
+NeoBundleLazy 'dgryski/vim-godef', {
         \ 'autoload' : {
         \     'filetypes' : 'go'
         \   }
         \ }
+
+" LLVM IR
+NeoBundle 'rhysd/vim-llvm'
 
 " TweetVim
 NeoBundleLazy 'basyura/twibill.vim'
