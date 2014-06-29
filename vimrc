@@ -2288,6 +2288,10 @@ let g:quickrun_config['tmux'] = {
             \ 'exec' : ['%c %o %s:p', 'echo "sourced %s"'],
             \ }
 
+let g:quickrun_config['llvm'] = {
+            \   'exec' : 'llvm-as-3.4 %s:p -o=- | lli-3.4 - %a',
+            \ }
+
 " シンタックスチェック
 let g:quickrun_config['syntax/cpp'] = {
             \ 'runner' : 'vimproc',

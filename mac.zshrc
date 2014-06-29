@@ -12,6 +12,7 @@ alias github='open https://github.com'
 alias Vim=gvim
 alias clang++='clang++-3.5 -stdlib=libc++ -std=c++1y -O2 -Wall -Wextra'
 alias cl='clang++-3.5 -std=c++1y -stdlib=libc++ -O2 -Wall -Wextra'
+alias here='open .'
 
 # suffix alias
 alias -s pdf='open -a Preview'
