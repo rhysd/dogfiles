@@ -5,7 +5,7 @@ export PATH=/usr/lib/colorgcc/bin:$PATH
 
 # for Tmux 256 bit color
 if [[ $TERM == "xterm" ]]; then
-export TERM=xterm-256color
+    export TERM=xterm-256color
 fi
 
 # Go
@@ -21,52 +21,52 @@ fi
 # Arch Linux environment
 if which pacman > /dev/null; then
 
-  alias pacman=pacman-color
-  alias -g pacu='pacman -Syu'
-  alias -g pac='pacman -S'
-  pacs(){
-    echo "local repos:"
-    pacman -Qs ${@:1}
-    echo
-    echo "remote repos:"
-    pacman -Ss ${@:1}
-  }
-  paci(){
-    echo "local repos:"
-    pacman -Qi ${@:2}
-    echo
-    echo "remote repos:"
-    pacman -Si ${@:2}
-    echo ${@:2}
-  }
-  alias -g pacr='pacman -Rsn'
+    alias pacman=pacman-color
+    alias -g pacu='pacman -Syu'
+    alias -g pac='pacman -S'
+    pacs(){
+        echo "local repos:"
+        pacman -Qs ${@:1}
+        echo
+        echo "remote repos:"
+        pacman -Ss ${@:1}
+    }
+    paci(){
+        echo "local repos:"
+        pacman -Qi ${@:2}
+        echo
+        echo "remote repos:"
+        pacman -Si ${@:2}
+        echo ${@:2}
+    }
+    alias -g pacr='pacman -Rsn'
 
-  alias yao='yaourt -S'
-  alias -g yaou='yaourt -Syu'
-  yaos(){
-    echo "local repos:"
-    yaourt -Qs ${@:1}
-    echo
-    echo "remote repos:"
-    yaourt -Ss ${@:1}
-  }
-  yaoi(){
-    echo "local repos:"
-    yaourt -Qi ${@:2}
-    echo
-    echo "remote repos:"
-    yaourt -Si ${@:2}
-    echo ${@:2}
-  }
-  alias -g yaor='yaourt -Rsn'
-  alias -s pdf='zathura'
-  function sshi(){
+    alias yao='yaourt -S'
+    alias -g yaou='yaourt -Syu'
+    yaos(){
+        echo "local repos:"
+        yaourt -Qs ${@:1}
+        echo
+        echo "remote repos:"
+        yaourt -Ss ${@:1}
+    }
+    yaoi(){
+        echo "local repos:"
+        yaourt -Qi ${@:2}
+        echo
+        echo "remote repos:"
+        yaourt -Si ${@:2}
+        echo ${@:2}
+    }
+    alias -g yaor='yaourt -Rsn'
+    alias -s pdf='zathura'
+    function sshi(){
     ssh -i $HOME/.ssh/id_rsa r-hayashida@$1
-  }
+}
 fi
 
 if which awesome > /dev/null; then
-  alias configawesome='vim $HOME/.config/awesome/rc.lua'
+    alias configawesome='vim $HOME/.config/awesome/rc.lua'
 fi
 
 alias x=startx
@@ -77,6 +77,10 @@ alias xo=xdg-open
 alias -s html='google-chrome'
 alias -s plt='gnuplot'
 alias -s plot='gnuplot'
+
+if which xsel > /dev/null; then
+    alias -g C='| xsel --input --clipboard'
+fi
 
 # global alias
 if which notify-send > /dev/null; then

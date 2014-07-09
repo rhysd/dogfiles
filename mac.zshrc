@@ -18,6 +18,10 @@ alias here='open .'
 alias -s pdf='open -a Preview'
 alias -s html='open -a Google\ Chrome'
 
+if which pbcopy > /dev/null; then
+    alias -g C='| pbcopy'
+fi
+
 if which terminal-notifier > /dev/null; then
     alias -g BG=' 2>&1 | terminal-notifier &'
 fi
