@@ -2271,6 +2271,14 @@ let g:quickrun_config.cpp = {
             \ 'cmdopt' : '-std=c++1y -Wall -Wextra -O2',
             \ 'hook/quickrunex/enable' : 1,
             \ }
+let g:quickrun_config['cpp/llvm'] = {
+            \ 'type' : 'cpp/clang++',
+            \ 'exec' : '%c %o -emit-llvm -S %s -o -',
+            \ }
+let g:quickrun_config['c/llvm'] = {
+            \ 'type' : 'c/clang',
+            \ 'exec' : '%c %o -emit-llvm -S %s -o -',
+            \ }
 " プリプロセスのみ
 let g:quickrun_config['cpp/preprocess/g++'] = { 'type' : 'cpp/g++', 'exec' : '%c -P -E %s' }
 let g:quickrun_config['cpp/preprocess/clang++'] = { 'type' : 'cpp/clang++', 'exec' : '%c -P -E %s' }
