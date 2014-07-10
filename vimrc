@@ -383,12 +383,18 @@ endfunction
 command! -nargs=* -complete=help SmartHelp call <SID>smart_help(<q-args>)
 nnoremap <silent><Leader>h :<C-u>SmartHelp<Space><C-l>
 function! s:smart_help(args)
-    if winwidth(0) > winheight(0) * 2
-        " 縦分割
-        execute 'vertical topleft help ' . a:args
-    else
-        execute 'aboveleft help ' . a:args
-    endif
+    try
+        if winwidth(0) > winheight(0) * 2
+            " 縦分割
+            execute 'vertical topleft help ' . a:args
+        else
+            execute 'aboveleft help ' . a:args
+        endif
+    catch /^Vim\%((\a\+)\)\=:E149/
+        echohl ErrorMsg
+        echomsg "E149: Sorry, no help for " . a:args
+        echohl None
+    endtry
     if &buftype ==# 'help'
         " 横幅を確保できないときはタブで開く
         if winwidth(0) < 80
