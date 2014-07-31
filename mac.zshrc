@@ -41,7 +41,8 @@ if which go > /dev/null; then
         mkdir -p "$HOME/.go"
     fi
     export GOPATH=$HOME/.go
-    export PATH=$GOPATH/bin:$PATH
+    export GOROOT=`go env GOROOT`
+    export PATH=$GOROOT/bin:$GOPATH/bin:$PATH
 fi
 
 function Emacs(){

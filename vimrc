@@ -3423,6 +3423,9 @@ function! g:committia_hooks.edit_open(info)
     if getline(1) ==# ''
         startinsert
     end
+
+    imap <buffer><C-n> <Plug>(committia-scroll-diff-down-half)
+    imap <buffer><C-p> <Plug>(committia-scroll-diff-up-half)
 endfunction
 " }}}
 
