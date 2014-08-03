@@ -1291,7 +1291,14 @@ function! s:cache_bundles()
             \     'unite_sources' : 'go/import',
             \   }
             \ }
+
     NeoBundleLazy 'dgryski/vim-godef', {
+            \ 'autoload' : {
+            \     'filetypes' : 'go'
+            \   }
+            \ }
+
+    NeoBundleLazy 'rhysd/vim-go-impl', {
             \ 'autoload' : {
             \     'filetypes' : 'go'
             \   }
@@ -1323,6 +1330,7 @@ function! s:cache_bundles()
     " 書き込み権限の無いファイルを編集しようとした時
     NeoBundleLazy 'sudo.vim'
 
+    NeoBundleCheck
     NeoBundleSaveCache
 endfunction
 
