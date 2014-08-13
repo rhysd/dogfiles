@@ -2020,29 +2020,21 @@ let g:neosnippet#disable_runtime_snippets = {'cpp' : 1, 'python' : 1, 'd' : 1}
 "}}}
 
 " unite.vim {{{
-"insertモードをデフォルトに
-let g:unite_enable_start_insert = 1
-" 無指定にすることで高速化
-let g:unite_source_file_mru_filename_format = ''
-" most recently used のリストサイズ
-let g:unite_source_file_mru_limit = 100
-" Unite起動時のウィンドウ分割
-let g:unite_split_rule = 'rightbelow'
-" 使わないデフォルト Unite ソースをロードしない
-let g:loaded_unite_source_bookmark = 1
-let g:loaded_unite_source_tab = 1
-let g:loaded_unite_source_window = 1
-" unite-grep で使うコマンド
-let g:unite_source_grep_default_opts = "-Hn --color=never"
-" the silver searcher を unite-grep のバックエンドにする
-if executable('ag')
-    let g:unite_source_grep_command = 'ag'
-    let g:unite_source_grep_default_opts = '--nocolor --nogroup --column'
-    let g:unite_source_grep_recursive_opt = ''
-endif
+let s:bundle = neobundle#get("vimshell")
+function! s:bundle.hooks.on_source(bundle)
+    " 無指定にすることで高速化
+    let g:unite_source_file_mru_filename_format = ''
+    " most recently used のリストサイズ
+    let g:unite_source_file_mru_limit = 100
+    " unite-grep で使うコマンド
+    let g:unite_source_grep_default_opts = "-Hn --color=never"
+    " the silver searcher を unite-grep のバックエンドにする
+    if executable('ag')
+        let g:unite_source_grep_command = 'ag'
+        let g:unite_source_grep_default_opts = '--nocolor --nogroup --column'
+        let g:unite_source_grep_recursive_opt = ''
+    endif
 
-" unite.vim カスタムアクション {{{
-function! s:define_unite_actions()
     " Git リポジトリのすべてのファイルを開くアクション {{{
     let git_repo = { 'description' : 'all file in git repository' }
     function! git_repo.func(candidate)
@@ -2055,7 +2047,7 @@ function! s:define_unite_actions()
         endif
     endfunction
 
-    call unite#custom_action('file', 'git_repo_files', git_repo)
+    call unite#custom#action('file', 'git_repo_files', git_repo)
     " }}}
 
     " ファイルなら開き，ディレクトリなら VimFiler に渡す {{{
@@ -2072,7 +2064,7 @@ function! s:define_unite_actions()
         endfor
         execute 'args' join(map(a:candidates, 'v:val.action__path'), ' ')
     endfunction
-    call unite#custom_action('file', 'open_or_vimfiler', open_or_vimfiler)
+    call unite#custom#action('file', 'open_or_vimfiler', open_or_vimfiler)
     "}}}
 
     " Finder for Mac
@@ -2083,20 +2075,12 @@ function! s:define_unite_actions()
                 call system('open -a Finder '.a:candidate.action__path)
             endif
         endfunction
-        call unite#custom_action('directory', 'finder', finder)
+        call unite#custom#action('directory', 'finder', finder)
     endif
 
-    " load once
-    autocmd! UniteCustomActions
+    call unite#custom#source('quickfix', 'sorters', 'sorter_reverse')
 endfunction
-
-
-" カスタムアクションを遅延定義
-augroup UniteCustomActions
-    autocmd!
-    autocmd FileType unite,vimfiler call <SID>define_unite_actions()
-augroup END
-"}}}
+unlet s:bundle
 
 "unite.vimのキーマップ {{{
 "C-gでいつでもバッファを閉じられる（絞り込み欄が空の時はC-hでもOK）
