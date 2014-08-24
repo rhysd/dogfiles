@@ -8,10 +8,9 @@ alias tar=gtar
 alias top='sudo htop'
 alias update='brew update && gem update && vim -N -V1 -e -s --cmd "source ~/.vimrc" --cmd NeoBundleUpdate --cmd qall!'
 alias sshi='ssh -i $HOME/.ssh/id_rsa'
-alias github='open https://github.com'
 alias Vim=gvim
-alias clang++='clang++-3.5 -stdlib=libc++ -std=c++1y -O2 -Wall -Wextra'
-alias cl='clang++-3.5 -std=c++1y -stdlib=libc++ -O2 -Wall -Wextra'
+alias clang++='clang++-3.4 -std=c++1y -stdlib=libc++ -O2 -Wall -Wextra'
+alias cl='clang++-3.4 -std=c++1y -stdlib=libc++ -O2 -Wall -Wextra'
 alias here='open .'
 
 # suffix alias
