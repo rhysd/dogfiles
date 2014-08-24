@@ -165,6 +165,8 @@ set spelllang=en,cjk
 " 折り返しでインデントを保持
 if exists('+breakindent')
     set breakindent
+    set breakindentopt=shift:-4
+    let &showbreak = '>>> '
 endif
 " 一時ディレクトリではバックアップを取らない
 set backupskip=/tmp/*,/private/tmp/*
