@@ -1444,12 +1444,13 @@ function! s:hubrowse(...)
         let repo = '--'
     endif
 
-    let subcmd = a:0 > 1 ? a:2 : a:1
+    let subcmd = a:000[-1]
 
     echom system(printf('cd %s && hub browse %s %s', shellescape(dir), repo, shellescape(subcmd)))
 endfunction
 
 command! -nargs=+ Hubrowse call <SID>hubrowse(<f-args>)
+command! -nargs=* GitIssue call call("<SID>hubrowse", split("<args> issues"))
 "}}}
 
 " 他の helper {{{
