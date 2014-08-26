@@ -828,6 +828,7 @@ function! s:cache_bundles()
     NeoBundle 'Shougo/neomru.vim'
     NeoBundle 'rhysd/committia.vim'
     NeoBundle 'rhysd/vim-dachs'
+    NeoBundle 'rhysd/BoostTest-log.vim'
 
     " カラースキーム
     NeoBundle 'rhysd/wallaby.vim'
@@ -1429,6 +1430,26 @@ nnoremap <Leader>gp :<C-u>GitPush<CR>
 
 " git commit ではインサートモードに入る
 Autocmd VimEnter COMMIT_EDITMSG if getline(1) == '' | execute 1 | startinsert | endif
+
+function! s:hubrowse(...)
+    if !executable('hub')
+        echoerr "'hub' command is not found"
+        return
+    endif
+
+    let dir = expand('%:p:h')
+    if a:0 > 1
+        let repo = shellescape(a:1)
+    else
+        let repo = '--'
+    endif
+
+    let subcmd = a:0 > 1 ? a:2 : a:1
+
+    echom system(printf('cd %s && hub browse %s %s', shellescape(dir), repo, shellescape(subcmd)))
+endfunction
+
+command! -nargs=+ Hubrowse call <SID>hubrowse(<f-args>)
 "}}}
 
 " 他の helper {{{
