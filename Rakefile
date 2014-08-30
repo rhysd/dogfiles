@@ -27,7 +27,7 @@ end
 
 namespace :common do
   # task :all => [:git, :vim, :gem, :zsh]
-  task :all => [:git, :vim, :zsh]
+  task :all => [:git, :vim, :zsh, :percol]
 
   task :git do
     next unless installed? 'git'
@@ -76,6 +76,11 @@ namespace :common do
       `git clone git://github.com/zsh-users/zaw.git`
       `git clone git://github.com/zsh-users/zsh-syntax-highlighting.git`
     end
+  end
+
+  task :percol do
+    next unless installed? 'percol'
+    ln_dotfile 'percol.d' "#{home}/.percol.d"
   end
 end
 
