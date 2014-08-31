@@ -79,7 +79,6 @@ alias -g S='| sed'
 alias -g A='| awk'
 alias -g D='> /dev/null 2>&1'
 alias -g X='| xargs'
-alias -g P='| percol'
 
 if [[ $TMUX != "" ]]; then
     alias -g BG=' 2>&1 | tmux display-message &'
@@ -632,6 +631,7 @@ add-zsh-hook chpwd _ls_abbrev
 ##############
 # {{{
 if which percol &> /dev/null; then
+alias -g P='| percol'
 
 function percol-pgrep() {
     if [[ $1 == "" ]]; then
@@ -639,7 +639,7 @@ function percol-pgrep() {
     else
         PERCOL="percol --query $1"
     fi
-    ps aux | eval $PERCOL | awk '{ print $2 }'
+    ps aux | eval $PERCOL --prompt '<green>pgrep > </green>' | awk '{ print $2 }'
 }
 zle -N percol-pgrep
 
@@ -658,7 +658,7 @@ function percol-history-insert() {
     local tac
     which gtac &> /dev/null && tac="gtac" || { which tac &> /dev/null && tac="tac" || { tac="tail -r" } }
     tac="tail -r"
-    BUFFER=$(fc -l -n 1 | eval $tac | percol --query "$LBUFFER")
+    BUFFER=$(fc -l -n 1 | eval $tac | percol  --prompt '<green>history-insert > </green>'--query "$LBUFFER")
     CURSOR=$#BUFFER         # move cursor
     zle -R -c               # refresh
 }
@@ -668,7 +668,7 @@ function percol-history() {
     local tac
     which gtac &> /dev/null && tac="gtac" || { which tac &> /dev/null && tac="tac" || { tac="tail -r" } }
     tac="tail -r"
-    BUFFER=$(fc -l -n 1 | eval $tac | percol --query "$LBUFFER")
+    BUFFER=$(fc -l -n 1 | eval $tac | percol --prompt '<green>history > </green>' --query "$LBUFFER")
     zle clear-screen
     zle accept-line
 }
@@ -678,11 +678,11 @@ bindkey -M viins '^ h' percol-history
 function percol-cdr-impl() {
     cdr -l | \
         sed -e 's/^[[:digit:]]*[[:blank:]]*//' | \
-        percol --query "$LBUFFER"
+        percol --prompt '<green>cdr > </green>' --query "$LBUFFER"
 }
 function percol-cdr-insert() {
     local selected
-    selected=$(cdr -l | sed -e 's/^[[:digit:]]*[[:blank:]]*//' | percol)
+    selected=$(cdr -l | sed -e 's/^[[:digit:]]*[[:blank:]]*//' | percol --prompt '<green>cdr-insert > </green>')
     BUFFER=${BUFFER}${selected}
     CURSOR=$#BUFFER
     zle redisplay
@@ -715,7 +715,7 @@ bindkey -M viins '^ r' percol-cdr
 
 if which ghq &> /dev/null; then
     function percol-ghq() {
-        local selected_dir=$(ghq list --full-path | percol --query "$LBUFFER")
+        local selected_dir=$(ghq list --full-path | percol --prompt '<green>ghq > </green>' --query "$LBUFFER")
         if [ -n "$selected_dir" ]; then
             BUFFER="cd ${selected_dir}"
             zle accept-line
@@ -736,7 +736,7 @@ if which ghq &> /dev/null; then
             ;;
         esac
 
-        local selected_repo=$(ghq list | percol --query "$LBUFFER")
+        local selected_repo=$(ghq list | percol --prompt '<green>ghq-open > </green>' --query "$LBUFFER")
         if [ -n "$selected_repo" ]; then
             $open "https://${selected_repo}"
         fi
@@ -758,7 +758,7 @@ function percol-git-log() {
     esac
 
     local hash
-    hash=$(git log --no-color --oneline --graph --all --decorate | percol | $sed -e "s/^\W\+\([0-9A-Fa-f]\+\).*$/\1/")
+    hash=$(git log --no-color --oneline --graph --all --decorate | percol --prompt '<green>git-log > </green>' | $sed -e "s/^\W\+\([0-9A-Fa-f]\+\).*$/\1/")
     BUFFER="${BUFFER}${hash}"
     CURSOR=$#BUFFER
     zle redisplay
@@ -768,7 +768,7 @@ bindkey -M viins '^ o' percol-git-log
 
 function percol-ls-l(){
     local selected
-    selected=$(ls -l | grep -v ^total | percol | awk '{print $(NF)}')
+    selected=$(ls -l | grep -v ^total | percol --prompt '<green>ls-l > </green>' | awk '{print $(NF)}')
     if [ -d "$selected" ]; then
         BUFFER="cd $selected"
         zle accept-line
@@ -784,7 +784,7 @@ bindkey -M viins '^ l' percol-ls-l
 
 function percol-ls-l-insert(){
     local selected
-    selected=$(ls -l | grep -v ^total | percol | awk '{print $(NF)}')
+    selected=$(ls -l | grep -v ^total | percol --prompt '<green>ls-l-insert > </green>' | awk '{print $(NF)}')
     BUFFER="${BUFFER}$selected"
     CURSOR=$#BUFFER
     zle redisplay
@@ -794,7 +794,7 @@ bindkey -M viins '^ l' percol-ls-l-insert
 
 function percol-find-insert(){
     local selected
-    selected=$(find ./* | percol)
+    selected=$(find ./* | percol --prompt '<green>find-insert > </green>')
     BUFFER="${BUFFER}${selected}"
     CURSOR=$#BUFFER
     zle redisplay
@@ -804,7 +804,7 @@ bindkey -M viins '^ f' percol-find-insert
 
 function percol-insert(){
     local selected
-    selected=$(eval ${BUFFER} | percol)
+    selected=$(eval ${BUFFER} | percol --prompt '<green>insert > </green>')
     BUFFER="${selected}"
     CURSOR=$#BUFFER
     zle redisplay
@@ -813,10 +813,10 @@ zle -N percol-insert
 bindkey -M viins '^ ^M' percol-insert
 
 function percol-source(){
-    local percols
+    local sources
     local selected_source
     sources=(pgrep pkill history history-insert cdr cdr-insert ghq git-log ls-l ls-l-insert find-insert locate)
-    selected_source=$(echo ${(j:\n:)sources} | percol)
+    selected_source=$(echo ${(j:\n:)sources} | percol --prompt '<green>source > </green>')
     zle clear-screen
     if [[ "$selected" != "" ]]; then
         zle percol-${selected_source}
@@ -825,8 +825,8 @@ function percol-source(){
 zle -N percol-source
 bindkey -M viins '^ ' percol-source
 
-fi
 # }}}
+fi
 
 ##########################################
 #   source platform-dependant settings   #
