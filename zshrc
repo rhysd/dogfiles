@@ -626,71 +626,71 @@ add-zsh-hook chpwd _ls_abbrev
 
 [[ -f ~/Github/zsh-bundle-exec/zsh-bundle-exec.zsh ]] && source ~/Github/zsh-bundle-exec/zsh-bundle-exec.zsh
 
-##############
-#   percol   #
-##############
+######################
+#   filtering tool   #
+######################
+if which peco &> /dev/null; then
 # {{{
-if which percol &> /dev/null; then
-alias -g P='| percol'
+alias -g P='| peco'
 
-function percol-pgrep() {
+function peco-pgrep() {
     if [[ $1 == "" ]]; then
-        PERCOL=percol
+        peco=peco
     else
-        PERCOL="percol --query $1"
+        peco="peco --query $1"
     fi
-    ps aux | eval $PERCOL --prompt '<green>pgrep > </green>' | awk '{ print $2 }'
+    ps aux | eval $peco --prompt 'pgrep > ' | awk '{ print $2 }'
 }
-zle -N percol-pgrep
+zle -N peco-pgrep
 
-function percol-pkill() {
+function peco-pkill() {
     if [[ $1 =~ "^-" ]]; then
         QUERY=""            # options only
     else
         QUERY=$1            # with a query
         [[ $# > 0 ]] && shift
     fi
-    percol-pgrep $QUERY | xargs kill $*
+    peco-pgrep $QUERY | xargs kill $*
 }
-zle -N percol-pkill
+zle -N peco-pkill
 
-function percol-history-insert() {
+function peco-history-insert() {
     local tac
     which gtac &> /dev/null && tac="gtac" || { which tac &> /dev/null && tac="tac" || { tac="tail -r" } }
     tac="tail -r"
-    BUFFER=$(fc -l -n 1 | eval $tac | percol  --prompt '<green>history-insert > </green>'--query "$LBUFFER")
+    BUFFER=$(fc -l -n 1 | eval $tac | peco  --prompt 'history-insert > '--query "$LBUFFER")
     CURSOR=$#BUFFER         # move cursor
     zle -R -c               # refresh
 }
-zle -N percol-history-insert
+zle -N peco-history-insert
 
-function percol-history() {
+function peco-history() {
     local tac
     which gtac &> /dev/null && tac="gtac" || { which tac &> /dev/null && tac="tac" || { tac="tail -r" } }
     tac="tail -r"
-    BUFFER=$(fc -l -n 1 | eval $tac | percol --prompt '<green>history > </green>' --query "$LBUFFER")
+    BUFFER=$(fc -l -n 1 | eval $tac | peco --prompt 'history > ' --query "$LBUFFER")
     zle clear-screen
     zle accept-line
 }
-zle -N percol-history
-bindkey -M viins '^ h' percol-history
+zle -N peco-history
+bindkey -M viins '^ h' peco-history
 
-function percol-cdr-impl() {
+function peco-cdr-impl() {
     cdr -l | \
         sed -e 's/^[[:digit:]]*[[:blank:]]*//' | \
-        percol --prompt '<green>cdr > </green>' --query "$LBUFFER"
+        peco --prompt 'cdr > ' --query "$LBUFFER"
 }
-function percol-cdr-insert() {
+function peco-cdr-insert() {
     local selected
-    selected=$(cdr -l | sed -e 's/^[[:digit:]]*[[:blank:]]*//' | percol --prompt '<green>cdr-insert > </green>')
+    selected=$(cdr -l | sed -e 's/^[[:digit:]]*[[:blank:]]*//' | peco --prompt 'cdr-insert > ')
     BUFFER=${BUFFER}${selected}
     CURSOR=$#BUFFER
     zle redisplay
 }
-zle -N percol-cdr-insert
+zle -N peco-cdr-insert
 
-function percol-cdr() {
-    local destination="$(percol-cdr-impl)"
+function peco-cdr() {
+    local destination="$(peco-cdr-impl)"
     if [ -n "$destination" ]; then
         BUFFER="cd $destination"
         zle accept-line
@@ -698,11 +698,11 @@ function percol-cdr() {
         zle reset-prompt
     fi
 }
-zle -N percol-cdr
+zle -N peco-cdr
 
 function _advanced_tab(){
 if [[ $#BUFFER == 0 ]]; then
-    percol-cdr
+    peco-cdr
     zle redisplay
 else
     zle expand-or-complete
@@ -711,21 +711,21 @@ fi
 zle -N _advanced_tab
 
 bindkey -M viins '^I' _advanced_tab
-bindkey -M viins '^ r' percol-cdr
+bindkey -M viins '^ r' peco-cdr
 
 if which ghq &> /dev/null; then
-    function percol-ghq() {
-        local selected_dir=$(ghq list --full-path | percol --prompt '<green>ghq > </green>' --query "$LBUFFER")
+    function peco-ghq() {
+        local selected_dir=$(ghq list --full-path | peco --prompt 'ghq > ' --query "$LBUFFER")
         if [ -n "$selected_dir" ]; then
             BUFFER="cd ${selected_dir}"
             zle accept-line
         fi
         zle clear-screen
     }
-    zle -N percol-ghq
-    bindkey -M viins '^ q' percol-ghq
+    zle -N peco-ghq
+    bindkey -M viins '^ ^ ' peco-ghq
 
-    function percol-ghq-open() {
+    function peco-ghq-open() {
         local open
         case $OSTYPE in
         darwin*)
@@ -736,17 +736,17 @@ if which ghq &> /dev/null; then
             ;;
         esac
 
-        local selected_repo=$(ghq list | percol --prompt '<green>ghq-open > </green>' --query "$LBUFFER")
+        local selected_repo=$(ghq list | peco --prompt 'ghq-open > ' --query "$LBUFFER")
         if [ -n "$selected_repo" ]; then
             $open "https://${selected_repo}"
         fi
         zle clear-screen
     }
-    zle -N percol-ghq-open
-    bindkey -M viins '^ g' percol-ghq-open
+    zle -N peco-ghq-open
+    bindkey -M viins '^ g' peco-ghq-open
 fi
 
-function percol-git-log() {
+function peco-git-log() {
     local sed
     case $OSTYPE in
     darwin*)
@@ -758,17 +758,17 @@ function percol-git-log() {
     esac
 
     local hash
-    hash=$(git log --no-color --oneline --graph --all --decorate | percol --prompt '<green>git-log > </green>' | $sed -e "s/^\W\+\([0-9A-Fa-f]\+\).*$/\1/")
+    hash=$(git log --no-color --oneline --graph --all --decorate | peco --prompt 'git-log > ' | $sed -e "s/^\W\+\([0-9A-Fa-f]\+\).*$/\1/")
     BUFFER="${BUFFER}${hash}"
     CURSOR=$#BUFFER
     zle redisplay
 }
-zle -N percol-git-log
-bindkey -M viins '^ o' percol-git-log
+zle -N peco-git-log
+bindkey -M viins '^ o' peco-git-log
 
-function percol-ls-l(){
+function peco-ls-l(){
     local selected
-    selected=$(ls -l | grep -v ^total | percol --prompt '<green>ls-l > </green>' | awk '{print $(NF)}')
+    selected=$(ls -l | grep -v ^total | peco --prompt 'ls-l > ' | awk '{print $(NF)}')
     if [ -d "$selected" ]; then
         BUFFER="cd $selected"
         zle accept-line
@@ -779,51 +779,87 @@ function percol-ls-l(){
         zle clear-screen
     fi
 }
-zle -N percol-ls-l
-bindkey -M viins '^ l' percol-ls-l
+zle -N peco-ls-l
+bindkey -M viins '^ l' peco-ls-l
 
-function percol-ls-l-insert(){
+function peco-ls-l-insert(){
     local selected
-    selected=$(ls -l | grep -v ^total | percol --prompt '<green>ls-l-insert > </green>' | awk '{print $(NF)}')
+    selected=$(ls -l | grep -v ^total | peco --prompt 'ls-l-insert > ' | awk '{print $(NF)}')
     BUFFER="${BUFFER}$selected"
     CURSOR=$#BUFFER
     zle redisplay
 }
-zle -N percol-ls-l-insert
-bindkey -M viins '^ l' percol-ls-l-insert
+zle -N peco-ls-l-insert
+bindkey -M viins '^ l' peco-ls-l-insert
 
-function percol-find-insert(){
+function peco-find-insert(){
     local selected
-    selected=$(find ./* | percol --prompt '<green>find-insert > </green>')
+    selected=$(find ./* | peco --prompt 'find-insert > ')
     BUFFER="${BUFFER}${selected}"
     CURSOR=$#BUFFER
     zle redisplay
 }
-zle -N percol-find-insert
-bindkey -M viins '^ f' percol-find-insert
+zle -N peco-find-insert
+bindkey -M viins '^ f' peco-find-insert
 
-function percol-insert(){
+function peco-insert(){
     local selected
-    selected=$(eval ${BUFFER} | percol --prompt '<green>insert > </green>')
+    selected=$(eval ${BUFFER} | peco --prompt 'insert > ')
     BUFFER="${selected}"
     CURSOR=$#BUFFER
     zle redisplay
 }
-zle -N percol-insert
-bindkey -M viins '^ ^M' percol-insert
+zle -N peco-insert
+bindkey -M viins '^ ^M' peco-insert
 
-function percol-source(){
+function peco-neomru-insert() {
+    if ! [ -f "$HOME/.cache/neomru/file" ]; then
+        return
+    fi
+
+    local selected
+    selected=$(cat ~/.cache/neomru/{file,directory} | peco --prompt 'neomru-insert > ')
+    BUFFER="$BUFFER$selected"
+    CURSOR=$#BUFFER
+    zle redisplay
+}
+zle -N peco-neomru-insert
+bindkey -M viins '^ n' peco-neomru-insert
+
+function peco-neomru(){
+    if ! [ -f "$HOME/.cache/neomru/file" ]; then
+        return
+    fi
+
+    local editor
+    if [[ "$1" != "" ]]; then
+        editor=$1
+    elif [[ "$EDITOR" != "" ]]; then
+        editor=$EDITOR
+    else
+        editor="vim"
+    fi
+
+    local selected
+    selected=$(cat ~/.cache/neomru/{file,directory} | peco --prompt 'neomru > ')
+    BUFFER="$editor $selected"
+    zle accept-line
+}
+zle -N peco-neomru
+bindkey -M viins '^ n' peco-neomru
+
+function peco-source(){
     local sources
     local selected_source
-    sources=(pgrep pkill history history-insert cdr cdr-insert ghq git-log ls-l ls-l-insert find-insert locate)
-    selected_source=$(echo ${(j:\n:)sources} | percol --prompt '<green>source > </green>')
+    sources=(pgrep pkill history history-insert cdr cdr-insert ghq git-log ls-l ls-l-insert find-insert locate neomru neomru-insert)
+    selected_source=$(echo ${(j:\n:)sources} | peco --prompt 'source > ')
     zle clear-screen
-    if [[ "$selected" != "" ]]; then
-        zle percol-${selected_source}
+    if [[ "$selected_source" != "" ]]; then
+        zle peco-${selected_source}
     fi
 }
-zle -N percol-source
-bindkey -M viins '^ ' percol-source
+zle -N peco-source
+bindkey -M viins '^ ' peco-source
 
 # }}}
 fi
