@@ -328,22 +328,26 @@ command! Date :call setline('.', getline('.') . strftime('%Y/%m/%d (%a) %H:%M'))
 " vimrc を開く
 command! Vimrc call s:edit_myvimrc()
 function! s:edit_myvimrc()
-    let files = ""
-    if isdirectory($HOME.'/Github/dotfiles')
-        if !empty($MYVIMRC)
-            let files .= substitute(expand('~/Github/dotfiles/vimrc*'),'\n',' ','g')
-        endif
-        if !empty($MYGVIMRC)
-            let files .= " " . substitute(expand('~/Github/dotfiles/gvimrc*'),'\n',' ','g')
-        endif
+    let ghq_root = expand(substitute(system('git config ghq.root'), '\n$', '', ''))
+    if isdirectory(ghq_root . '/github.com/rhysd/dotfiles')
+        let vimrc = ghq_root . '/github.com/rhysd/dotfiles/vimrc*'
+        let gvimrc = ghq_root . '/github.com/rhysd/dotfiles/gvimrc*'
+    elseif isdirectory($HOME.'Github/dotfiles')
+        let vimrc = expand('~/Github/dotfiles/vimrc*')
+        let gvimrc = expand('~/Github/dotfiles/gvimrc*')
     else
-        if !empty($MYVIMRC)
-            let files .= $MYVIMRC
-        endif
-        if !empty($MYGVIMRC)
-            let files .= " " . $MYGVIMRC
-        endif
+        let vimrc = $MYVIMRC
+        let gvimrc = $MYGVIMRC
     endif
+
+    let files = ""
+    if !empty($MYVIMRC)
+        let files .= substitute(expand(vimrc), '\n', ' ', 'g')
+    endif
+    if !empty($MYGVIMRC)
+        let files .= substitute(expand(gvimrc), '\n', ' ', 'g')
+    endif
+
     execute "args " . files
 endfunction
 
@@ -847,7 +851,7 @@ function! s:cache_bundles()
     " For testing
     command! -nargs=1 NeoBundleMyPlugin
                 \ NeoBundle <args>, {
-                \   'base' : '~/.ghq/github.com/rhysd',
+                \   'base' : '~/Dev/github.com/rhysd',
                 \   'type' : 'nosync',
                 \ }
 
@@ -2893,7 +2897,7 @@ let g:haskell_hsp = 0
 
 " inu-snippets {{{
 let g:neosnippet#snippets_directory=$HOME.'/.vim/bundle/inu-snippets/snippets'
-" let g:neosnippet#snippets_directory=$HOME.'/Github/inu-snippets/snippets'
+" let g:neosnippet#snippets_directory=$HOME.'/Dev/github.com/rhysd/inu-snippets/snippets'
 "}}}
 
 " vim-alignta {{{

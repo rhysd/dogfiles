@@ -22,7 +22,7 @@ def installed?(name)
 end
 
 def ln_dotfile(from, to)
-  ln_s "#{File.expand_path '~'}/Github/dotfiles/#{from}", to
+  ln_s "#{File.expand_path '~'}/Dev/github.com/rhysd/dotfiles/#{from}", to
 end
 
 namespace :common do
