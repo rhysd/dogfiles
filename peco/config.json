@@ -1,0 +1,14 @@
+{
+    "Prompt": "> ",
+    "Style": {
+        "Prompt": ["green", "default"]
+    },
+    "Keymap": {
+        "M-v": "peco.ScrollPageUp",
+        "C-v": "peco.ScrollPageDown",
+        "C-q": "peco.DeleteForwardWord",
+        "C-g": "peco.Cancel",
+        "C-[": "peco.ScrollPageUp",
+        "C-]": "peco.ScrollPageDown"
+    }
+}
