@@ -624,23 +624,21 @@ add-zsh-hook chpwd _ls_abbrev
 
 # ghq wrapper
 if which ghq &> /dev/null; then
+    function ghq-root() {
+        local ghq_root
+        ghq_root=$(git config ghq.root)
+        if [[ "$ghq_root" == "" ]]; then
+            echo "$HOME/.ghq"
+        else
+            echo "${ghq_root/\~/$HOME/}"
+        fi
+    }
+
     function ghq() {
         if [[ "$1" == "home" ]]; then
-            local ghq_root
-            ghq_root=$(git config ghq.root)
-            if [[ "$ghq_root" == "" ]]; then
-                builtin cd ~/.ghq
-            else
-                builtin cd ${ghq_root/\~/$HOME/}
-            fi
+            builtin cd $(ghq-root)
         elif [[ "$1" == "github" || "$1" == "gh" ]]; then
-            local ghq_root
-            ghq_root=$(git config ghq.root)
-            if [[ "$ghq_root" == "" ]]; then
-                builtin cd ~/.ghq
-            else
-                builtin cd "${ghq_root/\~/$HOME/}/github.com/rhysd"
-            fi
+            builtin cd "$(ghq-root)/github.com/rhysd"
         else
             /usr/bin/env ghq $*
         fi
@@ -738,9 +736,9 @@ bindkey -M viins '^ r' peco-cdr
 
 if which ghq &> /dev/null; then
     function peco-ghq() {
-        local selected_dir=$(ghq list --full-path | peco --prompt 'ghq >' --query "$LBUFFER")
+        local selected_dir=$(ghq list | peco --prompt 'ghq >' --query "$LBUFFER")
         if [ -n "$selected_dir" ]; then
-            BUFFER="cd ${selected_dir}"
+            BUFFER="cd $(ghq-root)/${selected_dir}"
             zle accept-line
         fi
         zle clear-screen
