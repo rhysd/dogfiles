@@ -631,6 +631,8 @@ add-zsh-hook chpwd _ls_abbrev
 #   percol   #
 ##############
 # {{{
+if which percol &> /dev/null; then
+
 function percol-pgrep() {
     if [[ $1 == "" ]]; then
         PERCOL=percol
@@ -712,7 +714,7 @@ bindkey -M viins '^I' _advanced_tab
 bindkey -M viins '^ r' percol-cdr
 
 if which ghq &> /dev/null; then
-    function percol-ghq () {
+    function percol-ghq() {
         local selected_dir=$(ghq list --full-path | percol --query "$LBUFFER")
         if [ -n "$selected_dir" ]; then
             BUFFER="cd ${selected_dir}"
@@ -721,7 +723,27 @@ if which ghq &> /dev/null; then
         zle clear-screen
     }
     zle -N percol-ghq
-    bindkey -M viins '^ g' percol-ghq
+    bindkey -M viins '^ q' percol-ghq
+
+    function percol-ghq-open() {
+        local open
+        case $OSTYPE in
+        darwin*)
+            open="open"
+            ;;
+        linux*)
+            open="xdg-open"
+            ;;
+        esac
+
+        local selected_repo=$(ghq list | percol --query "$LBUFFER")
+        if [ -n "$selected_repo" ]; then
+            $open "https://${selected_repo}"
+        fi
+        zle clear-screen
+    }
+    zle -N percol-ghq-open
+    bindkey -M viins '^ g' percol-ghq-open
 fi
 
 function percol-git-log() {
@@ -802,6 +824,8 @@ function percol-source(){
 }
 zle -N percol-source
 bindkey -M viins '^ ' percol-source
+
+fi
 # }}}
 
 ##########################################
