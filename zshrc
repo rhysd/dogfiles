@@ -622,9 +622,32 @@ _ls_abbrev() {
 }
 add-zsh-hook chpwd _ls_abbrev
 
-# }}}
+# ghq wrapper
+if which ghq &> /dev/null; then
+    function ghq() {
+        if [[ "$1" == "home" ]]; then
+            local ghq_root
+            ghq_root=$(git config ghq.root)
+            if [[ "$ghq_root" == "" ]]; then
+                builtin cd ~/.ghq
+            else
+                builtin cd ${ghq_root/\~/$HOME/}
+            fi
+        elif [[ "$1" == "github" || "$1" == "gh" ]]; then
+            local ghq_root
+            ghq_root=$(git config ghq.root)
+            if [[ "$ghq_root" == "" ]]; then
+                builtin cd ~/.ghq
+            else
+                builtin cd "${ghq_root/\~/$HOME/}/github.com/rhysd"
+            fi
+        else
+            /usr/bin/env ghq $*
+        fi
+    }
+fi
 
-[[ -f ~/Github/zsh-bundle-exec/zsh-bundle-exec.zsh ]] && source ~/Github/zsh-bundle-exec/zsh-bundle-exec.zsh
+# }}}
 
 ######################
 #   filtering tool   #
