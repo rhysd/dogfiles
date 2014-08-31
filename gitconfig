@@ -51,3 +51,5 @@
 	default = simple
 [github]
 	user = rhysd
+[ghq]
+	root = ~/Dev
