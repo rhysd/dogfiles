@@ -639,7 +639,7 @@ function peco-pgrep() {
     else
         peco="peco --query $1"
     fi
-    ps aux | eval $peco --prompt 'pgrep > ' | awk '{ print $2 }'
+    ps aux | eval $peco --prompt 'pgrep >' | awk '{ print $2 }'
 }
 zle -N peco-pgrep
 
@@ -658,7 +658,7 @@ function peco-history-insert() {
     local tac
     which gtac &> /dev/null && tac="gtac" || { which tac &> /dev/null && tac="tac" || { tac="tail -r" } }
     tac="tail -r"
-    BUFFER=$(fc -l -n 1 | eval $tac | peco  --prompt 'history-insert > '--query "$LBUFFER")
+    BUFFER=$(fc -l -n 1 | eval $tac | peco  --prompt 'history-insert >' --query "$LBUFFER")
     CURSOR=$#BUFFER         # move cursor
     zle -R -c               # refresh
 }
@@ -668,7 +668,7 @@ function peco-history() {
     local tac
     which gtac &> /dev/null && tac="gtac" || { which tac &> /dev/null && tac="tac" || { tac="tail -r" } }
     tac="tail -r"
-    BUFFER=$(fc -l -n 1 | eval $tac | peco --prompt 'history > ' --query "$LBUFFER")
+    BUFFER=$(fc -l -n 1 | eval $tac | peco --prompt 'history >' --query "$LBUFFER")
     zle clear-screen
     zle accept-line
 }
@@ -678,11 +678,11 @@ bindkey -M viins '^ h' peco-history
 function peco-cdr-impl() {
     cdr -l | \
         sed -e 's/^[[:digit:]]*[[:blank:]]*//' | \
-        peco --prompt 'cdr > ' --query "$LBUFFER"
+        peco --prompt 'cdr >' --query "$LBUFFER"
 }
 function peco-cdr-insert() {
     local selected
-    selected=$(cdr -l | sed -e 's/^[[:digit:]]*[[:blank:]]*//' | peco --prompt 'cdr-insert > ')
+    selected=$(cdr -l | sed -e 's/^[[:digit:]]*[[:blank:]]*//' | peco --prompt 'cdr-insert >')
     BUFFER=${BUFFER}${selected}
     CURSOR=$#BUFFER
     zle redisplay
@@ -715,7 +715,7 @@ bindkey -M viins '^ r' peco-cdr
 
 if which ghq &> /dev/null; then
     function peco-ghq() {
-        local selected_dir=$(ghq list --full-path | peco --prompt 'ghq > ' --query "$LBUFFER")
+        local selected_dir=$(ghq list --full-path | peco --prompt 'ghq >' --query "$LBUFFER")
         if [ -n "$selected_dir" ]; then
             BUFFER="cd ${selected_dir}"
             zle accept-line
@@ -736,7 +736,7 @@ if which ghq &> /dev/null; then
             ;;
         esac
 
-        local selected_repo=$(ghq list | peco --prompt 'ghq-open > ' --query "$LBUFFER")
+        local selected_repo=$(ghq list | peco --prompt 'ghq-open >' --query "$LBUFFER")
         if [ -n "$selected_repo" ]; then
             $open "https://${selected_repo}"
         fi
@@ -758,7 +758,7 @@ function peco-git-log() {
     esac
 
     local hash
-    hash=$(git log --no-color --oneline --graph --all --decorate | peco --prompt 'git-log > ' | $sed -e "s/^\W\+\([0-9A-Fa-f]\+\).*$/\1/")
+    hash=$(git log --no-color --oneline --graph --all --decorate | peco --prompt 'git-log >' | $sed -e "s/^\W\+\([0-9A-Fa-f]\+\).*$/\1/")
     BUFFER="${BUFFER}${hash}"
     CURSOR=$#BUFFER
     zle redisplay
@@ -768,7 +768,7 @@ bindkey -M viins '^ o' peco-git-log
 
 function peco-ls-l(){
     local selected
-    selected=$(ls -l | grep -v ^total | peco --prompt 'ls-l > ' | awk '{print $(NF)}')
+    selected=$(ls -l | grep -v ^total | peco --prompt 'ls-l >' | awk '{print $(NF)}')
     if [ -d "$selected" ]; then
         BUFFER="cd $selected"
         zle accept-line
@@ -784,7 +784,7 @@ bindkey -M viins '^ l' peco-ls-l
 
 function peco-ls-l-insert(){
     local selected
-    selected=$(ls -l | grep -v ^total | peco --prompt 'ls-l-insert > ' | awk '{print $(NF)}')
+    selected=$(ls -l | grep -v ^total | peco --prompt 'ls-l-insert >' | awk '{print $(NF)}')
     BUFFER="${BUFFER}$selected"
     CURSOR=$#BUFFER
     zle redisplay
@@ -794,7 +794,7 @@ bindkey -M viins '^ l' peco-ls-l-insert
 
 function peco-find-insert(){
     local selected
-    selected=$(find ./* | peco --prompt 'find-insert > ')
+    selected=$(find ./* | peco --prompt 'find-insert >')
     BUFFER="${BUFFER}${selected}"
     CURSOR=$#BUFFER
     zle redisplay
@@ -804,7 +804,7 @@ bindkey -M viins '^ f' peco-find-insert
 
 function peco-insert(){
     local selected
-    selected=$(eval ${BUFFER} | peco --prompt 'insert > ')
+    selected=$(eval ${BUFFER} | peco --prompt 'insert >')
     BUFFER="${selected}"
     CURSOR=$#BUFFER
     zle redisplay
@@ -818,7 +818,7 @@ function peco-neomru-insert() {
     fi
 
     local selected
-    selected=$(cat ~/.cache/neomru/{file,directory} | peco --prompt 'neomru-insert > ')
+    selected=$(cat ~/.cache/neomru/{file,directory} | sed "1 d" | peco --prompt 'neomru-insert >')
     BUFFER="$BUFFER$selected"
     CURSOR=$#BUFFER
     zle redisplay
@@ -841,7 +841,7 @@ function peco-neomru(){
     fi
 
     local selected
-    selected=$(cat ~/.cache/neomru/{file,directory} | peco --prompt 'neomru > ')
+    selected=$(cat ~/.cache/neomru/{file,directory} | sed "1 d" | peco --prompt 'neomru >')
     BUFFER="$editor $selected"
     zle accept-line
 }
@@ -852,7 +852,7 @@ function peco-source(){
     local sources
     local selected_source
     sources=(pgrep pkill history history-insert cdr cdr-insert ghq git-log ls-l ls-l-insert find-insert locate neomru neomru-insert)
-    selected_source=$(echo ${(j:\n:)sources} | peco --prompt 'source > ')
+    selected_source=$(echo ${(j:\n:)sources} | peco --prompt 'source >')
     zle clear-screen
     if [[ "$selected_source" != "" ]]; then
         zle peco-${selected_source}
