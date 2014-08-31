@@ -627,7 +627,10 @@ add-zsh-hook chpwd _ls_abbrev
 
 [[ -f ~/Github/zsh-bundle-exec/zsh-bundle-exec.zsh ]] && source ~/Github/zsh-bundle-exec/zsh-bundle-exec.zsh
 
-#   percol
+##############
+#   percol   #
+##############
+# {{{
 function percol-pgrep() {
     if [[ $1 == "" ]]; then
         PERCOL=percol
@@ -706,7 +709,7 @@ fi
 zle -N _advanced_tab
 
 bindkey -M viins '^I' _advanced_tab
-bindkey -M viins '^ r' _advanced_tab
+bindkey -M viins '^ r' percol-cdr
 
 if which ghq &> /dev/null; then
     function percol-ghq () {
@@ -736,7 +739,7 @@ function percol-git-log() {
     hash=$(git log --no-color --oneline --graph --all --decorate | percol | $sed -e "s/^\W\+\([0-9A-Fa-f]\+\).*$/\1/")
     BUFFER="${BUFFER}${hash}"
     CURSOR=$#BUFFER
-    zle clear-screen
+    zle redisplay
 }
 zle -N percol-git-log
 bindkey -M viins '^ o' percol-git-log
@@ -793,10 +796,13 @@ function percol-source(){
     sources=(pgrep pkill history history-insert cdr cdr-insert ghq git-log ls-l ls-l-insert find-insert locate)
     selected_source=$(echo ${(j:\n:)sources} | percol)
     zle clear-screen
-    zle percol-${selected_source}
+    if [[ "$selected" != "" ]]; then
+        zle percol-${selected_source}
+    fi
 }
 zle -N percol-source
 bindkey -M viins '^ ' percol-source
+# }}}
 
 ##########################################
 #   source platform-dependant settings   #
