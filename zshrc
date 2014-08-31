@@ -842,8 +842,10 @@ function peco-neomru(){
 
     local selected
     selected=$(cat ~/.cache/neomru/{file,directory} | sed "1 d" | peco --prompt 'neomru >')
-    BUFFER="$editor $selected"
-    zle accept-line
+    if [[ "$selected" != "" ]]; then
+        BUFFER="$editor $selected"
+        zle accept-line
+    fi
 }
 zle -N peco-neomru
 bindkey -M viins '^ n' peco-neomru
