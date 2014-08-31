@@ -850,10 +850,41 @@ function peco-neomru(){
 zle -N peco-neomru
 bindkey -M viins '^ n' peco-neomru
 
+function peco-neobundle(){
+    if ! [ -d "$HOME/.vim/bundle" ]; then
+        return
+    fi
+
+    local selected
+    selected=$(ls -1 "$HOME/.vim/bundle" | peco --prompt 'neobundle >')
+    if [[ "$selected" != "" ]]; then
+        BUFFER="cd $HOME/.vim/bundle/$selected"
+        zle accept-line
+    fi
+}
+zle -N peco-neobundle
+bindkey -M viins '^ b' peco-neobundle
+
 function peco-source(){
     local sources
     local selected_source
-    sources=(pgrep pkill history history-insert cdr cdr-insert ghq git-log ls-l ls-l-insert find-insert locate neomru neomru-insert)
+    sources=( \
+        pgrep \
+        pkill \
+        history \
+        history-insert \
+        cdr \
+        cdr-insert \
+        ghq \
+        git-log \
+        ls-l \
+        ls-l-insert \
+        find-insert \
+        locate \
+        neomru \
+        neomru-insert \
+        neobundle \
+    )
     selected_source=$(echo ${(j:\n:)sources} | peco --prompt 'source >')
     zle clear-screen
     if [[ "$selected_source" != "" ]]; then
