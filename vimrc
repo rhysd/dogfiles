@@ -847,7 +847,7 @@ function! s:cache_bundles()
     " For testing
     command! -nargs=1 NeoBundleMyPlugin
                 \ NeoBundle <args>, {
-                \   'base' : '~/Github/',
+                \   'base' : '~/.ghq/github.com/rhysd',
                 \   'type' : 'nosync',
                 \ }
 
@@ -973,6 +973,12 @@ function! s:cache_bundles()
                 \ 'depends' : 'Shougo/vimfiler.vim',
                 \ 'autoload' : {
                 \     'commands' : ['MemoNew', 'MemoList', 'MemoGrep']
+                \   }
+                \ }
+
+    NeoBundle 'Lokaltog/vim-easymotion', {
+                \ 'autoload' : {
+                \       'mappings' : '<Plug>(easymotion-',
                 \   }
                 \ }
 
@@ -3332,6 +3338,11 @@ unlet s:bundle
 nnoremap <silent><C-w>r :<C-u>AdjustWindowWidth --margin=1 --direction=shrink<CR>
 "}}}
 
+" EasyMotion {{{
+let g:EasyMotion_do_mapping = 0
+map : <Plug>(easymotion-s2)
+" }}}
+
 " ぷよ.vim {{{
 let g:puyo#updatetime = 500
 "}}}
@@ -3425,9 +3436,10 @@ endfunction
 AutocmdFT python call <SID>jedi_settings()
 " }}}
 
-" clang-type-inspector.vim
+" clang-type-inspector.vim {{{
 AutocmdFT cpp nmap <Leader>t <Plug>(clang-inspect-type-at-cursor)
 let g:clang_type_inspector#automatic_inspection = 0
+" }}}
 
 " committia.vim {{{
 let g:committia_hooks = {}
