@@ -658,9 +658,9 @@ function peco-pgrep() {
     if [[ $1 == "" ]]; then
         peco=peco
     else
-        peco="peco --query $1"
+        peco="peco --query \"$1\""
     fi
-    ps aux | eval $peco --prompt 'pgrep >' | awk '{ print $2 }'
+    ps aux | eval $peco --prompt "\"pgrep >\"" | awk '{ print $2 }'
 }
 zle -N peco-pgrep
 
@@ -678,7 +678,6 @@ zle -N peco-pkill
 function peco-history-insert() {
     local tac
     which gtac &> /dev/null && tac="gtac" || { which tac &> /dev/null && tac="tac" || { tac="tail -r" } }
-    tac="tail -r"
     BUFFER=$(fc -l -n 1 | eval $tac | peco  --prompt 'history-insert >' --query "$LBUFFER")
     CURSOR=$#BUFFER         # move cursor
     zle -R -c               # refresh
@@ -688,7 +687,6 @@ zle -N peco-history-insert
 function peco-history() {
     local tac
     which gtac &> /dev/null && tac="gtac" || { which tac &> /dev/null && tac="tac" || { tac="tail -r" } }
-    tac="tail -r"
     BUFFER=$(fc -l -n 1 | eval $tac | peco --prompt 'history >' --query "$LBUFFER")
     zle clear-screen
     zle accept-line
@@ -778,9 +776,9 @@ function peco-git-log() {
         ;;
     esac
 
-    local hash
-    hash=$(git log --no-color --oneline --graph --all --decorate | peco --prompt 'git-log >' | $sed -e "s/^\W\+\([0-9A-Fa-f]\+\).*$/\1/")
-    BUFFER="${BUFFER}${hash}"
+    local commit
+    commit=$(git log --no-color --oneline --graph --all --decorate | peco --prompt 'git-log >' | $sed -e "s/^\W\+\([0-9A-Fa-f]\+\).*$/\1/")
+    BUFFER="${BUFFER}${commit}"
     CURSOR=$#BUFFER
     zle redisplay
 }
@@ -906,7 +904,7 @@ function peco-source(){
         neomru-insert \
         neobundle \
     )
-    selected_source=$(echo ${(j:\n:)sources} | peco --prompt 'source >')
+    selected_source=$(echo ${(j/\n/)sources} | peco --prompt 'source >')
     zle clear-screen
     if [[ "$selected_source" != "" ]]; then
         zle peco-${selected_source}
