@@ -1182,6 +1182,12 @@ function! s:cache_bundles()
                 \   }
                 \ }
 
+    NeoBundleLazy 'sorah/unite-ghq', {
+            \ 'autoload' : {
+            \       'unite_sources' : 'ghq'
+            \   }
+            \ }
+
     " Haskell 用プラグイン
     NeoBundleLazy 'ujihisa/unite-haskellimport', {
                 \ 'autoload' : {'filetypes' : 'haskell'}
