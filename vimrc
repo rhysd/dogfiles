@@ -959,7 +959,7 @@ function! s:cache_bundles()
     NeoBundleLazy 'tyru/open-browser-github.vim', {
                 \ 'depends' : 'tyru/open-browser.vim',
                 \ 'autoload' : {
-                \       'commands' : 'OpenGithubFile'
+                \       'commands' : ['OpenGithubFile', 'OpenGithubIssue', 'OpenGithubPullReq']
                 \   }
                 \ }
 
@@ -2119,8 +2119,13 @@ function! s:bundle.hooks.on_source(bundle)
     endif
 
     call unite#custom#source('quickfix', 'sorters', 'sorter_reverse')
+    call unite#custom#profile('source/quickfix,outline', 'context', {'prompt_direction' : 'top'})
+    call unite#custom#profile('source/ghq', 'context', {'default_action' : 'vimfiler'})
 
-    call unite#custom#profile('default', 'context', {'start_insert' : 1})
+    call unite#custom#profile('default', 'context', {
+                \ 'start_insert' : 1,
+                \ 'direction' : 'botright',
+                \ })
 
     "C-gでいつでもバッファを閉じられる（絞り込み欄が空の時はC-hでもOK）
     AutocmdFT unite imap <buffer><C-g> <Plug>(unite_exit)
@@ -2146,7 +2151,7 @@ map     <Space> [unite]
 " コマンドラインウィンドウで Unite コマンドを入力
 nnoremap [unite]u                 :<C-u>Unite source<CR>
 "バッファを開いた時のパスを起点としたファイル検索
-nnoremap <silent>[unite]<Space>   :<C-u>UniteWithBufferDir -buffer-name=files file -vertical<CR>
+nnoremap <silent>[unite]<Space>   :<C-u>UniteWithBufferDir -buffer-name=files -vertical file directory file/new<CR>
 "最近使用したファイル
 nnoremap <silent>[unite]m         :<C-u>Unite file_mru directory_mru zsh-cdr file/new<CR>
 "指定したディレクトリ以下を再帰的に開く
@@ -2179,8 +2184,6 @@ vnoremap <silent>[unite]aa        :<C-u>Unite alignta:arguments<CR>
 vnoremap <silent>[unite]ao        :<C-u>Unite alignta:options<CR>
 " C++ インクルードファイル
 AutocmdFT cpp nnoremap <buffer>[unite]i :<C-u>Unite file_include -vertical<CR>
-" zsh の cdr コマンド
-nnoremap <silent>[unite]z :<C-u>Unite zsh-cdr<CR>
 " nnoremap <silent>[unite]z :<C-u>Unite zsh-cdr -default-action=vimfiler<CR>
 " help(項目が多いので，検索語を入力してから絞り込む)
 nnoremap <silent>[unite]hh        :<C-u>UniteWithInput help -vertical<CR>
