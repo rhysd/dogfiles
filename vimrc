@@ -2060,7 +2060,7 @@ let g:neosnippet#disable_runtime_snippets = {'cpp' : 1, 'python' : 1, 'd' : 1}
 "}}}
 
 " unite.vim {{{
-let s:bundle = neobundle#get("vimshell")
+let s:bundle = neobundle#get("unite.vim")
 function! s:bundle.hooks.on_source(bundle)
     " 無指定にすることで高速化
     let g:unite_source_file_mru_filename_format = ''
@@ -2112,33 +2112,35 @@ function! s:bundle.hooks.on_source(bundle)
         let finder = { 'description' : 'open with Finder.app' }
         function! finder.func(candidate)
             if a:candidate.kind ==# 'directory'
-                call system('open -a Finder '.a:candidate.action__path)
+                call unite#util#system('open -a Finder '.a:candidate.action__path)
             endif
         endfunction
         call unite#custom#action('directory', 'finder', finder)
     endif
 
     call unite#custom#source('quickfix', 'sorters', 'sorter_reverse')
+
+    call unite#custom#profile('default', 'context', {'start_insert' : 1})
+
+    "C-gでいつでもバッファを閉じられる（絞り込み欄が空の時はC-hでもOK）
+    AutocmdFT unite imap <buffer><C-g> <Plug>(unite_exit)
+    AutocmdFT unite nmap <buffer><C-g> <Plug>(unite_exit)
+    "直前のパス削除
+    AutocmdFT unite imap <buffer><C-w> <Plug>(unite_delete_backward_path)
+    AutocmdFT unite nmap <buffer>h <Plug>(unite_delete_backward_path)
+    "ファイル上にカーソルがある時，pでプレビューを見る
+    AutocmdFT unite inoremap <buffer><expr>p unite#smart_map("p", unite#do_action('preview'))
+    "C-xでクイックマッチ
+    AutocmdFT unite imap <buffer><C-x> <Plug>(unite_quick_match_default_action)
+    "lでデフォルトアクションを実行
+    AutocmdFT unite nmap <buffer>l <Plug>(unite_do_default_action)
+    AutocmdFT unite imap <buffer><expr>l unite#smart_map("l", unite#do_action(unite#get_current_unite().context.default_action))
+    "jjで待ち時間が発生しないようにしていると候補が見えなくなるので対処
+    AutocmdFT unite imap <buffer><silent>jj <Plug>(unite_insert_leave)
 endfunction
 unlet s:bundle
 
 "unite.vimのキーマップ {{{
-"C-gでいつでもバッファを閉じられる（絞り込み欄が空の時はC-hでもOK）
-AutocmdFT unite imap <buffer><C-g> <Plug>(unite_exit)
-AutocmdFT unite nmap <buffer><C-g> <Plug>(unite_exit)
-"直前のパス削除
-AutocmdFT unite imap <buffer><C-w> <Plug>(unite_delete_backward_path)
-AutocmdFT unite nmap <buffer>h <Plug>(unite_delete_backward_path)
-"ファイル上にカーソルがある時，pでプレビューを見る
-AutocmdFT unite inoremap <buffer><expr>p unite#smart_map("p", unite#do_action('preview'))
-"C-xでクイックマッチ
-AutocmdFT unite imap <buffer><C-x> <Plug>(unite_quick_match_default_action)
-"lでデフォルトアクションを実行
-AutocmdFT unite nmap <buffer>l <Plug>(unite_do_default_action)
-AutocmdFT unite imap <buffer><expr>l unite#smart_map("l", unite#do_action(unite#get_current_unite().context.default_action))
-"jjで待ち時間が発生しないようにしていると候補が見えなくなるので対処
-AutocmdFT unite imap <buffer><silent>jj <Plug>(unite_insert_leave)
-
 noremap [unite] <Nop>
 map     <Space> [unite]
 " コマンドラインウィンドウで Unite コマンドを入力
@@ -2146,11 +2148,7 @@ nnoremap [unite]u                 :<C-u>Unite source<CR>
 "バッファを開いた時のパスを起点としたファイル検索
 nnoremap <silent>[unite]<Space>   :<C-u>UniteWithBufferDir -buffer-name=files file -vertical<CR>
 "最近使用したファイル
-if filereadable(expand('~/.chpwd-recent-dirs'))
-    nnoremap <silent>[unite]m         :<C-u>Unite file_mru directory_mru zsh-cdr file/new<CR>
-else
-    nnoremap <silent>[unite]m         :<C-u>Unite file_mru directory_mru file/new<CR>
-endif
+nnoremap <silent>[unite]m         :<C-u>Unite file_mru directory_mru zsh-cdr file/new<CR>
 "指定したディレクトリ以下を再帰的に開く
 " nnoremap <silent>[unite]R       :<C-u>UniteWithBufferDir -no-start-insert file_rec/async -auto-resize<CR>
 "バッファ一覧
@@ -2160,7 +2158,7 @@ nnoremap <silent>[unite]o         :<C-u>Unite outline -vertical -no-start-insert
 "コマンドの出力
 nnoremap <silent>[unite]c         :<C-u>Unite output<CR>
 "grep検索．
-nnoremap <silent>[unite]g         :<C-u>Unite -no-start-insert grep<CR>
+nnoremap <silent>[unite]gr        :<C-u>Unite -no-start-insert grep<CR>
 "Uniteバッファの復元
 nnoremap <silent>[unite]r         :<C-u>UniteResume<CR>
 " Unite ソース一覧
@@ -2202,6 +2200,8 @@ nnoremap [unite]C :<C-u>Unite -auto-preview colorscheme<CR>
 nnoremap <silent>[unite]l :<C-u>UniteWithInput locate<CR>
 " 検索
 nnoremap <silent>[unite]/ :<C-u>execute 'Unite grep:'.expand('%:p').' -input='.escape(substitute(@/, '^\\v', '', ''), ' \')<CR>
+" ghq
+nnoremap <silent>[unite]gg :<C-u>Unite -start-insert -default-action=vimfiler ghq directory_mru<CR>
 " }}}
 
 " }}}
