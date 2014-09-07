@@ -2335,14 +2335,6 @@ let g:quickrun_config['c/llvm'] = {
             \ 'type' : 'c/clang',
             \ 'exec' : '%c %o -emit-llvm -S %s -o -',
             \ }
-let g:quickrun_config['dachs'] = {
-            \ 'command' : './dachs',
-            \ 'cmdopt' : '--libdir=src/dachs',
-            \ }
-let g:quickrun_config['dachs/llvm'] = {
-            \ 'type' : 'dachs',
-            \ 'cmdopt' : '--emit-llvm',
-            \ }
 " プリプロセスのみ
 let g:quickrun_config['cpp/preprocess/g++'] = { 'type' : 'cpp/g++', 'exec' : '%c -P -E %s' }
 let g:quickrun_config['cpp/preprocess/clang++'] = { 'type' : 'cpp/clang++', 'exec' : '%c -P -E %s' }
@@ -2363,6 +2355,17 @@ let g:quickrun_config['tmux'] = {
 let g:quickrun_config['llvm'] = {
             \   'exec' : 'llvm-as-3.4 %s:p -o=- | lli-3.4 - %a',
             \ }
+
+let g:quickrun_config['dachs'] = {
+            \   'command' : './bin/dachs',
+            \   'exec' : '%c %o %s:p',
+            \ }
+
+let g:quickrun_config['dachs/llvm'] = {
+            \   'type' : 'dachs',
+            \   'cmdopt' : '--emit-llvm',
+            \ }
+
 
 " シンタックスチェック
 let g:quickrun_config['syntax/cpp'] = {
