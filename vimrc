@@ -699,21 +699,27 @@ endfunction
 AutocmdFT help call s:on_FileType_help_define_mappings()
 
 " quickfix のマッピング
-AutocmdFT qf nnoremap <buffer><silent> q :<C-u>cclose<CR>
-AutocmdFT qf nnoremap <buffer><silent> j :<C-u>cnext!<CR>
-AutocmdFT qf nnoremap <buffer><silent> k :<C-u>cprevious!<CR>
-AutocmdFT qf nnoremap <buffer><silent> J :<C-u>cfirst<CR>
-AutocmdFT qf nnoremap <buffer><silent> K :<C-u>clast<CR>
-AutocmdFT qf nnoremap <buffer><silent> n :<C-u>cnewer<CR>
-AutocmdFT qf nnoremap <buffer><silent> p :<C-u>colder<CR>
-AutocmdFT qf nnoremap <buffer><silent> l :<C-u>clist<CR>
+function! s:on_FileType_qf_define_mappings()
+    nnoremap <buffer><silent> q :<C-u>cclose<CR>
+    nnoremap <buffer><silent> j :<C-u>cnext!<CR>
+    nnoremap <buffer><silent> k :<C-u>cprevious!<CR>
+    nnoremap <buffer><silent> J :<C-u>cfirst<CR>
+    nnoremap <buffer><silent> K :<C-u>clast<CR>
+    nnoremap <buffer><silent> n :<C-u>cnewer<CR>
+    nnoremap <buffer><silent> p :<C-u>colder<CR>
+    nnoremap <buffer><silent> l :<C-u>clist<CR>
+endfunction
+AutocmdFT qf call s:on_FileType_qf_define_mappings()
 
 " git-rebase
-AutocmdFT gitrebase nnoremap <buffer><C-p> :<C-u>Pick<CR>
-AutocmdFT gitrebase nnoremap <buffer><C-s> :<C-u>Squash<CR>
-AutocmdFT gitrebase nnoremap <buffer><C-e> :<C-u>Edit<CR>
-AutocmdFT gitrebase nnoremap <buffer><C-r> :<C-u>Reword<CR>
-AutocmdFT gitrebase nnoremap <buffer><C-f> :<C-u>Fixup<CR>
+function! s:on_FileType_gitrebase_define_mappings()
+    nnoremap <buffer><C-p> :<C-u>Pick<CR>
+    nnoremap <buffer><C-s> :<C-u>Squash<CR>
+    nnoremap <buffer><C-e> :<C-u>Edit<CR>
+    nnoremap <buffer><C-r> :<C-u>Reword<CR>
+    nnoremap <buffer><C-f> :<C-u>Fixup<CR>
+endfunction
+AutocmdFT gitrebase call s:on_FileType_gitrebase_define_mappings()
 
 " 初回のみ a:cmd の動きをして，それ以降は行内をローテートする
 let s:smart_line_pos = -1
@@ -2118,7 +2124,6 @@ function! s:bundle.hooks.on_source(bundle)
         call unite#custom#action('directory', 'finder', finder)
     endif
 
-    call unite#custom#source('quickfix', 'sorters', 'sorter_reverse')
     call unite#custom#profile('source/quickfix,outline', 'context', {'prompt_direction' : 'top'})
     call unite#custom#profile('source/ghq', 'context', {'default_action' : 'vimfiler'})
 
