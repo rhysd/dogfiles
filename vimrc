@@ -2363,12 +2363,13 @@ let g:quickrun_config['llvm'] = {
 
 let g:quickrun_config['dachs'] = {
             \   'command' : './bin/dachs',
-            \   'exec' : '%c %o %s:p',
+            \   'exec' : ['%c %o %s:p', '%s:p:r %a'],
             \ }
 
 let g:quickrun_config['dachs/llvm'] = {
             \   'type' : 'dachs',
             \   'cmdopt' : '--emit-llvm',
+            \   'exec' : '%c %o %s:p',
             \ }
 
 
@@ -2914,7 +2915,6 @@ let g:haskell_hsp = 0
 
 " inu-snippets {{{
 let g:neosnippet#snippets_directory=$HOME.'/.vim/bundle/inu-snippets/snippets'
-" let g:neosnippet#snippets_directory=$HOME.'/Dev/github.com/rhysd/inu-snippets/snippets'
 "}}}
 
 " vim-alignta {{{

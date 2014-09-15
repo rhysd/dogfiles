@@ -34,7 +34,7 @@
 	adu = add -u :/
 	co  = checkout
 	cob = checkout -b
-	co  = checkout master
+	com = checkout master
 	sh  = show
 	lsf = ls-files
 	lst = ls-tree
