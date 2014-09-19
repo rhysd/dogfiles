@@ -647,8 +647,22 @@ vnoremap gm M
 " スペルチェック
 nnoremap <Leader>s :<C-u>setl spell! spell?<CR>
 " カーソル付近の文字列で検索（新規ウィンドウ）
-nnoremap <C-w>*  <C-w>s*
-nnoremap <C-w>#  <C-w>s#
+nnoremap <C-w>* <C-w>s*
+nnoremap <C-w># <C-w>s#
+nnoremap <silent><C-w>h :<C-u>call <SID>jump_window_wrapper('h', 'L')<CR>
+nnoremap <silent><C-w>j :<C-u>call <SID>jump_window_wrapper('j', 'K')<CR>
+nnoremap <silent><C-w>k :<C-u>call <SID>jump_window_wrapper('k', 'J')<CR>
+nnoremap <silent><C-w>l :<C-u>call <SID>jump_window_wrapper('l', 'H')<CR>
+
+function! s:jump_window_wrapper(cmd, fallback)
+    let old = winnr()
+    execute 'normal!' "\<C-w>" . a:cmd
+
+    if old == winnr()
+        execute 'normal!' "\<C-w>" . a:fallback
+    endif
+endfunction
+
 " 連結時にスペースを入れない
 function! s:cmd_gJ()
     normal! J
