@@ -533,9 +533,6 @@ noremap gm m
 nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>
 "{数値}<Tab>でその行へ移動．それ以外だと通常の<Tab>の動きに
 noremap <expr><Tab> v:count !=0 ? "G" : "\<Tab>zvzz"
-" 検索に very matching を使う
-nnoremap / /\v
-nnoremap ? ?\v
 " コマンドラインウィンドウ
 " 検索後画面の中心に。
 nnoremap n nzvzz
@@ -544,6 +541,8 @@ nnoremap * *zvzz
 nnoremap # *zvzz
 " 検索で / をエスケープしなくて良くする（素の / を入力したくなったら<C-v>/）
 cnoremap <expr>/ getcmdtype() == '/' <Bar><Bar> getcmdtype() == '?' ? '\/' : '/'
+cnoremap <expr>< getcmdtype() == '/' <Bar><Bar> getcmdtype() == '?' ? '\<' : '<'
+cnoremap <expr>> getcmdtype() == '/' <Bar><Bar> getcmdtype() == '?' ? '\>' : '>'
 " 空行挿入
 function! s:cmd_cr_n(count)
     for _ in range(a:count)
@@ -3283,6 +3282,7 @@ let g:airline#extensions#whitespace#enabled = 0
 " previm {{{
 AutocmdFT markdown nnoremap <buffer><Leader>p :<C-u>PrevimOpen<CR>
 Autocmd BufWritePost *.md,*.markdown call previm#refresh()
+let g:previm_enable_realtime = 0
 "}}}
 
 " memolist.vim "{{{
