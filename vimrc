@@ -540,9 +540,25 @@ nnoremap N Nzvzz
 nnoremap * *zvzz
 nnoremap # *zvzz
 " 検索で / をエスケープしなくて良くする（素の / を入力したくなったら<C-v>/）
-cnoremap <expr>/ getcmdtype() == '/' <Bar><Bar> getcmdtype() == '?' ? '\/' : '/'
-cnoremap <expr>< getcmdtype() == '/' <Bar><Bar> getcmdtype() == '?' ? '\<' : '<'
-cnoremap <expr>> getcmdtype() == '/' <Bar><Bar> getcmdtype() == '?' ? '\>' : '>'
+cnoremap <expr>/ <SID>escaped_char_on_cmdline('/')
+cnoremap <expr>< <SID>escaped_char_on_cmdline('<')
+cnoremap <expr>> <SID>escaped_char_on_cmdline('>')
+function! s:escaped_char_on_cmdline(c)
+    if getcmdtype() !~# '[?/]'
+        return a:c
+    endif
+
+    let p = getcmdpos()
+    if p < 2
+        return '\' . a:c
+    endif
+
+    if getcmdline()[p-2] ==# '\'
+        return a:c
+    endif
+
+    return '\' . a:c
+endfunction
 " 空行挿入
 function! s:cmd_cr_n(count)
     for _ in range(a:count)
