@@ -76,3 +76,6 @@ let g:airline_right_sep = '«'
 if executable('clang-format-3.4')
     let g:clang_format#command = 'clang-format-3.4'
 endif
+
+" gist-vim
+let g:gist_clip_command = 'pbcopy'

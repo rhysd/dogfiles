@@ -3529,20 +3529,23 @@ func s:show_on_web(...)
     let color = g:colors_name
     execute 'colorscheme' a:0 > 0 ? a:1 : 'github'
 
-    TOhtml
-    Gist -a
+    try
+        noautocmd TOhtml
+        Gist -a -c
 
-    let url = getreg('+')
-    if stridx(url, 'https://gist.github.com') != 0
-        return
-    endif
-    let raw_url = substitute(url, 'gist\.github\.com', 'rawgit.com/anonymous', '') . '/raw/' . expand('%')
-    bdelete!
+        let url = getreg('*')
+        if stridx(url, 'https://gist.github.com') != 0
+            throw "URL is not copied"
+        endif
+        let raw_url = substitute(url, 'gist\.github\.com', 'rawgit.com/anonymous', '') . '/raw/' . expand('%')
+        bdelete!
 
-    execute 'OpenBrowser' raw_url
+        execute 'OpenBrowser' raw_url
 
-    execute 'colorscheme' color
-    let g:gist_open_browser_after_post = after_post
+    finally
+        execute 'colorscheme' color
+        let g:gist_open_browser_after_post = after_post
+    endtry
 endfunc
 command! -nargs=? ShowOnWeb call <SID>show_on_web(<f-args>)
 " }}}
