@@ -665,17 +665,17 @@ nnoremap <Leader>s :<C-u>setl spell! spell?<CR>
 " カーソル付近の文字列で検索（新規ウィンドウ）
 nnoremap <C-w>* <C-w>s*
 nnoremap <C-w># <C-w>s#
-nnoremap <silent><C-w>h :<C-u>call <SID>jump_window_wrapper('h', 'L')<CR>
-nnoremap <silent><C-w>j :<C-u>call <SID>jump_window_wrapper('j', 'K')<CR>
-nnoremap <silent><C-w>k :<C-u>call <SID>jump_window_wrapper('k', 'J')<CR>
-nnoremap <silent><C-w>l :<C-u>call <SID>jump_window_wrapper('l', 'H')<CR>
+nnoremap <silent><C-w>h :<C-u>call <SID>jump_window_wrapper('h', 'l')<CR>
+nnoremap <silent><C-w>j :<C-u>call <SID>jump_window_wrapper('j', 'k')<CR>
+nnoremap <silent><C-w>k :<C-u>call <SID>jump_window_wrapper('k', 'j')<CR>
+nnoremap <silent><C-w>l :<C-u>call <SID>jump_window_wrapper('l', 'h')<CR>
 
 function! s:jump_window_wrapper(cmd, fallback)
     let old = winnr()
     execute 'normal!' "\<C-w>" . a:cmd
 
     if old == winnr()
-        execute 'normal!' "\<C-w>" . a:fallback
+        execute 'normal!' "999\<C-w>" . a:fallback
     endif
 endfunction
 
@@ -2153,7 +2153,7 @@ function! s:bundle.hooks.on_source(bundle)
         call unite#custom#action('directory', 'finder', finder)
     endif
 
-    call unite#custom#profile('source/quickfix,outline', 'context', {'prompt_direction' : 'top'})
+    call unite#custom#profile('source/quickfix,source/outline,source/line,source/grep', 'context', {'prompt_direction' : 'top'})
     call unite#custom#profile('source/ghq', 'context', {'default_action' : 'vimfiler'})
 
     call unite#custom#profile('default', 'context', {
