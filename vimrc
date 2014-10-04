@@ -3521,6 +3521,32 @@ function! g:committia_hooks.edit_open(info)
 endfunction
 " }}}
 
+" gist-vim {{{
+let g:gist_open_browser_after_post = 1
+func s:show_on_web(...)
+    let after_post = g:gist_open_browser_after_post
+    let g:gist_open_browser_after_post = 0
+    let color = g:colors_name
+    execute 'colorscheme' a:0 > 0 ? a:1 : 'github'
+
+    TOhtml
+    Gist -a
+
+    let url = getreg('+')
+    if stridx(url, 'https://gist.github.com') != 0
+        return
+    endif
+    let raw_url = substitute(url, 'gist\.github\.com', 'rawgit.com/anonymous', '') . '/raw/' . expand('%')
+    bdelete!
+
+    execute 'OpenBrowser' raw_url
+
+    execute 'colorscheme' color
+    let g:gist_open_browser_after_post = after_post
+endfunc
+command! -nargs=? ShowOnWeb call <SID>show_on_web(<f-args>)
+" }}}
+
 " プラットフォーム依存な設定をロードする "{{{
 function! SourceIfExist(path)
     if filereadable(a:path)
