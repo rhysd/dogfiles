@@ -1165,6 +1165,19 @@ function! s:cache_bundles()
                 \   },
                 \ }
 
+    NeoBundleLazy 'cohama/agit.vim', {
+                \   'autoload' : {
+                \     'commands' : 'Agit'
+                \   }
+                \ }
+
+    NeoBundleLazy 'mattn/gist-vim', {
+                \ 'depends' : 'mattn/webapi-vim',
+                \ 'autoload' : {
+                \     'commands' : 'Gist',
+                \   }
+                \ }
+
     " if_lua プラグイン
     if s:meet_neocomplete_requirements
         NeoBundle 'Shougo/neocomplete.vim'
