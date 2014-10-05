@@ -1768,6 +1768,27 @@ let g:markdown_fenced_languages = [
             \ ]
 "}}}
 
+" Dachs {{{
+" For Readme
+function! s:bold(...)
+    for k in a:000
+        execute '%s/\%(#[^#]*\)\@<!\<' . k . '\>/<b>&<\/b>/geI'
+    endfor
+endfunction
+function! s:to_readme_embdable_html()
+    if &filetype !=# 'dachs'
+        echoerr 'This command is for Dachs.'
+        return
+    endif
+
+    call s:bold('end', 'var', 'do', 'as', 'if', 'unless', 'then', 'else', 'elseif', 'func', 'proc', 'ret', 'case', 'when', 'for', 'in', 'let', 'ensure', 'begin')
+    %s/#[^#]*\%(#\|\_$\)/<i>&<\/i>/geI
+    call append(0, '<pre>')
+    call append(line('$'), '</pre>')
+endfunction
+command -nargs=0 ToReadmeEmbdableHTML call <SID>to_readme_embdable_html()
+" }}}
+
 " CMake {{{
 function! s:cmake()
     let project_root = unite#util#path2project_directory(expand('%:p'))
