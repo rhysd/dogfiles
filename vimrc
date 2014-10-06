@@ -1201,7 +1201,7 @@ function! s:cache_bundles()
     " 特定のファイルタイプで読み込む
     NeoBundleLazy 'rhysd/endwize.vim', {
                 \ 'autoload' : {
-                \     'filetypes' : ['ruby', 'vim', 'sh', 'zsh', 'c', 'cpp', 'lua']
+                \     'filetypes' : ['ruby', 'vim', 'sh', 'zsh', 'c', 'cpp', 'lua', 'dachs']
                 \     }
                 \ }
 
@@ -2688,7 +2688,7 @@ call smartinput#define_rule({
             \   'at' : '\%({\|\<do\>\)\s*\%#',
             \   'char' : '|',
             \   'input' : '||<Left>',
-            \   'filetype' : ['ruby'],
+            \   'filetype' : ['ruby', 'dachs'],
             \    })
 
 " テンプレート内のスペース
@@ -2799,13 +2799,13 @@ call smartinput#define_rule({
             \   'at'    : '\%#',
             \   'char'  : '<CR>',
             \   'input' : "<CR><C-r>=endwize#crend()<CR>",
-            \   'filetype' : ['vim', 'ruby', 'sh', 'zsh'],
+            \   'filetype' : ['vim', 'ruby', 'sh', 'zsh', 'dachs'],
             \   })
 call smartinput#define_rule({
             \   'at'    : '\s\+\%#',
             \   'char'  : '<CR>',
             \   'input' : "<C-o>:call setline('.', substitute(getline('.'), '\\s\\+$', '', ''))<CR><CR><C-r>=endwize#crend()<CR>",
-            \   'filetype' : ['vim', 'ruby', 'sh', 'zsh'],
+            \   'filetype' : ['vim', 'ruby', 'sh', 'zsh', 'dachs'],
             \   })
 call smartinput#define_rule({
             \   'at'    : '^#if\%(\|def\|ndef\)\s\+.*\%#',
@@ -3030,7 +3030,14 @@ let g:unite_source_alignta_preset_options = [
 
 " endwize.vim "{{{
 " 自動挿入された end の末尾に情報を付け加える e.g. end # if hoge
+
 let g:endwize_add_verbose_info_filetypes = ['c', 'cpp']
+AutocmdFT dachs
+    \ let b:endwize_addition = '\=submatch(0)=="let" ? "in" : "end"' |
+    \ let b:endwize_words = 'func,proc,if,unless,case,for,do,let' |
+    \ let b:endwize_pattern = '^\s*\%(in\s\+\)\=\zs\%(func\|proc\|if\|unless\|case\|for\)\>\%(.*[^.:@$]\<end\>\)\@!\|\<do\ze\%(\s*|.*|\|\<let\>\%(.*[^.:@$]\<in\>\)\@!\)\=\s*$' |
+    \ let b:endwize_syngroups = 'dachsConditional,dachsControl,dachsFuncDefine,dachsRepeat' |
+    \ let b:endwize_comment = '#'
 "}}}
 
 " open-browser.vim "{{{
