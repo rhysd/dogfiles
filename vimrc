@@ -643,9 +643,9 @@ inoremap <C-r>+ <C-o>:set paste<CR><C-r>+<C-o>:set nopaste<CR>
 " コンマ後には空白を入れる
 inoremap , ,<Space>
 " 賢く行頭・非空白行頭・行末の移動
-nnoremap <silent>M :<C-u>call <SID>rotate_horizontal_move('g^')<CR>
-nnoremap <silent>H :<C-u>call <SID>rotate_horizontal_move('g0')<CR>
-nnoremap <silent>L :<C-u>call <SID>rotate_horizontal_move('g$')<CR>
+nnoremap M g^
+nnoremap <silent>H :<C-u>call <SID>move_backward_by_step()<CR>
+nnoremap <silent>L :<C-u>call <SID>move_forward_by_step()<CR>vnoremap M g^
 vnoremap M g^
 vnoremap H g0
 vnoremap L g$
@@ -752,16 +752,29 @@ function! s:on_FileType_gitrebase_define_mappings()
 endfunction
 AutocmdFT gitrebase call s:on_FileType_gitrebase_define_mappings()
 
-" 初回のみ a:cmd の動きをして，それ以降は行内をローテートする
-let s:smart_line_pos = -1
-function! s:rotate_horizontal_move(cmd)
-    let line = line('.')
-    if s:smart_line_pos == line . a:cmd
-        call <SID>rotate_in_line()
-    else
-        execute "normal! " . a:cmd
-        " 最後に移動した行とマッピングを保持
-        let s:smart_line_pos = line . a:cmd
+function! s:move_backward_by_step()
+    let col = col('.')
+    normal! g^
+    let c = col('.')
+    if col <= c
+        normal! g0
+    endif
+
+    if col == col('.')
+        normal! 0
+    endif
+endfunction
+
+function! s:move_forward_by_step()
+    let col = col('.')
+    normal! g^
+    let c = col('.')
+    if col >= c
+        normal! g$
+    endif
+
+    if col == col('.')
+        normal! $
     endif
 endfunction
 
