@@ -645,7 +645,8 @@ inoremap , ,<Space>
 " 賢く行頭・非空白行頭・行末の移動
 nnoremap M g^
 nnoremap <silent>H :<C-u>call <SID>move_backward_by_step()<CR>
-nnoremap <silent>L :<C-u>call <SID>move_forward_by_step()<CR>vnoremap M g^
+nnoremap <silent>L :<C-u>call <SID>move_forward_by_step()<CR>
+vnoremap M g^
 vnoremap M g^
 vnoremap H g0
 vnoremap L g$
