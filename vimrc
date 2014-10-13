@@ -3570,8 +3570,10 @@ let g:gist_open_browser_after_post = 1
 func s:show_on_web(...)
     let after_post = g:gist_open_browser_after_post
     let g:gist_open_browser_after_post = 0
-    let color = g:colors_name
-    execute 'colorscheme' a:0 > 0 ? a:1 : 'github'
+    if a:0 == 0
+        let color = g:colors_name
+        execute 'colorscheme' a:1
+    end
 
     try
         noautocmd TOhtml
@@ -3587,7 +3589,9 @@ func s:show_on_web(...)
         execute 'OpenBrowser' raw_url
 
     finally
-        execute 'colorscheme' color
+        if exists('color')
+            execute 'colorscheme' color
+        endif
         let g:gist_open_browser_after_post = after_post
     endtry
 endfunc
