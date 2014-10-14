@@ -194,7 +194,7 @@ Autocmd BufRead,BufNew,BufNewFile *.jade setlocal ft=jade
 " Go
 Autocmd BufRead,BufNew,BufNewFile *.go setlocal ft=go
 " vimspec
-Autocmd BufRead,BufNew,BufNewFile *.vimspec setlocal ft=vim
+Autocmd BufRead,BufNew,BufNewFile *.vimspec setlocal ft=vim.vimspec
 
 " 行数が少ない時だけ行数表示
 Autocmd BufEnter * if line('$') > 10000 | setlocal nonumber | else | setlocal number | endif
