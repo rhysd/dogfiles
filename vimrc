@@ -422,16 +422,6 @@ function! ScrollOtherWindow(mapping)
     wincmd p
 endfunction
 
-" CursorHoldTime ごとに自動でコマンドを実行
-function! s:set_auto_down()
-    augroup vimrc-auto-down
-        autocmd!
-        autocmd CursorHold * call feedkeys("2\<C-e>", 'n')
-    augroup END
-endfunction
-command! -nargs=0 AutoDown call <SID>set_auto_down()
-command! -nargs=0 StopAutoDown autocmd! vimrc-auto-down
-
 " 議事録用コマンド
 command! -nargs=* Proceeding call <SID>proceeding(<f-args>)
 function! s:proceeding(...)
