@@ -413,42 +413,6 @@ function! s:smart_help(args)
     endif
 endfunction
 
-" 隣のウィンドウの上下移動
-nnoremap <silent>gj        :<C-u>call ScrollOtherWindow("\<C-d>")<CR>
-nnoremap <silent>gk        :<C-u>call ScrollOtherWindow("\<C-u>")<CR>
-function! ScrollOtherWindow(mapping)
-    execute 'wincmd' (winnr('#') == 0 ? 'w' : 'p')
-    execute 'normal!' a:mapping
-    wincmd p
-endfunction
-
-" 議事録用コマンド
-command! -nargs=* Proceeding call <SID>proceeding(<f-args>)
-function! s:proceeding(...)
-    let proceedings_dir = expand('~/Proceedings')
-
-    if ! isdirectory(expand(proceedings_dir))
-        call mkdir(proceedings_dir)
-    endif
-
-    let fname = "proceedings_" . (a:0 == 1 ? (a:1."_") : "") . strftime("%Y_%m_%d") . ".txt"
-    let fpath = proceedings_dir . '/' . fname
-
-    execute 'vsplit' '+edit' fpath
-endfunction
-
-function! s:cmd_lcd(count)
-    let dir = expand('%:p' . repeat(':h', a:count + 1))
-    if isdirectory(dir)
-        execute 'lcd' fnameescape(dir)
-    endif
-endfunction
-command! -nargs=0 -count=0 Lcd  call s:cmd_lcd(<count>)
-
-command! -nargs=0 Todo Unite line -input=TODO
-
-command! -nargs=0 EchoCurrentPath echo expand('%:p')
-
 " インデント
 command! -bang -nargs=1 SetIndent
             \ execute <bang>0 ? 'set' : 'setlocal'
@@ -463,24 +427,6 @@ function! s:open_calendar_app()
         call system('open -a Calendar.app')
     else
         OpenBrowser https://www.google.com/calendar/render
-    endif
-endfunction
-
-" typo したファイル名を検出
-Autocmd BufWriteCmd *[,*] call s:write_check_typo(expand('<afile>'))
-function! s:write_check_typo(file)
-    let writecmd = 'write'.(v:cmdbang ? '!' : '').' '.a:file
-    if exists('b:write_check_typo_nocheck')
-        execute writecmd
-        return
-    endif
-    let prompt = "possible typo: really want to write to '" . a:file . "'?(y/n):"
-    let input = input(prompt)
-    if input ==# 'YES'
-        execute writecmd
-        let b:write_check_typo_nocheck = 1
-    elseif input =~? '^y\(es\)\=$'
-        execute writecmd
     endif
 endfunction
 
