@@ -2890,6 +2890,17 @@ let g:clang_format#style_options = {
             \ }
 AutocmdFT c,cpp map <buffer><Leader>x <Plug>(operator-clang-format)
 " vim-operator-surround {{{
+let g:operator#surround#blocks =
+            \ {
+            \   '-' : [
+            \       { 'block' : ['(', ')'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['p'] },
+            \       { 'block' : ['[', ']'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['c'] },
+            \       { 'block' : ['{', '}'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['b'] },
+            \       { 'block' : ['<', '>'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['a'] },
+            \       { 'block' : ['"', '"'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['q'] },
+            \       { 'block' : ["'", "'"], 'motionwise' : ['char', 'line', 'block'], 'keys' : ["s"] },
+            \   ]
+            \ }
 map <silent>gy <Plug>(operator-surround-append)
 map <silent>gd <Plug>(operator-surround-delete)
 map <silent>gc <Plug>(operator-surround-replace)
