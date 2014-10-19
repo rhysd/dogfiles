@@ -3517,7 +3517,7 @@ let g:gist_open_browser_after_post = 1
 func s:show_on_web(...)
     let after_post = g:gist_open_browser_after_post
     let g:gist_open_browser_after_post = 0
-    if a:0 == 0
+    if a:0 == 1
         let color = g:colors_name
         execute 'colorscheme' a:1
     end
