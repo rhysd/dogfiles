@@ -1,0 +1,21 @@
+let mapleader = ","
+let searchalias g = "google"
+set noautofocus
+
+map j scrollPageDown
+map k scrollPageUp
+map d scrollDown
+map u scrollUp
+map l nextTab
+map h previousTab
+map b scroll left
+map w scroll right
+map ; openCommandBar
+map <C-b> :bookmarks<CR>
+
+map <Leader>b :buffer<Space>
+
+map <Leader>gh :open https://github.com<CR>
+map <Leader>fv :open https://favstar.fm/me<CR>
+
+" vim:ft=vim:
