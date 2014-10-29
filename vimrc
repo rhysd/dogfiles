@@ -357,9 +357,15 @@ endfunction
 command! CopyCurrentPath :call s:copy_current_path()
 function! s:copy_current_path()
     if has('win32') || has('win64')
-        let @*=substitute(expand('%:p'), '\\/', '\\', 'g')
+        let c = substitute(expand('%:p'), '\\/', '\\', 'g')
     elseif has('unix')
-        let @*=expand('%:p')
+        let c = expand('%:p')
+    endif
+
+    if &clipboard ==# 'plus$'
+        let @+ = c
+    else
+        let @* = c
     endif
 endfunction
 
