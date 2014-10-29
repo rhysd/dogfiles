@@ -14,6 +14,7 @@ map ; openCommandBar
 map <C-b> :bookmarks<CR>
 
 map <Leader>b :buffer<Space>
+map <Leader>h :history<Space>
 
 map <Leader>gh :open https://github.com<CR>
 map <Leader>fv :open https://favstar.fm/me<CR>
