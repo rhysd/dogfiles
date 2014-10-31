@@ -1,6 +1,7 @@
 let mapleader = ","
 let searchalias g = "google"
 set noautofocus
+let barposition = "bottom"
 
 map j scrollPageDown
 map k scrollPageUp
@@ -15,8 +16,10 @@ map <C-b> :bookmarks<CR>
 
 map <Leader>b :buffer<Space>
 map <Leader>h :history<Space>
+map <Leader>th :tabhistory<Space>
 
 map <Leader>gh :open https://github.com<CR>
 map <Leader>fv :open https://favstar.fm/me<CR>
+map <Leader>tw :open https://twitter.com/i/notifications<CR>
 
 " vim:ft=vim:
