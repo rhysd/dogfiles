@@ -811,8 +811,6 @@ function! s:cache_bundles()
     NeoBundle 'rhysd/unite-zsh-cdr.vim'
     NeoBundle 'rhysd/unite-ruby-require.vim'
     NeoBundle 'mhinz/vim-signify'
-        " NeoBundle 'ujihisa/vimshell-ssh'
-        " NeoBundle 'ujihisa/neco-look'
     NeoBundle 'kana/vim-submode'
     NeoBundle 'bling/vim-airline'
     NeoBundle 'rhysd/vim-numberstar'
@@ -1167,9 +1165,6 @@ function! s:cache_bundles()
     NeoBundleLazy 'vim-jp/cpp-vim', {
                 \ 'autoload' : {'filetypes' : 'cpp'}
                 \ }
-    " NeoBundleLazy 'Rip-Rip/clang_complete', {
-    "             \ 'autoload' : {'filetypes' : ['c', 'cpp']}
-    "             \ }
     NeoBundleLazy 'rhysd/unite-n3337', {
                 \ 'autoload' : {'unite_sources' : 'n3337'}
                 \ }
@@ -2579,14 +2574,6 @@ nnoremap <silent><expr><Leader>fg ":\<C-u>VimFiler " . <SID>git_root_dir() . '\<
 nnoremap <silent><expr><Leader>fe ":\<C-u>VimFilerExplorer " . <SID>git_root_dir() . '\<CR>'
 nnoremap <Leader>fd               :<C-u>VimFilerDouble -tab<CR>
 " }}}
-" }}}
-
-" clang_complete {{{
-let g:clang_hl_errors=1
-let g:clang_conceal_snippets=1
-let g:clang_exec="/usr/bin/clang"
-let g:clang_user_options='-std=c++11 -stdlib=libc++ -I /usr/lib/c++/v1 -I /usr/local/include 2>/dev/null || exit 0'
-let g:clang_complete_auto = 0
 " }}}
 
 " vim-smartinput"{{{

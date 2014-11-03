@@ -18,8 +18,6 @@ let g:quickrun_config.cpp = {
             \ 'cmdopt' : '-std=c++1y -Wall -Wextra -O2',
             \ }
 let g:quickrun_config.ruby = { 'exec' : $HOME.'/.rbenv/shims/ruby %o %s' }
-" clang のライブラリ
-let g:clang_user_options='-stdlib=libc++ -I /usr/local/include -I /usr/include -I /Library/Developer/CommandLineTools/usr/lib/c++/v1 2>/dev/null || exit 0'
 
 " open-pdf で brew の findutils を使う
 let g:unite_pdf_search_cmd = '/usr/local/bin/locate -l 30 "*%s*.pdf"'
