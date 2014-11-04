@@ -576,8 +576,6 @@ nnoremap gn :<C-u>tabnew<CR>
 nnoremap <silent>gx :<C-u>tabclose<CR>
 nnoremap <silent><A-h> gT
 nnoremap <silent><A-l> gt
-" 行表示・非表示の切り替え．少しでも横幅が欲しい時は OFF に
-nnoremap : :<C-u>set number! number?<CR>
 " クリップボードから貼り付け
 inoremap <C-r>+ <C-o>:set paste<CR><C-r>+<C-o>:set nopaste<CR>
 " 貼り付けはインデントを揃える
@@ -3217,7 +3215,6 @@ let g:clever_f_smart_case = 1
 let g:clever_f_across_no_line = 1
 " let g:clever_f_chars_match_any_signs = ';'
 let g:clever_f_use_migemo = 1
-" map : <Plug>(clever-f-repeat-forward)
 "}}}
 
 " ZoomWin {{{
