@@ -70,6 +70,10 @@ let g:unite_source_ruby_require_ruby_command = '$HOME/.rbenv/shims/ruby'
 let g:airline_left_sep = '»'
 let g:airline_right_sep = '«'
 
+" clang_complete
+let g:clang_library_path = '/Library/Developer/CommandLineTools/usr/lib'
+let g:clang_user_options = '-std=c++1y -I /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1 -I /usr/local/include'
+
 " vim-clang-format
 if executable('clang-format-3.4')
     let g:clang_format#command = 'clang-format-3.4'

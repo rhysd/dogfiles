@@ -1166,6 +1166,9 @@ function! s:cache_bundles()
     NeoBundleLazy 'rhysd/unite-n3337', {
                 \ 'autoload' : {'unite_sources' : 'n3337'}
                 \ }
+    NeoBundleLazy 'Rip-Rip/clang_complete', {
+                \ 'autoload' : {'filetypes' : ['c', 'cpp']}
+                \ }
     NeoBundleLazy 'rhysd/vim-clang-format', {
                 \ 'depends' : 'kana/vim-operator-user',
                 \ 'autoload' : {'filetypes' : ['c', 'cpp', 'objc']}
@@ -1915,7 +1918,6 @@ let g:neocomplete#force_overwrite_completefunc = 1
 if !exists('g:neocomplete#force_omni_input_patterns')
     let g:neocomplete#force_omni_input_patterns = {}
 endif
-let g:neocomplete#force_omni_input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|::'
 let g:neocomplete#force_omni_input_patterns.python = '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
 " neosnippet だけは短いキーワードでも候補に出す
 call neocomplete#custom#source('neosnippet', 'min_pattern_length', 1)
@@ -2027,12 +2029,6 @@ let g:neocomplcache_vim_completefuncs = {
     \ 'VimShell' : 'vimshell#complete',
     \ 'VimFiler' : 'vimfiler#complete',
     \}
-" clang_complete との共存
-let g:neocomplcache_force_overwrite_completefunc=1
-if !exists('g:neocomplcache_force_omni_patterns')
-    let g:neocomplcache_force_omni_patterns = {}
-endif
-let g:neocomplcache_force_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|::'
 "ctagsへのパス
 if executable('/usr/local/bin/ctags')
     let g:neocomplcache_ctags_program = '/usr/local/bin/ctags'
@@ -3220,6 +3216,12 @@ let g:clever_f_use_migemo = 1
 " ZoomWin {{{
 nnoremap <C-w>o :<C-u>ZoomWin<CR>
 "}}}
+
+" clang_complete {{{
+let g:clang_complete_auto = 0
+let g:clang_auto_select = 1
+" let g:clang_make_default_keymappings = 0
+" }}}
 
 " tmpwin.vim {{{
 nnoremap <silent><Leader>tt :<C-u>call tmpwin#toggle({'open_post' : ['normal! gg', 'setl nohidden']}, 'TweetVimHomeTimeline')<CR>
