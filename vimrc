@@ -393,7 +393,6 @@ function! s:smart_split(cmd)
 endfunction
 
 " 縦幅と横幅を見て help の開き方を決める
-" set keywordprg=SmartHelp
 command! -nargs=* -complete=help SmartHelp call <SID>smart_help(<q-args>)
 nnoremap <silent><Leader>h :<C-u>SmartHelp<Space><C-l>
 function! s:smart_help(args)
@@ -578,8 +577,6 @@ nnoremap <silent><A-h> gT
 nnoremap <silent><A-l> gt
 " クリップボードから貼り付け
 inoremap <C-r>+ <C-o>:set paste<CR><C-r>+<C-o>:set nopaste<CR>
-" 貼り付けはインデントを揃える
-    " nnoremap p ]p
 " コンマ後には空白を入れる
 inoremap , ,<Space>
 " 賢く行頭・非空白行頭・行末の移動
@@ -1383,7 +1380,6 @@ command! -nargs=1 BrowseNeoBundleHome call <SID>browse_neobundle_home(<q-args>)
 
 " NeoBundle のキーマップ{{{
 " すべて更新するときは基本的に Unite で非同期に実行
-" nnoremap <silent><Leader>nbu :<C-u>AutoNeoBundleTimestamp<CR>:NeoBundleUpdate<CR>
 nnoremap <silent><Leader>nbu :<C-u>NeoBundleUpdate<CR>
 nnoremap <silent><Leader>nbc :<C-u>NeoBundleClean<CR>
 nnoremap <silent><Leader>nbi :<C-u>NeoBundleInstall<CR>
@@ -1482,23 +1478,6 @@ function! s:matchit(...)
     let b:match_words = get(b:, 'match_words', '') . ',' . join(default_pairs, ',') . ',' . join(a:000, ',')
 endfunction
 
-" アサーション
-function! s:assert(throwpoint, file, result) "{{{
-    if ! a:result
-        echohl Error
-        echomsg "at ".a:throwpoint." of ".a:file
-        echomsg "assertion failed!"
-        echohl None
-    endif
-endfunction
-command! -nargs=+ Assert
-            \  try
-            \|     throw "throw_for_throwpoint"
-            \| catch "throw_for_throwpoint"
-            \|     call <SID>assert(v:throwpoint, expand('%'), eval("<args>"))
-            \| endtry
-"}}}
-
 " エラー表示
 function! EchoError(...)
     echohl Error
@@ -1581,30 +1560,6 @@ command! Pry call <SID>start_pry()
 set cinoptions& cinoptions+=:0,g0,N-1,m1
 
 " -> decltype(expr) の補完
-" constexpr auto func_name(...) を仮定
-function! s:return_type_completion()
-    let cur_line = getline('.')
-    if cur_line =~#
-                \ '^\s*return\s*\%(.*\);\s*$'
-        let ret_expr =
-                    \ substitute(cur_line, '^\s*return\s*\%((\|\)\(.*\)\%()\|\);\s*$', '\1', '')
-        let linum = line('.') - 1
-        while linum > 0
-            let cur_line = getline(linum)
-            if cur_line =~#
-                        \ '^\s*\%(constexpr\s\+\|\)\%(inline\s\+\|\)auto\s\+[A-Za-z][A-Za-z:0-9]*\s*(.*)\s*$'
-                call setline(linum, cur_line." -> decltype(".ret_expr.")")
-                echo "add return type at line ".linum
-                break
-            elseif cur_line =~#
-                        \ '^\s*\%(constexpr\s\+\)\=\%(inline\s\+\)\=[A-Za-z][A-Za-z:0-9\[\]]*\s\+[A-Za-z][A-Za-z:0-9]*\s*(.*)\s*$'
-                break
-            endif
-            let linum -= 1
-        endwhile
-    endif
-endfunction
-
 function! s:open_online_cpp_doc()
     let l = getline('.')
 
@@ -1634,7 +1589,6 @@ endfunction
 AutocmdFT cpp nnoremap <silent><buffer>K :<C-u>call <SID>open_online_cpp_doc()<CR>
 AutocmdFT cpp setlocal matchpairs+=<:>
 AutocmdFT cpp inoremap <buffer>,  ,<Space>
-AutocmdFT cpp nnoremap <buffer><Leader>ret :<C-u>call <SID>return_type_completion()<CR>
 AutocmdFT cpp inoremap <expr> e getline('.')[col('.') - 6:col('.') - 2] ==# 'const' ? 'expr ' : 'e'
 
 let g:c_syntax_for_h = 1
@@ -1642,10 +1596,6 @@ let g:c_syntax_for_h = 1
 
 " Haskell {{{
 AutocmdFT haskell inoremap <buffer>;; ::
-" autocmd FileType haskell nnoremap <buffer><silent><Leader>ht :<C-u>call <SID>ShowTypeHaskell(expand('<cword>'))<CR>
-" function! s:ShowTypeHaskell(word)
-"     echo join(split(system("ghc -isrc " . expand('%') . " -e ':t " . a:word . "'")))
-" endfunction
 function! s:start_ghci()
     VimShell -split-command=vsplit
     VimShellSendString ghci
@@ -1863,8 +1813,6 @@ let g:neocomplete#sources#file_include#exts
 let g:neocomplete#sources#file_include#exts.ruby = ['', 'rb']
 "リスト表示
 let g:neocomplete#max_list = 300
-" 最大キーワード幅
-" let g:neocomplete#max_keyword_width = 20
 " 辞書定義
 let g:neocomplete#sources#dictionary#dictionaries = {
             \ 'default' : '',
@@ -1963,8 +1911,6 @@ let g:acp_enableAtStartup = 0
 let g:neocomplcache_enable_at_startup = 1
 "smart_caseを有効にする．大文字が入力されるまで大文字小文字の区別をなくす
 let g:neocomplcache_enable_smart_case = 1
-" CamelCase補完有効化
-    "let g:neocomplcache_enable_camel_case_completion = 1
 "_を区切りとした補完を有効にする
 let g:neocomplcache_enable_underbar_completion = 1
 "シンタックスをキャッシュするときの最小文字長を3に
@@ -1982,8 +1928,6 @@ let g:neocomplcache_dictionary_filetype_lists = {
             \ 'default' : '',
             \ 'vimshell' : expand('~/.vimshell/command-history'),
             \ }
-"リストの最大幅を指定
-    "let g:neocomplcache_max_filename_width = 25
 "区切り文字パターンの定義
 if !exists('g:neocomplcache_delimiter_patterns')
     let g:neocomplcache_delimiter_patterns = {}
@@ -2177,7 +2121,7 @@ nnoremap <silent>[unite]<Space>   :<C-u>UniteWithBufferDir -buffer-name=files -v
 "最近使用したファイル
 nnoremap <silent>[unite]m         :<C-u>Unite file_mru directory_mru zsh-cdr file/new<CR>
 "指定したディレクトリ以下を再帰的に開く
-" nnoremap <silent>[unite]R       :<C-u>UniteWithBufferDir -no-start-insert file_rec/async -auto-resize<CR>
+nnoremap <silent>[unite]R       :<C-u>UniteWithBufferDir -no-start-insert file_rec/async -auto-resize<CR>
 "バッファ一覧
 nnoremap <silent>[unite]b         :<C-u>Unite -immediately -no-empty -auto-preview buffer<CR>
 "プログラミングにおけるアウトラインの表示
@@ -2191,7 +2135,6 @@ nnoremap <silent>[unite]r         :<C-u>UniteResume<CR>
 " Unite ソース一覧
 nnoremap <silent>[unite]s         :<C-u>Unite source -vertical<CR>
 " NeoBundle
-" nnoremap <silent>[unite]nb      :<C-u>AutoNeoBundleTimestamp<CR>:Unite neobundle/update -auto-quit<CR>
 nnoremap <silent>[unite]nb        :<C-u>Unite neobundle/update:all -auto-quit -keep-focus -log<CR>
 " Haskell Import
 AutocmdFT haskell nnoremap <buffer>[unite]hd :<C-u>Unite haddock<CR>
@@ -2206,7 +2149,6 @@ vnoremap <silent>[unite]aa        :<C-u>Unite alignta:arguments<CR>
 vnoremap <silent>[unite]ao        :<C-u>Unite alignta:options<CR>
 " C++ インクルードファイル
 AutocmdFT cpp nnoremap <buffer>[unite]i :<C-u>Unite file_include -vertical<CR>
-" nnoremap <silent>[unite]z :<C-u>Unite zsh-cdr -default-action=vimfiler<CR>
 " help(項目が多いので，検索語を入力してから絞り込む)
 nnoremap <silent>[unite]hh        :<C-u>UniteWithInput help -vertical<CR>
 " 履歴
@@ -2391,14 +2333,13 @@ let g:quickrun_config['dachs/llvm'] = {
 
 
 " シンタックスチェック
-let g:quickrun_config['syntax/cpp'] = {
+let g:quickrun_config['syntax/cpp/g++'] = {
             \ 'runner' : 'vimproc',
             \ 'outputter' : 'quickfix',
             \ 'command' : 'g++',
-            \ 'cmdopt' : '-std=c++11 -Wall -Wextra -O2',
+            \ 'cmdopt' : '-std=c++1y -Wall -Wextra -O2',
             \ 'exec' : '%c %o -fsyntax-only %s:p'
             \ }
-" autocmd BufWritePost *.cpp,*.cc,*.hpp,*.hh QuickRun -type syntax/cpp
 
 let g:quickrun_config['syntax/ruby'] = {
             \ 'runner' : 'vimproc',
@@ -3209,7 +3150,6 @@ nnoremap cr :<C-u>RCReset<CR>
 " clever-f.vim "{{{
 let g:clever_f_smart_case = 1
 let g:clever_f_across_no_line = 1
-" let g:clever_f_chars_match_any_signs = ';'
 let g:clever_f_use_migemo = 1
 "}}}
 
@@ -3417,9 +3357,9 @@ let g:signify_cursorhold_insert = 0
 
 " tern_for_vim {{{
 let s:hooks = neobundle#get_hooks('tern_for_vim')
-" function! s:hooks.on_post_source(bundle)
-"     call tern#Disable()
-" endfunction
+function! s:hooks.on_source(bundle)
+    call s:setup_tern()
+endfunction
 unlet s:hooks
 function! s:setup_tern()
     nnoremap <buffer><Leader>td :<C-u>TernDef<CR>
@@ -3428,7 +3368,6 @@ function! s:setup_tern()
     nnoremap <buffer><Leader>tK :<C-u>TernRefs<CR>
     nnoremap <buffer><Leader>tr :<C-u>TernRename<CR>
 endfunction
-AutocmdFT javascript call s:setup_tern()
 "}}}
 
 " emmet-vim {{{
