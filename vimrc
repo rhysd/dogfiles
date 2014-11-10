@@ -2085,7 +2085,7 @@ function! s:bundle.hooks.on_source(bundle)
         call unite#custom#action('directory', 'finder', finder)
     endif
 
-    call unite#custom#profile('source/quickfix,source/outline,source/line,source/grep', 'context', {'prompt_direction' : 'top'})
+    call unite#custom#profile('source/quickfix,source/outline,source/line,source/line/fast,source/grep', 'context', {'prompt_direction' : 'top'})
     call unite#custom#profile('source/ghq', 'context', {'default_action' : 'vimfiler'})
 
     call unite#custom#profile('default', 'context', {
@@ -2159,8 +2159,8 @@ nnoremap <silent>[unite]hy        :<C-u>Unite -buffer-name=lines history/yank<CR
 nnoremap <silent>[unite]p         :<C-u>Unite file_rec:! file/new<CR>
 " unite-lines ファイル内インクリメンタル検索
 nnoremap <silent><expr> [unite]L line('$') > 5000 ?
-            \ ":\<C-u>Unite -buffer-name=search -no-split -start-insert line/fast\<CR>" :
-            \ ":\<C-u>Unite -buffer-name=search -start-insert line:all\<CR>"
+            \ ":\<C-u>Unite -no-split -start-insert -auto-preview line/fast\<CR>" :
+            \ ":\<C-u>Unite -start-insert -auto-preview line:all\<CR>"
 " カラースキーム
 nnoremap [unite]C :<C-u>Unite -auto-preview colorscheme<CR>
 " locate
