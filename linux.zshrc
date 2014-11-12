@@ -61,7 +61,6 @@ if which pacman > /dev/null; then
     alias -g yaor='yaourt -Rsn'
     alias -s pdf='zathura'
     function sshi(){
-    ssh -i $HOME/.ssh/id_rsa r-hayashida@$1
 }
 fi
 

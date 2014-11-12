@@ -44,15 +44,12 @@ alias df='df -h'
 alias su='su -'
 alias be='bundle exec'
 alias diff=colordiff
-alias quit=exit
 alias vimfiler='vim +VimFiler'
-alias vimshell='vim +VimShell'
 alias gvim='vim -g'
 alias sudo='sudo '
 alias memo='cat > /dev/null'
 alias memolist='vim +MemoList'
 alias memonew='vim +MemoNew'
-alias flavor='vim-flavor test'
 
 alias l=ls
 alias pd=popd
@@ -65,9 +62,9 @@ alias k=kill
 alias ng=noglob
 alias d=dirs
 alias g=git
-alias e='emacs -nw'
 alias h=hg
 alias m=make
+alias rk=rake
 
 # global alias
 alias -g G='| grep'

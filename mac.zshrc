@@ -48,7 +48,7 @@ function Emacs(){
     if [ "$1" != "" ]; then
         touch $1
     fi
-    open -a /Applications/Emacs.app $1
+    open -a Emacs.app $1
 }
 
 function up(){
@@ -61,19 +61,6 @@ function up(){
         echo $outdated
         echo
     fi
-    gem update
 }
-
-# Twitter Timeline Prompt
-# ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb init
-# function precmd(){
-#     ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb
-# }
-# function init_twit_prompt(){
-#     ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb init
-# }
-# function tweet(){
-#     ruby /Users/rhayasd/programs/ruby/twitter_prompt.rb update "$1"
-# }
 
 # vim: set ft=zsh fdm=marker ff=unix fileencoding=utf-8:
