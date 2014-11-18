@@ -1692,7 +1692,7 @@ function! s:to_readme_embdable_html()
     %s/</\&lt;/geI
     %s/>/\&gt;/geI
 
-    call s:bold('end', 'var', 'do', 'as', 'if', 'unless', 'then', 'else', 'elseif', 'func', 'proc', 'ret', 'case', 'when', 'for', 'in', 'let', 'ensure', 'begin')
+    call s:bold('end', 'var', 'do', 'as', 'if', 'unless', 'then', 'else', 'elseif', 'func', 'proc', 'ret', 'case', 'when', 'for', 'in', 'let', 'ensure', 'begin', 'class')
     %s/#[^#]*\%(#\|\_$\)/<i>&<\/i>/geI
 
     call append(0, '<pre>')
