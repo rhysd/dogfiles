@@ -435,6 +435,9 @@ function! s:open_calendar_app()
     endif
 endfunction
 
+" 文字数カウント
+command! -nargs=0 Wc %s/.//nge
+
 " 基本マッピング {{{
 " ; と : をスワップ
 noremap : ;
