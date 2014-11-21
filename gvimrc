@@ -23,13 +23,14 @@ set winaltkeys=no
 " GUI autocmds
 Autocmd VimEnter * call Vimfiler_at_start()
 
+set background=light
+colorscheme solarized
+
 function! Vimfiler_at_start()
     if empty(bufname('%'))
         VimFilerCurrentDir
     endif
 endfunction
-
-"}}}
 
 let g:haskell_conceal = 1
 
