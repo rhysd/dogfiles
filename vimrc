@@ -1,7 +1,14 @@
-scriptencoding utf-8
 " 必須な基本設定 {{{
 " tiny と small では vimrc を読み込まない
 if !1 | finish | endif
+
+"エンコーディング
+set encoding=utf-8
+set termencoding=utf-8
+set fileencoding=utf-8
+set fileencodings=utf-8,cp932,euc-jp
+
+scriptencoding utf-8
 
 " This is vim, not vi.
 set nocompatible
@@ -22,11 +29,6 @@ command! -nargs=* AutocmdFT autocmd MyVimrc FileType <args>
 AutocmdFT vim highlight def link myVimAutocmd vimAutoCmd
 AutocmdFT vim match myVimAutocmd /\<\(Autocmd\|AutocmdFT\)\>/
 
-"エンコーディング
-set encoding=utf-8
-set termencoding=utf-8
-set fileencoding=utf-8
-set fileencodings=utf-8,cp932,euc-jp
 " user-defined prefix
 let g:mapleader = ','
 "バックアップファイルいらない
