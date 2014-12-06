@@ -2327,6 +2327,7 @@ let g:quickrun_config['llvm'] = {
 
 let g:quickrun_config['dachs'] = {
             \   'command' : './bin/dachs',
+            \   'cmdopt' : '--disable-color',
             \   'exec' : ['%c %o %s:p', '%s:p:r %a'],
             \ }
 
