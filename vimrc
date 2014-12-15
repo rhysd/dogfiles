@@ -111,8 +111,6 @@ set textwidth=0
 set noshowcmd
 "コマンド実行中は再描画しない
 set lazyredraw
-"高速ターミナル接続を行う
-set ttyfast
 " 自前で用意したものへの path
 set path=.,/usr/include,/usr/local/include
 " 補完でプレビューウィンドウを開かない
