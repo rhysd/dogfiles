@@ -3056,6 +3056,7 @@ function! s:bundle.hooks.on_source(bundle)
     AutocmdFT tweetvim     nnoremap <buffer><Leader><Leader> :<C-u>call <SID>tweetvim_favstar()<CR>
     AutocmdFT tweetvim     nnoremap <buffer><Leader>u        :<C-u>call <SID>tweetvim_open_home()<CR>
     AutocmdFT tweetvim     nnoremap <buffer><Space><Space>   :<C-u>OpenBrowser https://twitter.com/i/connect<CR>
+    AutocmdFT tweetvim     nnoremap <nowait><buffer><Leader>t :<C-u>call <SID>tweetvim_open_current_status()<CR>
     " 縦移動
     AutocmdFT tweetvim     nnoremap <buffer><silent>j        :<C-u>call <SID>tweetvim_vertical_move("j")<CR>zz
     AutocmdFT tweetvim     nnoremap <buffer><silent>k        :<C-u>call <SID>tweetvim_vertical_move("k")<CR>zz
@@ -3109,6 +3110,14 @@ function! s:bundle.hooks.on_source(bundle)
         if username =~# '^[a-zA-Z0-9_]\+$'
             execute "OpenBrowser https://twitter.com/" . username
         endif
+    endfunction
+
+    function! s:tweetvim_open_current_status()
+        let l = line('.')
+        let user = b:tweetvim_status_cache[l].user.screen_name
+        let id = b:tweetvim_status_cache[l].id_str
+        let url = printf("https://twitter.com/%s/status/%s", user, id)
+        execute 'OpenBrowser' url
     endfunction
 
     " 自動更新 {{{
@@ -3468,7 +3477,7 @@ func s:show_on_web(...)
         noautocmd TOhtml
         Gist -a -c
 
-        let url = getreg('*')
+        let url = getreg(&clipboard =~# 'plus$' ? '+' : '*')
         if stridx(url, 'https://gist.github.com') != 0
             throw "URL is not copied"
         endif
