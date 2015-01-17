@@ -64,7 +64,7 @@ alias d=dirs
 alias g=git
 alias h=hg
 alias m=make
-alias rk=rake
+alias r=rake
 
 # global alias
 alias -g G='| grep'
