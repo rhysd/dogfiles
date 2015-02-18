@@ -50,6 +50,7 @@ alias sudo='sudo '
 alias memo='cat > /dev/null'
 alias memolist='vim +MemoList'
 alias memonew='vim +MemoNew'
+alias d=./bin/dachs
 
 alias l=ls
 alias pd=popd
@@ -60,7 +61,6 @@ alias s=sudo
 alias hi='history 0'
 alias k=kill
 alias ng=noglob
-alias d=dirs
 alias g=git
 alias h=hg
 alias m=make

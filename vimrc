@@ -1562,7 +1562,6 @@ command! Pry call <SID>start_pry()
 " C++ ラベル字下げ設定
 set cinoptions& cinoptions+=:0,g0,N-1,m1
 
-" -> decltype(expr) の補完
 function! s:open_online_cpp_doc()
     let l = getline('.')
 
@@ -2645,6 +2644,13 @@ call smartinput#define_rule({
             \   'at'       : '\%(\s\|::\)d;\%#',
             \   'char'     : ';',
             \   'input'    : '<BS>etail::',
+            \   'filetype' : ['cpp'],
+            \   })
+" llvm:: の補完
+call smartinput#define_rule({
+            \   'at'       : '\%(\s\|::\)l;\%#',
+            \   'char'     : ';',
+            \   'input'    : '<BS>lvm::',
             \   'filetype' : ['cpp'],
             \   })
 " クラス定義や enum 定義の場合は末尾に;を付け忘れないようにする
