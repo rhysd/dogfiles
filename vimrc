@@ -2942,7 +2942,7 @@ let g:unite_source_alignta_preset_options = [
 let g:endwize_add_verbose_info_filetypes = ['c', 'cpp']
 AutocmdFT dachs
     \ let b:endwize_addition = '\=submatch(0)=="let" ? "in" : "end"' |
-    \ let b:endwize_words = 'func,proc,if,unless,case,for,do,let' |
+    \ let b:endwize_words = 'func,proc,if,unless,case,for,do,let,class,init' |
     \ let b:endwize_pattern = '^\s*\%(in\s\+\|+\s\+\|-\s\+\)\=\zs\%(func\|proc\|if\|unless\|case\|for\|class\|init\)\>\%(.*[^.:@$]\<end\>\)\@!\|\<do\ze\%(\s*|.*|\|\<let\>\%(.*[^.:@$]\<in\>\)\@!\)\=\s*$' |
     \ let b:endwize_syngroups = 'dachsConditional,dachsControl,dachsFuncDefine,dachsRepeat,dachsClassDefine' |
     \ let b:endwize_comment = '#'
