@@ -195,6 +195,8 @@ Autocmd BufRead,BufNew,BufNewFile *.jade setlocal ft=jade
 Autocmd BufRead,BufNew,BufNewFile *.go setlocal ft=go
 " vimspec
 Autocmd BufRead,BufNew,BufNewFile *.vimspec setlocal ft=vim.vimspec
+" Swift
+Autocmd BufRead,BufNew,BufNewFile *.swift setlocal ft=swift
 
 " 行数が少ない時だけ行数表示
 Autocmd BufEnter * if line('$') > 10000 | setlocal nonumber | else | setlocal number | endif
@@ -1328,6 +1330,13 @@ function! s:cache_bundles()
     " LLVM IR
     NeoBundle 'rhysd/vim-llvm'
 
+    " Swift
+    NeoBundleLazy 'Keithbsmiley/swift.vim', {
+            \ 'autoload' : {
+            \     'filetypes' : 'swift'
+            \   }
+            \ }
+
     " TweetVim
     NeoBundleLazy 'basyura/twibill.vim'
     NeoBundleLazy 'yomi322/neco-tweetvim'
@@ -2317,7 +2326,11 @@ let g:quickrun_config['tmux'] = {
             \ 'cmdopt' : 'source-file',
             \ 'exec' : ['%c %o %s:p', 'echo "sourced %s"'],
             \ }
-
+" Swift
+let g:quickrun_config['swift/llvm'] = {
+            \   'type' : 'swift',
+            \   'exec' : ['%c swiftc -emit-ir %s'],
+            \ }
 let g:quickrun_config['llvm'] = {
             \   'exec' : 'llvm-as-3.4 %s:p -o=- | lli-3.4 - %a',
             \ }
