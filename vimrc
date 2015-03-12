@@ -1709,6 +1709,14 @@ function! s:to_readme_embdable_html()
     setlocal filetype=html
 endfunction
 command -nargs=0 ToReadmeEmbdableHTML call <SID>to_readme_embdable_html()
+
+function! s:check_dachs_syntax()
+    let root = finddir('Dachs', ';')
+    let bin = root . '/build/bin/dachs'
+    execute 'QuickRun' 'sh -outputter buffer -outputter/buffer/close_on_empty 1 -src' '"' . bin . ' --check-syntax --disable-color ' . expand('%:p') . '"'
+endfunction
+Autocmd BufWritePost *.dcs call <SID>check_dachs_syntax()
+AutocmdFT dachs setl errorformat=Error\ in\ line:%l,\ col:%c
 " }}}
 
 " CMake {{{
