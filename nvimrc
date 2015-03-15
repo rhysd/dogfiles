@@ -301,7 +301,7 @@ endfunction
 
 " あるウィンドウを他のウィンドウから閉じる "{{{
 function! s:is_target_window(winnr)
-    let target_filetype = ['ref', 'unite', 'vimfiler', 'vimshell']
+    let target_filetype = ['ref', 'unite', 'vimfiler']
     let target_buftype  = ['help', 'quickfix']
     let winbufnr = winbufnr(a:winnr)
     return index(target_filetype, getbufvar(winbufnr, '&filetype')) >= 0 ||

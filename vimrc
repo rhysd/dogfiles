@@ -312,7 +312,7 @@ endfunction
 
 " あるウィンドウを他のウィンドウから閉じる "{{{
 function! s:is_target_window(winnr)
-    let target_filetype = ['ref', 'unite', 'vimfiler', 'vimshell']
+    let target_filetype = ['ref', 'unite', 'vimfiler']
     let target_buftype  = ['help', 'quickfix']
     let winbufnr = winbufnr(a:winnr)
     return index(target_filetype, getbufvar(winbufnr, '&filetype')) >= 0 ||
@@ -926,12 +926,6 @@ function! s:cache_bundles()
                 \     }
                 \ }
 
-    NeoBundleLazy 'Shougo/vimshell', {
-                \ 'autoload' : {
-                \     'commands' : ['VimShell', 'VimShellSendString', 'VimShellCurrentDir', 'VimShellInteractive'],
-                \     }
-                \ }
-
     NeoBundleLazy 'kana/vim-altr'
 
     NeoBundleLazy 'vim-jp/vital.vim', {
@@ -1536,13 +1530,6 @@ Autocmd BufRead Guardfile setlocal filetype=ruby
 let s:ruby_template = [ '#!/usr/bin/env ruby', '# encoding: utf-8', '', '' ]
 Autocmd BufNewFile *.rb call append(0, s:ruby_template) | normal! G
 
-function! s:start_irb()
-    VimShell -split-command=vsplit
-    VimShellSendString irb
-    startinsert
-endfunction
-command! Irb call <SID>start_irb()
-
 function! s:toggle_binding_pry()
     if getline('.') =~# '^\s*binding\.pry\s*$'
         normal! "_ddk
@@ -1552,18 +1539,6 @@ function! s:toggle_binding_pry()
 endfunction
 AutocmdFT ruby nnoremap <buffer><silent><Leader>p :<C-u>call <SID>toggle_binding_pry()<CR>
 
-function! s:exec_with_vimshell(cmd, ...)
-    let cmdline = a:cmd . ' ' . expand('%:p') . ' ' . join(a:000)
-    VimShell -split-command=vsplit
-    execute 'VimShellSendString' cmdline
-endfunction
-AutocmdFT ruby nnoremap <buffer><silent><Leader>pr :<C-u>call <SID>exec_with_vimshell('ruby')<CR>
-
-function! s:start_pry()
-    VimShell -split-command=vsplit
-    VimShellSendString pry -d coolline
-endfunction
-command! Pry call <SID>start_pry()
 "}}}
 
 " C++ {{{
@@ -1607,12 +1582,6 @@ let g:c_syntax_for_h = 1
 
 " Haskell {{{
 AutocmdFT haskell inoremap <buffer>;; ::
-function! s:start_ghci()
-    VimShell -split-command=vsplit
-    VimShellSendString ghci
-    startinsert
-endfunction
-command! Ghci call <SID>start_ghci()
 "}}}
 
 " Vim script "{{{
@@ -1655,7 +1624,6 @@ AutocmdFT html,javascript
 
 AutocmdFT haml inoremap <expr> k getline('.')[col('.') - 2] ==# 'k' ? "\<BS>%" : 'k'
 AutocmdFT haml SetIndent 2
-AutocmdFT javascript nnoremap <buffer><silent><Leader>no :<C-u>VimShellInteractive node<CR>
 Autocmd BufRead,BufNew,BufNewFile *.ejs setlocal ft=html
 
 " 保存時に html 自動生成
@@ -1832,11 +1800,6 @@ let g:neocomplete#sources#file_include#exts
 let g:neocomplete#sources#file_include#exts.ruby = ['', 'rb']
 "リスト表示
 let g:neocomplete#max_list = 300
-" 辞書定義
-let g:neocomplete#sources#dictionary#dictionaries = {
-            \ 'default' : '',
-            \ 'vimshell' : expand('~/.vimshell/command-history'),
-            \ }
 "区切り文字パターンの定義
 if !exists('g:neocomplete#delimiter_patterns')
     let g:neocomplete#delimiter_patterns = {}
@@ -1875,10 +1838,6 @@ let g:neocomplete#sources#omni#input_patterns.javascript = '\%(\h\w*\|[^. \t]\.\
 " neocomplete 補完用関数
 let g:neocomplete#sources#vim#complete_functions = {
     \ 'Unite' : 'unite#complete_source',
-    \ 'VimShellExecute' : 'vimshell#vimshell_execute_complete',
-    \ 'VimShellInteractive' : 'vimshell#vimshell_execute_complete',
-    \ 'VimShellTerminal' : 'vimshell#vimshell_execute_complete',
-    \ 'VimShell' : 'vimshell#complete',
     \ 'VimFiler' : 'vimfiler#complete',
     \}
 let g:neocomplete#force_overwrite_completefunc = 1
@@ -1942,11 +1901,6 @@ let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
 "リスト表示
 let g:neocomplcache_max_list = 300
 let g:neocomplcache_max_keyword_width = 20
-" 辞書定義
-let g:neocomplcache_dictionary_filetype_lists = {
-            \ 'default' : '',
-            \ 'vimshell' : expand('~/.vimshell/command-history'),
-            \ }
 "区切り文字パターンの定義
 if !exists('g:neocomplcache_delimiter_patterns')
     let g:neocomplcache_delimiter_patterns = {}
@@ -1986,10 +1940,6 @@ let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
 " neocomplcache 補完用関数
 let g:neocomplcache_vim_completefuncs = {
     \ 'Unite' : 'unite#complete_source',
-    \ 'VimShellExecute' : 'vimshell#vimshell_execute_complete',
-    \ 'VimShellInteractive' : 'vimshell#vimshell_execute_complete',
-    \ 'VimShellTerminal' : 'vimshell#vimshell_execute_complete',
-    \ 'VimShell' : 'vimshell#complete',
     \ 'VimFiler' : 'vimfiler#complete',
     \}
 "ctagsへのパス
@@ -2245,53 +2195,6 @@ let g:unite_n3337_pdf = $HOME.'/Documents/C++/n3337.pdf'
 AutocmdFT cpp nnoremap <buffer>[unite]n :<C-u>Unite n3337<CR>
 "}}}
 
-" VimShellの設定 {{{
-" 実行キーマッピング
-nnoremap <silent><Leader>vs :<C-u>VimShell -split-command=vsplit<CR>
-nnoremap <Leader>vc :<C-u>VimShellSendString<Space>
-
-let s:bundle = neobundle#get("vimshell")
-function! s:bundle.hooks.on_source(bundle)
-    " プロンプト
-    let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
-    let g:vimshell_right_prompt = 'strftime("%Y/%m/%d %H:%M")'
-    let g:vimshell_prompt = "(U'w'){ "
-    " let g:vimshell_prompt = "(U^w^){ "
-    " executable suffix
-    let g:vimshell_execute_file_list = { 'pdf' : 'open', 'mp3' : 'open',
-                                       \ 'jpg' : 'open', 'png' : 'open',
-                                       \ }
-    " zsh 履歴も利用する
-    if filereadable(expand('~/.zsh/zsh_history'))
-        let g:vimshell_external_history_path = expand('~/.zsh/zsh_history')
-    endif
-
-    " VimShell のキーマッピング {{{
-    " コマンド履歴の移動
-    " バッファ移動の <C-n> <C-p> が潰されているので再マッピング
-    AutocmdFT vimshell nnoremap <buffer><silent><C-n> :<C-u>bn<CR>
-    AutocmdFT vimshell nnoremap <buffer><silent><C-p> :<C-u>bp<CR>
-    AutocmdFT vimshell nmap <buffer><silent>gn <Plug>(vimshell_next_prompt)
-    AutocmdFT vimshell nmap <buffer><silent>gp <Plug>(vimshell_previous_prompt)
-    " VimFiler 連携
-    AutocmdFT vimshell nnoremap <buffer><silent><Leader>ff :<C-u>VimFilerCurrentDir<CR>
-    AutocmdFT vimshell inoremap <buffer><silent><C-s> <Esc>:<C-u>VimFilerCurrentDir<CR>
-    " 親ディレクトリへ移動
-    AutocmdFT vimshell imap <buffer><silent><C-j> <C-u>..<Plug>(vimshell_enter)
-    " popd
-    AutocmdFT vimshell imap <buffer><silent><C-p> <C-u>popd<Plug>(vimshell_enter)
-    " git status
-    AutocmdFT vimshell imap <buffer><silent><C-q> <C-u>git status -sb<Plug>(vimshell_enter)
-    " zsh や bash の <C-d> っぽい挙動
-    AutocmdFT vimshell imap <buffer><silent><expr><C-d> vimshell#get_cur_text()=='' ? "\<Esc>\<Plug>(vimshell_exit)" : "\<Del>"
-    " 最新のプロンプトに移動
-    AutocmdFT vimshell nnoremap <buffer>a GA
-    " }}}
-endfunction
-unlet s:bundle
-
-" }}}
-
 " vim-quickrunの設定 {{{
 "<Leader>r を使わない
 let g:quickrun_no_default_key_mappings = 1
@@ -2503,9 +2406,7 @@ let g:vimfiler_split_rule = 'botright'
 AutocmdFT vimfiler nmap <buffer><silent><expr> l vimfiler#smart_cursor_map(
             \ "\<Plug>(vimfiler_cd_file)",
             \ "\<Plug>(vimfiler_edit_file)")
-" jump to VimShell
-AutocmdFT vimfiler nnoremap <buffer><silent><Leader>vs
-            \ :<C-u>VimShellCurrentDir<CR>
+
 " 'a'nother
 AutocmdFT vimfiler nmap <buffer><silent>a <Plug>(vimfiler_switch_to_another_vimfiler)
 " unite.vim に合わせる

@@ -22,10 +22,6 @@ let g:quickrun_config.ruby = { 'exec' : $HOME.'/.rbenv/shims/ruby %o %s' }
 " open-pdf で brew の findutils を使う
 let g:unite_pdf_search_cmd = '/usr/local/bin/locate -l 30 "*%s*.pdf"'
 
-" VimShell で g++ のエイリアス
-AutocmdFT vimshell call vimshell#set_alias('gpp', 'g++-4.9 -std=c++11 -O2 -g -Wall -Wextra')
-AutocmdFT vimshell call vimshell#set_alias('cl', 'clang++-3.4 -std=c++1y -O2 -g -Wall -Wextra')
-
 " Mac の辞書.appで開く {{{
 " 引数に渡したワードを検索
 command! -range -nargs=? MacDict call system('open '.shellescape('dict://'.<q-args>))
