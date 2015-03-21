@@ -1156,9 +1156,9 @@ function! s:cache_bundles()
                 \ }
 
     " C++用のプラグイン
-    NeoBundleLazy 'vim-jp/cpp-vim', {
-                \ 'autoload' : {'filetypes' : 'cpp'}
-                \ }
+    " NeoBundleLazy 'vim-jp/vim-cpp', {
+    "             \ 'autoload' : {'filetypes' : 'cpp'}
+    "             \ }
     NeoBundleLazy 'rhysd/unite-n3337', {
                 \ 'autoload' : {'unite_sources' : 'n3337'}
                 \ }
@@ -1680,6 +1680,9 @@ command -nargs=0 ToReadmeEmbdableHTML call <SID>to_readme_embdable_html()
 
 function! s:check_dachs_syntax()
     let root = finddir('Dachs', ';')
+    if root ==# ''
+        return
+    endif
     let bin = root . '/build/bin/dachs'
     execute 'QuickRun' 'sh -outputter buffer -outputter/buffer/close_on_empty 1 -src' '"' . bin . ' --check-syntax --disable-color ' . expand('%:p') . '"'
 endfunction
@@ -2203,7 +2206,7 @@ let g:quickrun_config = get(g:, 'quickrun_config', {})
 "QuickRun 結果の開き方
 let g:quickrun_config._ = {
             \ 'outputter' : 'unite_quickfix',
-            \ 'split' : 'rightbelow 10sp',
+            \ 'split' : 'rightbelow',
             \ 'hook/hier_update/enable' : 1,
             \ 'runner/vimproc/updatetime' : 500,
             \ }
