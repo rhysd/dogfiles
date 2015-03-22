@@ -1611,6 +1611,10 @@ AutocmdFT vim nnoremap <silent><buffer>gf :<C-u>call <SID>jump_to_autoload_funct
 AutocmdFT vim nnoremap <silent><buffer>K :<C-u>call <SID>smart_help(expand('<cword>'))<CR>
 "}}}
 
+" LLVM IR {{{
+AutocmdFT llvm SetIndent 2
+" }}}
+
 " html, css, sass, scss, haml {{{
 AutocmdFT html,javascript
             \ if expand('%:e') ==# 'html' |
