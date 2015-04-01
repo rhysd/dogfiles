@@ -193,8 +193,6 @@ Autocmd BufRead,BufNew,BufNewFile *.json,*.jsonp setlocal ft=json
 Autocmd BufRead,BufNew,BufNewFile *.jade setlocal ft=jade
 " Go
 Autocmd BufRead,BufNew,BufNewFile *.go setlocal ft=go
-" vimspec
-Autocmd BufRead,BufNew,BufNewFile *.vimspec setlocal ft=vim.vimspec
 " Swift
 Autocmd BufRead,BufNew,BufNewFile *.swift setlocal ft=swift
 
@@ -824,6 +822,8 @@ function! s:cache_bundles()
     NeoBundle 'rhysd/committia.vim'
     NeoBundle 'rhysd/vim-dachs'
     NeoBundle 'rhysd/BoostTest-log.vim'
+    NeoBundle 'junegunn/vim-emoji'
+    NeoBundle 'thinca/vim-themis'
 
     " カラースキーム
     NeoBundle 'rhysd/wallaby.vim'
@@ -1828,7 +1828,6 @@ let g:neocomplete#filename#include#exprs = {
             \ 'ruby' : "substitute(substitute(v:fname,'::','/','g'),'$','.rb','')"
             \ }
 " オムニ補完を有効にする(ruby のオムニ補完は挙動が怪しいので off)
-AutocmdFT python setlocal omnifunc=pythoncomplete#Complete
 AutocmdFT html   setlocal omnifunc=htmlcomplete#CompleteTags
 AutocmdFT css    setlocal omnifunc=csscomplete#CompleteCss
 AutocmdFT xml    setlocal omnifunc=xmlcomplete#CompleteTags
@@ -1929,7 +1928,6 @@ let g:neocomplcache_include_exprs = {
             \ 'ruby' : "substitute(substitute(v:fname,'::','/','g'),'$','.rb','')"
             \ }
 " Enable omni completion.
-AutocmdFT python     setlocal omnifunc=pythoncomplete#Complete
 AutocmdFT javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 AutocmdFT html       setlocal omnifunc=htmlcomplete#CompleteTags
 AutocmdFT css        setlocal omnifunc=csscomplete#CompleteCss
