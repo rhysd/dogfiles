@@ -1156,9 +1156,9 @@ function! s:cache_bundles()
                 \ }
 
     " C++用のプラグイン
-    " NeoBundleLazy 'vim-jp/vim-cpp', {
-    "             \ 'autoload' : {'filetypes' : 'cpp'}
-    "             \ }
+    NeoBundleLazy 'vim-jp/vim-cpp', {
+                \ 'autoload' : {'filetypes' : 'cpp'}
+                \ }
     NeoBundleLazy 'rhysd/unite-n3337', {
                 \ 'autoload' : {'unite_sources' : 'n3337'}
                 \ }
@@ -2754,13 +2754,18 @@ endif
 map <silent><Leader>x <Plug>(operator-evalruby)
 " vim-clang-format
 let g:clang_format#style_options = {
-            \ 'AccessModifierOffset' : -4,
             \ 'AllowShortIfStatementsOnASingleLine' : 'true',
-            \ 'AlwaysBreakTemplateDeclarations' : 'true',
-            \ 'Standard' : 'C++11',
-            \ 'BreakBeforeBraces' : 'Stroustrup',
             \ }
-AutocmdFT c,cpp map <buffer><Leader>x <Plug>(operator-clang-format)
+let g:clang_format#filetype_style_options = {
+            \ 'javascript' : {},
+            \ 'cpp' : {
+            \     'AccessModifierOffset' : -4,
+            \     'AlwaysBreakTemplateDeclarations' : 'true',
+            \     'Standard' : 'C++11',
+            \     'BreakBeforeBraces' : 'Stroustrup',
+            \   }
+            \ }
+AutocmdFT c,cpp,javascript map <buffer><Leader>x <Plug>(operator-clang-format)
 " vim-operator-surround {{{
 let g:operator#surround#blocks =
             \ {
