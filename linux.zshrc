@@ -10,12 +10,11 @@ fi
 
 # Go
 if [ -d "/usr/local/go" ]; then
-    export GOROOT=/usr/local/go
     if [ ! -d "$HOME/.go" ]; then
         mkdir -p $HOME/.go
     fi
     export GOPATH=$HOME/.go
-    export PATH=$GOROOT/bin:$GOPATH/bin:$PATH
+    export PATH=$GOPATH/bin:$PATH
 fi
 
 # Arch Linux environment
