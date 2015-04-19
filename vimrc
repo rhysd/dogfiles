@@ -2323,6 +2323,22 @@ if executable('go')
     Autocmd BufWritePost *.go QuickRun -type syntax/go
 endif
 
+if executable('llc-3.5')
+    let g:vimrc_llc_command = 'llc-3.5'
+elseif executable('llc')
+    let g:vimrc_llc_command = 'llc'
+endif
+if exists('g:vimrc_llc_command')
+    let g:quickrun_config['syntax/llvm'] = {
+                \ 'command' : g:vimrc_llc_command,
+                \ 'cmdopt' : '-filetype=null -o=/dev/null',
+                \ 'exec' : '%c %o %s:p',
+                \ 'outputter' : 'quickfix',
+                \ 'runner' : 'vimproc',
+                \ }
+    Autocmd BufWritePost *.ll QuickRun -type syntax/llvm
+endif
+
 "QuickRunのキーマップ {{{
 nnoremap <Leader>q  <Nop>
 nnoremap <silent><Leader>qr :<C-u>QuickRun<CR>
