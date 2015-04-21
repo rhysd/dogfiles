@@ -1295,29 +1295,23 @@ function! s:cache_bundles()
             \ }
 
     " Go
-    NeoBundleLazy 'Blackrush/vim-gocode', {
-            \ 'autoload' : {
-            \       'filetypes' : ['go', 'markdown'],
-            \       'commands' : 'Godoc',
-            \   }
-            \ }
-
     NeoBundleLazy 'rhysd/unite-go-import.vim', {
             \ 'autoload' : {
-            \     'depends' : ['Shougo/unite.vim', 'Blackrush/vim-gocode'],
+            \     'depends' : ['Shougo/unite.vim'],
             \     'unite_sources' : 'go/import',
-            \   }
-            \ }
-
-    NeoBundleLazy 'dgryski/vim-godef', {
-            \ 'autoload' : {
-            \     'filetypes' : 'go'
             \   }
             \ }
 
     NeoBundleLazy 'rhysd/vim-go-impl', {
             \ 'autoload' : {
             \     'filetypes' : 'go'
+            \   }
+            \ }
+
+    NeoBundleLazy 'fatih/vim-go', {
+            \ 'autoload' : {
+            \     'filetypes' : ['go', 'markdown'],
+            \     'commands' : ['GoImport', 'GoDrop', 'GoDef', 'GoVet', 'GoDoc', 'GoLint', 'GoRename']
             \   }
             \ }
 
@@ -1747,24 +1741,15 @@ AutocmdFT python call <SID>python_settings()
 
 " Go {{{
 function! s:golang_settings()
-    " Godoc でカーソル下のワードを調べる
-    nnoremap <buffer><silent>K :<C-u>execute 'Godoc' expand('<cword>')<CR>
-    "   Note: 'fmt.Printf' -> 'fmt Printf'
-    vnoremap <buffer><silent>K y:<C-u>execute 'Godoc' substitute(getreg('+'), '\.', ' ', 'g')<CR>
-    " カーソル下のワードをインポート
-    nnoremap <buffer><silent>:gi :<C-u>execute 'Import' expand('<cword>')<CR>
-    " インポートをやめる
-    nnoremap <buffer>:gd :<C-u>Drop<Space>
-    " フォーマット
-    nnoremap <buffer>:gf :<C-u>Fmt<CR>
-    " インサートモード中にインポート
-    inoremap <buffer><silent><C-g>i <C-o>:<C-u>execute 'Import' matchstr(getline('.')[:col('.')-1], '\h\w*\ze\W*$')<CR><Right>
     " ハードタブ推奨
     setlocal noexpandtab
-    let g:go_fmt_autofmt = 1
+
+    let g:go_snippet_engine = "neosnippet"
+    let g:go_highlight_trailing_whitespace_error = 0
+    let g:go_textobj_enabled = 0
+
     nnoremap <buffer><Space>i :<C-u>Unite go/import<CR>
-    let g:godef_split = 0
-    let g:godef_same_file_in_same_window = 1
+    nmap <buffer><Leader>gd <Plug>(go-def)
 endfunction
 
 AutocmdFT go call <SID>golang_settings()
@@ -2319,6 +2304,12 @@ if executable('go')
                 \ 'outputter' : 'quickfix',
                 \ 'runner' : 'vimproc',
                 \ 'errorformat' : '%Evet: %.%\+: %f:%l:%c: %m,%W%f:%l: %m,%-G%.%#',
+                \ }
+    let g:quickrun_config['lint/go'] = {
+                \ 'command' : 'golint',
+                \ 'exec' : '%c %o %s:p',
+                \ 'outputter' : 'quickfix',
+                \ 'runner' : 'vimproc',
                 \ }
     Autocmd BufWritePost *.go QuickRun -type syntax/go
 endif
