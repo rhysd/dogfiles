@@ -1241,10 +1241,6 @@ function! s:cache_bundles()
                     \   },
                     \ 'commands' : ['TernDef', 'TernDoc', 'TernType', 'TernRefs', 'TernRename']
                     \ }
-    else
-        NeoBundleLazy 'mattn/jscomplete-vim', {
-                    \ 'autoload' : {'filetypes' : 'javascript'}
-                    \ }
     endif
 
     " html, sass, scss 用プラグイン
@@ -1749,7 +1745,7 @@ function! s:golang_settings()
     let g:go_textobj_enabled = 0
 
     nnoremap <buffer><Space>i :<C-u>Unite go/import<CR>
-    nmap <buffer><Leader>gd <Plug>(go-def)
+    nnoremap <buffer><expr><Leader>i ":\<C-u>GoImport " . expand('<cword>') . "\<CR>"
 endfunction
 
 AutocmdFT go call <SID>golang_settings()
@@ -1802,10 +1798,10 @@ let g:neocomplete#delimiter_patterns.cpp = ['::']
 if !exists('g:neocomplete#sources#include#paths')
     let g:neocomplete#sources#include#paths = {}
 endif
-let g:neocomplete#sources#include#paths.cpp  = '.,/usr/local/include,/usr/local/opt/gcc49/lib/gcc/x86_64-apple-darwin13.1.0/4.9.0/include/c++,/usr/include'
+let g:neocomplete#sources#include#paths.cpp  = '.,/usr/local/include,/usr/local/opt/gcc49/lib/gcc/x86_64-apple-darwin13.1.0/4.9.0/include/c++,/usr/local/Cellar/llvm35/3.5.0/lib/llvm-3.5/include/c++/v1,/usr/include'
 let g:neocomplete#sources#include#paths.c    = '.,/usr/include'
 let g:neocomplete#sources#include#paths.perl = '.,/System/Library/Perl,/Users/rhayasd/Programs'
-let g:neocomplete#sources#include#paths.ruby = expand('~/.rbenv/versions/2.0.0-p195/lib/ruby/2.0.0')
+let g:neocomplete#sources#include#paths.ruby = expand('~/.rbenv/versions/2.2.0/lib/ruby/2.2.0')
 "インクルード文のパターンを指定
 let g:neocomplete#sources#include#patterns = { 'c' : '^\s*#\s*include', 'cpp' : '^\s*#\s*include', 'ruby' : '^\s*require', 'perl' : '^\s*use', }
 "インクルード先のファイル名の解析パターン
@@ -1844,9 +1840,6 @@ if s:enable_tern_for_vim
     let g:neocomplete#sources#omni#functions.javascript = 'tern#Complete'
     let g:neocomplete#sources#omni#functions.coffee = 'tern#Complete'
     AutocmdFT javascript setlocal omnifunc=tern#Complete
-else
-    let g:neocomplete#sources#omni#functions.javascript = 'jscomplete#CompleteJS'
-    AutocmdFT javascript setlocal omnifunc=jscomplete#CompleteJS
 endif
 
 "neocompleteのマッピング
