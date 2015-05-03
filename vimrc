@@ -786,7 +786,6 @@ function! s:cache_bundles()
                 \   }
                 \ }
     NeoBundle 'Shougo/neosnippet'
-    NeoBundle 'Shougo/neosnippet-snippets'
     NeoBundle 'rhysd/inu-snippets'
     NeoBundle 'thinca/vim-quickrun'
     NeoBundle 'Shougo/unite-outline'
@@ -805,7 +804,7 @@ function! s:cache_bundles()
     NeoBundle 'kana/vim-niceblock'
     NeoBundle 'thinca/vim-scouter'
     NeoBundle 'h1mesuke/vim-alignta'
-    NeoBundle 'rhysd/clever-f.vim', 'dev'
+    NeoBundle 'rhysd/clever-f.vim'
     NeoBundle 'rhysd/unite-zsh-cdr.vim'
     NeoBundle 'rhysd/unite-ruby-require.vim'
     NeoBundle 'mhinz/vim-signify'
@@ -820,10 +819,11 @@ function! s:cache_bundles()
     NeoBundle 'rhysd/vim-window-adjuster'
     NeoBundle 'Shougo/neomru.vim'
     NeoBundle 'rhysd/committia.vim'
-    NeoBundle 'rhysd/vim-dachs'
+    " NeoBundle 'rhysd/vim-dachs'
     NeoBundle 'rhysd/BoostTest-log.vim'
     NeoBundle 'junegunn/vim-emoji'
     NeoBundle 'thinca/vim-themis'
+    NeoBundle 'rhysd/nimrod.vim'
 
     " カラースキーム
     NeoBundle 'rhysd/wallaby.vim'
@@ -1605,6 +1605,10 @@ AutocmdFT vim nnoremap <silent><buffer>K :<C-u>call <SID>smart_help(expand('<cwo
 AutocmdFT llvm SetIndent 2
 " }}}
 
+" Crystal {{{
+AutocmdFT crystal SetIndent 2
+" }}}
+
 " html, css, sass, scss, haml {{{
 AutocmdFT html,javascript
             \ if expand('%:e') ==# 'html' |
@@ -1752,6 +1756,7 @@ AutocmdFT go call <SID>golang_settings()
 AutocmdFT godoc nnoremap<buffer>q :<C-u>quit<CR>
 AutocmdFT godoc nnoremap<buffer>d <C-d>
 AutocmdFT godoc nnoremap<buffer>u <C-u>
+AutocmdFT godoc nnoremap<buffer>o :<C-u>Unite outline<CR>
 " }}}
 
 if s:meet_neocomplete_requirements
