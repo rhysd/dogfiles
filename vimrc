@@ -824,6 +824,7 @@ function! s:cache_bundles()
     NeoBundle 'junegunn/vim-emoji'
     NeoBundle 'thinca/vim-themis'
     NeoBundle 'rhysd/nimrod.vim'
+    NeoBundle 'wting/rust.vim'
 
     " カラースキーム
     NeoBundle 'rhysd/wallaby.vim'
