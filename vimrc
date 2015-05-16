@@ -786,6 +786,7 @@ function! s:cache_bundles()
                 \   }
                 \ }
     NeoBundle 'Shougo/neosnippet'
+    NeoBundle 'Shougo/neosnippet-snippets'
     NeoBundle 'rhysd/inu-snippets'
     NeoBundle 'thinca/vim-quickrun'
     NeoBundle 'Shougo/unite-outline'
@@ -824,7 +825,9 @@ function! s:cache_bundles()
     NeoBundle 'junegunn/vim-emoji'
     NeoBundle 'thinca/vim-themis'
     NeoBundle 'rhysd/nimrod.vim'
-    NeoBundle 'wting/rust.vim'
+    NeoBundle 'rust-lang/rust.vim'
+    NeoBundle 'rhysd/rust-doc.vim'
+    NeoBundle 'cespare/vim-toml'
 
     " カラースキーム
     NeoBundle 'rhysd/wallaby.vim'
@@ -1981,7 +1984,7 @@ smap <expr><C-S-l> neosnippet#expandable() \|\| neosnippet#jumpable() ?
             \ "\<Plug>(neosnippet_expand_or_jump)" :
             \ "\<C-s>"
 " C++ と Python と D の標準のスニペットを読み込まない
-let g:neosnippet#disable_runtime_snippets = {'cpp' : 1, 'python' : 1, 'd' : 1}
+let g:neosnippet#disable_runtime_snippets = {'_' : 1, 'vim' : 0}
 "}}}
 
 " unite.vim {{{
@@ -2249,6 +2252,14 @@ let g:quickrun_config['dachs/llvm'] = {
 
 
 " シンタックスチェック
+function! s:check_syntax(ft) abort
+    let type = 'syntax/' . a:ft
+    if has_key(g:quickrun_config[type], 'command') && !executable(g:quickrun_config[type].command)
+        return
+    endif
+    execute 'QuickRun' '-type' type
+endfunction
+
 let g:quickrun_config['syntax/cpp/g++'] = {
             \ 'runner' : 'vimproc',
             \ 'outputter' : 'quickfix',
@@ -2263,18 +2274,16 @@ let g:quickrun_config['syntax/ruby'] = {
             \ 'command' : 'ruby',
             \ 'exec' : '%c -c %s:p %o',
             \ }
-Autocmd BufWritePost *.rb QuickRun -type syntax/ruby
+Autocmd BufWritePost *.rb call <SID>check_syntax('ruby')
 
-if executable('jshint')
-    let g:quickrun_config['syntax/javascript'] = {
-                \ 'command' : 'jshint',
-                \ 'outputter' : 'quickfix',
-                \ 'exec'    : '%c %o %s:p',
-                \ 'runner' : 'vimproc',
-                \ 'errorformat' : '%f: line %l\, col %c\, %m',
-                \ }
-    Autocmd BufWritePost *.js QuickRun -type syntax/javascript
-endif
+let g:quickrun_config['syntax/javascript'] = {
+            \ 'command' : 'jshint',
+            \ 'outputter' : 'quickfix',
+            \ 'exec'    : '%c %o %s:p',
+            \ 'runner' : 'vimproc',
+            \ 'errorformat' : '%f: line %l\, col %c\, %m',
+            \ }
+Autocmd BufWritePost *.js call <SID>check_syntax('javascript')
 
 let g:quickrun_config['syntax/haml'] = {
             \ 'runner' : 'vimproc',
@@ -2283,35 +2292,31 @@ let g:quickrun_config['syntax/haml'] = {
             \ 'exec'    : '%c -c %o %s:p',
             \ 'errorformat' : 'Haml error on line %l: %m,Syntax error on line %l: %m,%-G%.%#',
             \ }
-Autocmd BufWritePost *.haml QuickRun -type syntax/haml
+Autocmd BufWritePost *.haml call <SID>check_syntax('haml')
 
-if executable('pyflakes')
-    let g:quickrun_config['syntax/python'] = {
-                \ 'command' : 'pyflakes',
-                \ 'exec' : '%c %o %s:p',
-                \ 'outputter' : 'quickfix',
-                \ 'runner' : 'vimproc',
-                \ 'errorformat' : '%f:%l:%m',
-                \ }
-    Autocmd BufWritePost *.py QuickRun -type syntax/python
-endif
+let g:quickrun_config['syntax/python'] = {
+            \ 'command' : 'pyflakes',
+            \ 'exec' : '%c %o %s:p',
+            \ 'outputter' : 'quickfix',
+            \ 'runner' : 'vimproc',
+            \ 'errorformat' : '%f:%l:%m',
+            \ }
+Autocmd BufWritePost *.py call <SID>check_syntax('python')
 
-if executable('go')
-    let g:quickrun_config['syntax/go'] = {
-                \ 'command' : 'go',
-                \ 'exec' : '%c vet %o %s:p',
-                \ 'outputter' : 'quickfix',
-                \ 'runner' : 'vimproc',
-                \ 'errorformat' : '%Evet: %.%\+: %f:%l:%c: %m,%W%f:%l: %m,%-G%.%#',
-                \ }
-    let g:quickrun_config['lint/go'] = {
-                \ 'command' : 'golint',
-                \ 'exec' : '%c %o %s:p',
-                \ 'outputter' : 'quickfix',
-                \ 'runner' : 'vimproc',
-                \ }
-    Autocmd BufWritePost *.go QuickRun -type syntax/go
-endif
+let g:quickrun_config['syntax/go'] = {
+            \ 'command' : 'go',
+            \ 'exec' : '%c vet %o %s:p',
+            \ 'outputter' : 'quickfix',
+            \ 'runner' : 'vimproc',
+            \ 'errorformat' : '%Evet: %.%\+: %f:%l:%c: %m,%W%f:%l: %m,%-G%.%#',
+            \ }
+let g:quickrun_config['lint/go'] = {
+            \ 'command' : 'golint',
+            \ 'exec' : '%c %o %s:p',
+            \ 'outputter' : 'quickfix',
+            \ 'runner' : 'vimproc',
+            \ }
+Autocmd BufWritePost *.go call <SID>check_syntax('go')
 
 if executable('llc-3.5')
     let g:vimrc_llc_command = 'llc-3.5'
@@ -2328,6 +2333,14 @@ if exists('g:vimrc_llc_command')
                 \ }
     Autocmd BufWritePost *.ll QuickRun -type syntax/llvm
 endif
+
+let g:quickrun_config['syntax/rust'] = {
+            \   'command' : 'rustc',
+            \   'cmdopt' : '-Zparse-only',
+            \   'exec' : '%c %o %s:p',
+            \   'outputter' : 'quickfix',
+            \ }
+Autocmd BufWritePost *.rs call <SID>check_syntax('rust')
 
 "QuickRunのキーマップ {{{
 nnoremap <Leader>q  <Nop>
