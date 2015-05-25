@@ -27,7 +27,7 @@ command! -nargs=* Autocmd autocmd MyVimrc <args>
 command! -nargs=* AutocmdFT autocmd MyVimrc FileType <args>
 " XXX
 AutocmdFT vim highlight def link myVimAutocmd vimAutoCmd
-AutocmdFT vim match myVimAutocmd /\<\(Autocmd\|AutocmdFT\)\>/
+AutocmdFT vim match myVimAutocmd /\<\%(Autocmd\|AutocmdFT\)\>/
 
 " user-defined prefix
 let g:mapleader = ','
@@ -1761,6 +1761,10 @@ AutocmdFT godoc nnoremap<buffer>q :<C-u>quit<CR>
 AutocmdFT godoc nnoremap<buffer>d <C-d>
 AutocmdFT godoc nnoremap<buffer>u <C-u>
 AutocmdFT godoc nnoremap<buffer>o :<C-u>Unite outline<CR>
+" }}}
+
+" Rust {{{
+let rust_doc#downloaded_rust_doc_dir = '~/Documents/rust-docs'
 " }}}
 
 if s:meet_neocomplete_requirements
