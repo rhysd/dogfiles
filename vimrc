@@ -2346,6 +2346,15 @@ let g:quickrun_config['syntax/rust'] = {
             \ }
 Autocmd BufWritePost *.rs call <SID>check_syntax('rust')
 
+let g:quickrun_config['syntax/crystal'] = {
+            \   'command' : 'crystal',
+            \   'cmdopt' : 'run --no-build --no-color',
+            \   'exec' : '%c %o %s:p',
+            \   'outputter' : 'quickfix',
+            \   'runner' : 'vimproc',
+            \ }
+Autocmd BufWritePost *.cr call <SID>check_syntax('crystal')
+
 "QuickRunのキーマップ {{{
 nnoremap <Leader>q  <Nop>
 nnoremap <silent><Leader>qr :<C-u>QuickRun<CR>
