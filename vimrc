@@ -195,6 +195,8 @@ Autocmd BufRead,BufNew,BufNewFile *.jade setlocal ft=jade
 Autocmd BufRead,BufNew,BufNewFile *.go setlocal ft=go
 " Swift
 Autocmd BufRead,BufNew,BufNewFile *.swift setlocal ft=swift
+" Mal,Crisp
+Autocmd BufRead,BufNew,BufNewFile *.mal,*.crisp setlocal ft=lisp
 
 " 行数が少ない時だけ行数表示
 Autocmd BufEnter * if line('$') > 10000 | setlocal nonumber | else | setlocal number | endif
