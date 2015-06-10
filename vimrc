@@ -788,7 +788,6 @@ function! s:cache_bundles()
                 \   }
                 \ }
     NeoBundle 'Shougo/neosnippet'
-    NeoBundle 'Shougo/neosnippet-snippets'
     NeoBundle 'rhysd/inu-snippets'
     NeoBundle 'thinca/vim-quickrun'
     NeoBundle 'Shougo/unite-outline'
@@ -1989,8 +1988,7 @@ imap <expr><C-S-l> neosnippet#expandable() \|\| neosnippet#jumpable() ?
 smap <expr><C-S-l> neosnippet#expandable() \|\| neosnippet#jumpable() ?
             \ "\<Plug>(neosnippet_expand_or_jump)" :
             \ "\<C-s>"
-" C++ と Python と D の標準のスニペットを読み込まない
-let g:neosnippet#disable_runtime_snippets = {'_' : 1, 'vim' : 0}
+let g:neosnippet#disable_runtime_snippets = {'_' : 1}
 "}}}
 
 " unite.vim {{{
@@ -2851,7 +2849,7 @@ let g:haskell_hsp = 0
 " }}}
 
 " inu-snippets {{{
-let g:neosnippet#snippets_directory=$HOME.'/.vim/bundle/inu-snippets/snippets'
+let g:neosnippet#snippets_directory = $HOME . '/.vim/bundle/inu-snippets/snippets'
 "}}}
 
 " vim-alignta {{{
