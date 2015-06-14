@@ -829,6 +829,7 @@ function! s:cache_bundles()
     NeoBundle 'rust-lang/rust.vim'
     NeoBundle 'rhysd/rust-doc.vim'
     NeoBundle 'cespare/vim-toml'
+    NeoBundle 'kchmck/vim-coffee-script'
 
     " カラースキーム
     NeoBundle 'rhysd/wallaby.vim'
