@@ -1627,7 +1627,7 @@ AutocmdFT html,javascript
             \ endif
 
 AutocmdFT haml inoremap <expr> k getline('.')[col('.') - 2] ==# 'k' ? "\<BS>%" : 'k'
-AutocmdFT haml SetIndent 2
+AutocmdFT haml,html,css SetIndent 2
 Autocmd BufRead,BufNew,BufNewFile *.ejs setlocal ft=html
 
 " 保存時に html 自動生成
@@ -2281,6 +2281,14 @@ let g:quickrun_config['syntax/ruby'] = {
             \ }
 Autocmd BufWritePost *.rb call <SID>check_syntax('ruby')
 
+function! s:check_js_syntax() abort
+    if &ft ==# 'javascript'
+        \ && has_key(g:quickrun_config['syntax/javascript'], 'command')
+        \ && executable(g:quickrun_config['syntax/javascript'].command)
+        \ && getline(1) !~? '^//\s\+jsx'
+        QuickRun -type syntax/javascript
+    endif
+endfunction
 let g:quickrun_config['syntax/javascript'] = {
             \ 'command' : 'jshint',
             \ 'outputter' : 'quickfix',
@@ -2288,7 +2296,7 @@ let g:quickrun_config['syntax/javascript'] = {
             \ 'runner' : 'vimproc',
             \ 'errorformat' : '%f: line %l\, col %c\, %m',
             \ }
-Autocmd BufWritePost *.js call <SID>check_syntax('javascript')
+Autocmd BufWritePost *.js call <SID>check_js_syntax()
 
 let g:quickrun_config['syntax/haml'] = {
             \ 'runner' : 'vimproc',
