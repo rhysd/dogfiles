@@ -1134,6 +1134,12 @@ function! s:cache_bundles()
                 \   }
                 \ }
 
+    NeoBundleLazy 'rhysd/try-colorscheme.vim', {
+                \   'autoload' : {
+                \     'commands' : 'TryColorscheme',
+                \   }
+                \ }
+
     " if_lua プラグイン
     if s:meet_neocomplete_requirements
         NeoBundle 'Shougo/neocomplete.vim'
