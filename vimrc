@@ -44,7 +44,7 @@ set tabstop=4 shiftwidth=4 softtabstop=4
 set shiftround
 "タブの代わりにスペースを使う
 set expandtab
-AutocmdFT neosnippet,gitconfig setlocal noexpandtab
+AutocmdFT neosnippet,gitconfig,xml setlocal noexpandtab
 "長い行で折り返す
 set wrap
 "ウィンドウの横幅をなるべく30文字以上に
@@ -1338,7 +1338,8 @@ function! s:cache_bundles()
     " TypeScript
     NeoBundleLazy 'Quramy/tsuquyomi', {
             \ 'autoload' : {
-            \     'filetypes' : 'typescript'
+            \     'commands' : 'TsuOpen',
+            \     'function_prefix': 'tsuquyomi',
             \   }
             \ }
 
@@ -1783,6 +1784,20 @@ AutocmdFT godoc nnoremap<buffer>o :<C-u>Unite outline<CR>
 
 " Rust {{{
 let rust_doc#downloaded_rust_doc_dir = '~/Documents/rust-docs'
+" }}}
+
+" TypeScript {{{
+let g:tsuquyomi_auto_open = 0
+function! s:tsu_open() abort
+    call tsuquyomi#open()
+    iunmap <buffer><C-x><C-o>
+    autocmd! MyVimrc-tsuopen
+    call feedkeys("\<C-x>\<C-o>")
+endfunction
+augroup MyVimrc-tsuopen
+    autocmd!
+    autocmd FileType typescript inoremap <buffer><C-x><C-o> <C-o>:call <SID>tsu_open()<CR>
+augroup END
 " }}}
 
 if s:meet_neocomplete_requirements
