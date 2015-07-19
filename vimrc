@@ -830,6 +830,8 @@ function! s:cache_bundles()
     NeoBundle 'rhysd/rust-doc.vim'
     NeoBundle 'cespare/vim-toml'
     NeoBundle 'kchmck/vim-coffee-script'
+    NeoBundle 'slim-template/vim-slim'
+    NeoBundle 'leafgarland/typescript-vim'
 
     " カラースキーム
     NeoBundle 'rhysd/wallaby.vim'
@@ -1333,6 +1335,13 @@ function! s:cache_bundles()
             \   }
             \ }
 
+    " TypeScript
+    NeoBundleLazy 'Quramy/tsuquyomi', {
+            \ 'autoload' : {
+            \     'filetypes' : 'typescript'
+            \   }
+            \ }
+
     " TweetVim
     NeoBundleLazy 'basyura/twibill.vim'
     NeoBundleLazy 'yomi322/neco-tweetvim'
@@ -1735,13 +1744,14 @@ function! s:json_colon()
     endif
 
     let [prefix, key] = matchlist(current_line, '\(^\|.*\s\)\(\w\+\)\s*:$')[1:2]
-    call setline('.', prefix . '"' . key . '" : ')
+    call setline('.', prefix . '"' . key . '": ')
     let diff = len(getline('.')) - len(current_line)
     execute 'normal!' (diff > 0 ? diff . 'l' : -diff . 'h')
 endfunction
 
 AutocmdFT json inoremap <buffer>: :<C-o>:call <SID>json_colon()<CR>
 AutocmdFT json inoremap <buffer><C-j> <End>,<CR>
+AutocmdFT json SetIndent 2
 " }}}
 
 " Python {{{
@@ -2261,6 +2271,11 @@ let g:quickrun_config['dachs/llvm'] = {
             \   'exec' : '%c %o %s:p',
             \ }
 
+let g:quickrun_config['slim'] = {
+            \   'command' : 'slimrb',
+            \   'cmdopt' : '--pretty',
+            \   'exec' : '%c %o %s:p',
+            \ }
 
 " シンタックスチェック
 function! s:check_syntax(ft) abort
@@ -2369,6 +2384,14 @@ let g:quickrun_config['syntax/crystal'] = {
             \   'runner' : 'vimproc',
             \ }
 Autocmd BufWritePost *.cr call <SID>check_syntax('crystal')
+
+let g:quickrun_config['syntax/typescript'] = {
+            \   'command' : 'tslint',
+            \   'exec' : '%c %o --file %s:p',
+            \   'outputter' : 'quickfix',
+            \   'errorformat' : '%f[%l\\, %c]: %m',
+            \ }
+Autocmd BufWritePost *.ts call <SID>check_syntax('typescript')
 
 "QuickRunのキーマップ {{{
 nnoremap <Leader>q  <Nop>
