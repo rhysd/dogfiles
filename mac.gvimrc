@@ -1,6 +1,3 @@
-set background=light
-colorscheme solarized
-let g:airline_theme = 'solarized'
 " do not load togglebg
 let g:loaded_togglebg = 1
 

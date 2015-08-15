@@ -25,6 +25,7 @@ Autocmd VimEnter * call Vimfiler_at_start()
 
 set background=light
 colorscheme solarized
+let g:airline_theme = 'solarized'
 
 function! Vimfiler_at_start()
     if empty(bufname('%'))

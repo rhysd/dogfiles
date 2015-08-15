@@ -44,7 +44,7 @@ set tabstop=4 shiftwidth=4 softtabstop=4
 set shiftround
 "タブの代わりにスペースを使う
 set expandtab
-AutocmdFT neosnippet,gitconfig,xml setlocal noexpandtab
+AutocmdFT neosnippet,gitconfig setlocal noexpandtab
 "長い行で折り返す
 set wrap
 "ウィンドウの横幅をなるべく30文字以上に
@@ -1235,9 +1235,6 @@ function! s:cache_bundles()
     "             \ }
 
     " JavaScript 用プラグイン
-    NeoBundleLazy 'jiangmiao/simple-javascript-indenter', {
-                \ 'autoload' : {'filetypes' : 'javascript'}
-                \ }
     NeoBundleLazy 'jelera/vim-javascript-syntax', {
                 \ 'autoload' : {'filetypes' : 'javascript'}
                 \ }
@@ -2317,22 +2314,15 @@ let g:quickrun_config['syntax/ruby'] = {
             \ }
 Autocmd BufWritePost *.rb call <SID>check_syntax('ruby')
 
-function! s:check_js_syntax() abort
-    if &ft ==# 'javascript'
-        \ && has_key(g:quickrun_config['syntax/javascript'], 'command')
-        \ && executable(g:quickrun_config['syntax/javascript'].command)
-        \ && getline(1) !~? '^//\s\+jsx'
-        QuickRun -type syntax/javascript
-    endif
-endfunction
 let g:quickrun_config['syntax/javascript'] = {
-            \ 'command' : 'jshint',
+            \ 'command' : 'eslint',
+            \ 'cmdopt' : '-f unix',
             \ 'outputter' : 'quickfix',
             \ 'exec'    : '%c %o %s:p',
             \ 'runner' : 'vimproc',
-            \ 'errorformat' : '%f: line %l\, col %c\, %m',
+            \ 'errorformat' : '%f:%l:%c: %m',
             \ }
-Autocmd BufWritePost *.js call <SID>check_js_syntax()
+Autocmd BufWritePost *.js,*.jsx call <SID>check_syntax('javascript')
 
 let g:quickrun_config['syntax/haml'] = {
             \ 'runner' : 'vimproc',
