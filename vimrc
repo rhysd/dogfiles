@@ -937,9 +937,13 @@ function! s:cache_bundles()
     NeoBundleLazy 'kana/vim-altr'
 
     NeoBundleLazy 'vim-jp/vital.vim', {
+                \ 'depends' : [
+                \     'haya14busa/vital-vimlcompiler',
+                \     'haya14busa/vital-power-assert',
+                \   ],
                 \ 'autoload' : {
-                \       'commands' : 'Vitalize',
-                \   }
+                \       'commands' : ['Vitalize', 'PowerAssert'],
+                \   },
                 \ }
 
     NeoBundleLazy 'tyru/open-browser.vim', {
