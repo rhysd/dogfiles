@@ -187,8 +187,6 @@ Autocmd BufRead,BufNew,BufNewFile gitconfig setlocal ft=gitconfig
 Autocmd BufRead,BufNew,BufNewFile *.plt,*.plot,*.gnuplot setlocal ft=gnuplot
 " Ruby の guard 用ファイル
 Autocmd BufRead,BufNew,BufNewFile Guardfile setlocal ft=ruby
-" JSON
-Autocmd BufRead,BufNew,BufNewFile *.json,*.jsonp setlocal ft=json
 " jade
 Autocmd BufRead,BufNew,BufNewFile *.jade setlocal ft=jade
 " Go
@@ -197,6 +195,10 @@ Autocmd BufRead,BufNew,BufNewFile *.go setlocal ft=go
 Autocmd BufRead,BufNew,BufNewFile *.swift setlocal ft=swift
 " Mal,Crisp
 Autocmd BufRead,BufNew,BufNewFile *.mal,*.crisp setlocal ft=lisp
+" JavaScript tests
+Autocmd BufRead,BufNew,BufNewFile *_test.js,*_test.jsx setlocal ft=javascript.test
+" eslintrc
+Autocmd BufRead,BufNew,BufNewFile .eslintrc setlocal ft=json
 
 " 行数が少ない時だけ行数表示
 Autocmd BufEnter * if line('$') > 10000 | setlocal nonumber | else | setlocal number | endif
@@ -775,7 +777,7 @@ let s:enable_tern_for_vim = has('python') && executable('npm')
 
 call neobundle#begin(expand('~/.vim/bundle'))
 
-function! s:cache_bundles()
+if neobundle#load_cache()
 
     " GitHub上のリポジトリ
     NeoBundleFetch 'Shougo/neobundle.vim'
@@ -855,6 +857,13 @@ function! s:cache_bundles()
                 \ }
 
     NeoBundleMyPlugin 'libclang-vim'
+    NeoBundleMyPlugin 'vim-dachs'
+    NeoBundleMyPlugin 'github-complete.vim'
+    NeoBundleMyPlugin 'vim-crystal'
+
+    if has('gui_running')
+        NeoBundleMyPlugin 'vim-color-splatoon'
+    endif
 
     " vim-scripts上のリポジトリ
         " NeoBundle 'Align'
@@ -1369,17 +1378,11 @@ function! s:cache_bundles()
 
     NeoBundleCheck
     NeoBundleSaveCache
-endfunction
+endif
 
 " ReadOnly のファイルを編集しようとしたときに sudo.vim を遅延読み込み
 Autocmd FileChangedRO * NeoBundleSource sudo.vim
 Autocmd FileChangedRO * execute "command! W SudoWrite" expand('%')
-
-if neobundle#has_cache()
-    NeoBundleLoadCache
-else
-    call s:cache_bundles()
-endif
 
 call neobundle#end()
 filetype plugin indent on     " required!
@@ -1707,7 +1710,7 @@ function! s:check_dachs_syntax()
     let bin = root . '/build/bin/dachs'
     execute 'QuickRun' 'sh -outputter buffer -outputter/buffer/close_on_empty 1 -src' '"' . bin . ' --check-syntax --disable-color ' . expand('%:p') . '"'
 endfunction
-Autocmd BufWritePost *.dcs call <SID>check_dachs_syntax()
+" Autocmd BufWritePost *.dcs call <SID>check_dachs_syntax()
 AutocmdFT dachs setl errorformat=Error\ in\ line:%l,\ col:%c
 " }}}
 
@@ -1814,10 +1817,10 @@ let g:neocomplete#enable_fuzzy_completion = 1
 " デリミタ（autoload 関数の # など）の自動挿入
 let g:neocomplete#enable_auto_delimiter = 1
 "シンタックスをキャッシュするときの最小文字長を4に
-let g:neocomplete#min_keyword_length = 3
-let g:neocomplete#sources#syntax#min_keyword_length = 3
+let g:neocomplete#min_keyword_length = 4
+let g:neocomplete#sources#syntax#min_keyword_length = 4
 "補完を開始する入力文字長
-let g:neocomplete#auto_completion_start_length = 2
+let g:neocomplete#auto_completion_start_length = 3
 "日本語を収集しないようにする
 if !exists('g:neocomplete#keyword_patterns')
     let g:neocomplete#keyword_patterns = {}
@@ -1954,11 +1957,12 @@ let g:neocomplcache_include_exprs = {
             \ }
 " Enable omni completion.
 AutocmdFT javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-AutocmdFT html       setlocal omnifunc=htmlcomplete#CompleteTags
+" AutocmdFT html       setlocal omnifunc=htmlcomplete#CompleteTags
 AutocmdFT css        setlocal omnifunc=csscomplete#CompleteCss
 AutocmdFT xml        setlocal omnifunc=xmlcomplete#CompleteTags
 AutocmdFT php        setlocal omnifunc=phpcomplete#CompletePHP
 AutocmdFT c          setlocal omnifunc=ccomplete#Complete
+AutocmdFT gitcommit,markdown setlocal omnifunc=github_complete#complete
 " Enable heavy omni completion.
 if !exists('g:neocomplcache_omni_patterns')
     let g:neocomplcache_omni_patterns = {}
@@ -2291,6 +2295,12 @@ let g:quickrun_config['slim'] = {
             \   'command' : 'slimrb',
             \   'cmdopt' : '--pretty',
             \   'exec' : '%c %o %s:p',
+            \ }
+
+let g:quickrun_config['javascript/babel'] = {
+            \   'command' : 'babel',
+            \   'exec' : ['%c %o %s:p -o %s:p.babel', 'node %s:p.babel'],
+            \   'hook/sweep/files': '%S:p.babel',
             \ }
 
 " シンタックスチェック

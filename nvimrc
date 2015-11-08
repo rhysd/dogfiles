@@ -758,7 +758,7 @@ endif
 
 call neobundle#begin(expand('~/.nvim/bundle'))
 
-function! s:cache_bundles()
+if neobundle#load_cache()
 
     " GitHub上のリポジトリ
     NeoBundleFetch 'Shougo/neobundle.vim'
@@ -774,12 +774,6 @@ function! s:cache_bundles()
         " NeoBundle 'git://git.wincent.com/command-t.git'
 
     NeoBundleSaveCache
-endfunction
-
-if neobundle#has_cache()
-    NeoBundleLoadCache
-else
-    call s:cache_bundles()
 endif
 
 call neobundle#end()
