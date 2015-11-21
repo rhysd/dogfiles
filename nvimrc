@@ -808,14 +808,7 @@ if !has('gui_running')
     if &t_Co < 256
         colorscheme default
     else
-        try
-            let g:lucius_style = 'dark'
-            let g:lucius_contrast = 'high'
-            let g:lucius_contrast_bg = 'high'
-            colorscheme lucius
-        catch
-            colorscheme desert
-        endtry
+        colorscheme desert
     endif
 endif
 
