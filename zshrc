@@ -416,7 +416,7 @@ bindkey -M viins '^Xq' _quote-previous-word-in-double
 bindkey -M viins "$terminfo[kcbt]" reverse-menu-complete
 
 # ファイルを確認する
-function _ls() {
+function _ls_files() {
     echo
     local -a opt_ls
     case "${OSTYPE}" in
@@ -431,8 +431,8 @@ function _ls() {
     command ls ${opt_ls[@]}
     zle reset-prompt
 }
-zle -N _ls
-bindkey -M vicmd 'k' _ls
+zle -N _ls_files
+bindkey -M vicmd 'k' _ls_files
 # }}}
 
 ####################
