@@ -843,11 +843,9 @@ if neobundle#load_cache()
     NeoBundle 'telamon/vim-color-github'
     NeoBundle 'chriskempson/base16-vim'
 
-    NeoBundle 'altercation/vim-colors-solarized', {'gui' : 1}
-    NeoBundle 'rdark', {'gui' : 1}
-    NeoBundle 'jonathanfilip/vim-lucius', {'gui' : 1}
-    NeoBundle 'vyshane/vydark-vim-color', {'gui' : 1}
-    NeoBundle '29decibel/codeschool-vim-theme', {'gui' : 1}
+    NeoBundle 'altercation/vim-colors-solarized'
+    NeoBundle 'jonathanfilip/vim-lucius'
+    NeoBundle 'vyshane/vydark-vim-color'
 
     " For testing
     command! -nargs=1 NeoBundleMyPlugin
@@ -860,10 +858,6 @@ if neobundle#load_cache()
     NeoBundleMyPlugin 'vim-dachs'
     NeoBundleMyPlugin 'github-complete.vim'
     NeoBundleMyPlugin 'vim-crystal'
-
-    if has('gui_running')
-        NeoBundleMyPlugin 'vim-color-splatoon'
-    endif
 
     " vim-scripts上のリポジトリ
         " NeoBundle 'Align'
