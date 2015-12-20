@@ -195,13 +195,14 @@ Autocmd BufRead,BufNew,BufNewFile *.go setlocal ft=go
 Autocmd BufRead,BufNew,BufNewFile *.swift setlocal ft=swift
 " Mal,Crisp
 Autocmd BufRead,BufNew,BufNewFile *.mal,*.crisp setlocal ft=lisp
+" JavaScript JSX
+Autocmd BufRead,BufNew,BufNewFile *.jsx setlocal ft=javascript.jsx
+" TypeScript JSX
+Autocmd BufRead,BufNew,BufNewFile *.tsx setlocal ft=typescript.jsx
 " JavaScript tests
 Autocmd BufRead,BufNew,BufNewFile *_test.js,*_test.jsx setlocal ft=javascript.test
 " eslintrc
 Autocmd BufRead,BufNew,BufNewFile .eslintrc setlocal ft=json
-
-" 行数が少ない時だけ行数表示
-Autocmd BufEnter * if line('$') > 10000 | setlocal nonumber | else | setlocal number | endif
 
 " カーソル位置の復元
 Autocmd BufReadPost *
@@ -609,6 +610,8 @@ vnoremap gl L
 vnoremap gm M
 " スペルチェック
 nnoremap <Leader>s :<C-u>setl spell! spell?<CR>
+" 行番号
+nnoremap <Leader>nn :<C-u>setl number! number?<CR>
 " カーソル付近の文字列で検索（新規ウィンドウ）
 nnoremap <C-w>* <C-w>s*
 nnoremap <C-w># <C-w>s#
@@ -825,7 +828,6 @@ if neobundle#load_cache()
     NeoBundle 'rhysd/committia.vim'
     " NeoBundle 'rhysd/vim-dachs'
     NeoBundle 'rhysd/BoostTest-log.vim'
-    NeoBundle 'junegunn/vim-emoji'
     NeoBundle 'thinca/vim-themis'
     NeoBundle 'rhysd/nimrod.vim'
     NeoBundle 'rust-lang/rust.vim'
@@ -1347,6 +1349,13 @@ if neobundle#load_cache()
             \   }
             \ }
 
+    " Rust
+    NeoBundleLazy 'racer-rust/vim-racer', {
+            \ 'autoload' : {
+            \     'filetypes' : 'rust'
+            \   }
+            \ }
+
     " TweetVim
     NeoBundleLazy 'basyura/twibill.vim'
     NeoBundleLazy 'yomi322/neco-tweetvim'
@@ -1782,6 +1791,7 @@ AutocmdFT godoc nnoremap<buffer>o :<C-u>Unite outline<CR>
 
 " Rust {{{
 let rust_doc#downloaded_rust_doc_dir = '~/Documents/rust-docs'
+let $RUST_SRC_PATH = $HOME . '/Downloads/rustc-1.5.0/src/'
 " }}}
 
 " TypeScript {{{
@@ -2381,14 +2391,6 @@ if exists('g:vimrc_llc_command')
     Autocmd BufWritePost *.ll QuickRun -type syntax/llvm
 endif
 
-let g:quickrun_config['syntax/rust'] = {
-            \   'command' : 'rustc',
-            \   'cmdopt' : '-Zparse-only',
-            \   'exec' : '%c %o %s:p',
-            \   'outputter' : 'quickfix',
-            \ }
-Autocmd BufWritePost *.rs call <SID>check_syntax('rust')
-
 let g:quickrun_config['syntax/crystal'] = {
             \   'command' : 'crystal',
             \   'cmdopt' : 'run --no-build --no-color',
@@ -2633,7 +2635,7 @@ call smartinput#define_rule({
             \   'at'       : ';\%#',
             \   'char'     : ';',
             \   'input'    : '<BS>::',
-            \   'filetype' : ['cpp'],
+            \   'filetype' : ['cpp', 'rust'],
             \   })
 " boost:: の補完
 call smartinput#define_rule({
@@ -2647,7 +2649,7 @@ call smartinput#define_rule({
             \   'at'       : '\<s;\%#',
             \   'char'     : ';',
             \   'input'    : '<BS>td::',
-            \   'filetype' : ['cpp'],
+            \   'filetype' : ['cpp', 'rust'],
             \   })
 " detail:: の補完
 call smartinput#define_rule({

@@ -16,6 +16,10 @@ if [ -d $HOME/.cabal ]; then
     export PATH=$HOME/.cabal/bin:$PATH
 fi
 
+if [ -d $HOME/.cargo/bin ]; then
+    export PATH=$HOME/.cargo/bin:$PATH
+fi
+
 export DOTZSH=$HOME/.zsh
 if [ ! -d $DOTZSH ];then
     mkdir -p $DOTZSH
@@ -51,6 +55,7 @@ alias memo='cat > /dev/null'
 alias memolist='vim +MemoList'
 alias memonew='vim +MemoNew'
 alias d=./bin/dachs
+alias nr='npm run'
 
 alias l=ls
 alias pd=popd
