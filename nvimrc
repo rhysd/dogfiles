@@ -766,30 +766,28 @@ if neobundle#load_cache()
     NeoBundle 'rhysd/wallaby.vim'
     NeoBundle 'jonathanfilip/vim-lucius'
     NeoBundle 'thinca/vim-quickrun'
+    NeoBundle 'nyaovim-popup-tooltip'
 
-    " vim-scripts上のリポジトリ
-        " NeoBundle 'Align'
+    NeoBundleLazy 'tyru/open-browser.vim', {
+                \ 'autoload' : {
+                \     'commands' : ['OpenBrowser', 'OpenBrowserSearch', 'OpenBrowserSmartSearch'],
+                \     'mappings' : '<Plug>(openbrowser-',
+                \   }
+                \ }
 
-    " その他のgitリポジトリ
-        " NeoBundle 'git://git.wincent.com/command-t.git'
+    NeoBundleLazy 'tyru/open-browser-github.vim', {
+                \ 'depends' : 'tyru/open-browser.vim',
+                \ 'autoload' : {
+                \       'commands' : ['OpenGithubFile', 'OpenGithubIssue', 'OpenGithubPullReq']
+                \   }
+                \ }
 
     NeoBundleSaveCache
 endif
 
 call neobundle#end()
 filetype plugin indent on     " required!
-Autocmd BufWritePost *nvimrc,*gnvimrc NeoBundleClearCache
-
-" カーソル行で NeoBundle されたプラグインをブラウザで表示
-function! s:browse_neobundle_home(bundle_name)
-    if match(a:bundle_name, '/') == -1
-        let url = 'http://www.google.jp/search?q='.a:bundle_name
-    else
-        let url = 'https://github.com/'.a:bundle_name
-    endif
-    execute 'OpenBrowser' url
-endfunction
-command! -nargs=1 BrowseNeoBundleHome call <SID>browse_neobundle_home(<q-args>)
+Autocmd BufWritePost init.vim NeoBundleClearCache
 
 " NeoBundle のキーマップ
 " すべて更新するときは基本的に Unite で非同期に実行
@@ -799,7 +797,6 @@ nnoremap <silent><Leader>nbc :<C-u>NeoBundleClean<CR>
 nnoremap <silent><Leader>nbi :<C-u>NeoBundleInstall<CR>
 nnoremap <silent><Leader>nbl :<C-u>Unite output<CR>NeoBundleList<CR>
 nnoremap <silent><Leader>nbd :<C-u>NeoBundleDocs<CR>
-nnoremap <silent><Leader>nbh :<C-u>execute 'BrowseNeoBundleHome' matchstr(getline('.'), '\%[Neo]Bundle\%[Lazy]\s\+[''"]\zs.\+\ze[''"]')<CR>
 
 " カラースキーム
 " シンタックスハイライト
@@ -873,3 +870,10 @@ nnoremap <silent><Leader>qr :<C-u>QuickRun<CR>
 vnoremap <silent><Leader>qr :QuickRun<CR>
 nnoremap <silent><Leader>qR :<C-u>QuickRun<Space>
 AutocmdFT cpp nnoremap <silent><buffer><Leader>qc :<C-u>QuickRun -type cpp/clang<CR>
+
+" open-browser.vim
+nmap <Leader>o <Plug>(openbrowser-smart-search)
+xmap <Leader>o <Plug>(openbrowser-smart-search)
+nnoremap <Leader>O :<C-u>OpenGithubFile<CR>
+vnoremap <Leader>O :OpenGithubFile<CR>
+
