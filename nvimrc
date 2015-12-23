@@ -2,8 +2,6 @@ scriptencoding utf-8
 
 " 必須な基本設定
 
-set nocompatible
-
 function! s:get_SID()
     return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeget_SID$')
 endfunction
@@ -62,8 +60,6 @@ set cindent
 "大文字が入っている時のみ大文字小文字を区別
 set ignorecase
 set smartcase
-"ビープ音OFF
-set vb t_vb=
 "ホワイトスペース類を表示する
 set list
 "起動時のメッセージを消す
@@ -107,8 +103,6 @@ set textwidth=0
 set noshowcmd
 "コマンド実行中は再描画しない
 set lazyredraw
-"高速ターミナル接続を行う
-set ttyfast
 " 自前で用意したものへの path
 set path=.,/usr/include,/usr/local/include
 " 補完でプレビューウィンドウを開かない
@@ -215,12 +209,6 @@ Autocmd BufWritePost
 " git commit message のときはスペルをチェックする
 AutocmdFT gitcommit setlocal nofoldenable spell
 AutocmdFT diff setlocal nofoldenable
-
-" tmux 用の設定
-"256 bitカラーモード(for tmux)
-if !has('gui_running') && $TMUX !=# ''
-    set t_Co=256
-endif
 
 " カーソル下のハイライトグループを取得
 command! -nargs=0 GetHighlightingGroup
