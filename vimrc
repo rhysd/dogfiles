@@ -554,7 +554,7 @@ function! s:delete_current_buf()
     let bufnr = bufnr('%')
     bnext
     if bufnr == bufnr('%') | enew | endif
-    silent! bdelete #
+    silent! bdelete! #
 endfunction
 nnoremap <C-w>d :<C-u>call <SID>delete_current_buf()<CR>
 nnoremap <C-w>D :<C-u>bdelete<CR>

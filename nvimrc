@@ -2,6 +2,8 @@ scriptencoding utf-8
 
 " 必須な基本設定
 
+let s:on_nyaovim = exists('g:nyaovim_version')
+
 function! s:get_SID()
     return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeget_SID$')
 endfunction
@@ -754,7 +756,8 @@ if neobundle#load_cache()
     NeoBundle 'rhysd/wallaby.vim'
     NeoBundle 'jonathanfilip/vim-lucius'
     NeoBundle 'thinca/vim-quickrun'
-    NeoBundle 'nyaovim-popup-tooltip'
+    NeoBundle 'rhysd/nyaovim-popup-tooltip'
+    NeoBundle 'rhysd/nyaovim-mini-browser'
 
     NeoBundleLazy 'tyru/open-browser.vim', {
                 \ 'autoload' : {
@@ -860,8 +863,13 @@ nnoremap <silent><Leader>qR :<C-u>QuickRun<Space>
 AutocmdFT cpp nnoremap <silent><buffer><Leader>qc :<C-u>QuickRun -type cpp/clang<CR>
 
 " open-browser.vim
-nmap <Leader>o <Plug>(openbrowser-smart-search)
-xmap <Leader>o <Plug>(openbrowser-smart-search)
 nnoremap <Leader>O :<C-u>OpenGithubFile<CR>
 vnoremap <Leader>O :OpenGithubFile<CR>
+if s:on_nyaovim
+    nnoremap <Leader>o :<C-u>MiniBrowser <C-r><C-p><CR>
+    xnoremap <Leader>o y:<C-u>MiniBrowser <C-r>+<CR>
+else
+    nmap <Leader>o <Plug>(openbrowser-smart-search)
+    xmap <Leader>o <Plug>(openbrowser-smart-search)
+endif
 
