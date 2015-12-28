@@ -767,6 +767,20 @@ if which ghq &> /dev/null; then
     bindkey -M viins '^ g' peco-ghq-open
 fi
 
+if [[ "$GOPATH" != "" ]]; then
+    function peco-gopath() {
+        local selected=$(find "$GOPATH/src" -maxdepth 3 -mindepth 3 -name "*" -type d | peco --prompt 'GOPATH >' --query "$LBUFFER")
+        if [ -n "$selected" ]; then
+            BUFFER="cd $selected"
+            zle accept-line
+        else
+            zle reset-prompt
+        fi
+    }
+    zle -N peco-gopath
+    bindkey -M viins '^ p' peco-gopath
+fi
+
 function peco-git-log() {
     local sed
     case $OSTYPE in
@@ -898,6 +912,7 @@ function peco-source(){
         cdr-insert \
         ghq \
         git-log \
+        gopath \
         ls-l \
         ls-l-insert \
         find-insert \
