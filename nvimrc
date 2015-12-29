@@ -403,31 +403,6 @@ function! ScrollOtherWindow(mapping)
     wincmd p
 endfunction
 
-" CursorHoldTime ごとに自動でコマンドを実行
-function! s:set_auto_down()
-    augroup vimrc-auto-down
-        autocmd!
-        autocmd CursorHold * call feedkeys("2\<C-e>", 'n')
-    augroup END
-endfunction
-command! -nargs=0 AutoDown call <SID>set_auto_down()
-command! -nargs=0 StopAutoDown autocmd! vimrc-auto-down
-
-" 議事録用コマンド
-command! -nargs=* Proceeding call <SID>proceeding(<f-args>)
-function! s:proceeding(...)
-    let proceedings_dir = expand('~/Proceedings')
-
-    if ! isdirectory(expand(proceedings_dir))
-        call mkdir(proceedings_dir)
-    endif
-
-    let fname = "proceedings_" . (a:0 == 1 ? (a:1."_") : "") . strftime("%Y_%m_%d") . ".txt"
-    let fpath = proceedings_dir . '/' . fname
-
-    execute 'vsplit' '+edit' fpath
-endfunction
-
 function! s:cmd_lcd(count)
     let dir = expand('%:p' . repeat(':h', a:count + 1))
     if isdirectory(dir)
@@ -771,6 +746,11 @@ if neobundle#load_cache()
                 \ 'autoload' : {
                 \       'commands' : ['OpenGithubFile', 'OpenGithubIssue', 'OpenGithubPullReq']
                 \   }
+                \ }
+
+    NeoBundle 'nyaovim-markdown-preview', {
+                \   'base' : '~/Dev/github.com/rhysd',
+                \   'type' : 'nosync',
                 \ }
 
     NeoBundleSaveCache
