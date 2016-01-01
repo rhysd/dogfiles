@@ -580,6 +580,7 @@ if neobundle#load_cache()
     NeoBundleFetch 'Shougo/neobundle.vim'
     NeoBundle 'rhysd/clever-f.vim', 'dev'
     NeoBundle 'rhysd/wallaby.vim'
+    NeoBundle 'rhysd/vim-dachs'
     NeoBundle 'jonathanfilip/vim-lucius'
     NeoBundle 'thinca/vim-quickrun'
     NeoBundle 'rhysd/nyaovim-popup-tooltip'
@@ -610,13 +611,17 @@ Autocmd BufWritePost init.vim NeoBundleClearCache
 " カラースキーム
 " シンタックスハイライト
 syntax enable
-if !has('gui_running')
-    if &t_Co < 256
-        colorscheme default
+set background=dark
+try
+    if s:on_nyaovim
+        colorscheme lucius
     else
+        " wallaby can't be used in terminal...
         colorscheme desert
     endif
-endif
+catch
+    colorscheme default
+endtry
 
 let g:clever_f_smart_case = 1
 let g:clever_f_across_no_line = 1
