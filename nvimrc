@@ -91,8 +91,6 @@ set nrformats-=octal
 set hidden
 "日本語ヘルプを優先的に検索
 set helplang=ja,en
-" カーソル下の単語を help で調べる
-set keywordprg=:help
 "OSのクリップボードを使う
 set clipboard=unnamed
 "矩形選択で自由に移動する
@@ -124,30 +122,15 @@ set whichwrap +=l
 " コマンド履歴サイズ
 set history=100
 " swap ファイル
-if ! isdirectory($HOME.'/.vim/swap')
-    call mkdir($HOME.'/.vim/swap', 'p')
-endif
-set directory=~/.vim/swap
+set noswapfile
 " 編集履歴を保存して終了する
-if has('persistent_undo')
-    if ! isdirectory($HOME.'/.vim/undo')
-        call mkdir($HOME.'/.vim/undo', 'p')
-    endif
-    set undodir=~/.vim/undo
-    set undofile
+if ! isdirectory($HOME.'/.nvim/undo')
+    call mkdir($HOME.'/.nvim/undo', 'p')
 endif
+set undodir=~/.nvim/undo
+set undofile
 " command-line-window の縦幅
 set cmdwinheight=3
-" Ruby シンタックスチェック
-    " function! s:ExecuteMake()
-    "   if &filetype == 'ruby' && expand('%:t') !~? '^pry\d\{8}.\+\.rb'
-    "     silent make! -c "%" | redraw!
-    "   endif
-    " endfunction
-    " compiler ruby
-    " augroup rbsyntaxcheck
-    "   autocmd BufWritePost <buffer> call s:ExecuteMake()
-    " augroup END
 " ステータスライン
 set rulerformat=%45(%12f%=\ %m%{'['.(&fenc!=''?&fenc:&enc).']'}\ %l-%v\ %p%%\ [%02B]%)
 set statusline=%f:\ %{substitute(getcwd(),'.*/','','')}\ %m%=%{(&fenc!=''?&fenc:&enc).':'.strpart(&ff,0,1)}\ %l-%v\ %p%%\ %02B
@@ -157,9 +140,7 @@ let &formatlistpat .= '\|^\s*[*+-]\s*'
 " spell チェックで日本語をチェックしない
 set spelllang=en,cjk
 " 折り返しでインデントを保持
-if exists('+breakindent')
-    set breakindent
-endif
+set breakindent
 " 一時ディレクトリではバックアップを取らない
 set backupskip=/tmp/*,/private/tmp/*
 
@@ -191,16 +172,6 @@ Autocmd BufReadPost *
     \ if line("'\"") > 1 && line("'\"") <= line("$") |
     \   exe "normal! g`\"" |
     \ endif
-" Hack #202: 自動的にディレクトリを作成する
-" http://vim-users.jp/2011/02/hack202/
-Autocmd BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'), v:cmdbang)
-function! s:auto_mkdir(dir, force)
-    if !isdirectory(a:dir) && (a:force ||
-                \    input(printf('"%s" does not exist. Create? [y/N]', a:dir)) =~? '^y\%[es]$')
-        " call mkdir(iconv(a:dir, &encoding, &termencoding), 'p')
-        call mkdir(a:dir, 'p')
-    endif
-endfunction
 " ファイルタイプを書き込み時に自動判別
 Autocmd BufWritePost
     \ * if &l:filetype ==# '' || exists('b:ftdetect')
@@ -300,77 +271,19 @@ endfunction
 
 nnoremap <silent><C-q>
             \ :<C-u>call <SID>close_windows_like('s:is_target_window(winnr)')<CR>
-inoremap <silent><C-q>
-            \ <Esc>:call <SID>close_windows_like('s:is_target_window(winnr)')<CR>
-nnoremap <silent><Leader>cp
-            \ :<C-u>call <SID>close_windows_like('s:is_target_window(winnr)', 'first_only')<CR>
 "}}}
 
-command! Date :call setline('.', getline('.') . strftime('%Y/%m/%d (%a) %H:%M'))
-
-" vimrc を開く
-command! Vimrc call s:edit_myvimrc()
-function! s:edit_myvimrc()
-    let ghq_root = expand(substitute(system('git config ghq.root'), '\n$', '', ''))
-    if isdirectory(ghq_root . '/github.com/rhysd/dotfiles')
-        let vimrc = ghq_root . '/github.com/rhysd/dotfiles/vimrc*'
-        let gvimrc = ghq_root . '/github.com/rhysd/dotfiles/gvimrc*'
-    elseif isdirectory($HOME.'Github/dotfiles')
-        let vimrc = expand('~/Github/dotfiles/vimrc*')
-        let gvimrc = expand('~/Github/dotfiles/gvimrc*')
-    else
-        let vimrc = $MYVIMRC
-        let gvimrc = $MYGVIMRC
-    endif
-
-    let files = ""
-    if !empty($MYVIMRC)
-        let files .= substitute(expand(vimrc), '\n', ' ', 'g')
-    endif
-    if !empty($MYGVIMRC)
-        let files .= substitute(expand(gvimrc), '\n', ' ', 'g')
-    endif
-
-    execute "args " . files
-endfunction
-
-" カレントパスをクリプボゥにコピー
-command! CopyCurrentPath :call s:copy_current_path()
-function! s:copy_current_path()
-    if has('win32') || has('win64')
-        let @*=substitute(expand('%:p'), '\\/', '\\', 'g')
-    elseif has('unix')
-        let @*=expand('%:p')
-    endif
-endfunction
+command! Date :<C-u>call setline('.', getline('.') . strftime('%Y/%m/%d (%a) %H:%M'))
 
 " エンコーディング指定オープン
 command! -bang -complete=file -nargs=? Utf8 edit<bang> ++enc=utf-8 <args>
 command! -bang -complete=file -nargs=? Sjis edit<bang> ++enc=cp932 <args>
 command! -bang -complete=file -nargs=? Euc edit<bang> ++enc=eucjp <args>
 
-" 横幅と縦幅を見て縦分割か横分割か決める
-command! -nargs=? -complete=command SmartSplit call <SID>smart_split(<q-args>)
-nnoremap <C-w><Space> :<C-u>SmartSplit<CR>
-function! s:smart_split(cmd)
-    if winwidth(0) > winheight(0) * 2
-        vsplit
-        if exists(':AdjustWindowWidth')
-            AdjustWindowWidth
-        endif
-    else
-        split
-    endif
-
-    if !empty(a:cmd)
-        execute a:cmd
-    endif
-endfunction
-
 " 縦幅と横幅を見て help の開き方を決める
-" set keywordprg=SmartHelp
-command! -nargs=* -complete=help SmartHelp call <SID>smart_help(<q-args>)
-nnoremap <silent><Leader>h :<C-u>SmartHelp<Space><C-l>
+command! -nargs=* -complete=help Help call <SID>smart_help(<q-args>)
+set keywordprg=:Help
+nnoremap <silent><Leader>h :<C-u>Help<Space><C-l>
 function! s:smart_help(args)
     try
         if winwidth(0) > winheight(0) * 2
@@ -394,15 +307,6 @@ function! s:smart_help(args)
     endif
 endfunction
 
-" 隣のウィンドウの上下移動
-nnoremap <silent>gj        :<C-u>call ScrollOtherWindow("\<C-d>")<CR>
-nnoremap <silent>gk        :<C-u>call ScrollOtherWindow("\<C-u>")<CR>
-function! ScrollOtherWindow(mapping)
-    execute 'wincmd' (winnr('#') == 0 ? 'w' : 'p')
-    execute 'normal!' a:mapping
-    wincmd p
-endfunction
-
 function! s:cmd_lcd(count)
     let dir = expand('%:p' . repeat(':h', a:count + 1))
     if isdirectory(dir)
@@ -411,10 +315,6 @@ function! s:cmd_lcd(count)
 endfunction
 command! -nargs=0 -count=0 Lcd  call s:cmd_lcd(<count>)
 
-command! -nargs=0 Todo Unite line -input=TODO
-
-command! -nargs=0 EchoCurrentPath echo expand('%:p')
-
 " インデント
 command! -bang -nargs=1 SetIndent
             \ execute <bang>0 ? 'set' : 'setlocal'
@@ -422,48 +322,16 @@ command! -bang -nargs=1 SetIndent
             \         'shiftwidth='.<q-args>
             \         'softtabstop='.<q-args>
 
-" カレンダーを開く
-command! -nargs=0 CalendarApp call <SID>open_calendar_app()
-function! s:open_calendar_app()
-    if has('mac')
-        call system('open -a Calendar.app')
-    else
-        OpenBrowser https://www.google.com/calendar/render
-    endif
-endfunction
-
-" typo したファイル名を検出
-Autocmd BufWriteCmd *[,*] call s:write_check_typo(expand('<afile>'))
-function! s:write_check_typo(file)
-    let writecmd = 'write'.(v:cmdbang ? '!' : '').' '.a:file
-    if exists('b:write_check_typo_nocheck')
-        execute writecmd
-        return
-    endif
-    let prompt = "possible typo: really want to write to '" . a:file . "'?(y/n):"
-    let input = input(prompt)
-    if input ==# 'YES'
-        execute writecmd
-        let b:write_check_typo_nocheck = 1
-    elseif input =~? '^y\(es\)\=$'
-        execute writecmd
-    endif
-endfunction
-
 " 基本マッピング {{{
 " ; と : をスワップ
 noremap : ;
-if has('cmdline_hist')
-    " コマンドラインウィンドウを使う
-    " Note:
-    "   noremap ; q:i は使えない
-    "   マクロ記録中に q を記録終了に食われてしまう
-    "   eval() にそのまま通すのは怖いので事前に &cedit をチェック
-    noremap <silent><expr>; &cedit =~# '^<C-\a>$' ? ':'.eval('"\'.&cedit.'"').'i' : ':'
-    noremap <Leader>; :
-else
-    noremap ; :
-endif
+" コマンドラインウィンドウを使う
+" Note:
+"   noremap ; q:i は使えない
+"   マクロ記録中に q を記録終了に食われてしまう
+"   eval() にそのまま通すのは怖いので事前に &cedit をチェック
+noremap <silent><expr>; &cedit =~# '^<C-\a>$' ? ':'.eval('"\'.&cedit.'"').'i' : ':'
+noremap <Leader>; :
 noremap @; @:
 noremap @: @;
 "モードから抜ける
@@ -491,9 +359,6 @@ noremap gm m
 nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>
 "{数値}<Tab>でその行へ移動．それ以外だと通常の<Tab>の動きに
 noremap <expr><Tab> v:count !=0 ? "G" : "\<Tab>zvzz"
-" 検索に very matching を使う
-nnoremap / /\v
-nnoremap ? ?\v
 " コマンドラインウィンドウ
 " 検索後画面の中心に。
 nnoremap n nzvzz
@@ -510,8 +375,6 @@ function! s:cmd_cr_n(count)
     execute 'normal!' a:count.'j'
 endfunction
 nnoremap <silent><CR> :<C-u>call <SID>cmd_cr_n(v:count1)<CR>
-" スペースを挿入
-nnoremap <C-Space> i<Space><Esc><Right>
 "Emacsライクなバインディング．ポップアップが出ないように移動．
 inoremap <C-e> <END>
 vnoremap <C-e> <END>
@@ -538,7 +401,7 @@ cnoremap <C-g> <C-u><BS>
 nnoremap <silent><C-n>   :<C-u>bnext<CR>
 nnoremap <silent><C-p>   :<C-u>bprevious<CR>
 " <C-w> -> s
-nmap     s <C-w>
+nmap s <C-w>
 " 現在のウィンドウのみを残す
 nnoremap <C-w>O <C-w>o
 " バッファを削除
@@ -546,14 +409,11 @@ function! s:delete_current_buf()
     let bufnr = bufnr('%')
     bnext
     if bufnr == bufnr('%') | enew | endif
-    silent! bdelete #
+    silent! bdelete! #
 endfunction
 nnoremap <C-w>d :<C-u>call <SID>delete_current_buf()<CR>
-nnoremap <C-w>D :<C-u>bdelete<CR>
 "インサートモードで次の行に直接改行
 inoremap <C-j> <Esc>o
-"<BS>の挙動
-nnoremap <BS> diw
 " x でレジスタを使わない
 nnoremap x "_x
 " カーソルキーでのウィンドウサイズ変更
@@ -575,12 +435,10 @@ nnoremap gn :<C-u>tabnew<CR>
 nnoremap <silent>gx :<C-u>tabclose<CR>
 nnoremap <silent><A-h> gT
 nnoremap <silent><A-l> gt
-" 行表示・非表示の切り替え．少しでも横幅が欲しい時は OFF に
+" 行表示・非表示の切り替え．
 nnoremap : :<C-u>set number! number?<CR>
 " クリップボードから貼り付け
 inoremap <C-r>+ <C-o>:set paste<CR><C-r>+<C-o>:set nopaste<CR>
-" 貼り付けはインデントを揃える
-    " nnoremap p ]p
 " コンマ後には空白を入れる
 inoremap , ,<Space>
 " 賢く行頭・非空白行頭・行末の移動
@@ -666,13 +524,6 @@ AutocmdFT qf nnoremap <buffer><silent> n :<C-u>cnewer<CR>
 AutocmdFT qf nnoremap <buffer><silent> p :<C-u>colder<CR>
 AutocmdFT qf nnoremap <buffer><silent> l :<C-u>clist<CR>
 
-" git-rebase
-AutocmdFT gitrebase nnoremap <buffer><C-p> :<C-u>Pick<CR>
-AutocmdFT gitrebase nnoremap <buffer><C-s> :<C-u>Squash<CR>
-AutocmdFT gitrebase nnoremap <buffer><C-e> :<C-u>Edit<CR>
-AutocmdFT gitrebase nnoremap <buffer><C-r> :<C-u>Reword<CR>
-AutocmdFT gitrebase nnoremap <buffer><C-f> :<C-u>Fixup<CR>
-
 " 初回のみ a:cmd の動きをして，それ以降は行内をローテートする
 let s:smart_line_pos = -1
 function! s:rotate_horizontal_move(cmd)
@@ -733,6 +584,7 @@ if neobundle#load_cache()
     NeoBundle 'thinca/vim-quickrun'
     NeoBundle 'rhysd/nyaovim-popup-tooltip'
     NeoBundle 'rhysd/nyaovim-mini-browser'
+    NeoBundle 'rhysd/nyaovim-markdown-preview'
 
     NeoBundleLazy 'tyru/open-browser.vim', {
                 \ 'autoload' : {
@@ -748,26 +600,12 @@ if neobundle#load_cache()
                 \   }
                 \ }
 
-    NeoBundle 'nyaovim-markdown-preview', {
-                \   'base' : '~/Dev/github.com/rhysd',
-                \   'type' : 'nosync',
-                \ }
-
     NeoBundleSaveCache
 endif
 
 call neobundle#end()
 filetype plugin indent on     " required!
 Autocmd BufWritePost init.vim NeoBundleClearCache
-
-" NeoBundle のキーマップ
-" すべて更新するときは基本的に Unite で非同期に実行
-" nnoremap <silent><Leader>nbu :<C-u>AutoNeoBundleTimestamp<CR>:NeoBundleUpdate<CR>
-nnoremap <silent><Leader>nbu :<C-u>NeoBundleUpdate<CR>
-nnoremap <silent><Leader>nbc :<C-u>NeoBundleClean<CR>
-nnoremap <silent><Leader>nbi :<C-u>NeoBundleInstall<CR>
-nnoremap <silent><Leader>nbl :<C-u>Unite output<CR>NeoBundleList<CR>
-nnoremap <silent><Leader>nbd :<C-u>NeoBundleDocs<CR>
 
 " カラースキーム
 " シンタックスハイライト
