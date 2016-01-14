@@ -705,3 +705,21 @@ else
     xmap <Leader>o <Plug>(openbrowser-smart-search)
 endif
 
+if s:on_nyaovim
+    " nyaovim-mini-browser
+    function! s:devdocs(query) abort
+        if a:query ==# ''
+            let cword = expand('<cword>')
+            if cword ==# ''
+                MiniBrowser http://devdocs.io/
+            else
+                execute 'MiniBrowser' 'http://devdocs.io/#q='.escape(cword, ' \')
+            endif
+            return
+        endif
+
+        execute 'MiniBrowser' 'http://devdocs.io/#q='.escape(a:query, ' \')
+    endfunction
+    command! -nargs=* DevDocs call <SID>devdocs(<q-args>)
+endif
+
