@@ -836,10 +836,12 @@ if neobundle#load_cache()
     NeoBundle 'kchmck/vim-coffee-script'
     NeoBundle 'slim-template/vim-slim'
     NeoBundle 'leafgarland/typescript-vim'
+    NeoBundle 'keith/tmux.vim'
 
     " カラースキーム
     NeoBundle 'rhysd/wallaby.vim'
     NeoBundle 'chriskempson/tomorrow-theme', {'rtp' : 'vim'}
+
     NeoBundle 'junegunn/seoul256.vim'
     NeoBundle 'tomasr/molokai'
     NeoBundle 'telamon/vim-color-github'
@@ -1298,11 +1300,6 @@ if neobundle#load_cache()
             \ 'autoload' : {
             \     'filetypes' : 'jade',
             \   }
-            \ }
-
-    " Tmux
-    NeoBundleLazy 'zaiste/tmux.vim', {
-            \ 'autoload' : {'filetypes' : 'tmux'}
             \ }
 
     " JSON
@@ -2402,7 +2399,7 @@ Autocmd BufWritePost *.cr call <SID>check_syntax('crystal')
 
 let g:quickrun_config['syntax/typescript'] = {
             \   'command' : 'tslint',
-            \   'exec' : '%c %o --file %s:p',
+            \   'exec' : '%c %o %s:p',
             \   'outputter' : 'quickfix',
             \   'errorformat' : '%f[%l\\, %c]: %m',
             \ }
@@ -3302,7 +3299,7 @@ nnoremap <Leader>mg :<C-u>execute 'Unite' 'grep:'.g:memolist_path '-auto-preview
 if isdirectory(expand('~/Dropbox/memo'))
     let g:memolist_path = expand('~/Dropbox/memo')
 else
-    if isdirectory(expand('~/.vim/memo'))
+    if !isdirectory(expand('~/.vim/memo'))
         call mkdir(expand('~/.vim/memo'), 'p')
     endif
     let g:memolist_path = expand('~/.vim/memo')
