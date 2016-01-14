@@ -11,7 +11,6 @@ export PATH=/usr/local/bin:$PATH
 # ワード単位移動の挙動
 export WORDCHARS=
 
-# Haskell executables
 if [ -d $HOME/.cabal ]; then
     export PATH=$HOME/.cabal/bin:$PATH
 fi
@@ -48,13 +47,9 @@ alias df='df -h'
 alias su='su -'
 alias be='bundle exec'
 alias diff=colordiff
-alias vimfiler='vim +VimFiler'
 alias gvim='vim -g'
 alias sudo='sudo '
 alias memo='cat > /dev/null'
-alias memolist='vim +MemoList'
-alias memonew='vim +MemoNew'
-alias d=./bin/dachs
 alias nr='npm run'
 
 alias l=ls
@@ -70,6 +65,7 @@ alias g=git
 alias h=hg
 alias m=make
 alias r=rake
+alias cl='clang++ -stdlib=libc++ -std=c++1y -O2 -Wall -Wextra'
 
 # global alias
 alias -g G='| grep'
@@ -85,18 +81,6 @@ alias -g X='| xargs'
 if [[ $TMUX != "" ]]; then
     alias -g BG=' 2>&1 | tmux display-message &'
 fi
-
-# suffix alias
-alias -s tex=platex
-alias -s dvi=dvipdfmx
-alias -s bib=bibtex
-
-# aliases for C++
-alias g++='g++ -std=c++1y -O2 -Wall -Wextra'
-alias gpp=g++
-alias rg=run-gcc
-alias clang++='clang++ -stdlib=libc++ -std=c++1y -O2 -Wall -Wextra'
-alias cl=clang++
 
 # vspec
 if [ -d "$HOME/.vim/bundle/vim-vspec-matchers" ]; then
@@ -140,11 +124,6 @@ function kiritori(){
     done
     echo -n $reset_color
     echo
-}
-
-function run-gcc(){
-    set -e
-    g++ $* && ./a.out
 }
 
 function source-file(){
@@ -462,95 +441,6 @@ function zsh-plugin-update(){
 }
 
 
-# zaw: incremental search interface
-# https://github.com/zsh-users/zaw
-if ! which percol &> /dev/null && [ -d $ZSHPLUGIN/zaw ]; then
-    source $ZSHPLUGIN/zaw/zaw.zsh
-
-    # zaw-cd-or-edit
-    # zaw source to open file or cd cwd
-    function zaw-src-cd-or-edit() { # {{{
-        local root parent d f
-        setopt local_options null_glob
-
-        if (( $# == 0 )); then
-            root="${PWD}/"
-        else
-            root="$1"
-        fi
-
-        parent="${root:h}"
-        if [[ "${parent}" != */ ]]; then
-            parent="${parent}/"
-        fi
-        candidates+=("${parent}")
-        cand_descriptions+=("../")
-
-        for d in "${root%/}"/*(/); do
-            candidates+=("${d}/")
-            cand_descriptions+=("${d:t}/")
-        done
-
-        for f in "${root%/}"/*(^/); do
-            candidates+=("${f}")
-            cand_descriptions+=("${f:t}")
-        done
-
-        actions=( "zaw-callback-cd-or-edit" "zaw-callback-append-to-buffer" )
-        act_descriptions=( "cd directory or edit file" "append to edit buffer" )
-        #options=( "-m" )
-        options=( "-t" "${root}" )
-    }
-
-    zaw-register-src -n cd-or-edit zaw-src-cd-or-edit
-
-    function zaw-callback-cd-or-edit() {
-        local editor
-        if [[ "$EDITOR" == "" ]]; then
-            editor="vim"
-        else
-            editor="$EDITOR"
-        fi
-
-        if [[ -d "$1" ]]; then
-            echo
-            cd "$1"
-            zle reset-prompt
-        else
-            BUFFER="${editor} ${(q)1}"
-            zle accept-line
-        fi
-    }
-    # }}}
-
-    # 最大でも画面の縦幅半分までしか使わない
-    zstyle ':filter-select' max-lines $(($LINES / 2))
-    # 絞り込みをcase-insensitiveに
-    zstyle ':filter-select' case-insensitive yes
-    # キーバインド
-    bindkey -M viins '^Xc' zaw-cdr
-    bindkey -M viins '^Xh' zaw-history
-    bindkey -M viins '^@'  zaw-history
-    bindkey -M viins '^Xg' zaw-git-files
-    bindkey -M viins '^Xt' zaw-tmux
-    bindkey -M viins '^Xo' zaw-open-file
-    bindkey -M vicmd 'j'   zaw-cd-or-edit
-    bindkey -M vicmd '^R'  zaw-history
-    bindkey -M vicmd '^M'  zaw-applications
-    # 空行の状態で Tab を入れると zaw-cdr する
-    function _advanced_tab(){
-    if [[ $#BUFFER == 0 ]]; then
-        zaw-cdr
-        zle redisplay
-    else
-        zle expand-or-complete
-    fi
-    }
-    zle -N _advanced_tab
-    bindkey -M viins '^I' _advanced_tab
-    bindkey -M vicmd '^I' _advanced_tab
-fi
-
 # zsh-syntax-highlighting
 # https://github.com/zsh-users/zsh-syntax-highlighting
 if [ -d $ZSHPLUGIN/zsh-syntax-highlighting ]; then
@@ -577,7 +467,7 @@ if which rbenv > /dev/null; then
   eval "$(rbenv init -)"
   # rehash rbenv executable file database at [un]installation
   function gem(){
-      /Users/rhayasd/.rbenv/shims/gem $*
+      "$HOME/.rbenv/shims/gem" $*
       if [ "$1" = "install" ] || [ "$1" = "i" ] || [ "$1" = "uninstall" ] || [ "$1" = "uni" ]
       then
           rbenv rehash
@@ -941,11 +831,13 @@ fi
 case $OSTYPE in
   darwin*)
     # Mac OS
-    [ -f ~/.mac.zshrc ] && source ~/.mac.zshrc
+    source-file $HOME/.mac.zshrc
     ;;
   linux*)
     # Linux
-    [ -f ~/.linux.zshrc ] && source ~/.linux.zshrc
+    source-file $HOME/.linux.zshrc
     ;;
 esac
+
+source-file $HOME/.local.zshrc
 # }}}
