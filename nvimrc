@@ -322,7 +322,16 @@ command! -bang -nargs=1 SetIndent
             \         'shiftwidth='.<q-args>
             \         'softtabstop='.<q-args>
 
-" 基本マッピング {{{
+command! -nargs=0 Nvimrc call <SID>edit_config()
+function! s:edit_config() abort
+    let argv = printf('%s %s ', $MYVIMRC, $MYGVIMRC)
+    let nyaovimrc = expand('~/.config/nyaovim/nyaovimrc.html')
+    if filereadable(nyaovimrc)
+        let argv .= nyaovimrc
+    endif
+    execute 'args' argv
+endfunction
+
 " ; と : をスワップ
 noremap : ;
 " コマンドラインウィンドウを使う
@@ -553,7 +562,7 @@ function! s:rotate_in_line()
         endif
     endif
 endfunction
-" }}}
+
 
 " neobundle.vim の設定
 " neobundle.vim が無ければインストールする
