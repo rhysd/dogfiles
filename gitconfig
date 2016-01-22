@@ -11,7 +11,6 @@
 	bl  = blame
 	br  = branch
 	cm  = commit -v
-	cmv = commit -v
 	cmm = commit -m
 	cma = commit -v --amend
 	cl  = clone
@@ -19,7 +18,6 @@
 	dic = diff --cached --color-words
 	dicn = diff --cached
 	dis = diff --stat
-	fe  = fetch
 	lo  = log --graph --pretty=format:'%C(Yellow)%h %C(Cyan)%ad %C(White)%s%C(Green)%d %C(Red)[%an]' --date=short
 	mg  = merge
 	ps  = push
@@ -34,18 +32,11 @@
 	adu = add -u :/
 	co  = checkout
 	cob = checkout -b
-	com = checkout master
 	sh  = show
 	lsf = ls-files
 	lst = ls-tree
-	he  = help
 	gr  = grep
 	lop = log -p
-	bg  = background
-	bps = background push
-	bpl = background pull
-	bplr = background pull --rebase
-	bcl = background clone
 	rmr = rm -r
 	mgn = merge --no-ff
 [push]
