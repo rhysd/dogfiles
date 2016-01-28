@@ -2390,7 +2390,7 @@ endif
 
 let g:quickrun_config['syntax/crystal'] = {
             \   'command' : 'crystal',
-            \   'cmdopt' : 'run --no-build --no-color',
+            \   'cmdopt' : 'run --no-codegen --no-color',
             \   'exec' : '%c %o %s:p',
             \   'outputter' : 'quickfix',
             \   'runner' : 'vimproc',
@@ -3367,7 +3367,8 @@ nnoremap <silent><C-w>r :<C-u>AdjustWindowWidth --margin=1 --direction=shrink<CR
 
 " EasyMotion {{{
 let g:EasyMotion_do_mapping = 0
-map : <Plug>(easymotion-s2)
+let g:EasyMotion_smartcase = 1
+map : <Plug>(easymotion-overwin-f2)
 " }}}
 
 " ぷよ.vim {{{
