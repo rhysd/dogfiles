@@ -1156,8 +1156,6 @@ if neobundle#load_cache()
     " if_lua プラグイン
     if s:meet_neocomplete_requirements
         NeoBundle 'Shougo/neocomplete.vim'
-    else
-        NeoBundle 'Shougo/neocomplcache.vim'
     endif
 
     " GUI オンリーなプラグイン
@@ -1915,98 +1913,6 @@ Autocmd CmdwinEnter * inoremap <silent><buffer><expr><C-h> col('.') == 1 ?
                                     \ "\<ESC>:quit\<CR>" : neocomplete#cancel_popup()."\<C-h>"
 Autocmd CmdwinEnter * inoremap <silent><buffer><expr><BS> col('.') == 1 ?
                                     \ "\<ESC>:quit\<CR>" : neocomplete#cancel_popup()."\<BS>"
-" }}}
-else
-" neocomplcache.vim {{{
-"AutoComplPopを無効にする
-let g:acp_enableAtStartup = 0
-"vim起動時に有効化
-let g:neocomplcache_enable_at_startup = 1
-"smart_caseを有効にする．大文字が入力されるまで大文字小文字の区別をなくす
-let g:neocomplcache_enable_smart_case = 1
-"_を区切りとした補完を有効にする
-let g:neocomplcache_enable_underbar_completion = 1
-"シンタックスをキャッシュするときの最小文字長を3に
-let g:neocomplcache_min_syntax_length = 3
-"日本語を収集しないようにする
-if !exists('g:neocomplcache_keyword_patterns')
-    let g:neocomplcache_keyword_patterns = {}
-endif
-let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
-"リスト表示
-let g:neocomplcache_max_list = 300
-let g:neocomplcache_max_keyword_width = 20
-"区切り文字パターンの定義
-if !exists('g:neocomplcache_delimiter_patterns')
-    let g:neocomplcache_delimiter_patterns = {}
-endif
-let g:neocomplcache_delimiter_patterns.vim = ['#']
-let g:neocomplcache_delimiter_patterns.cpp = ['::']
-"インクルードパスの指定
-if !exists('g:neocomplcache_include_paths')
-    let g:neocomplcache_include_paths = {}
-endif
-let g:neocomplcache_include_paths.cpp  = '.,/usr/local/include,/usr/local/opt/gcc49/lib/gcc/x86_64-apple-darwin13.1.0/4.9.0/include/c++,/usr/include'
-let g:neocomplcache_include_paths.c    = '.,/usr/include'
-let g:neocomplcache_include_paths.perl = '.,/System/Library/Perl,/Users/rhayasd/Programs'
-let g:neocomplcache_include_paths.ruby = expand('~/.rbenv/versions/2.0.0-p195/lib/ruby/2.0.0')
-"インクルード文のパターンを指定
-let g:neocomplcache_include_patterns = { 'cpp' : '^\s*#\s*include', 'ruby' : '^\s*require', 'perl' : '^\s*use', }
-"インクルード先のファイル名の解析パターン
-let g:neocomplcache_include_exprs = {
-            \ 'ruby' : "substitute(substitute(v:fname,'::','/','g'),'$','.rb','')"
-            \ }
-" Enable omni completion.
-AutocmdFT javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-" AutocmdFT html       setlocal omnifunc=htmlcomplete#CompleteTags
-AutocmdFT css        setlocal omnifunc=csscomplete#CompleteCss
-AutocmdFT xml        setlocal omnifunc=xmlcomplete#CompleteTags
-AutocmdFT php        setlocal omnifunc=phpcomplete#CompletePHP
-AutocmdFT c          setlocal omnifunc=ccomplete#Complete
-AutocmdFT gitcommit,markdown setlocal omnifunc=github_complete#complete
-" Enable heavy omni completion.
-if !exists('g:neocomplcache_omni_patterns')
-    let g:neocomplcache_omni_patterns = {}
-endif
-    " let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
-let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-let g:neocomplcache_omni_patterns.c   = '\%(\.\|->\)\h\w*'
-let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
-" neocomplcache 補完用関数
-let g:neocomplcache_vim_completefuncs = {
-    \ 'Unite' : 'unite#complete_source',
-    \ 'VimFiler' : 'vimfiler#complete',
-    \}
-"ctagsへのパス
-if executable('/usr/local/bin/ctags')
-    let g:neocomplcache_ctags_program = '/usr/local/bin/ctags'
-elseif executable('/usr/bin/ctags')
-    let g:neocomplcache_ctags_program = '/usr/bin/ctags'
-endif
-
-"neocomplcacheのマッピング
-inoremap <expr><C-g> neocomplcache#undo_completion()
-inoremap <expr><C-s> neocomplcache#complete_common_string()
-" <CR>: close popup and save indent.
-" <Tab>: completion
-inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-"<C-h>, <BS>: close popup and delete backword char.
-                     " inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
-                     " inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><C-y> neocomplcache#close_popup()
-" HACK: This hack needs because of using both vim-smartinput and neocomplcache
-" when <CR> is typed.
-"    A user types <CR> ->
-"    smart_close_popup() is called when pumvisible() ->
-"    <Plug>(physical_key_return) hooked by vim-smartinput is used
-imap <expr><CR> (pumvisible() ? neocomplcache#smart_close_popup() : "")."\<Plug>(physical_key_return)"
-" コマンドラインウィンドウでは Tab の挙動が変わるのでワークアラウンド
-Autocmd CmdwinEnter * inoremap <silent><buffer><Tab> <C-n>
-Autocmd CmdwinEnter * inoremap <expr><buffer><CR> (pumvisible() ? neocomplcache#smart_close_popup() : "")."\<CR>"
-Autocmd CmdwinEnter * inoremap <silent><buffer><expr><C-h> col('.') == 1 ?
-                                    \ "\<ESC>:quit\<CR>" : neocomplcache#cancel_popup()."\<C-h>"
-Autocmd CmdwinEnter * inoremap <silent><buffer><expr><BS> col('.') == 1 ?
-                                    \ "\<ESC>:quit\<CR>" : neocomplcache#cancel_popup()."\<BS>"
 " }}}
 endif
 
