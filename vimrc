@@ -837,6 +837,7 @@ if neobundle#load_cache()
     NeoBundle 'slim-template/vim-slim'
     NeoBundle 'leafgarland/typescript-vim'
     NeoBundle 'keith/tmux.vim'
+    NeoBundle 'rhysd/npm-debug-log.vim'
 
     " カラースキーム
     NeoBundle 'rhysd/wallaby.vim'

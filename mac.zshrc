@@ -32,4 +32,7 @@ if which go > /dev/null; then
     export PATH=$GOPATH/bin:$PATH
 fi
 
+# Appium
+export JAVA_HOME=`/usr/libexec/java_home`
+
 # vim: set ft=zsh fdm=marker ff=unix fileencoding=utf-8:
