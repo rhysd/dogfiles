@@ -3046,33 +3046,6 @@ function! s:bundle.hooks.on_source(bundle)
         let url = printf("https://twitter.com/%s/status/%s", user, id)
         execute 'OpenBrowser' url
     endfunction
-
-    " 自動更新 {{{
-    let s:tweetvim_update_interval_seconds = 60
-    let s:tweetvim_timestamp = localtime()
-    function! s:tweetvim_autoupdate()
-        let current = localtime()
-        if current - s:tweetvim_timestamp > s:tweetvim_update_interval_seconds
-            call feedkeys("\<Plug>(tweetvim_action_reload)")
-            let s:tweetvim_timestamp = current
-        endif
-        call feedkeys(mode() ==# 'i' ? "\<C-g>\<Esc>" : "g\<Esc>", 'n')
-    endfunction
-
-    function! s:tweetvim_setup_autoupdate()
-        augroup vimrc-tweetvim-autoupdate
-            autocmd!
-            autocmd CursorHold * call <SID>tweetvim_autoupdate()
-        augroup END
-    endfunction
-    command! -nargs=0 TweetVimAutoUpdate call <SID>tweetvim_setup_autoupdate()
-    command! -nargs=0 TweetVimStopAutoUpdate autocmd! vimrc-tweetvim-autoupdate
-    "}}}
-
-    if filereadable($HOME.'/.tweetvimrc')
-        source $HOME/.tweetvimrc
-    endif
-
 endfunction
 unlet s:bundle
 "}}}
