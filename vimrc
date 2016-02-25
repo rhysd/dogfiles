@@ -191,6 +191,7 @@ Autocmd BufRead,BufNew,BufNewFile Guardfile setlocal ft=ruby
 Autocmd BufRead,BufNew,BufNewFile *.jade setlocal ft=jade
 " Go
 Autocmd BufRead,BufNew,BufNewFile *.go setlocal ft=go
+Autocmd BufRead,BufNew,BufNewFile *_test.go setlocal ft=go.test
 " Swift
 Autocmd BufRead,BufNew,BufNewFile *.swift setlocal ft=swift
 " Mal,Crisp
@@ -3401,11 +3402,10 @@ command! -nargs=? ShowOnWeb call <SID>show_on_web(<f-args>)
 
 " vim-prettyprint {{{
 function AP(...) abort
-    silent pedit! +:put!\ =call('prettyprint#prettyprint',a:000) __AWESOME_PRINT__
-    wincmd P
+    silent tabnew! +:put!\ =call('prettyprint#prettyprint',a:000) __AWESOME_PRINT__
     setlocal ft=vim buftype=nofile
     execute 0
-    wincmd p
+    nnoremap <buffer>q :<C-u>quit!
 endfunction
 command! -nargs=+ -complete=expression AP call AP(<args>)
 " }}}
