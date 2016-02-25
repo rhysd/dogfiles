@@ -316,7 +316,7 @@ endfunction
 " あるウィンドウを他のウィンドウから閉じる "{{{
 function! s:is_target_window(winnr)
     let target_filetype = ['ref', 'unite', 'vimfiler']
-    let target_buftype  = ['help', 'quickfix']
+    let target_buftype  = ['help', 'quickfix', 'nofile']
     let winbufnr = winbufnr(a:winnr)
     return index(target_filetype, getbufvar(winbufnr, '&filetype')) >= 0 ||
                 \ index(target_buftype, getbufvar(winbufnr, '&buftype')) >= 0
@@ -3154,6 +3154,8 @@ function! s:bundle.hooks.on_source(bundle)
     call altr#define('app/models/%.rb', 'spec/models/%_spec.rb', 'spec/factories/%s.rb')
     call altr#define('app/controllers/%.rb', 'spec/controllers/%_spec.rb')
     call altr#define('app/helpers/%.rb', 'spec/helpers/%_spec.rb')
+    " golang
+    call altr#define('%.go', '%_test.go')
 endfunction
 unlet s:bundle
 " }}}
@@ -3395,6 +3397,17 @@ func s:show_on_web(...)
     endtry
 endfunc
 command! -nargs=? ShowOnWeb call <SID>show_on_web(<f-args>)
+" }}}
+
+" vim-prettyprint {{{
+function AP(...) abort
+    silent pedit! +:put!\ =call('prettyprint#prettyprint',a:000) __AWESOME_PRINT__
+    wincmd P
+    setlocal ft=vim buftype=nofile
+    execute 0
+    wincmd p
+endfunction
+command! -nargs=+ -complete=expression AP call AP(<args>)
 " }}}
 
 " プラットフォーム依存な設定をロードする "{{{
