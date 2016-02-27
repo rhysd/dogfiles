@@ -144,16 +144,6 @@ if has('persistent_undo')
 endif
 " command-line-window の縦幅
 set cmdwinheight=3
-" Ruby シンタックスチェック
-    " function! s:ExecuteMake()
-    "   if &filetype == 'ruby' && expand('%:t') !~? '^pry\d\{8}.\+\.rb'
-    "     silent make! -c "%" | redraw!
-    "   endif
-    " endfunction
-    " compiler ruby
-    " augroup rbsyntaxcheck
-    "   autocmd BufWritePost <buffer> call s:ExecuteMake()
-    " augroup END
 " ステータスライン
 set rulerformat=%45(%12f%=\ %m%{'['.(&fenc!=''?&fenc:&enc).']'}\ %l-%v\ %p%%\ [%02B]%)
 set statusline=%f:\ %{substitute(getcwd(),'.*/','','')}\ %m%=%{(&fenc!=''?&fenc:&enc).':'.strpart(&ff,0,1)}\ %l-%v\ %p%%\ %02B
@@ -190,7 +180,6 @@ Autocmd BufRead,BufNew,BufNewFile Guardfile setlocal ft=ruby
 " jade
 Autocmd BufRead,BufNew,BufNewFile *.jade setlocal ft=jade
 " Go
-Autocmd BufRead,BufNew,BufNewFile *.go setlocal ft=go
 Autocmd BufRead,BufNew,BufNewFile *_test.go setlocal ft=go.test
 " Swift
 Autocmd BufRead,BufNew,BufNewFile *.swift setlocal ft=swift
