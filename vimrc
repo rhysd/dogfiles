@@ -782,7 +782,7 @@ if neobundle#load_cache()
                 \       'unix'    : 'make -f make_unix.mak',
                 \   }
                 \ }
-    NeoBundle 'Shougo/neosnippet'
+    NeoBundle 'Shougo/neosnippet.vim'
     NeoBundle 'rhysd/inu-snippets'
     NeoBundle 'thinca/vim-quickrun'
     NeoBundle 'Shougo/unite-outline'
@@ -818,12 +818,9 @@ if neobundle#load_cache()
     NeoBundle 'rhysd/committia.vim'
     " NeoBundle 'rhysd/vim-dachs'
     NeoBundle 'rhysd/BoostTest-log.vim'
-    NeoBundle 'thinca/vim-themis'
-    NeoBundle 'rhysd/nimrod.vim'
     NeoBundle 'rust-lang/rust.vim'
     NeoBundle 'rhysd/rust-doc.vim'
     NeoBundle 'cespare/vim-toml'
-    NeoBundle 'kchmck/vim-coffee-script'
     NeoBundle 'slim-template/vim-slim'
     NeoBundle 'leafgarland/typescript-vim'
     NeoBundle 'keith/tmux.vim'
@@ -854,12 +851,6 @@ if neobundle#load_cache()
     NeoBundleMyPlugin 'github-complete.vim'
     NeoBundleMyPlugin 'vim-crystal'
 
-    " vim-scripts上のリポジトリ
-        " NeoBundle 'Align'
-
-    " その他のgitリポジトリ
-        " NeoBundle 'git://git.wincent.com/command-t.git'
-
     " 読み込みを遅延する
     NeoBundleLazy 'Shougo/unite.vim', {
                 \   'autoload' : {
@@ -869,6 +860,11 @@ if neobundle#load_cache()
                 \                   {'name': 'UniteWithWithInput', 'complete' : 'customlist,unite#complete_source'}]
                 \   }
                 \ }
+    NeoBundleLazy 'sorah/unite-ghq', {
+            \ 'autoload' : {
+            \       'unite_sources' : 'ghq'
+            \   }
+            \ }
 
     NeoBundleLazy 'Shougo/vimfiler.vim', {
                 \ 'depends' : 'Shougo/unite.vim',
@@ -891,32 +887,11 @@ if neobundle#load_cache()
                 \     }
                 \ }
 
-    NeoBundleLazy 'rhysd/vim-operator-filled-with-blank', {
-                \ 'autoload' : {
-                \     'mappings' : '<Plug>(operator-filled-with-blank)'
-                \     }
-                \ }
-
-    NeoBundleLazy 'rhysd/vim-operator-evalruby', {
-                \ 'autoload' : {
-                \     'mappings' : '<Plug>(operator-evalruby)'
-                \     }
-                \ }
-
     NeoBundleLazy 'rhysd/vim-operator-surround', {
                 \ 'depends' : 'tpope/vim-repeat',
                 \ 'autoload' : {
                 \       'mappings' : '<Plug>(operator-surround-'
                 \   }
-                \ }
-
-    NeoBundleLazy 'deris/vim-operator-insert', {
-                \ 'autoload' : {
-                \   'mappings' : [
-                \       '<Plug>(operator-insert-i)',
-                \       '<Plug>(operator-insert-a)',
-                \   ],
-                \   },
                 \ }
 
     NeoBundleLazy 'tyru/caw.vim', {
@@ -957,8 +932,6 @@ if neobundle#load_cache()
                 \       'commands' : ['OpenGithubFile', 'OpenGithubIssue', 'OpenGithubPullReq']
                 \   }
                 \ }
-
-    NeoBundleLazy 'rhysd/tmpwin.vim'
 
     NeoBundleLazy 'kannokanno/previm', {
                 \ 'depends' : 'tyru/open-browser.vim',
@@ -1001,7 +974,6 @@ if neobundle#load_cache()
                 \       'mappings' : [['xo', 'am'], ['xo', 'im']]
                 \   }
                 \ }
-
 
     NeoBundleLazy 'sgur/vim-textobj-parameter', {
                 \ 'depends' : 'kana/vim-textobj-user',
@@ -1052,13 +1024,6 @@ if neobundle#load_cache()
                 \   }
                 \ }
 
-    NeoBundleLazy 'rhysd/vim-textobj-clang', {
-                \ 'depends' : 'kana/vim-textobj-user',
-                \ 'autoload' : {
-                \       'mappings' : [['xo', 'a;'], ['xo', 'i;']]
-                \   }
-                \ }
-
     NeoBundleLazy 'tpope/vim-fugitive', {
                 \ 'autoload' : {
                 \       'commands' : ['Gstatus', 'Gcommit', 'Gwrite', 'Gdiff', 'Gblame', 'Git', 'Ggrep']
@@ -1076,12 +1041,6 @@ if neobundle#load_cache()
             \       'commands' : 'ThreesStart'
             \   }
             \ }
-
-    NeoBundleLazy 'itchyny/calendar.vim', {
-                \ 'autoload' : {
-                \       'commands' : {'name' : 'Calendar', 'complete' : 'customlist,calendar#argument#complete'},
-                \   }
-                \ }
 
     NeoBundleLazy 'koron/codic-vim', {
                 \ 'autoload' : {
@@ -1105,24 +1064,10 @@ if neobundle#load_cache()
                 \   }
                 \ }
 
-    NeoBundleLazy 'rhysd/open-pdf.vim', {
-                \ 'autoload' : {
-                \     'commands' : ['Pdf', 'PdfRead', 'PdfEdit', 'PdfCacheClean', 'PdfCacheReload'],
-                \      'unite_sources' : ['pdf/history', 'pdf/search'],
-                \   }
-                \ }
-
     NeoBundleLazy 'thinca/vim-visualstar', {
                 \ 'autoload' : {
                 \     'mappings' : [['x', '*'], ['x' , '#'], ['x', 'g*'], ['x', 'g#']],
                 \   }
-                \ }
-
-
-    NeoBundleLazy 'daisuzu/rainbowcyclone.vim', {
-                \   'autoload' : {
-                \     'mappings' : '<Plug>(rc_search_'
-                \   },
                 \ }
 
     NeoBundleLazy 'cohama/agit.vim', {
@@ -1183,22 +1128,6 @@ if neobundle#load_cache()
                 \ 'depends' : 'kana/vim-operator-user',
                 \ 'autoload' : {'filetypes' : ['c', 'cpp', 'objc']}
                 \ }
-    NeoBundleLazy 'rhysd/clang-extent-selector.vim', {
-                \ 'autoload' : {
-                \       'filetypes' : ['c', 'cpp']
-                \   }
-                \ }
-    NeoBundleLazy 'rhysd/clang-type-inspector.vim', {
-                \ 'autoload' : {
-                \       'filetypes' : ['c', 'cpp']
-                \   }
-                \ }
-
-    NeoBundleLazy 'sorah/unite-ghq', {
-            \ 'autoload' : {
-            \       'unite_sources' : 'ghq'
-            \   }
-            \ }
 
     " Haskell 用プラグイン
     NeoBundleLazy 'ujihisa/unite-haskellimport', {
@@ -1230,9 +1159,9 @@ if neobundle#load_cache()
     NeoBundleLazy 'rhysd/neco-ruby-keyword-args', {
                 \ 'autoload' : {'filetypes' : 'ruby'}
                 \ }
-    " NeoBundleLazy 'rhysd/unite-ruby-require.vim', {
-    "             \ 'autoload' : {'filetypes' : 'ruby'}
-    "             \ }
+    NeoBundleLazy 'rhysd/unite-ruby-require.vim', {
+                \ 'autoload' : {'filetypes' : 'ruby'}
+                \ }
 
     " JavaScript 用プラグイン
     NeoBundleLazy 'jelera/vim-javascript-syntax', {
@@ -1365,6 +1294,8 @@ if neobundle#load_cache()
     " 書き込み権限の無いファイルを編集しようとした時
     NeoBundleLazy 'sudo.vim'
 
+    NeoBundleLazy 'thinca/vim-themis'
+
     NeoBundleCheck
     NeoBundleSaveCache
 endif
@@ -1377,28 +1308,6 @@ call neobundle#end()
 filetype plugin indent on     " required!
 
 Autocmd BufWritePost *vimrc,*gvimrc NeoBundleClearCache
-
-" カーソル行で NeoBundle されたプラグインをブラウザで表示
-function! s:browse_neobundle_home(bundle_name)
-    if match(a:bundle_name, '/') == -1
-        let url = 'http://www.google.jp/search?q='.a:bundle_name
-    else
-        let url = 'https://github.com/'.a:bundle_name
-    endif
-    execute 'OpenBrowser' url
-endfunction
-command! -nargs=1 BrowseNeoBundleHome call <SID>browse_neobundle_home(<q-args>)
-
-" NeoBundle のキーマップ{{{
-" すべて更新するときは基本的に Unite で非同期に実行
-nnoremap <silent><Leader>nbu :<C-u>NeoBundleUpdate<CR>
-nnoremap <silent><Leader>nbc :<C-u>NeoBundleClean<CR>
-nnoremap <silent><Leader>nbi :<C-u>NeoBundleInstall<CR>
-nnoremap <silent><Leader>nbl :<C-u>Unite output<CR>NeoBundleList<CR>
-nnoremap <silent><Leader>nbd :<C-u>NeoBundleDocs<CR>
-nnoremap <silent><Leader>nbh :<C-u>execute 'BrowseNeoBundleHome' matchstr(getline('.'), '\%[Neo]Bundle\%[Lazy]\s\+[''"]\zs.\+\ze[''"]')<CR>
-" }}}
-
 " }}}
 
 " Git helpers {{{
@@ -1878,7 +1787,6 @@ call neocomplete#custom#source('neosnippet', 'min_pattern_length', 1)
 let g:neocomplete#sources#omni#functions = get(g:, 'neocomplete#sources#omni#functions', {})
 if s:enable_tern_for_vim
     let g:neocomplete#sources#omni#functions.javascript = 'tern#Complete'
-    let g:neocomplete#sources#omni#functions.coffee = 'tern#Complete'
     AutocmdFT javascript setlocal omnifunc=tern#Complete
 endif
 
@@ -2319,21 +2227,6 @@ nmap j <Plug>(accelerated_jk_gj)
 nmap k <Plug>(accelerated_jk_gk)
 "}}}
 
-" open-pdf.vim の設定 "{{{
-let g:pdf_convert_on_edit = 1
-let g:pdf_convert_on_read = 1
-
-if !exists('g:pdf_hooks')
-    let g:pdf_hooks = {}
-endif
-function! g:pdf_hooks.on_opened()
-    setlocal nowrap nonumber nolist
-endfunction
-
-Autocmd BufRead,BufNew *.pdf NeoBundleSource open-pdf.vim
-
-"}}}
-
 " Hier.vim {{{
 nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>:HierClear<CR>
 " }}}
@@ -2724,14 +2617,8 @@ map <Leader>r <Plug>(operator-replace)
 vmap p <Plug>(operator-replace)
 " operator-blank-killer
 map <silent><Leader>k <Plug>(operator-trailingspace-killer)
-" operator-filled-with-blank
-map <silent><Leader>b <Plug>(operator-filled-with-blank)
-" vim-operator-evalruby
-if executable($HOME.'/.rbenv/shims/ruby')
-    let g:operator_evalruby_command = $HOME . '/.rbenv/shims/ruby'
-endif
-map <silent><Leader>x <Plug>(operator-evalruby)
 " vim-clang-format
+let g:clang_format#command = 'clang-format-3.5'
 let g:clang_format#style_options = {
             \ 'AllowShortIfStatementsOnASingleLine' : 'true',
             \ }
@@ -2765,9 +2652,6 @@ nmap <silent>gcc <Plug>(operator-surround-replace)<Plug>(textobj-anyblock-a)
 nmap <silent>gdb <Plug>(operator-surround-delete)<Plug>(textobj-between-a)
 nmap <silent>gcb <Plug>(operator-surround-replace)<Plug>(textobj-between-a)
 "}}}
-" vim-operator-insert
-map <silent><Leader>i <Plug>(operator-insert-i)
-map <silent><Leader>a <Plug>(operator-insert-a)
 "}}}
 
 " ghcmod-vim {{{
@@ -3040,16 +2924,6 @@ endfunction
 unlet s:bundle
 "}}}
 
-" RainbowCyclone.vim "{{{
-nmap c/ <Plug>(rc_search_forward)
-nmap c? <Plug>(rc_search_backward)
-nmap c* <Plug>(rc_search_forward_with_cursor)
-nmap c# <Plug>(rc_search_backward_with_cursor)
-nmap cn <Plug>(rc_search_forward_with_last_pattern)
-nmap cN <Plug>(rc_search_backward_with_last_pattern)
-nnoremap cr :<C-u>RCReset<CR>
-"}}}
-
 " clever-f.vim "{{{
 let g:clever_f_smart_case = 1
 let g:clever_f_across_no_line = 1
@@ -3065,10 +2939,6 @@ let g:clang_complete_auto = 0
 let g:clang_auto_select = 1
 " let g:clang_make_default_keymappings = 0
 " }}}
-
-" tmpwin.vim {{{
-nnoremap <silent><Leader>tt :<C-u>call tmpwin#toggle({'open_post' : ['normal! gg', 'setl nohidden']}, 'TweetVimHomeTimeline')<CR>
-"}}}
 
 " submode.vim {{{
 let g:submode_keep_leaving_key = 1
@@ -3282,24 +3152,6 @@ let g:user_emmet_leader_key = '<C-Y>'
 let g:use_emmet_complete_tag = 1
 let g:user_emmet_settings = { 'lang' : 'ja' }
 "}}}
-
-" calendar.vim {{{
-let g:calendar_google_calendar = 1
-let g:calendar_date_endian = 'big'
-let g:calendar_first_day = 'sun_day'
-
-" カーソルライン表示設定を打ち消す
-AutocmdFT puyo,calendar Autocmd CursorHold,CursorHoldI,WinEnter <buffer> setlocal nocursorline
-
-AutocmdFT calendar nmap <buffer>l w
-AutocmdFT calendar nmap <buffer>h b
-
-nnoremap <silent><Leader>cw :<C-u>Calendar -view=week -split=horizontal -height=18<CR>
-
-if ! has('gui_running')
-    let g:calendar_frame = 'default'
-endif
-" }}}
 
 " IndentGuide {{{
 let s:bundle = neobundle#get("vim-indent-guides")

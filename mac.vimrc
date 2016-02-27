@@ -14,7 +14,7 @@ set macmeta
 AutocmdFT cpp setlocal path=.,/usr/local/Cellar/llvm34/HEAD/lib/llvm-3.4/include/c++/v1,/Library/Developer/CommandLineTools/usr/lib/c++/v1,/usr/local/opt/gcc49/lib/gcc/x86_64-apple-darwin13.1.0/4.9.0/include/c++,/usr/local/include,/usr/include
 
 let g:quickrun_config.cpp = {
-            \ 'command' : 'clang++-3.4',
+            \ 'command' : 'clang++-3.5',
             \ 'cmdopt' : '-std=c++1y -Wall -Wextra -O2',
             \ }
 let g:quickrun_config.ruby = { 'exec' : $HOME.'/.rbenv/shims/ruby %o %s' }
