@@ -816,7 +816,7 @@ if neobundle#load_cache()
     NeoBundle 'rhysd/vim-window-adjuster'
     NeoBundle 'Shougo/neomru.vim'
     NeoBundle 'rhysd/committia.vim'
-    " NeoBundle 'rhysd/vim-dachs'
+    NeoBundle 'rhysd/vim-dachs'
     NeoBundle 'rhysd/BoostTest-log.vim'
     NeoBundle 'rust-lang/rust.vim'
     NeoBundle 'rhysd/rust-doc.vim'
@@ -825,6 +825,8 @@ if neobundle#load_cache()
     NeoBundle 'leafgarland/typescript-vim'
     NeoBundle 'keith/tmux.vim'
     NeoBundle 'rhysd/npm-debug-log.vim'
+    NeoBundle 'rhysd/github-complete.vim'
+    NeoBundle 'rhysd/vim-crystal'
 
     " カラースキーム
     NeoBundle 'rhysd/wallaby.vim'
@@ -845,11 +847,6 @@ if neobundle#load_cache()
                 \   'base' : '~/Dev/github.com/rhysd',
                 \   'type' : 'nosync',
                 \ }
-
-    NeoBundleMyPlugin 'libclang-vim'
-    NeoBundleMyPlugin 'vim-dachs'
-    NeoBundleMyPlugin 'github-complete.vim'
-    NeoBundleMyPlugin 'vim-crystal'
 
     " 読み込みを遅延する
     NeoBundleLazy 'Shougo/unite.vim', {
@@ -942,7 +939,6 @@ if neobundle#load_cache()
                 \ }
 
     NeoBundleLazy 'glidenote/memolist.vim', {
-                \ 'depends' : 'Shougo/vimfiler.vim',
                 \ 'autoload' : {
                 \     'commands' : ['MemoNew', 'MemoList', 'MemoGrep']
                 \   }
