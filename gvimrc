@@ -39,63 +39,29 @@ if isdirectory(expand('~/.cabal/bin'))
     let $PATH .= ':'.expand('~/.cabal/bin')
 endif
 
-" ファイルを俯瞰する :Overview {{{
-let s:overview_mode = 0
-function! s:overview_toggle()
-    if s:overview_mode
-        let &l:readonly = s:overview_original_readonly
-        execute 'set guifont='.s:overview_guifont_prefix.s:overview_font_size
-        silent! execute 'sign unplace 1 buffer=' . winbufnr(0)
-        sign undefine OverviewSignSymbol
-        highlight clear OverviewSignColor
-        let s:overview_mode = 0
-    else
-        let pos = getpos('.')
-        let [start, last] = [line('w0'), line('w$')]
-        try
-            normal! gg
-            let screen_height = line('w$')
-            if screen_height == line('$')
-                return
-            endif
-            let s:overview_guifont_prefix = escape(substitute(&guifont, '\d\+$', '', ''), ' \')
-            let s:overview_font_size = str2nr(matchstr(&guifont, '\d\+$'))
-            if s:overview_guifont_prefix == '' || s:overview_font_size == 0
-                echoerr 'Error occured'
-                return
-            endif
-            sign define OverviewSignSymbol linehl=OverviewSignColor texthl=OverviewSignColor
-            for l in range(start, last)
-                execute 'sign place 1 line='.l.' name=OverviewSignSymbol buffer='.winbufnr(0)
-            endfor
-            if &bg == "dark"
-                highlight OverviewSignColor ctermfg=white ctermbg=blue guifg=white guibg=RoyalBlue3
-            else
-                highlight OverviewSignColor ctermbg=white ctermfg=blue guibg=grey guifg=RoyalBlue3
-            endif
-            let s:overview_original_readonly = &l:readonly
-            let font_size = s:overview_font_size * screen_height / line('$')
-            let font_size = font_size < 1 ? 1 : font_size
-            echom font_size
-            execute 'set guifont='.s:overview_guifont_prefix.font_size
-            setlocal readonly
-            let s:overview_mode = 1
-        finally
-            call setpos('.', pos)
-        endtry
-    endif
-endfunction
-command! -nargs=0 Overview call <SID>overview_toggle()
-nnoremap <C-w>O :<C-u>Overview<CR>
-" }}}
-
-" プラットフォーム依存な設定の読み込み
 if has('mac')
-    call SourceIfExist($HOME.'/.mac.gvimrc')
+    " do not load togglebg
+    let g:loaded_togglebg = 1
+
+    set fuoptions=maxvert,maxhorz
+    set guifont=Ricty:h16
+    " F12 で透過率を3段階に切り替え(0, 40, 80)
+    set transparency=0 "初期背景透過0%
+    nnoremap <expr><F12> &transparency+40 > 100 ? ":set transparency=0\<CR>" : ":let &transparency=&transparency+40\<CR>"
 elseif has('unix')
-    call SourceIfExist($HOME.'/.linux.gvimrc')
+    colorscheme molokai
+
+    NeoBundleSource restart.vim
+
+    " IM の起動キーを gVim に教える
+    " set imactivatekey=S-space
+    set iminsert=2
+    set vb t_vb=
+    " フォント設定
+    set guifont=Migu\ 2M\ 14
+    set guioptions-=e
 endif
 
-call SourceIfExist($HOME.'/.local.gvimrc')
+call SourceIfExist($HOME . '/.local.gvimrc')
 
 " vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8 :

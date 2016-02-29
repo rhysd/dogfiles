@@ -939,6 +939,7 @@ if neobundle#load_cache()
                 \ }
 
     NeoBundleLazy 'glidenote/memolist.vim', {
+                \ 'depends' : 'Shougo/unite.vim',
                 \ 'autoload' : {
                 \     'commands' : ['MemoNew', 'MemoList', 'MemoGrep']
                 \   }
