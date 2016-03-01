@@ -945,7 +945,7 @@ if neobundle#load_cache()
                 \   }
                 \ }
 
-    NeoBundle 'Lokaltog/vim-easymotion', {
+    NeoBundle 'easymotion/vim-easymotion', {
                 \ 'autoload' : {
                 \       'mappings' : '<Plug>(easymotion-',
                 \   }
@@ -1698,6 +1698,10 @@ augroup MyVimrc-tsuopen
     autocmd!
     autocmd FileType typescript inoremap <buffer><C-x><C-o> <C-o>:call <SID>tsu_open()<CR>
 augroup END
+" }}}
+
+" Zsh {{{
+let g:zsh_fold_enable = 0
 " }}}
 
 if s:meet_neocomplete_requirements
