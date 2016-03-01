@@ -26,7 +26,7 @@ def ln_dotfile(from, to)
 end
 
 namespace :common do
-  task :all => [:git, :vim, :zsh, :percol]
+  task :all => [:git, :vim, :zsh, :peco]
 
   task :git do
     next unless installed? 'git'
@@ -67,9 +67,9 @@ namespace :common do
     end
   end
 
-  task :percol do
-    next unless installed? 'percol'
-    ln_dotfile 'percol.d' "#{home}/.percol.d"
+  task :peco do
+    next unless installed? 'peco'
+    ln_dotfile 'peco' "#{home}/.config/peco"
   end
 end
 
