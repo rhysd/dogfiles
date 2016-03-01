@@ -26,7 +26,6 @@ def ln_dotfile(from, to)
 end
 
 namespace :common do
-  # task :all => [:git, :vim, :gem, :zsh]
   task :all => [:git, :vim, :zsh, :percol]
 
   task :git do
@@ -37,7 +36,7 @@ namespace :common do
 
   task :vim do
     next unless installed? 'vim'
-    %w( vimrc gvimrc vimshrc ).each do |f|
+    %w( vimrc gvimrc ).each do |f|
       ln_dotfile f, "#{home}/.#{f}"
     end
     unless File.directory? "#{home}/.vim"
@@ -52,15 +51,6 @@ namespace :common do
     end
   end
 
-  task :gem do
-    next unless installed? 'gem'
-    %w( gemrc pryrc ).each do |f|
-      ln_dotfile f, "#{home}/.#{f}"
-    end
-
-    `gem install pry pry-coolline pry-debugger pry-doc active_support`
-  end
-
   task :zsh do
     next unless installed? 'zsh'
     ln_dotfile 'zshrc', "#{home}/.zshrc"
@@ -73,7 +63,6 @@ namespace :common do
 
     next unless installed? 'git'
     chdir "#{home}/.zsh/plugins" do
-      `git clone git://github.com/zsh-users/zaw.git`
       `git clone git://github.com/zsh-users/zsh-syntax-highlighting.git`
     end
   end
@@ -86,7 +75,7 @@ end
 
 namespace :linux do
   desc 'set up dotfiles for Linux'
-  task :setup => ['common:all', :tmux, :vim, :zsh, :xmodmap, :awesome, :conky]
+  task :setup => ['common:all', :tmux, :vim, :xmodmap, :awesome, :conky]
 
   task :tmux do
     next unless installed? 'tmux'
@@ -95,14 +84,7 @@ namespace :linux do
 
   task :vim do
     next unless installed? 'vim'
-    %w( linux.vimrc linux.gvimrc ).each do |vimrc|
-      ln_dotfile vimrc, "#{home}/.#{vimrc}"
-    end
-  end
-
-  task :zsh do
-    next unless installed? 'zsh'
-    ln_dotfile 'linux.zshrc', "#{home}/.linux.zshrc"
+    ln_dotfile 'linux.vimrc', "#{home}/.linux.vimrc"
   end
 
   task :xmodmap do
@@ -126,18 +108,11 @@ end
 
 namespace :mac do
   desc 'set up dotfiles for Mac OS X'
-  task :setup => ['common:all', :vim, :zsh, :tmux]
+  task :setup => ['common:all', :vim, :tmux]
 
   task :vim do
     next unless installed? 'vim'
-    %w( mac.vimrc mac.gvimrc ).each do |vimrc|
-      ln_dotfile vimrc, "#{home}/.#{vimrc}"
-    end
-  end
-
-  task :zsh do
-    next unless installed? 'zsh'
-    ln_dotfile 'mac.zsh', "#{home}/.mac.zsh"
+    ln_dotfile 'mac.vimrc', "#{home}/.mac.vimrc"
   end
 
   task :tmux do
@@ -148,8 +123,8 @@ namespace :mac do
 end
 
 require "rbconfig"
-os = RbConfig::CONFIG["target_os"].downcase
-case os
+
+case RbConfig::CONFIG["target_os"].downcase
 when /mswin(?!ce)|mingw|cygwin|bccwin/
   raise 'Windows is not supported'
 when /linux/
