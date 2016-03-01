@@ -537,6 +537,15 @@ if which ghq &> /dev/null; then
     }
 fi
 
+# Go
+if [ -d "/usr/local/go" ]; then
+    if [ ! -d "$HOME/.go" ]; then
+        mkdir -p $HOME/.go
+    fi
+    export GOPATH=$HOME/.go
+    export PATH=$GOPATH/bin:$PATH
+fi
+
 # }}}
 
 ######################
@@ -826,18 +835,85 @@ fi
 ##########################################
 #   source platform-dependant settings   #
 ##########################################
-# {{{
 
 case $OSTYPE in
-  darwin*)
-    # Mac OS
-    source-file $HOME/.mac.zshrc
-    ;;
-  linux*)
-    # Linux
-    source-file $HOME/.linux.zshrc
-    ;;
+    darwin*)
+        # Mac OS {{{
+        unalias ls
+        alias ls='ls -G'
+        alias top='sudo htop'
+
+        if which grm > /dev/null; then
+            alias rm=grm
+            alias tar=gtar
+        fi
+
+        # suffix aliases
+        alias -s pdf='open -a Preview'
+        alias -s html='open -a Google\ Chrome'
+
+        # global aliases
+        alias -g C='| pbcopy'
+
+        # completions
+        if [ -d /usr/local/share/zsh-completions ]; then
+            fpath=(/usr/local/share/zsh-completions $fpath)
+        fi
+
+        #Homebrew
+        export HOMEBREW_VERBOSE=true
+        export HOMEBREW_EDITOR=vim
+
+        # Appium
+        export JAVA_HOME=`/usr/libexec/java_home`
+        # }}}
+        ;;
+    linux*)
+        # Linux {{{
+        export PACMAN=pacman-color
+        export BROWSER=google-chrome:firefox:$BROWSER
+
+        # for Tmux 256 bit color
+        if [[ $TERM == "xterm" ]]; then
+            export TERM=xterm-256color
+        fi
+
+        if which awesome > /dev/null; then
+            alias configawesome='vim $HOME/.config/awesome/rc.lua'
+        fi
+
+        alias xo=xdg-open
+
+        # suffix alias
+        alias -s html=xdg-open
+
+        # global alias
+        if which notify-send > /dev/null; then
+            alias -g BG=' 2>&1 | notify-send &'
+        fi
+
+        if which xsel > /dev/null; then
+            alias -g C='| xsel --input --clipboard'
+        fi
+
+        # cleverer umount command
+        if ! which um > /dev/null; then
+            function um(){
+                local dirs_in_media
+                dirs_in_media=$(ls -l /media/ | grep -e ^d)
+                if [[ "$(echo "$dirs_in_media" | wc -l)" == 1 ]]; then
+                    local media_dir
+                    media_dir=${"$(echo "$dirs_in_media" | head -n 1)"##* }
+                    echo -n "unmounting ${media_dir}... "
+                    umount $@ /media/"$media_dir"
+                    $? && echo "done."
+                else
+                    umount $@
+                fi
+            }
+        fi
+        # }}}
+        ;;
 esac
 
 source-file $HOME/.local.zshrc
-# }}}
