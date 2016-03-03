@@ -563,59 +563,69 @@ function! s:rotate_in_line()
     endif
 endfunction
 
-
-" neobundle.vim の設定
-" neobundle.vim が無ければインストールする
-if ! isdirectory(expand('~/.nvim/bundle'))
-    echon "Installing neobundle.vim..."
-    silent call mkdir(expand('~/.nvim/bundle'), 'p')
-    silent !git clone https://github.com/Shougo/neobundle.vim $HOME/.nvim/bundle/neobundle.vim
-    echo "done."
+" dein.vim
+if !isdirectory(expand('~/.config/dein/repos/github.com/Shougo/dein.vim'))
+    echo 'Installing dein.vim...'
+    let s:result = system('bash -c "$(curl -fsSL https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh)" -- ~/.config/dein')
     if v:shell_error
-        echoerr "neobundle.vim installation has failed!"
-        finish
+        echon 'Error!'
+        echo s:result
+    else
+        echon 'OK'
     endif
+    unlet! s:result
+endif
+set runtimepath^=~/.config/dein/repos/github.com/Shougo/dein.vim
+
+if !isdirectory('~/.cache/dein')
+    call mkdir($HOME . '/.cache/dein', 'p')
 endif
 
-if has('vim_starting')
-    set rtp+=~/.nvim/bundle/neobundle.vim/
+call dein#begin(expand('~/.cache/dein'))
+
+if dein#load_cache()
+    call dein#add('rhysd/wallaby.vim')
+    call dein#add('jonathanfilip/vim-lucius')
+    call dein#add('rhysd/vim-dachs')
+    call dein#add('rhysd/nyaovim-popup-tooltip')
+    call dein#add('rhysd/nyaovim-mini-browser')
+    call dein#add('rhysd/nyaovim-markdown-preview')
+
+    call dein#add('rhysd/clever-f.vim', {
+                \   'rev' : 'dev',
+                \   'lazy' : 1,
+                \   'on_map' : '<Plug>(clever-f-',
+                \ })
+
+    call dein#add('thinca/vim-quickrun', {
+                \   'lazy' : 1,
+                \   'on_cmd' : 'QuickRun',
+                \   'on_map' : '<Plug>(quickrun-',
+                \ })
+
+    call dein#add('tyru/open-browser.vim', {
+                \   'lazy' : 1,
+                \   'on_cmd' : ['OpenBrowser', 'OpenBrowserSearch', 'OpenBrowserSmartSearch'],
+                \   'on_map' : '<Plug>(openbrowser-',
+                \ })
+
+    call dein#add('tyru/open-browser.vim', {
+                \   'lazy' : 1,
+                \   'on_map' : '<Plug>(openbrowser-',
+                \ })
+    call dein#add('tyru/open-browser-github.vim', {
+                \   'lazy' : 1,
+                \   'on_cmd' : ['OpenGithubFile', 'OpenGithubIssue', 'OpenGithubPullReq'],
+                \   'depends' : 'open-browser.vim',
+                \ })
+
+    call dein#save_cache()
 endif
 
-call neobundle#begin(expand('~/.nvim/bundle'))
+call dein#end()
+filetype plugin indent on
 
-if neobundle#load_cache()
-
-    " GitHub上のリポジトリ
-    NeoBundleFetch 'Shougo/neobundle.vim'
-    NeoBundle 'rhysd/clever-f.vim', 'dev'
-    NeoBundle 'rhysd/wallaby.vim'
-    NeoBundle 'rhysd/vim-dachs'
-    NeoBundle 'jonathanfilip/vim-lucius'
-    NeoBundle 'thinca/vim-quickrun'
-    NeoBundle 'rhysd/nyaovim-popup-tooltip'
-    NeoBundle 'rhysd/nyaovim-mini-browser'
-    NeoBundle 'rhysd/nyaovim-markdown-preview'
-
-    NeoBundleLazy 'tyru/open-browser.vim', {
-                \ 'autoload' : {
-                \     'commands' : ['OpenBrowser', 'OpenBrowserSearch', 'OpenBrowserSmartSearch'],
-                \     'mappings' : '<Plug>(openbrowser-',
-                \   }
-                \ }
-
-    NeoBundleLazy 'tyru/open-browser-github.vim', {
-                \ 'depends' : 'tyru/open-browser.vim',
-                \ 'autoload' : {
-                \       'commands' : ['OpenGithubFile', 'OpenGithubIssue', 'OpenGithubPullReq']
-                \   }
-                \ }
-
-    NeoBundleSaveCache
-endif
-
-call neobundle#end()
-filetype plugin indent on     " required!
-Autocmd BufWritePost init.vim NeoBundleClearCache
+Autocmd BufWritePost init.vim call dein#clear_cache()
 
 " カラースキーム
 " シンタックスハイライト
