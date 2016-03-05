@@ -143,6 +143,8 @@ set spelllang=en,cjk
 set breakindent
 " 一時ディレクトリではバックアップを取らない
 set backupskip=/tmp/*,/private/tmp/*
+" 拡張補完メニュー
+set wildmenu
 
 " 一定時間カーソルを移動しないとカーソルラインを表示（ただし，ウィンドウ移動時
 " はなぜか切り替わらない
@@ -334,13 +336,7 @@ endfunction
 
 " ; と : をスワップ
 noremap : ;
-" コマンドラインウィンドウを使う
-" Note:
-"   noremap ; q:i は使えない
-"   マクロ記録中に q を記録終了に食われてしまう
-"   eval() にそのまま通すのは怖いので事前に &cedit をチェック
-noremap <silent><expr>; &cedit =~# '^<C-\a>$' ? ':'.eval('"\'.&cedit.'"').'i' : ':'
-noremap <Leader>; :
+noremap ; :
 noremap @; @:
 noremap @: @;
 "モードから抜ける
@@ -590,6 +586,7 @@ if dein#load_cache()
     call dein#add('rhysd/nyaovim-popup-tooltip')
     call dein#add('rhysd/nyaovim-mini-browser')
     call dein#add('rhysd/nyaovim-markdown-preview')
+    call dein#add('airblade/vim-gitgutter')
 
     call dein#add('rhysd/clever-f.vim', {
                 \   'rev' : 'dev',
@@ -617,6 +614,11 @@ if dein#load_cache()
                 \   'lazy' : 1,
                 \   'on_cmd' : ['OpenGithubFile', 'OpenGithubIssue', 'OpenGithubPullReq'],
                 \   'depends' : 'open-browser.vim',
+                \ })
+
+    call dein#add('easymotion/vim-easymotion', {
+                \ 'lazy' : 1,
+                \ 'mappings' : '<Plug>(easymotion-',
                 \ })
 
     call dein#save_cache()
@@ -697,7 +699,7 @@ let g:quickrun_config['llvm'] = {
             \   'exec' : 'llvm-as-3.4 %s:p -o=- | lli-3.4 - %a',
             \ }
 
-"QuickRunのキーマップ
+" QuickRunのキーマップ
 nnoremap <Leader>q  <Nop>
 nnoremap <silent><Leader>qr :<C-u>QuickRun<CR>
 vnoremap <silent><Leader>qr :QuickRun<CR>
@@ -714,6 +716,21 @@ else
     nmap <Leader>o <Plug>(openbrowser-smart-search)
     xmap <Leader>o <Plug>(openbrowser-smart-search)
 endif
+
+" GitGutter
+let g:gitgutter_map_keys = 0
+let g:gitgutter_realtime = 0
+let g:gitgutter_eager = 0
+nnoremap <leader>ga :<C-u>GitGutterStageHunk<CR>
+nnoremap <leader>gr :<C-u>GitGutterRevertHunk<CR>
+nnoremap <leader>gp :<C-u>GitGutterPreviewHunk<CR>
+nnoremap <leader>g] :<C-u>GitGutterNextHunk<CR>
+nnoremap <leader>g[ :<C-u>GitGutterPrevHunk<CR>
+
+" EasyMotion
+let g:EasyMotion_do_mapping = 0
+let g:EasyMotion_smartcase = 1
+map : <Plug>(easymotion-overwin-f2)
 
 if s:on_nyaovim
     " nyaovim-mini-browser
