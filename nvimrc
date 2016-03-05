@@ -636,8 +636,9 @@ set background=dark
 try
     if s:on_nyaovim
         colorscheme lucius
+    elseif $TMUX ==# ''
+        colorscheme wallaby
     else
-        " wallaby can't be used in terminal...
         colorscheme desert
     endif
 catch
