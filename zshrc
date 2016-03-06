@@ -538,7 +538,7 @@ if which ghq &> /dev/null; then
 fi
 
 # Go
-if [ -d "/usr/local/go" ]; then
+if which go &> /dev/null; then
     if [ ! -d "$HOME/.go" ]; then
         mkdir -p $HOME/.go
     fi
