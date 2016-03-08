@@ -609,6 +609,8 @@ nnoremap <silent><C-w>h :<C-u>call <SID>jump_window_wrapper('h', 'l')<CR>
 nnoremap <silent><C-w>j :<C-u>call <SID>jump_window_wrapper('j', 'k')<CR>
 nnoremap <silent><C-w>k :<C-u>call <SID>jump_window_wrapper('k', 'j')<CR>
 nnoremap <silent><C-w>l :<C-u>call <SID>jump_window_wrapper('l', 'h')<CR>
+" Git
+nnoremap git :<C-u>!tig<CR>
 
 function! s:jump_window_wrapper(cmd, fallback)
     let old = winnr()
