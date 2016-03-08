@@ -2945,11 +2945,6 @@ call submode#enter_with('changetab', 'n', '', 'gt', 'gt')
 call submode#enter_with('changetab', 'n', '', 'gT', 'gT')
 call submode#map('changetab', 'n', '', 't', 'gt')
 call submode#map('changetab', 'n', '', 'T', 'gT')
-" 時系列 undo/redo
-call submode#enter_with('undo/redo', 'n', '', 'g-', 'g-')
-call submode#enter_with('undo/redo', 'n', '', 'g+', 'g+')
-call submode#map('undo/redo', 'n', '', '-', 'g-')
-call submode#map('undo/redo', 'n', '', '+', 'g+')
 " ウィンドウサイズ変更
 call submode#enter_with('winsize', 'n', '', '<C-w>>', '<C-w>>')
 call submode#enter_with('winsize', 'n', '', '<C-w><', '<C-w><')
@@ -2964,24 +2959,6 @@ call submode#enter_with('change-list', 'n', '', 'g;', 'g;')
 call submode#enter_with('change-list', 'n', '', 'g,', 'g,')
 call submode#map('change-list', 'n', '', ';', 'g;')
 call submode#map('change-list', 'n', '', ',', 'g,')
-" move to next/previous fold
-call submode#enter_with('move-to-fold', 'n', '', 'zj', 'zj')
-call submode#enter_with('move-to-fold', 'n', '', 'zk', 'zk')
-call submode#map('move-to-fold', 'n', '', 'j', 'zj')
-call submode#map('move-to-fold', 'n', '', 'k', 'zk')
-" 上下移動
-call submode#enter_with('updown-move', 'nv', '', '<C-d>', '<C-d>')
-call submode#enter_with('updown-move', 'nv', '', '<C-u>', '<C-u>')
-call submode#enter_with('updown-move', 'nv', '', '<C-f>', '<C-f>')
-call submode#enter_with('updown-move', 'nv', '', '<C-b>', '<C-b>')
-call submode#map('updown-move', 'nv', '', 'd', '<C-d>')
-call submode#map('updown-move', 'nv', '', 'u', '<C-u>')
-call submode#map('updown-move', 'nv', '', 'f', '<C-f>')
-call submode#map('updown-move', 'nv', '', 'b', '<C-b>')
-call submode#map('updown-move', 'nv', '', '<C-d>', '<C-d>')
-call submode#map('updown-move', 'nv', '', '<C-u>', '<C-u>')
-call submode#map('updown-move', 'nv', '', '<C-f>', '<C-f>')
-call submode#map('updown-move', 'nv', '', '<C-b>', '<C-b>')
 " vim-altr
 call submode#enter_with('altr', 'n', 's', 'sa', ':<C-u>call altr#forward()<CR>')
 call submode#enter_with('altr', 'n', 's', 'sA', ':<C-u>call altr#back()<CR>')
@@ -2990,24 +2967,22 @@ call submode#map('altr', 'n', 'r', 'A', 'sA')
 " }}}
 
 " vim-altr {{{
-nnoremap <silent><C-w>a :<C-u>call altr#forward()<CR>
-nnoremap <silent><C-w>A :<C-u>call altr#back()<CR>
-
 let s:bundle = neobundle#get("vim-altr")
 function! s:bundle.hooks.on_source(bundle)
     " for vimrc
     if has('mac')
-        call altr#define('.vimrc', '.gvimrc', '.mac.vimrc', '.mac.gvimrc')
+        call altr#define('.vimrc', '.gvimrc', '.mac.vimrc')
     elseif has('win32') || has('win64')
         call altr#define('_vimrc', '_gvimrc')
     elseif has('unix')
-        call altr#define('.vimrc', '.gvimrc', '.linux.vimrc', '.linux.gvimrc')
+        call altr#define('.vimrc', '.gvimrc', '.linux.vimrc')
     endif
     call altr#define('dotfiles/vimrc', 'dotfiles/gvimrc',
-                \    'dotfiles/mac.vimrc', 'dotfiles/mac.gvimrc',
-                \    'dotfiles/linux.vimrc', 'dotfiles/linux.gvimrc')
-    " ruby TDD
+                   \ 'dotfiles/mac.vimrc', 'dotfiles/linux.vimrc')
+    " Ruby
     call altr#define('%.rb', 'spec/%_spec.rb')
+    " Crystal
+    call altr#define('%.cr', 'spec/%_spec.cr')
     " Rails TDD
     call altr#define('app/models/%.rb', 'spec/models/%_spec.rb', 'spec/factories/%s.rb')
     call altr#define('app/controllers/%.rb', 'spec/controllers/%_spec.rb')
