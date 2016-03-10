@@ -827,6 +827,7 @@ if neobundle#load_cache()
     NeoBundle 'rhysd/npm-debug-log.vim'
     NeoBundle 'rhysd/github-complete.vim'
     NeoBundle 'rhysd/vim-crystal'
+    NeoBundle 'thinca/vim-themis'
 
     " カラースキーム
     NeoBundle 'rhysd/wallaby.vim'
@@ -1290,8 +1291,6 @@ if neobundle#load_cache()
 
     " 書き込み権限の無いファイルを編集しようとした時
     NeoBundleLazy 'sudo.vim'
-
-    NeoBundleLazy 'thinca/vim-themis'
 
     NeoBundleCheck
     NeoBundleSaveCache
@@ -1761,17 +1760,15 @@ let g:neocomplete#filename#include#exprs = {
 " オムニ補完を有効にする(ruby のオムニ補完は挙動が怪しいので off)
 AutocmdFT html   setlocal omnifunc=htmlcomplete#CompleteTags
 AutocmdFT css    setlocal omnifunc=csscomplete#CompleteCss
-AutocmdFT xml    setlocal omnifunc=xmlcomplete#CompleteTags
-AutocmdFT php    setlocal omnifunc=phpcomplete#CompletePHP
-AutocmdFT c      setlocal omnifunc=ccomplete#Complete
 " オムニ補完を実行するパターン
 if !exists('g:neocomplete#sources#omni#input_patterns')
     let g:neocomplete#sources#omni#input_patterns = {}
 endif
-let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
 let g:neocomplete#sources#omni#input_patterns.c   = '\%(\.\|->\)\h\w*'
 let g:neocomplete#sources#omni#input_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
 let g:neocomplete#sources#omni#input_patterns.javascript = '\%(\h\w*\|[^. \t]\.\w*\)'
+let g:neocomplete#sources#omni#input_patterns.markdown = ''
+let g:neocomplete#sources#omni#input_patterns.gitcommit = ''
 " neocomplete 補完用関数
 let g:neocomplete#sources#vim#complete_functions = {
     \ 'Unite' : 'unite#complete_source',

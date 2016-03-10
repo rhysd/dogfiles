@@ -618,7 +618,7 @@ if dein#load_cache()
 
     call dein#add('easymotion/vim-easymotion', {
                 \ 'lazy' : 1,
-                \ 'mappings' : '<Plug>(easymotion-',
+                \ 'on_map' : '<Plug>(easymotion-',
                 \ })
 
     call dein#save_cache()
