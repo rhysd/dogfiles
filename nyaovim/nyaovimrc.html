@@ -1,0 +1,45 @@
+<dom-module id="nyaovim-app">
+<template>
+  <style>
+    /* CSS configurations here */
+    .horizontal {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
+    neovim-editor {
+      width: 100%;
+      height: 100%;
+    }
+    #left-tree-view {
+      width: 200px;
+      flex: auto;
+    }
+    tree-view {
+      font-size: 14px;
+      font-family: Ricty, Monaco, Meiryo, monospace;
+      color: #f0f0f0;
+      background-color: #333333;
+      border-right: solid 2px #666666;
+    }
+    .nyaovim-treeview-directory {
+      color: #87a7ff;
+    }
+  </style>
+
+  <!-- Component tags here -->
+  <div class="horizontal">
+    <tree-view id="left-tree-view" editor="[[editor]]" inset-title-bar></tree-view>
+    <neovim-editor
+      id="nyaovim-editor"
+      argv$="[[argv]]"
+      font="Monaco,Ricty,monospace"
+      font-size="14"
+    ></neovim-editor>
+    <mini-browser editor="[[editor]]"></mini-browser>
+    <markdown-preview editor="[[editor]]" expand-width="400"></markdown-preview>
+  </div>
+  <popup-tooltip editor="[[editor]]"></popup-tooltip>
+</template>
+</dom-module>
+

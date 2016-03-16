@@ -586,6 +586,7 @@ if dein#load_cache()
     call dein#add('rhysd/nyaovim-popup-tooltip')
     call dein#add('rhysd/nyaovim-mini-browser')
     call dein#add('rhysd/nyaovim-markdown-preview')
+    call dein#add('rhysd/nyaovim-tree-view')
     call dein#add('airblade/vim-gitgutter')
 
     call dein#add('rhysd/clever-f.vim', {
