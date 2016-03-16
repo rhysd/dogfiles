@@ -830,6 +830,7 @@ if neobundle#load_cache()
     NeoBundle 'rhysd/github-complete.vim'
     NeoBundle 'rhysd/vim-crystal'
     NeoBundle 'thinca/vim-themis'
+    NeoBundle 'othree/yajs.vim'
 
     " カラースキーム
     NeoBundle 'rhysd/wallaby.vim'
@@ -948,7 +949,7 @@ if neobundle#load_cache()
                 \   }
                 \ }
 
-    NeoBundle 'easymotion/vim-easymotion', {
+    NeoBundleLazy 'easymotion/vim-easymotion', {
                 \ 'autoload' : {
                 \       'mappings' : '<Plug>(easymotion-',
                 \   }
@@ -1089,6 +1090,12 @@ if neobundle#load_cache()
                 \   }
                 \ }
 
+    NeoBundleLazy 'dhruvasagar/vim-table-mode', {
+                \   'autoload' : {
+                \     'commands' : ['TableModeToggle', 'TableModeEnable'],
+                \   }
+                \ }
+
     " if_lua プラグイン
     if s:meet_neocomplete_requirements
         NeoBundle 'Shougo/neocomplete.vim'
@@ -1164,9 +1171,6 @@ if neobundle#load_cache()
                 \ }
 
     " JavaScript 用プラグイン
-    NeoBundleLazy 'jelera/vim-javascript-syntax', {
-                \ 'autoload' : {'filetypes' : 'javascript'}
-                \ }
     if s:enable_tern_for_vim
         NeoBundleLazy 'marijnh/tern_for_vim', {
                     \ 'build' : {
@@ -3224,6 +3228,10 @@ function AP(...) abort
     nnoremap <buffer>q :<C-u>quit!
 endfunction
 command! -nargs=+ -complete=expression AP call AP(<args>)
+" }}}
+
+" vim-table-mode {{{
+let g:table_mode_corner = "|"
 " }}}
 
 " プラットフォーム依存な設定をロードする "{{{
