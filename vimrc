@@ -326,16 +326,14 @@ command! Date :call setline('.', getline('.') . strftime('%Y/%m/%d (%a) %H:%M'))
 command! Vimrc call s:edit_myvimrc()
 function! s:edit_myvimrc()
     let ghq_root = expand(substitute(system('git config ghq.root'), '\n$', '', ''))
-    if isdirectory(ghq_root . '/github.com/rhysd/dotfiles')
-        let vimrc = ghq_root . '/github.com/rhysd/dotfiles/vimrc*'
-        let gvimrc = ghq_root . '/github.com/rhysd/dotfiles/gvimrc*'
-    elseif isdirectory($HOME.'Github/dotfiles')
-        let vimrc = expand('~/Github/dotfiles/vimrc*')
-        let gvimrc = expand('~/Github/dotfiles/gvimrc*')
-    else
-        let vimrc = $MYVIMRC
-        let gvimrc = $MYGVIMRC
-    endif
+    let vimrc = $MYVIMRC
+    let gvimrc = $MYGVIMRC
+    for dir in [ghq_root . '/github.com/rhysd/', $HOME . '/Github/']
+        if isdirectory(dir)
+            let vimrc = dir . '/dotfiles/vimrc*'
+            let gvimrc = dir . '/dotfiles/gvimrc*'
+        endif
+    endfor
 
     let files = ""
     if !empty($MYVIMRC)
@@ -831,6 +829,7 @@ if neobundle#load_cache()
     NeoBundle 'rhysd/vim-crystal'
     NeoBundle 'thinca/vim-themis'
     NeoBundle 'othree/yajs.vim'
+    NeoBundle 'rhysd/unite-redpen.vim'
 
     " カラースキーム
     NeoBundle 'rhysd/wallaby.vim'
