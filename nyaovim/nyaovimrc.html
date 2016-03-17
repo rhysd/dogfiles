@@ -11,9 +11,9 @@
       width: 100%;
       height: 100%;
     }
-    #left-tree-view {
+    #sidebar-treeview {
       width: 200px;
-      flex: auto;
+      flex: none;
     }
     tree-view {
       font-size: 14px;
@@ -29,7 +29,12 @@
 
   <!-- Component tags here -->
   <div class="horizontal">
-    <tree-view id="left-tree-view" editor="[[editor]]" inset-title-bar></tree-view>
+    <tree-view
+      id="sidebar-treeview"
+      editor="[[editor]]"
+      directory-color="#95c7ae"
+      inset-title-bar
+    ></tree-view>
     <neovim-editor
       id="nyaovim-editor"
       argv$="[[argv]]"

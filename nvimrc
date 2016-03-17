@@ -588,6 +588,8 @@ if dein#load_cache()
     call dein#add('rhysd/nyaovim-markdown-preview')
     call dein#add('rhysd/nyaovim-tree-view')
     call dein#add('airblade/vim-gitgutter')
+    call dein#add('vim-airline/vim-airline')
+    call dein#add('vim-airline/vim-airline-themes')
 
     call dein#add('rhysd/clever-f.vim', {
                 \   'rev' : 'dev',
@@ -733,6 +735,12 @@ nnoremap <leader>g[ :<C-u>GitGutterPrevHunk<CR>
 let g:EasyMotion_do_mapping = 0
 let g:EasyMotion_smartcase = 1
 map : <Plug>(easymotion-overwin-f2)
+
+" airline
+let g:airline_left_sep = '»'
+let g:airline_right_sep = '«'
+let g:airline_extensions = []
+Autocmd VimEnter * AirlineTheme base16_ashes
 
 if s:on_nyaovim
     " nyaovim-mini-browser
