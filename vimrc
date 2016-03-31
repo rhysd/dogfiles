@@ -1399,13 +1399,27 @@ function! s:matchit(...)
     let b:match_words = get(b:, 'match_words', '') . ',' . join(default_pairs, ',') . ',' . join(a:000, ',')
 endfunction
 
-" エラー表示
-function! EchoError(...)
-    echohl Error
-    execute 'echomsg' join(map(copy(a:000), 'string(v:val)'), ' ')
-    echohl None
+" Shiba
+function! s:shiba(args) abort
+    if !executable('shiba')
+        echohl ErrorMsg | echom "'shiba' command not found.  Please install it with npm" | echohl None
+        return
+    endif
+
+    if a:args == []
+        call vimproc#system('shiba --detach %')
+        return
+    endif
+
+    let path = a:args[0]
+    if !isdirectory(path) && (!filereadable(path) || path !~# '\.\%(md\|markdown\)$')
+        echohl ErrorMsg | echom path . ' is not a directory or markdown document' | echohl None
+        return
+    endif
+
+    call vimproc#system('shiba --deatch ' . path)
 endfunction
-command! -nargs=+ EchoError call EchoError(<f-args>)
+command! -nargs=? -complete=file Shiba call <SID>shiba([<f-args>])
 "}}}
 
 " 追加のハイライト {{{
@@ -2298,7 +2312,7 @@ AutocmdFT vimfiler nnoremap <buffer><silent><C-h> :<C-u>Unite file_mru directory
 " unite.vim の file との連携
 AutocmdFT vimfiler
             \ nnoremap <buffer><silent>/
-            \ :<C-u>execute 'Unite' 'file:'.vimfiler#get_current_vimfiler().current_dir '-default-action=open_or_vimfiler'<CR>
+            \ :<C-u>execute 'Unite' 'file:' . b:vimfiler.current_dir '-default-action=open_or_vimfiler'<CR>
 " git リポジトリに登録されたすべてのファイルを開く
 AutocmdFT vimfiler nnoremap <buffer><expr>ga vimfiler#do_action('git_repo_files')
 
@@ -2621,9 +2635,8 @@ vmap p <Plug>(operator-replace)
 " operator-blank-killer
 map <silent><Leader>k <Plug>(operator-trailingspace-killer)
 " vim-clang-format
-let g:clang_format#command = 'clang-format-3.5'
 let g:clang_format#style_options = {
-            \ 'AllowShortIfStatementsOnASingleLine' : 'true',
+            \   'AllowShortIfStatementsOnASingleLine' : 'true',
             \ }
 let g:clang_format#filetype_style_options = {
             \ 'javascript' : {},
