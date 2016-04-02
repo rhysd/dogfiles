@@ -90,7 +90,7 @@ else
 fi
 
 # tmux wrapper
-if which tmux > /dev/null; then
+if hash tmux 2> /dev/null; then
     function t(){
         if [[ $TMUX == "" && $# == 0 ]]; then
             tmux new-session \; split-window -h \; select-pane -t 0
@@ -462,7 +462,7 @@ fi
 stty -ixon
 
 # rbenv
-if which rbenv > /dev/null; then
+if hash rbenv 2> /dev/null; then
   # initialize rbenv
   eval "$(rbenv init -)"
   # rehash rbenv executable file database at [un]installation
@@ -477,7 +477,7 @@ if which rbenv > /dev/null; then
 fi
 
 # git uses hub (this is not dangerous)
-if which hub > /dev/null; then
+if hash hub 2> /dev/null; then
   eval "$(hub alias -s)"
 fi
 
@@ -515,7 +515,7 @@ _ls_abbrev() {
 add-zsh-hook chpwd _ls_abbrev
 
 # ghq wrapper
-if which ghq &> /dev/null; then
+if hash ghq 2> /dev/null; then
     function ghq-root() {
         local ghq_root
         ghq_root=$(git config ghq.root)
@@ -538,7 +538,7 @@ if which ghq &> /dev/null; then
 fi
 
 # Go
-if which go &> /dev/null; then
+if hash go 2> /dev/null; then
     if [ ! -d "$HOME/.go" ]; then
         mkdir -p $HOME/.go
     fi
@@ -551,7 +551,7 @@ fi
 ######################
 #   filtering tool   #
 ######################
-if which peco &> /dev/null; then
+if hash peco 2> /dev/null; then
 # {{{
 alias -g P='| peco'
 
@@ -578,7 +578,7 @@ zle -N peco-pkill
 
 function peco-history-insert() {
     local tac
-    which gtac &> /dev/null && tac="gtac" || { which tac &> /dev/null && tac="tac" || { tac="tail -r" } }
+    hash gtac 2> /dev/null && tac="gtac" || { hash tac 2> /dev/null && tac="tac" || { tac="tail -r" } }
     BUFFER=$(fc -l -n 1 | eval $tac | peco  --prompt 'history-insert >' --query "$LBUFFER")
     CURSOR=$#BUFFER         # move cursor
     zle -R -c               # refresh
@@ -587,7 +587,7 @@ zle -N peco-history-insert
 
 function peco-history() {
     local tac
-    which gtac &> /dev/null && tac="gtac" || { which tac &> /dev/null && tac="tac" || { tac="tail -r" } }
+    hash gtac 2> /dev/null && tac="gtac" || { hash tac 2> /dev/null && tac="tac" || { tac="tail -r" } }
     BUFFER=$(fc -l -n 1 | eval $tac | peco --prompt 'history >' --query "$LBUFFER")
     zle clear-screen
     zle accept-line
@@ -633,7 +633,7 @@ zle -N _advanced_tab
 bindkey -M viins '^I' _advanced_tab
 bindkey -M viins '^ r' peco-cdr
 
-if which ghq &> /dev/null; then
+if hash ghq 2> /dev/null; then
     function peco-ghq() {
         local selected_dir=$(ghq list | peco --prompt 'ghq >' --query "$LBUFFER")
         if [ -n "$selected_dir" ]; then
@@ -843,7 +843,7 @@ case $OSTYPE in
         alias ls='ls -G'
         alias top='sudo htop'
 
-        if which grm > /dev/null; then
+        if hash grm 2> /dev/null; then
             alias rm=grm
             alias tar=gtar
         fi
@@ -878,7 +878,7 @@ case $OSTYPE in
             export TERM=xterm-256color
         fi
 
-        if which awesome > /dev/null; then
+        if hash awesome 2> /dev/null; then
             alias configawesome='vim $HOME/.config/awesome/rc.lua'
         fi
 
@@ -888,16 +888,16 @@ case $OSTYPE in
         alias -s html=xdg-open
 
         # global alias
-        if which notify-send > /dev/null; then
+        if hash notify-send 2> /dev/null; then
             alias -g BG=' 2>&1 | notify-send &'
         fi
 
-        if which xsel > /dev/null; then
+        if hash xsel 2> /dev/null; then
             alias -g C='| xsel --input --clipboard'
         fi
 
         # cleverer umount command
-        if ! which um > /dev/null; then
+        if ! hash um 2> /dev/null; then
             function um(){
                 local dirs_in_media
                 dirs_in_media=$(ls -l /media/ | grep -e ^d)
