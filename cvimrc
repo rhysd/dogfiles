@@ -1,3 +1,5 @@
+" https://github.com/1995eaton/chromium-vim
+
 let mapleader = ","
 let searchalias g = "google"
 set noautofocus
@@ -13,6 +15,7 @@ map b scroll left
 map w scroll right
 map ; openCommandBar
 map <C-b> :bookmarks<CR>
+map <C-w> :quit<CR>
 
 map <Leader>b :buffer<Space>
 map <Leader>h :history<Space>
@@ -21,5 +24,7 @@ map <Leader>th :tabhistory<Space>
 map <Leader>gh :open https://github.com<CR>
 map <Leader>fv :open https://favstar.fm/me<CR>
 map <Leader>tw :open https://twitter.com/i/notifications<CR>
+
+map gn :open chrome://newtab<CR>
 
 " vim:ft=vim:
