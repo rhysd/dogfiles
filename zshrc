@@ -863,6 +863,7 @@ case $OSTYPE in
         #Homebrew
         export HOMEBREW_VERBOSE=true
         export HOMEBREW_EDITOR=vim
+        export HOMEBREW_NO_ANALYTICS=1
 
         # Appium
         export JAVA_HOME=`/usr/libexec/java_home`
