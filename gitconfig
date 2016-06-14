@@ -14,9 +14,8 @@
 	cmm = commit -m
 	cma = commit -v --amend
 	cl  = clone
-	di  = diff --color-words
-	dic = diff --cached --color-words
-	dicn = diff --cached
+	di  = diff
+	dic = diff --cached
 	dis = diff --stat
 	lo  = log --graph --pretty=format:'%C(Yellow)%h %C(Cyan)%ad %C(White)%s%C(Green)%d %C(Red)[%an]' --date=short
 	mg  = merge
@@ -39,6 +38,8 @@
 	lop = log -p
 	rmr = rm -r
 	mgn = merge --no-ff
+[diff]
+	compactionHeuristic = true
 [push]
 	default = simple
 [github]
@@ -51,3 +52,9 @@
 	required = true
 [tig]
 	main-view-date = short
+[pager]
+	diff = diff-highlight | less
+# I need to find the way to fallback into normal diff for environment where
+# git is earlier than 2.9
+# [interactive]
+# 	difffilter = diff-highlight

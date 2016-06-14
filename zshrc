@@ -867,6 +867,9 @@ case $OSTYPE in
 
         # Appium
         export JAVA_HOME=`/usr/libexec/java_home`
+
+        # Git
+        export PATH=$PATH:/usr/local/opt/git/share/git-core/contrib/diff-highlight
         # }}}
         ;;
     linux*)
