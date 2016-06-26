@@ -1699,8 +1699,13 @@ AutocmdFT godoc nnoremap<buffer>o :<C-u>Unite outline<CR>
 " }}}
 
 " Rust {{{
-let rust_doc#downloaded_rust_doc_dir = '~/Documents/rust-docs'
-let $RUST_SRC_PATH = $HOME . '/Downloads/rustc-1.5.0/src/'
+let g:rust_recommended_style = 0
+let g:rust_doc#downloaded_rust_doc_dir = '~/Documents/rust-docs'
+let $RUST_SRC_PATH = $HOME . '/Dev/github.com/rust-lang/rust/src'
+let g:racer_cmd = 'racer'
+let g:racer_insert_paren = 0
+let g:racer_experimental_completer = 1
+AutocmdFT rust nnoremap <buffer><Leader>x :<C-u>RustFmt<CR>
 " }}}
 
 " TypeScript {{{
