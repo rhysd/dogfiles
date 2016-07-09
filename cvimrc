@@ -1,9 +1,11 @@
-" https://github.com/1995eaton/chromium-vim
+" Configuration for cVim: https://github.com/1995eaton/chromium-vim
 
 let mapleader = ","
 let searchalias g = "google"
 set noautofocus
 let barposition = "bottom"
+
+iunmapAll
 
 map j scrollPageDown
 map k scrollPageUp
