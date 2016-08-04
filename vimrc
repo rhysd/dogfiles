@@ -316,11 +316,7 @@ nnoremap <silent><C-q>
             \ :<C-u>call <SID>close_windows_like('s:is_target_window(winnr)')<CR>
 inoremap <silent><C-q>
             \ <Esc>:call <SID>close_windows_like('s:is_target_window(winnr)')<CR>
-nnoremap <silent><Leader>cp
-            \ :<C-u>call <SID>close_windows_like('s:is_target_window(winnr)', 'first_only')<CR>
 "}}}
-
-command! Date :call setline('.', getline('.') . strftime('%Y/%m/%d (%a) %H:%M'))
 
 " vimrc を開く
 command! Vimrc call s:edit_myvimrc()
@@ -367,24 +363,6 @@ command! -bang -complete=file -nargs=? Utf8 edit<bang> ++enc=utf-8 <args>
 command! -bang -complete=file -nargs=? Sjis edit<bang> ++enc=cp932 <args>
 command! -bang -complete=file -nargs=? Euc edit<bang> ++enc=eucjp <args>
 
-" 横幅と縦幅を見て縦分割か横分割か決める
-command! -nargs=? -complete=command SmartSplit call <SID>smart_split(<q-args>)
-nnoremap <C-w><Space> :<C-u>SmartSplit<CR>
-function! s:smart_split(cmd)
-    if winwidth(0) > winheight(0) * 2
-        vsplit
-        if exists(':AdjustWindowWidth')
-            AdjustWindowWidth
-        endif
-    else
-        split
-    endif
-
-    if !empty(a:cmd)
-        execute a:cmd
-    endif
-endfunction
-
 " 縦幅と横幅を見て help の開き方を決める
 command! -nargs=* -complete=help SmartHelp call <SID>smart_help(<q-args>)
 nnoremap <silent><Leader>h :<C-u>SmartHelp<Space><C-l>
@@ -418,18 +396,11 @@ command! -bang -nargs=1 SetIndent
             \         'shiftwidth='.<q-args>
             \         'softtabstop='.<q-args>
 
-" カレンダーを開く
-command! -nargs=0 CalendarApp call <SID>open_calendar_app()
-function! s:open_calendar_app()
-    if has('mac')
-        call system('open -a Calendar.app')
-    else
-        OpenBrowser https://www.google.com/calendar/render
-    endif
-endfunction
-
 " 文字数カウント
 command! -nargs=0 Wc %s/.//nge
+
+" コンマピリオド置き換え
+command! -nargs=0 ReplaceCommaPeriod %s/，/、/g | %s/．/。/g
 
 " 基本マッピング {{{
 " ; と : をスワップ
@@ -464,14 +435,12 @@ vnoremap <C-j> }
 vnoremap <C-k> {
 " インサートモードに入らずに1文字追加
 nnoremap <silent><expr>m 'i'.nr2char(getchar())."\<Esc>"
-" 選択領域の頭に入力する（vim-niceblock を使うために vmap）
-vmap m I
 " gm にマーク機能を退避
 noremap gm m
 "Esc->Escで検索結果とエラーハイライトをクリア
 nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>
 "{数値}<Tab>でその行へ移動．それ以外だと通常の<Tab>の動きに
-noremap <expr><Tab> v:count !=0 ? "G" : "\<Tab>zvzz"
+noremap <expr><Tab> v:count != 0 ? "G" : "\<Tab>zvzz"
 " コマンドラインウィンドウ
 " 検索後画面の中心に。
 nnoremap n nzvzz
@@ -534,7 +503,7 @@ cnoremap <C-g> <C-u><BS>
 nnoremap <silent><C-n>   :<C-u>bnext<CR>
 nnoremap <silent><C-p>   :<C-u>bprevious<CR>
 " <C-w> -> s
-nmap     s <C-w>
+nmap s <C-w>
 " 現在のウィンドウのみを残す
 nnoremap <C-w>O <C-w>o
 " バッファを削除
@@ -670,8 +639,8 @@ AutocmdFT help call s:on_FileType_help_define_mappings()
 " quickfix のマッピング
 function! s:on_FileType_qf_define_mappings()
     nnoremap <buffer><silent> q :<C-u>cclose<CR>
-    nnoremap <buffer><silent> j :<C-u>cnext!<CR>
-    nnoremap <buffer><silent> k :<C-u>cprevious!<CR>
+    nnoremap <buffer><silent> j :<C-u>cnext<CR>
+    nnoremap <buffer><silent> k :<C-u>cprevious<CR>
     nnoremap <buffer><silent> J :<C-u>cfirst<CR>
     nnoremap <buffer><silent> K :<C-u>clast<CR>
     nnoremap <buffer><silent> n :<C-u>cnewer<CR>
@@ -679,16 +648,6 @@ function! s:on_FileType_qf_define_mappings()
     nnoremap <buffer><silent> l :<C-u>clist<CR>
 endfunction
 AutocmdFT qf call s:on_FileType_qf_define_mappings()
-
-" git-rebase
-function! s:on_FileType_gitrebase_define_mappings()
-    nnoremap <buffer><C-p> :<C-u>Pick<CR>
-    nnoremap <buffer><C-s> :<C-u>Squash<CR>
-    nnoremap <buffer><C-e> :<C-u>Edit<CR>
-    nnoremap <buffer><C-r> :<C-u>Reword<CR>
-    nnoremap <buffer><C-f> :<C-u>Fixup<CR>
-endfunction
-AutocmdFT gitrebase call s:on_FileType_gitrebase_define_mappings()
 
 function! s:move_backward_by_step()
     let col = col('.')
@@ -796,6 +755,7 @@ if neobundle#load_cache()
     NeoBundle 'thinca/vim-prettyprint'
     NeoBundle 'kana/vim-operator-user'
     NeoBundle 'kana/vim-vspec'
+    NeoBundle 'rhysd/vim-vspec-matchers'
     NeoBundle 'rhysd/accelerated-jk'
     NeoBundle 'kana/vim-smartinput'
     NeoBundle 'kana/vim-niceblock'
@@ -809,7 +769,6 @@ if neobundle#load_cache()
     NeoBundle 'bling/vim-airline'
     NeoBundle 'rhysd/vim-numberstar'
     NeoBundle 'rhysd/migemo-search.vim'
-    NeoBundle 'rhysd/vim-vspec-matchers'
     NeoBundle 'ujihisa/unite-colorscheme'
     NeoBundle 'rhysd/unite-locate'
     NeoBundle 'rhysd/conflict-marker.vim'
@@ -909,12 +868,8 @@ if neobundle#load_cache()
     NeoBundleLazy 'kana/vim-altr'
 
     NeoBundleLazy 'vim-jp/vital.vim', {
-                \ 'depends' : [
-                \     'haya14busa/vital-vimlcompiler',
-                \     'haya14busa/vital-power-assert',
-                \   ],
                 \ 'autoload' : {
-                \       'commands' : ['Vitalize', 'PowerAssert'],
+                \       'commands' : ['Vitalize'],
                 \   },
                 \ }
 
@@ -929,14 +884,6 @@ if neobundle#load_cache()
                 \ 'depends' : 'tyru/open-browser.vim',
                 \ 'autoload' : {
                 \       'commands' : ['OpenGithubFile', 'OpenGithubIssue', 'OpenGithubPullReq']
-                \   }
-                \ }
-
-    NeoBundleLazy 'kannokanno/previm', {
-                \ 'depends' : 'tyru/open-browser.vim',
-                \ 'autoload' : {
-                \     'commands' : 'PrevimOpen',
-                \     'filetypes' : 'markdown'
                 \   }
                 \ }
 
@@ -988,13 +935,6 @@ if neobundle#load_cache()
                 \   }
                 \ }
 
-    NeoBundleLazy 'thinca/vim-textobj-comment', {
-                \ 'depends' : 'kana/vim-textobj-user',
-                \ 'autoload' : {
-                \       'mappings' : [['xo', 'ac'], ['xo', 'ic']]
-                \   }
-                \ }
-
     NeoBundleLazy 'rhysd/vim-textobj-word-column', {
                 \ 'depends' : 'kana/vim-textobj-user',
                 \ 'autoload' : {
@@ -1040,12 +980,6 @@ if neobundle#load_cache()
             \       'commands' : 'ThreesStart'
             \   }
             \ }
-
-    NeoBundleLazy 'koron/codic-vim', {
-                \ 'autoload' : {
-                \       'commands' : 'Codic',
-                \   }
-                \ }
 
     NeoBundleLazy 'rhysd/unite-codic.vim', {
                 \ 'depends' : [
@@ -1155,13 +1089,7 @@ if neobundle#load_cache()
                 \ }
 
     " Ruby 用プラグイン
-    NeoBundleLazy 'basyura/unite-rails', {
-                \ 'autoload' : {'filetypes' : 'ruby'}
-                \ }
     NeoBundleLazy 'rhysd/vim-textobj-ruby', {
-                \ 'autoload' : {'filetypes' : 'ruby'}
-                \ }
-    NeoBundleLazy 'rhysd/neco-ruby-keyword-args', {
                 \ 'autoload' : {'filetypes' : 'ruby'}
                 \ }
     NeoBundleLazy 'rhysd/unite-ruby-require.vim', {
@@ -1234,13 +1162,6 @@ if neobundle#load_cache()
             \     'unite_sources' : 'go/import',
             \   }
             \ }
-
-    NeoBundleLazy 'rhysd/vim-go-impl', {
-            \ 'autoload' : {
-            \     'filetypes' : 'go'
-            \   }
-            \ }
-
     NeoBundleLazy 'fatih/vim-go', {
             \ 'autoload' : {
             \     'filetypes' : ['go', 'markdown'],
@@ -1502,7 +1423,7 @@ endfunction
 
 AutocmdFT cpp nnoremap <silent><buffer>K :<C-u>call <SID>open_online_cpp_doc()<CR>
 AutocmdFT cpp setlocal matchpairs+=<:>
-AutocmdFT cpp inoremap <buffer>,  ,<Space>
+AutocmdFT cpp inoremap <buffer>, ,<Space>
 AutocmdFT cpp inoremap <expr> e getline('.')[col('.') - 6:col('.') - 2] ==# 'const' ? 'expr ' : 'e'
 
 let g:c_syntax_for_h = 1
@@ -1625,26 +1546,6 @@ endfunction
 " Autocmd BufWritePost *.dcs call <SID>check_dachs_syntax()
 AutocmdFT dachs setl errorformat=Error\ in\ line:%l,\ col:%c
 " }}}
-
-" CMake {{{
-function! s:cmake()
-    let project_root = unite#util#path2project_directory(expand('%:p'))
-    if empty(project_root)
-        echomsg "Project directory is not found."
-        return
-    endif
-
-    if ! filereadable(project_root.'/CMakeLists.txt')
-        echomsg "CMakeLists.txt is not found in root directory of the project."
-        return
-    endif
-
-    execute 'QuickRun sh -src "cd '.shellescape(project_root).' && cmake ."'
-endfunction
-
-command! -nargs=0 CMake call <SID>cmake()
-nnoremap <Leader>cm :<C-u>CMake<CR>
-"}}}
 
 " JSON {{{
 " 自動的にオブジェクトのキーをクォートで囲む
