@@ -1903,54 +1903,6 @@ nnoremap <silent>[unite]gg :<C-u>Unite -start-insert -default-action=vimfiler gh
 
 " }}}
 
-" unite-rails "{{{
-function! s:rails_mvc_name()
-    let full_path = expand('%:p')
-    if  full_path !~# '\/app\/'
-        echoerr 'not rails MVC files'
-    endif
-
-    " controllers
-    let base_name = expand('%:r')
-    if base_name =~# '\w\+_controller'
-        if  full_path !~# '\/controllers\/'
-            echoerr 'not rails MVC files'
-        endif
-        return matchstr(base_name, '\w\+\ze_controller')
-    endif
-
-    " views
-    if expand('%:e:e') == 'html.erb'
-        return fnamemodify(full_path, ':h:t')
-    endif
-
-    " models
-    if fnamemodify(full_path, ':h:t') == 'models'
-        return base_name
-    endif
-
-    echoerr 'not rails MVC files'
-endfunction
-
-" unite-rails コマンド {{{
-command! -nargs=0 RModels      Unite rails/model -no-start-insert
-command! -nargs=0 RControllers Unite rails/controller -no-start-insert
-command! -nargs=0 RViews       Unite rails/view -no-start-insert
-command! -nargs=0 RMVC         Unite rails/model rails/controller rails/view
-command! -nargs=0 RHelpers     Unite rails/helpers -no-start-insert
-command! -nargs=0 RMailers     Unite rails/mailers -no-start-insert
-command! -nargs=0 RLib         Unite rails/lib -no-start-insert
-command! -nargs=0 RDb          Unite rails/db -no-start-insert
-command! -nargs=0 RConfig      Unite rails/config -no-start-insert
-command! -nargs=0 RLog         Unite rails/log -no-start-insert
-command! -nargs=0 RJapascripts Unite rails/javascripts -no-start-insert
-command! -nargs=0 RStylesheets Unite rails/stylesheets -no-start-insert
-command! -nargs=0 RBundle      Unite rails/bundle -no-start-insert
-command! -nargs=0 RGems        Unite rails/bundled_gem -no-start-insert
-command! -nargs=0 R            execute 'Unite rails/model rails/controller rails/view -no-start-insert -input=' . s:rails_mvc_name()
-"}}}
-"}}}
-
 " unite-n3337 "{{{
 let g:unite_n3337_pdf = $HOME.'/Documents/C++/n3337.pdf'
 AutocmdFT cpp nnoremap <buffer>[unite]n :<C-u>Unite n3337<CR>
@@ -2130,7 +2082,7 @@ let g:quickrun_config['syntax/typescript'] = {
             \   'outputter' : 'quickfix',
             \   'errorformat' : '%f[%l\\, %c]: %m',
             \ }
-Autocmd BufWritePost *.ts call <SID>check_syntax('typescript')
+Autocmd BufWritePost *.ts,*.tsx call <SID>check_syntax('typescript')
 
 "QuickRunのキーマップ {{{
 nnoremap <Leader>q  <Nop>
@@ -2906,10 +2858,6 @@ function! s:bundle.hooks.on_source(bundle)
     call altr#define('%.rb', 'spec/%_spec.rb')
     " Crystal
     call altr#define('%.cr', 'spec/%_spec.cr')
-    " Rails TDD
-    call altr#define('app/models/%.rb', 'spec/models/%_spec.rb', 'spec/factories/%s.rb')
-    call altr#define('app/controllers/%.rb', 'spec/controllers/%_spec.rb')
-    call altr#define('app/helpers/%.rb', 'spec/helpers/%_spec.rb')
     " golang
     call altr#define('%.go', '%_test.go')
 endfunction
@@ -2921,12 +2869,6 @@ if ! has('gui_running')
     let g:airline_theme = 'wombat'
 endif
 let g:airline#extensions#whitespace#enabled = 0
-"}}}
-
-" previm {{{
-AutocmdFT markdown nnoremap <buffer><Leader>p :<C-u>PrevimOpen<CR>
-Autocmd BufWritePost *.md,*.markdown call previm#refresh()
-let g:previm_enable_realtime = 0
 "}}}
 
 " memolist.vim "{{{
