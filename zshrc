@@ -19,6 +19,10 @@ if [ -d $HOME/.cargo/bin ]; then
     export PATH=$HOME/.cargo/bin:$PATH
 fi
 
+if [ -d $HOME/.opam ]; then
+    export PATH=$HOME/.opam/system/bin:$PATH
+fi
+
 export DOTZSH=$HOME/.zsh
 if [ ! -d $DOTZSH ];then
     mkdir -p $DOTZSH
