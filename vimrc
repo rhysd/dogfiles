@@ -239,7 +239,7 @@ if executable('chmod')
 
     function! s:add_permission_x()
         let file = expand('%:p')
-        if getline(1) =~# '^#!' && !executable(file)
+        if getline(1) =~# '^#![^[]' && !executable(file)
             silent! call vimproc#system('chmod a+x ' . shellescape(file))
         endif
     endfunction
@@ -778,6 +778,7 @@ if neobundle#load_cache()
     NeoBundle 'rhysd/vim-dachs'
     NeoBundle 'rust-lang/rust.vim'
     NeoBundle 'rhysd/rust-doc.vim'
+    NeoBundle 'rhysd/vim-rustpeg'
     NeoBundle 'cespare/vim-toml'
     NeoBundle 'slim-template/vim-slim'
     NeoBundle 'leafgarland/typescript-vim'
