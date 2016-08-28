@@ -16,7 +16,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /* Keymap 0: Basic layer
  *
  * ,---------------------------------------------------.           ,----------------------------------------------------.
- * | ESC    |   1  |   2  |   3  |   4   |   5  |  6   |           |LGuiSp|   7  |   8   |   9  |   0  |   -  |   =     |
+ * | ESC    |   1  |   2  |   3  |   4   |   5  |  6   |           |      |   7  |   8   |   9  |   0  |   -  |   =     |
  * |--------+------+------+------+-------+-------------|           |------+------+-------+------+------+------+---------|
  * | Tab    |   Q  |   W  |   E  |   R   |   T  |  {   |           |  _   |   Y  |   U   |   I  |   O  |   P  |   \     |
  * |--------+------+------+------+-------+------|      |           |      |------+-------+------+------+------+---------|
@@ -27,7 +27,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *   |C-Left|      |      | LAlt |LG/Eisu|                                       |RG/Kana| RAlt |   [  |   ]  |C-Right|
  *   `-----------------------------------'                                       `------------------------------------'
  *                                     ,---------------.           ,---------------.
- *                                     |LGuiEnt|LGuiSpc|           |AltTab|Ctrl/Esc|
+ *                                     |LGuiEnt|LGuiSpc|           |AltTab|LGuiSpc |
  *                              ,------|-------|-------|           |------+--------+--------.
  *                              |      |       | Home  |           | PgUp |        |        |
  *                              |Ctrl/ |TapL1/ |-------|           |------|BackSpc |RShift/ |
@@ -47,12 +47,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                                             KC_HOME,
                                               CTL_T(KC_SPC),LT(SYMB,KC_TAB),KC_END,
         // right hand
-        LGUI(KC_SPC),KC_7,           KC_8,   KC_9,   KC_0,   KC_MINS,KC_EQL,
+        KC_TRNS,     KC_7,           KC_8,   KC_9,   KC_0,   KC_MINS,KC_EQL,
         KC_UNDS,     KC_Y,           KC_U,   KC_I,   KC_O,   KC_P,   KC_BSLS,
                      KC_H,           KC_J,   KC_K,   KC_L,   KC_SCLN,KC_QUOT,
         KC_EQL,      KC_N,           KC_M,   KC_COMM,KC_DOT, KC_SLSH,KC_GRV,
                      GUI_T(KC_LANG1),KC_RALT,KC_LBRC,KC_RBRC,LCTL(KC_RGHT),
-        LALT(KC_TAB),CTL_T(KC_ESC),
+        LALT(KC_TAB),LGUI(KC_SPC),
         KC_PGUP,
         KC_PGDN,     KC_BSPC,SFT_T(KC_ENT)
     ),
