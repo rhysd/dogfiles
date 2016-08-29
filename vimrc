@@ -790,6 +790,17 @@ if neobundle#load_cache()
     NeoBundle 'othree/yajs.vim'
     NeoBundle 'rhysd/unite-redpen.vim'
 
+    " unite.vim sources
+    NeoBundle 'sorah/unite-ghq'
+    NeoBundle 'rhysd/unite-codic.vim', {
+                \ 'depends' : [
+                \       'Shougo/unite.vim',
+                \       'koron/codic-vim',
+                \   ],
+                \ }
+    NeoBundle 'rhysd/unite-n3337'
+    NeoBundle 'rhysd/unite-go-import.vim'
+
     " カラースキーム
     NeoBundle 'rhysd/wallaby.vim'
     NeoBundle 'chriskempson/tomorrow-theme', {'rtp' : 'vim'}
@@ -819,11 +830,6 @@ if neobundle#load_cache()
                 \                   {'name': 'UniteWithWithInput', 'complete' : 'customlist,unite#complete_source'}]
                 \   }
                 \ }
-    NeoBundleLazy 'sorah/unite-ghq', {
-            \ 'autoload' : {
-            \       'unite_sources' : 'ghq'
-            \   }
-            \ }
 
     NeoBundleLazy 'Shougo/vimfiler.vim', {
                 \ 'depends' : 'Shougo/unite.vim',
@@ -982,16 +988,6 @@ if neobundle#load_cache()
             \   }
             \ }
 
-    NeoBundleLazy 'rhysd/unite-codic.vim', {
-                \ 'depends' : [
-                \       'Shougo/unite.vim',
-                \       'koron/codic-vim',
-                \   ],
-                \ 'autoload' : {
-                \       'unite_sources' : 'codic',
-                \   },
-                \ }
-
     NeoBundleLazy 'rhysd/wandbox-vim', {
                 \ 'autoload' : {
                 \       'commands' : [{'name' : 'Wandbox', 'complete' : 'customlist,wandbox#complete_command'}, 'WandboxOptionList']
@@ -1057,9 +1053,6 @@ if neobundle#load_cache()
     " C++用のプラグイン
     NeoBundleLazy 'vim-jp/vim-cpp', {
                 \ 'autoload' : {'filetypes' : 'cpp'}
-                \ }
-    NeoBundleLazy 'rhysd/unite-n3337', {
-                \ 'autoload' : {'unite_sources' : 'n3337'}
                 \ }
     NeoBundleLazy 'Rip-Rip/clang_complete', {
                 \ 'autoload' : {'filetypes' : ['c', 'cpp']}
@@ -1157,12 +1150,6 @@ if neobundle#load_cache()
             \ }
 
     " Go
-    NeoBundleLazy 'rhysd/unite-go-import.vim', {
-            \ 'autoload' : {
-            \     'depends' : ['Shougo/unite.vim'],
-            \     'unite_sources' : 'go/import',
-            \   }
-            \ }
     NeoBundleLazy 'fatih/vim-go', {
             \ 'autoload' : {
             \     'filetypes' : ['go', 'markdown'],
@@ -1589,7 +1576,7 @@ function! s:golang_settings()
     let g:go_highlight_trailing_whitespace_error = 0
     let g:go_textobj_enabled = 0
 
-    nnoremap <buffer><Space>i :<C-u>Unite go/import<CR>
+    nnoremap <buffer><Space>i :<C-u>Unite go/import -start-insert<CR>
     nnoremap <buffer><expr><Leader>i ":\<C-u>GoImport " . expand('<cword>') . "\<CR>"
 endfunction
 
