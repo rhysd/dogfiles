@@ -1574,10 +1574,21 @@ function! s:golang_settings()
 
     let g:go_snippet_engine = "neosnippet"
     let g:go_highlight_trailing_whitespace_error = 0
-    let g:go_textobj_enabled = 0
+    let g:go_play_open_browser = 1
+
+    let g:go_highlight_chan_whitespace_error = 0
+    let g:go_highlight_extra_types = 0
+    let g:go_highlight_space_tab_error = 0
+    let g:go_highlight_array_whitespace_error = 0
+
+    let g:go_metalinter_autosave_enabled = ['vet', 'golint']
 
     nnoremap <buffer><Space>i :<C-u>Unite go/import -start-insert<CR>
-    nnoremap <buffer><expr><Leader>i ":\<C-u>GoImport " . expand('<cword>') . "\<CR>"
+    nnoremap <buffer><expr><Leader>i ":\<C-u>GoImports " . expand('<cword>') . "\<CR>"
+    nnoremap <buffer><Leader>gt :<C-u>GoTestFunc<CR>
+    nnoremap <buffer><Leader>gr :<C-u>GoRename<Space>
+    nnoremap <buffer><Leader>gi :<C-u>GoInfo<CR>
+    nnoremap <buffer><Leader>gn :<C-u>GoSameIds<CR>
 endfunction
 
 AutocmdFT go call <SID>golang_settings()
@@ -2023,21 +2034,6 @@ let g:quickrun_config['syntax/python'] = {
             \ 'errorformat' : '%f:%l:%m',
             \ }
 Autocmd BufWritePost *.py call <SID>check_syntax('python')
-
-let g:quickrun_config['syntax/go'] = {
-            \ 'command' : 'go',
-            \ 'exec' : '%c vet %o %s:p',
-            \ 'outputter' : 'quickfix',
-            \ 'runner' : 'vimproc',
-            \ 'errorformat' : '%Evet: %.%\+: %f:%l:%c: %m,%W%f:%l: %m,%-G%.%#',
-            \ }
-let g:quickrun_config['lint/go'] = {
-            \ 'command' : 'golint',
-            \ 'exec' : '%c %o %s:p',
-            \ 'outputter' : 'quickfix',
-            \ 'runner' : 'vimproc',
-            \ }
-Autocmd BufWritePost *.go call <SID>check_syntax('go')
 
 if executable('llc-3.5')
     let g:vimrc_llc_command = 'llc-3.5'
