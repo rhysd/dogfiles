@@ -1146,14 +1146,14 @@ if neobundle#load_cache()
 
     " JSON
     NeoBundleLazy 'elzr/vim-json', {
-            \ 'autoload' : {'filetypes' : ['json', 'markdown']}
+            \ 'autoload' : {'filetypes' : 'json'}
             \ }
 
     " Go
     NeoBundleLazy 'fatih/vim-go', {
             \ 'autoload' : {
-            \     'filetypes' : ['go', 'markdown'],
-            \     'commands' : ['GoImport', 'GoDrop', 'GoDef', 'GoVet', 'GoDoc', 'GoLint', 'GoRename']
+            \     'filetypes' : 'go',
+            \     'commands' : ['GoImport', 'GoDrop', 'GoDef', 'GoVet', 'GoDoc', 'GoLint', 'GoRename', 'GoImports']
             \   }
             \ }
 
@@ -1489,9 +1489,8 @@ let g:markdown_fenced_languages = [
             \  'cpp',
             \  'ruby',
             \  'vim',
-            \  'd',
             \  'go',
-            \  'haskell',
+            \  'typescript',
             \  'json',
             \ ]
 "}}}
