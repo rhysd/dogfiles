@@ -764,7 +764,8 @@ if neobundle#load_cache()
     NeoBundle 'rhysd/clever-f.vim'
     NeoBundle 'rhysd/unite-zsh-cdr.vim'
     NeoBundle 'rhysd/unite-ruby-require.vim'
-    NeoBundle 'mhinz/vim-signify'
+    NeoBundle 'airblade/vim-gitgutter'
+
     NeoBundle 'kana/vim-submode'
     NeoBundle 'bling/vim-airline'
     NeoBundle 'rhysd/vim-numberstar'
@@ -1243,13 +1244,6 @@ command! -range GitBlameRange call <SID>git_blame(expand('%'), <line1>, <line2>)
 nnoremap <silent><Leader>gb :<C-u>GitBlameThisLine<CR>
 vnoremap <silent><Leader>gb :GitBlameRange<CR>
 "}}}
-
-" git push 用
-function! s:git_push(args)
-    execute "QuickRun sh -cmd sh -src 'git push ".a:args."' -runner vimproc"
-endfunction
-command! -nargs=* GitPush call <SID>git_push(<q-args>)
-nnoremap <Leader>gp :<C-u>GitPush<CR>
 
 " git commit ではインサートモードに入る
 Autocmd VimEnter COMMIT_EDITMSG if getline(1) == '' | execute 1 | startinsert | endif
@@ -2810,14 +2804,6 @@ let g:wandbox#default_compiler = get(g:, 'wandbox#default_compiler', {'cpp' : 'g
 noremap <Leader>wb :<C-u>Wandbox<CR>
 "}}}
 
-" vim-signify "{{{
-let g:signify_vcs_list = ['git', 'svn']
-let g:signify_update_on_bufenter = 0
-let g:signify_update_on_focusgained = 0
-let g:signify_cursorhold_normal = 0
-let g:signify_cursorhold_insert = 0
-"}}}
-
 " tern_for_vim {{{
 let s:hooks = neobundle#get_hooks('tern_for_vim')
 function! s:hooks.on_source(bundle)
@@ -2940,6 +2926,19 @@ command! -nargs=+ -complete=expression AP call AP(<args>)
 
 " vim-table-mode {{{
 let g:table_mode_corner = "|"
+" }}}
+
+" vim-gitgutter {{{
+let g:gitgutter_map_keys = 0
+nnoremap <Leader>gg :<C-u>GitGutterLineHighlightsToggle<CR>
+nnoremap <Leader>gh :<C-u>GitGutterStageHunk<CR>
+nmap <Leader>gp <Plug>GitGutterPreviewHunk
+nmap ]h <Plug>GitGutterNextHunk
+nmap [h <Plug>GitGutterPrevHunk
+omap ih <Plug>GitGutterTextObjectInnerPending
+omap ah <Plug>GitGutterTextObjectOuterPending
+xmap ih <Plug>GitGutterTextObjectInnerVisual
+xmap ah <Plug>GitGutterTextObjectOuterVisual
 " }}}
 
 " プラットフォーム依存な設定をロードする "{{{
