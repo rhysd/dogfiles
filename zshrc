@@ -111,14 +111,6 @@ fi
 # {{{
 function separate(){
     echo -n $fg_bold[yellow]
-    for i in $(seq 1 $COLUMNS); do
-        echo -n '~'
-    done
-    echo -n $reset_color
-}
-
-function kiritori(){
-    echo -n $fg_bold[blue]
     for i in $(seq 1 $(($COLUMNS/4-2))); do
         echo -n '- '
     done
@@ -520,21 +512,11 @@ add-zsh-hook chpwd _ls_abbrev
 
 # ghq wrapper
 if hash ghq 2> /dev/null; then
-    function ghq-root() {
-        local ghq_root
-        ghq_root=$(git config ghq.root)
-        if [[ "$ghq_root" == "" ]]; then
-            echo "$HOME/.ghq"
-        else
-            echo "${ghq_root/\~/$HOME/}"
-        fi
-    }
-
     function ghq() {
         if [[ "$1" == "home" ]]; then
-            builtin cd $(ghq-root)
+            builtin cd $(ghq root)
         elif [[ "$1" == "github" || "$1" == "gh" ]]; then
-            builtin cd "$(ghq-root)/github.com/rhysd"
+            builtin cd "$(ghq root)/github.com/rhysd"
         else
             /usr/bin/env ghq $*
         fi
