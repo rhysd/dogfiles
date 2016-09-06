@@ -1338,7 +1338,7 @@ AutocmdFT ruby nnoremap <buffer>[unite]r :<C-u>Unite ruby/require<CR>
 AutocmdFT ruby call s:matchit()
 Autocmd BufRead Guardfile setlocal filetype=ruby
 
-let s:ruby_template = [ '#!/usr/bin/env ruby', '# encoding: utf-8', '', '' ]
+let s:ruby_template = ['#!/usr/bin/env ruby', '']
 Autocmd BufNewFile *.rb call append(0, s:ruby_template) | normal! G
 
 function! s:toggle_binding_pry()
@@ -1597,6 +1597,11 @@ augroup END
 
 " Zsh {{{
 let g:zsh_fold_enable = 0
+
+let s:sh_template = ['#!/bin/bash', '']
+Autocmd BufNewFile *.sh call append(0, s:sh_template) | normal! G
+let s:zsh_template = ['#!/usr/bin/env zsh', '']
+Autocmd BufNewFile *.zsh call append(0, s:sh_template) | normal! G
 " }}}
 
 if s:meet_neocomplete_requirements
