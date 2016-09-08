@@ -317,8 +317,6 @@ zle -N history-beginning-search-forward-end history-search-end
 # Emacsバインディング（インサートモード）
 bindkey -M viins '^F'    forward-char
 bindkey -M viins '^B'    backward-char
-bindkey -M viins '^P'    up-line-or-history
-bindkey -M viins '^N'    down-line-or-history
 bindkey -M viins '^A'    beginning-of-line
 bindkey -M viins '^E'    end-of-line
 bindkey -M viins '^K'    kill-line
@@ -331,6 +329,9 @@ bindkey -M viins '^H'    backward-delete-char
 bindkey -M viins '^?'    backward-delete-char
 bindkey -M viins '^G'    send-break
 bindkey -M viins '^D'    delete-char-or-list
+# Below will be overwritten by zsh-history-substring-search
+bindkey -M viins '^P'    up-line-or-history
+bindkey -M viins '^N'    down-line-or-history
 
 
 # Emacsバインディング（コマンドラインモード）
@@ -424,29 +425,52 @@ if [ ! -d $ZSHPLUGIN ]; then
     mkdir -p $ZSHPLUGIN
 fi
 
+ZSH_PLUGINS=(
+    https://github.com/zsh-users/zsh-syntax-highlighting.git
+    https://github.com/zsh-users/zsh-autosuggestions.git
+    https://github.com/zsh-users/zsh-history-substring-search.git
+)
+
 # プラグインを更新するコマンド
 function zsh-plugin-update(){
-    local cwd
-    cwd=$PWD
-    for plugin in `ls $ZSHPLUGIN`; do
-        cd $ZSHPLUGIN/$plugin
-        git pull
-        cd ..
+    local cwd=$PWD
+
+    for plugin_url in $ZSH_PLUGINS; do
+        local plugin="${${plugin_url%.git}##*/}"
+        local plugin_dir="${ZSHPLUGIN}/${plugin}"
+
+        if [ -d "$plugin_dir" ]; then
+            # Update
+            echo "Updating ${plugin}..."
+            builtin cd "$plugin_dir"
+            git pull
+        else
+            echo "Installing ${plugin}..."
+            builtin cd "$ZSHPLUGIN"
+            git clone "$plugin_url"
+        fi
+        echo
     done
-    cd $cwd
+
+    cd "$cwd"
 }
 
+# プラグイン読み込み
+for plugin_url in $ZSH_PLUGINS; do
+    local plugin="${${plugin_url%.git}##*/}"
+    local plugin_file="${ZSHPLUGIN}/${plugin}/${plugin}.zsh"
+    if [ -f "$plugin_file" ]; then
+        source "$plugin_file"
+    else
+        echo "Plugin source not found: ${plugin_file}"
+    fi
+done
 
-# zsh-syntax-highlighting
-# https://github.com/zsh-users/zsh-syntax-highlighting
-if [ -d $ZSHPLUGIN/zsh-syntax-highlighting ]; then
-    source $ZSHPLUGIN/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-fi
+# zsh-history-substring-search {{{
+bindkey -M viins '^P' history-substring-search-up
+bindkey -M viins '^N' history-substring-search-down
+# }}}
 
-# zsh-bundle-exec
-# if [ -d ~/Github/zsh-bundle-exec ]; then
-#     source ~/Github/zsh-bundle-exec/zsh-bundle-exec.zsh
-# fi
 # }}}
 
 ##############
