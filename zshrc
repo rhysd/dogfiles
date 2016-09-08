@@ -466,6 +466,10 @@ for plugin_url in $ZSH_PLUGINS; do
     fi
 done
 
+# zsh-autosuggestions {{{
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=241"
+# }}}
+
 # zsh-history-substring-search {{{
 bindkey -M viins '^P' history-substring-search-up
 bindkey -M viins '^N' history-substring-search-down
