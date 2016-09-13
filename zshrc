@@ -651,7 +651,7 @@ if hash ghq 2> /dev/null; then
     function peco-ghq() {
         local selected_dir=$(ghq list | peco --prompt 'ghq >' --query "$LBUFFER")
         if [ -n "$selected_dir" ]; then
-            BUFFER="cd $(ghq-root)/${selected_dir}"
+            BUFFER="cd $(ghq root)/${selected_dir}"
             zle accept-line
         fi
         zle clear-screen
