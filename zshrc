@@ -462,7 +462,7 @@ for plugin_url in $ZSH_PLUGINS; do
     if [ -f "$plugin_file" ]; then
         source "$plugin_file"
     else
-        echo "Plugin source not found: ${plugin_file}"
+        echo "Plugin source not found: ${plugin_file}.  Please install plugin with 'zsh-plugin-update'."
     fi
 done
 
@@ -475,6 +475,19 @@ bindkey -M viins '^P' history-substring-search-up
 bindkey -M viins '^N' history-substring-search-down
 # }}}
 
+# }}}
+
+#######################
+# Tmux プラグイン管理 #
+#######################
+# {{{
+export DOTTMUX="$HOME/.tmux"
+if [ ! -d "$DOTTMUX/plugins/tpm" ]; then
+    echo "Tmux plugin manager is not installed.  Please install it with 'install-tpm' command"
+    function install-tpm() {
+        git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+    }
+fi
 # }}}
 
 ##############
