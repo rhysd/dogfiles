@@ -129,6 +129,8 @@ set whichwrap +=h
 set whichwrap +=l
 " コマンド履歴サイズ
 set history=100
+" コマンドラインモードの補完を拡張
+set wildmenu
 " swap ファイル
 if ! isdirectory($HOME.'/.vim/swap')
     call mkdir($HOME.'/.vim/swap', 'p')
@@ -404,17 +406,16 @@ command! -nargs=0 ReplaceCommaPeriod %s/，/、/g | %s/．/。/g
 
 " 基本マッピング {{{
 " ; と : をスワップ
-noremap : ;
+noremap ; :
 if has('cmdline_hist')
     " コマンドラインウィンドウを使う
     " Note:
     "   noremap ; q:i は使えない
     "   マクロ記録中に q を記録終了に食われてしまう
     "   eval() にそのまま通すのは怖いので事前に &cedit をチェック
-    noremap <silent><expr>; &cedit =~# '^<C-\a>$' ? ':'.eval('"\'.&cedit.'"').'i' : ':'
-    noremap <Leader>; :
+    noremap <silent><expr><Leader>; &cedit =~# '^<C-\a>$' ? ':'.eval('"\'.&cedit.'"').'i' : ':'
 else
-    noremap ; :
+    noremap <Leader>; q:i
 endif
 noremap @; @:
 noremap @: @;
@@ -790,6 +791,8 @@ if neobundle#load_cache()
     NeoBundle 'thinca/vim-themis'
     NeoBundle 'othree/yajs.vim'
     NeoBundle 'rhysd/unite-redpen.vim'
+    NeoBundle 'rhysd/vim-wasm'
+    NeoBundle 'rhysd/vim-gfm-syntax'
 
     " unite.vim sources
     NeoBundle 'sorah/unite-ghq'
@@ -1309,6 +1312,7 @@ let s:zenkaku_no_highlight_filetypes = []
 " 全角スペース
 Autocmd ColorScheme * highlight link ZenkakuSpace Error
 Autocmd VimEnter,WinEnter * if index(s:zenkaku_no_highlight_filetypes, &filetype) == -1 | syntax match ZenkakuSpace containedin=ALL /　/ | endif
+Autocmd ColorScheme * highlight link githubFlavoredMarkdownCode CursorLine
 " }}}
 
 " カラースキーム {{{
@@ -1557,14 +1561,15 @@ function! s:golang_settings()
     let g:go_metalinter_autosave_enabled = ['vet', 'golint']
 
     nnoremap <buffer><Space>i :<C-u>Unite go/import -start-insert<CR>
-    nnoremap <buffer><expr><Leader>i ":\<C-u>GoImports " . expand('<cword>') . "\<CR>"
+    nnoremap <buffer><Leader>i :<C-u>GoImports<CR>
+    inoremap <buffer><C-g><C-i> <C-o>:GoImports<CR>
     nnoremap <buffer><Leader>gt :<C-u>GoTestFunc<CR>
     nnoremap <buffer><Leader>gr :<C-u>GoRename<Space>
     nnoremap <buffer><Leader>gi :<C-u>GoInfo<CR>
     nnoremap <buffer><Leader>gn :<C-u>GoSameIds<CR>
 endfunction
 
-AutocmdFT go call <SID>golang_settings()
+AutocmdFT go,go.test call <SID>golang_settings()
 AutocmdFT godoc nnoremap<buffer>q :<C-u>quit<CR>
 AutocmdFT godoc nnoremap<buffer>d <C-d>
 AutocmdFT godoc nnoremap<buffer>u <C-u>
@@ -2735,7 +2740,6 @@ endif
 
 let g:memolist_memo_suffix = 'md'
 let g:memolist_unite = 1
-let g:memolist_unite_option = '-auto-preview -no-start-insert'
 
 function! s:memolist()
     " delete swap files because they make unite auto preview hung up
