@@ -1,0 +1,9 @@
+{
+  "gvimrc": "~/.gvimrc",
+  "keyremap4macbook": "~/Library/Application Support/KeyRemap4MacBook/private.xml",
+  "mac.vimrc": "~/.mac.vimrc",
+  "nvimrc": "~/.config/nvim/init.vim",
+  "nyaovim": "~/.config/nyaovim",
+  "ranger": "~/.config/ranger",
+  "vimrc": "~/.vimrc"
+}

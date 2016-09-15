@@ -1,0 +1,11 @@
+{
+  "Xmodmap" : "~/.Xmodmap",
+  "Xresources": "~/.Xresources",
+  "gvimrc": "~/.gvimrc",
+  "linux.vimrc": "~/.linux.vimrc",
+  "nvimrc": "~/.config/nvim/init.vim",
+  "nyaovim": "~/.config/nyaovim",
+  "ranger": "~/.config/ranger",
+  "rc.lua": "~/.config/awesome/rc.lua",
+  "vimrc": "~/.vimrc"
+}
