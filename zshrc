@@ -81,6 +81,7 @@ alias -g S='| sed'
 alias -g A='| awk'
 alias -g D='> /dev/null 2>&1'
 alias -g X='| xargs'
+alias -g SPONGE='> /tmp/zsh-sponge-tmp; cat /tmp/zsh-sponge-tmp >'
 
 if [[ $TMUX != "" ]]; then
     alias -g BG=' 2>&1 | tmux display-message &'
@@ -333,7 +334,6 @@ bindkey -M viins '^D'    delete-char-or-list
 bindkey -M viins '^P'    up-line-or-history
 bindkey -M viins '^N'    down-line-or-history
 
-
 # Emacsバインディング（コマンドラインモード）
 bindkey -M vicmd '^A'    beginning-of-line
 bindkey -M vicmd '^E'    end-of-line
@@ -361,7 +361,6 @@ function _parent() {
 }
 zle -N _parent
 bindkey -M viins "^J" _parent
-bindkey -M vicmd "h"  _parent
 
 # ^O で popd する
 function _pop_hist(){
@@ -370,7 +369,6 @@ function _pop_hist(){
 }
 zle -N _pop_hist
 bindkey -M viins "^O" _pop_hist
-bindkey -M vicmd "l"  _pop_hist
 
 # 前のコマンドで最後に打った単語の挿入
 zle -N insert-last-word smart-insert-last-word
@@ -413,7 +411,6 @@ function _ls_files() {
     zle reset-prompt
 }
 zle -N _ls_files
-bindkey -M vicmd 'k' _ls_files
 # }}}
 
 ####################
@@ -483,7 +480,7 @@ bindkey -M viins '^N' history-substring-search-down
 # {{{
 export DOTTMUX="$HOME/.tmux"
 if [ ! -d "$DOTTMUX/plugins/tpm" ]; then
-    echo "Tmux plugin manager is not installed.  Please install it with 'install-tpm' command"
+    echo "Tmux plugin manager is not installed.  Please install it with 'install-tpm' command\n"
     function install-tpm() {
         git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
     }
