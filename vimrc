@@ -981,6 +981,7 @@ if neobundle#load_cache()
                 \ }
 
     NeoBundleLazy 'rbtnn/puyo.vim', {
+            \ 'depends' : 'rbtnn/game_engine.vim',
             \ 'autoload' : {
             \       'commands' : 'Puyo'
             \   }
