@@ -287,7 +287,7 @@ zle -N zle-keymap-select
 # }}}
 
 #######################
-#   histroy setting   #
+#   Histroy setting   #
 #######################
 # {{{
 HISTFILE=$DOTZSH/zsh_history
@@ -316,38 +316,29 @@ zle -N history-beginning-search-backward-end history-search-end
 zle -N history-beginning-search-forward-end history-search-end
 
 # Emacsバインディング（インサートモード）
-bindkey -M viins '^F'    forward-char
-bindkey -M viins '^B'    backward-char
-bindkey -M viins '^A'    beginning-of-line
-bindkey -M viins '^E'    end-of-line
-bindkey -M viins '^K'    kill-line
-bindkey -M viins '^R'    history-incremental-pattern-search-backward
-bindkey -M viins '\er'   history-incremental-pattern-search-forward
-bindkey -M viins '^Y'    yank
-bindkey -M viins '^W'    backward-kill-word
-bindkey -M viins '^U'    backward-kill-line
-bindkey -M viins '^H'    backward-delete-char
-bindkey -M viins '^?'    backward-delete-char
-bindkey -M viins '^G'    send-break
-bindkey -M viins '^D'    delete-char-or-list
+bindkey -M viins '^F'  forward-char
+bindkey -M viins '^B'  backward-char
+bindkey -M viins '^A'  beginning-of-line
+bindkey -M viins '^E'  end-of-line
+bindkey -M viins '^K'  kill-line
+bindkey -M viins '^R'  history-incremental-pattern-search-backward
+bindkey -M viins '\er' history-incremental-pattern-search-forward
+bindkey -M viins '^Y'  yank
+bindkey -M viins '^W'  backward-kill-word
+bindkey -M viins '^U'  backward-kill-line
+bindkey -M viins '^H'  backward-delete-char
+bindkey -M viins '^?'  backward-delete-char
+bindkey -M viins '^G'  send-break
+bindkey -M viins '^D'  delete-char-or-list
 # Below will be overwritten by zsh-history-substring-search
-bindkey -M viins '^P'    up-line-or-history
-bindkey -M viins '^N'    down-line-or-history
+bindkey -M viins '^P'  up-line-or-history
+bindkey -M viins '^N'  down-line-or-history
 
 # Emacsバインディング（コマンドラインモード）
-bindkey -M vicmd '^A'    beginning-of-line
-bindkey -M vicmd '^E'    end-of-line
-bindkey -M vicmd '^K'    kill-line
-bindkey -M vicmd '^P'    up-line-or-history
-bindkey -M vicmd '^N'    down-line-or-history
-bindkey -M vicmd '^Y'    yank
-bindkey -M vicmd '^W'    backward-kill-word
-bindkey -M vicmd '^U'    backward-kill-line
-bindkey -M vicmd '/'     vi-history-search-forward
-bindkey -M vicmd '?'     vi-history-search-backward
-bindkey -M vicmd '\ef'   forward-word                      # Alt-f
-bindkey -M vicmd '\eb'   backward-word                     # Alt-b
-bindkey -M vicmd '\ed'   kill-word                         # Alt-d
+bindkey -M vicmd '/'   vi-history-search-forward
+bindkey -M vicmd '?'   vi-history-search-backward
+bindkey -M vicmd 'H'   beginning-of-line
+bindkey -M vicmd 'L'   end-of-line
 
 # jj でノーマルモードに戻る
 bindkey -M viins -s 'jj' '\e'

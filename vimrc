@@ -250,7 +250,7 @@ endif
 augroup InitialMessage
     autocmd!
     " 起動時メッセージ．ｲﾇｩ…
-    autocmd VimEnter * echo "(U＾ω＾) enjoy vimming!"
+    autocmd VimEnter * echo "(U'w') enjoy vimming!"
 augroup END
 
 " ウィンドウ周りのユーティリティ "{{{
@@ -766,7 +766,6 @@ if neobundle#load_cache()
     NeoBundle 'rhysd/unite-zsh-cdr.vim'
     NeoBundle 'rhysd/unite-ruby-require.vim'
     NeoBundle 'airblade/vim-gitgutter'
-
     NeoBundle 'kana/vim-submode'
     NeoBundle 'bling/vim-airline'
     NeoBundle 'rhysd/vim-numberstar'
@@ -1654,10 +1653,9 @@ let g:neocomplete#delimiter_patterns.cpp = ['::']
 if !exists('g:neocomplete#sources#include#paths')
     let g:neocomplete#sources#include#paths = {}
 endif
-let g:neocomplete#sources#include#paths.cpp  = '.,/usr/local/include,/usr/local/opt/gcc49/lib/gcc/x86_64-apple-darwin13.1.0/4.9.0/include/c++,/usr/local/Cellar/llvm35/3.5.0/lib/llvm-3.5/include/c++/v1,/usr/include'
+let g:neocomplete#sources#include#paths.cpp  = '.,/usr/local/include'
 let g:neocomplete#sources#include#paths.c    = '.,/usr/include'
 let g:neocomplete#sources#include#paths.perl = '.,/System/Library/Perl,/Users/rhayasd/Programs'
-let g:neocomplete#sources#include#paths.ruby = expand('~/.rbenv/versions/2.2.0/lib/ruby/2.2.0')
 "インクルード文のパターンを指定
 let g:neocomplete#sources#include#patterns = { 'c' : '^\s*#\s*include', 'cpp' : '^\s*#\s*include', 'ruby' : '^\s*require', 'perl' : '^\s*use', }
 "インクルード先のファイル名の解析パターン
@@ -2019,11 +2017,7 @@ let g:quickrun_config['syntax/python'] = {
             \ }
 Autocmd BufWritePost *.py call <SID>check_syntax('python')
 
-if executable('llc-3.5')
-    let g:vimrc_llc_command = 'llc-3.5'
-elseif executable('llc')
-    let g:vimrc_llc_command = 'llc'
-endif
+let g:vimrc_llc_command = 'llc'
 if exists('g:vimrc_llc_command')
     let g:quickrun_config['syntax/llvm'] = {
                 \ 'command' : g:vimrc_llc_command,

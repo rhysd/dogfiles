@@ -9,7 +9,9 @@ if has('kaoriya')
 endif
 
 " option キーを Alt として使う．
-set macmeta
+if exists('+macmeta')
+    set macmeta
+endif
 
 AutocmdFT cpp setlocal path=.,/usr/local/Cellar/llvm34/HEAD/lib/llvm-3.4/include/c++/v1,/Library/Developer/CommandLineTools/usr/lib/c++/v1,/usr/local/opt/gcc49/lib/gcc/x86_64-apple-darwin13.1.0/4.9.0/include/c++,/usr/local/include,/usr/include
 
