@@ -50,7 +50,6 @@ alias cpr='cp -pR'
 alias df='df -h'
 alias su='su -'
 alias be='bundle exec'
-alias diff=colordiff
 alias gvim='vim -g'
 alias sudo='sudo '
 alias memo='cat > /dev/null'
@@ -60,15 +59,10 @@ alias l=ls
 alias pd=popd
 alias v=vim
 alias gv=gvim
-alias c=cd
 alias s=sudo
 alias hi='history 0'
-alias k=kill
 alias ng=noglob
 alias g=git
-alias h=hg
-alias m=make
-alias r=rake
 alias cl='clang++ -stdlib=libc++ -std=c++1y -O2 -Wall -Wextra'
 
 # global alias
@@ -76,15 +70,12 @@ alias -g G='| grep'
 alias -g GI='| grep -i'
 alias -g L='| less'
 alias -g V='| view -R -'
-alias -g H='| head'
-alias -g S='| sed'
-alias -g A='| awk'
 alias -g D='> /dev/null 2>&1'
 alias -g X='| xargs'
 alias -g SPONGE='> /tmp/zsh-sponge-tmp; cat /tmp/zsh-sponge-tmp >'
 
 if [[ $TMUX != "" ]]; then
-    alias -g BG=' 2>&1 | tmux display-message &'
+    alias -g BG=' 2>&1 | xargs tmux display-message &'
 fi
 
 # vspec
@@ -125,11 +116,6 @@ function separate(){
 
 function source-file(){
     [[ -s "$1" ]] && source "$1"
-}
-
-function reload(){
-    source-file $HOME/.zshrc
-    source-file $HOME/.zshenv
 }
 
 function pg(){
@@ -416,7 +402,6 @@ fi
 ZSH_PLUGINS=(
     https://github.com/zsh-users/zsh-syntax-highlighting.git
     https://github.com/zsh-users/zsh-autosuggestions.git
-    https://github.com/zsh-users/zsh-history-substring-search.git
 )
 
 # プラグインを更新するコマンド
@@ -456,11 +441,6 @@ done
 
 # zsh-autosuggestions {{{
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=241"
-# }}}
-
-# zsh-history-substring-search {{{
-bindkey -M viins '^P' history-substring-search-up
-bindkey -M viins '^N' history-substring-search-down
 # }}}
 
 # }}}
@@ -509,6 +489,11 @@ fi
 # PWD を移動するごとにディレクトリ内のファイルを表示
 # ただし，ファイルが多すぎるときは省略する
 _ls_abbrev() {
+    if [[ $- != *i* ]]; then
+        # インタラクティブシェル以外ではスキップする
+        return
+    fi
+
     # -a : Do not ignore entries starting with ..
     # -C : Force multi-column output.
     # -F : Append indicator (one of */=>@|) to entries.
@@ -538,19 +523,6 @@ _ls_abbrev() {
     fi
 }
 add-zsh-hook chpwd _ls_abbrev
-
-# ghq wrapper
-if hash ghq 2> /dev/null; then
-    function ghq() {
-        if [[ "$1" == "home" ]]; then
-            builtin cd $(ghq root)
-        elif [[ "$1" == "github" || "$1" == "gh" ]]; then
-            builtin cd "$(ghq root)/github.com/rhysd"
-        else
-            /usr/bin/env ghq $*
-        fi
-    }
-fi
 
 # Go
 if hash go 2> /dev/null; then
