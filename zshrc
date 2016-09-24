@@ -185,7 +185,7 @@ setopt \
 # {{{
 # ユーザ定義補完
 if [ -d ~/.zsh/site-functions ]; then
-  fpath=(~/.zsh/site-functions ${fpath})
+    fpath=(~/.zsh/site-functions ${fpath})
 fi
 
 # 補完に使うソース
@@ -316,7 +316,6 @@ bindkey -M viins '^H'  backward-delete-char
 bindkey -M viins '^?'  backward-delete-char
 bindkey -M viins '^G'  send-break
 bindkey -M viins '^D'  delete-char-or-list
-# Below will be overwritten by zsh-history-substring-search
 bindkey -M viins '^P'  up-line-or-history
 bindkey -M viins '^N'  down-line-or-history
 
@@ -402,6 +401,7 @@ fi
 ZSH_PLUGINS=(
     https://github.com/zsh-users/zsh-syntax-highlighting.git
     https://github.com/zsh-users/zsh-autosuggestions.git
+    https://github.com/Tarrasch/zsh-bd.git
 )
 
 # プラグインを更新するコマンド
@@ -432,8 +432,11 @@ function zsh-plugin-update(){
 for plugin_url in $ZSH_PLUGINS; do
     local plugin="${${plugin_url%.git}##*/}"
     local plugin_file="${ZSHPLUGIN}/${plugin}/${plugin}.zsh"
+    local plugin_file_="${ZSHPLUGIN}/${plugin}/${${plugin}##zsh-}.zsh"
     if [ -f "$plugin_file" ]; then
         source "$plugin_file"
+    elif [ -f "$plugin_file_" ]; then
+        source "$plugin_file_"
     else
         echo "Plugin source not found: ${plugin_file}.  Please install plugin with 'zsh-plugin-update'."
     fi
