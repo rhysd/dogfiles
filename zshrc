@@ -774,20 +774,31 @@ function peco-neomru(){
 zle -N peco-neomru
 bindkey -M viins '^ n' peco-neomru
 
-function peco-neobundle(){
-    if ! [ -d "$HOME/.vim/bundle" ]; then
+function peco-directory-entries() {
+    if ! [ -d "$1" ]; then
         return
     fi
 
     local selected
-    selected=$(ls -1 "$HOME/.vim/bundle" | peco --prompt 'neobundle >')
+    selected=$(ls -1 "$1" | peco --prompt "$(basename "$1") >")
     if [[ "$selected" != "" ]]; then
-        BUFFER="cd $HOME/.vim/bundle/$selected"
-        zle accept-line
+        echo "$1/$selected"
     fi
+}
+
+function peco-neobundle(){
+    BUFFER="cd $(peco-directory-entries "$HOME/.vim/bundle")"
+    zle accept-line
 }
 zle -N peco-neobundle
 bindkey -M viins '^ b' peco-neobundle
+
+function peco-memolist(){
+    BUFFER="vim $(peco-directory-entries "$HOME/Dropbox/memo")"
+    zle accept-line
+}
+zle -N peco-memolist
+bindkey -M viins '^ ^m' peco-memolist
 
 function peco-man-list-all() {
     local parent dir file
@@ -834,6 +845,7 @@ function peco-source(){
         find-insert \
         locate \
         man \
+        memolist \
         neomru \
         neomru-insert \
         neobundle \
