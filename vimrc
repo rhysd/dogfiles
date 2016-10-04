@@ -784,7 +784,7 @@ if neobundle#load_cache()
     NeoBundle 'slim-template/vim-slim'
     NeoBundle 'leafgarland/typescript-vim'
     NeoBundle 'keith/tmux.vim'
-    NeoBundle 'rhysd/npm-debug-log.vim'
+    NeoBundle 'rhysd/npm-filetypes.vim'
     NeoBundle 'rhysd/github-complete.vim'
     NeoBundle 'rhysd/vim-crystal'
     NeoBundle 'thinca/vim-themis'
@@ -1292,7 +1292,7 @@ function! s:shiba(args) abort
     endif
 
     if a:args == []
-        call vimproc#system('shiba --detach %')
+        call vimproc#system('shiba --detach ' . expand('%:p'))
         return
     endif
 
@@ -1305,6 +1305,25 @@ function! s:shiba(args) abort
     call vimproc#system('shiba --deatch ' . path)
 endfunction
 command! -nargs=? -complete=file Shiba call <SID>shiba([<f-args>])
+
+function! s:open_qiita_in_browser() abort
+    if &ft !=# 'markdown'
+        echoerr 'This buffer is not a markdown document!'
+    endif
+
+    let line = search('^\%(- \)\+-\=$', 'n')
+    if line == 0 || line == line('$')
+        echoerr 'Header separator was not found!'
+    endif
+
+    let lines = join(getline(line, '$'), "\n")
+    if lines =~# '^\n*$'
+        echoerr 'Body is empty!'
+    endif
+    call setreg(&clipboard =~# 'plus$' ? '+' : '*', lines, 'V')
+    OpenBrowser https://qiita.com/drafts/new
+endfunction
+command! -nargs=0 Qiita call <SID>open_qiita_in_browser()
 "}}}
 
 " 追加のハイライト {{{
