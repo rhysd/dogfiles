@@ -2814,6 +2814,9 @@ nnoremap <silent><C-w>r :<C-u>AdjustWindowWidth --margin=1 --direction=shrink<CR
 " EasyMotion {{{
 let g:EasyMotion_do_mapping = 0
 let g:EasyMotion_smartcase = 1
+" Avoid hit an enter bug of vim-easymotion
+" https://github.com/easymotion/vim-easymotion/issues/308
+let g:EasyMotion_verbose = 0
 map : <Plug>(easymotion-overwin-f2)
 " }}}
 
