@@ -2065,6 +2065,15 @@ let g:quickrun_config['syntax/typescript'] = {
             \ }
 Autocmd BufWritePost *.ts,*.tsx call <SID>check_syntax('typescript')
 
+let g:quickrun_config['syntax/css'] = {
+            \   'command' : 'stylelint',
+            \   'exec' : '%c %o %s:p',
+            \   'cmdopt' : '--no-color',
+            \   'outputter' : 'quickfix',
+            \   'errorformat' : '%+P%f,%*[\ ]%l:%c%*[\ ]✖%*[\ ]%m,%-Q',
+            \ }
+Autocmd BufWritePost *.css call <SID>check_syntax('css')
+
 "QuickRunのキーマップ {{{
 nnoremap <Leader>q  <Nop>
 nnoremap <silent><Leader>qr :<C-u>QuickRun<CR>
