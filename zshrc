@@ -231,22 +231,22 @@ zstyle ':vcs_info:*' actionformats '%u%c%b (%s) !%a'
 
 # VCS 情報（ブランチ名・VCS名・アクション名・状態（色））
 function vcs_info_precmd(){
-  LANG=en_US.UTF-8 vcs_info
-  local color
-  local msg
-  if [[ -n "$vcs_info_msg_0_" ]]; then
-    if [[ $vcs_info_msg_0_ =~ "^\?" ]]; then
-      color=%B%F{red}
-      msg=${vcs_info_msg_0_##\?(\+|)}
-    elif [[ $vcs_info_msg_0_ =~ "^\+" ]]; then
-      color=%B%F{yellow}
-      msg=${vcs_info_msg_0_#\+}
-    else
-      color=%B%F{green}
-      msg=$vcs_info_msg_0_
+    LANG=en_US.UTF-8 vcs_info
+    local color
+    local msg
+    if [[ -n "$vcs_info_msg_0_" ]]; then
+        if [[ $vcs_info_msg_0_ =~ "^\?" ]]; then
+            color=%B%F{red}
+            msg=${vcs_info_msg_0_##\?(\+|)}
+        elif [[ $vcs_info_msg_0_ =~ "^\+" ]]; then
+            color=%B%F{yellow}
+            msg=${vcs_info_msg_0_#\+}
+        else
+            color=%B%F{green}
+            msg=$vcs_info_msg_0_
+        fi
+        echo "[$color$msg%f%b]"
     fi
-    echo "[$color$msg%f%b]"
-  fi
 }
 
 # 左プロンプト
@@ -335,16 +335,16 @@ bindkey -M viins -s 'jj' '\e'
 
 # ^J で parent directory に移動
 function _parent() {
-  pushd .. > /dev/null
-  zle reset-prompt
+    pushd .. > /dev/null
+    zle reset-prompt
 }
 zle -N _parent
 bindkey -M viins "^J" _parent
 
 # ^O で popd する
 function _pop_hist(){
-  popd > /dev/null
-  zle reset-prompt
+    popd > /dev/null
+    zle reset-prompt
 }
 zle -N _pop_hist
 bindkey -M viins "^O" _pop_hist
@@ -474,22 +474,22 @@ stty -ixon
 
 # rbenv
 if hash rbenv 2> /dev/null; then
-  # initialize rbenv
-  eval "$(rbenv init -)"
-  # rehash rbenv executable file database at [un]installation
-  function gem(){
-      "$HOME/.rbenv/shims/gem" $*
-      if [ "$1" = "install" ] || [ "$1" = "i" ] || [ "$1" = "uninstall" ] || [ "$1" = "uni" ]
-      then
-          rbenv rehash
-          rehash
-      fi
-  }
+    # initialize rbenv
+    eval "$(rbenv init -)"
+    # rehash rbenv executable file database at [un]installation
+    function gem(){
+        "$HOME/.rbenv/shims/gem" $*
+        if [ "$1" = "install" ] || [ "$1" = "i" ] || [ "$1" = "uninstall" ] || [ "$1" = "uni" ]
+        then
+            rbenv rehash
+            rehash
+        fi
+    }
 fi
 
 # git uses hub (this is not dangerous)
 if hash hub 2> /dev/null; then
-  eval "$(hub alias -s)"
+    eval "$(hub alias -s)"
 fi
 
 # PWD を移動するごとにディレクトリ内のファイルを表示
