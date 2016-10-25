@@ -254,7 +254,10 @@ terminfo_down_sc=$terminfo[cud1]$terminfo[cuu1]$terminfo[sc]$terminfo[cud1]
 function _left_down_prompt_preexec () { print -rn -- $terminfo[el]; }
 add-zsh-hook preexec _left_down_prompt_preexec
 PROMPT_2='`vcs_info_precmd`'
-PROMPT="%{$terminfo_down_sc$PROMPT_2$terminfo[rc]%}%{$fg_bold[green]%}%~%{$reset_color%} %# "
+PROMPT_NEWLINE=$'\n'
+GREEN_PROMPT="%{$fg_bold[green]%}%~%{$reset_color%}${PROMPT_NEWLINE}%{$terminfo_down_sc$PROMPT_2$terminfo[rc]%}%{$fg_bold[green]%}U'w') {%{$reset_color%} "
+YELLOW_PROMPT="%{$fg_bold[yellow]%}%~%{$reset_color%}${PROMPT_NEWLINE}%{$terminfo_down_sc$PROMPT_2$terminfo[rc]%}%{$fg_bold[yellow]%}U'w') {%{$reset_color%} "
+PROMPT="$GREEN_PROMPT"
 
 # 右プロンプト
 RPROMPT='[%{$fg_bold[red]%}${HOST}%{$reset_color%}][%{$fg_bold[red]%}%D{%m/%d %H:%M}%{$reset_color%}]'
@@ -263,9 +266,9 @@ RPROMPT='[%{$fg_bold[red]%}${HOST}%{$reset_color%}][%{$fg_bold[red]%}%D{%m/%d %H
 # XXX: vicmd で ^M や ^C 押下時に insert モードに入っても色が戻らない
 function zle-keymap-select () {
     case $KEYMAP in
-        vicmd) PROMPT="%{$terminfo_down_sc$PROMPT_2$terminfo[rc]%}%{$fg_bold[yellow]%}%~%{$reset_color%} %# ";;
-        main) PROMPT="%{$terminfo_down_sc$PROMPT_2$terminfo[rc]%}%{$fg_bold[green]%}%~%{$reset_color%} %# ";;
-        viins) PROMPT="%{$terminfo_down_sc$PROMPT_2$terminfo[rc]%}%{$fg_bold[magenta]%}%~%{$reset_color%} %# ";;
+        vicmd) PROMPT="$YELLOW_PROMPT";;
+        main) PROMPT="$GREEN_PROMPT";;
+        viins) PROMPT="$GREEN_PROMPT";;
     esac
     zle reset-prompt
 }
