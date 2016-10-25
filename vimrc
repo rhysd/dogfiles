@@ -2070,7 +2070,7 @@ let g:quickrun_config['syntax/css'] = {
             \   'exec' : '%c %o %s:p',
             \   'cmdopt' : '--no-color',
             \   'outputter' : 'quickfix',
-            \   'errorformat' : '%+P%f,%*[\ ]%l:%c%*[\ ]✖%*[\ ]%m,%-Q',
+            \   'errorformat' : '%-P%f,%*[\ ]%l:%c%*[\ ]%*[✖⚠]%*[\ ]%m,%-Q',
             \ }
 Autocmd BufWritePost *.css call <SID>check_syntax('css')
 
