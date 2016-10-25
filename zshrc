@@ -256,7 +256,7 @@ add-zsh-hook preexec _left_down_prompt_preexec
 PROMPT_2='`vcs_info_precmd`'
 PROMPT_NEWLINE=$'\n'
 GREEN_PROMPT="%{$fg_bold[green]%}%~%{$reset_color%}${PROMPT_NEWLINE}%{$terminfo_down_sc$PROMPT_2$terminfo[rc]%}%{$fg_bold[green]%}U'w')%{$reset_color%} { "
-YELLOW_PROMPT="%{$fg_bold[yellow]%}%~%{$reset_color%}${PROMPT_NEWLINE}%{$terminfo_down_sc$PROMPT_2$terminfo[rc]%}%{$fg_bold[yellow]%}U'w'){%{$reset_color%} { "
+YELLOW_PROMPT="%{$fg_bold[yellow]%}%~%{$reset_color%}${PROMPT_NEWLINE}%{$terminfo_down_sc$PROMPT_2$terminfo[rc]%}%{$fg_bold[yellow]%}U'w')%{$reset_color%} { "
 PROMPT="$GREEN_PROMPT"
 
 # 右プロンプト
