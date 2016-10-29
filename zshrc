@@ -4,7 +4,6 @@
 # {{{
 export LANG=ja_JP.UTF-8
 export EDITOR=vim
-# export LESS='--LONG-PROMPT --ignore-case'
 
 export PATH=/usr/local/bin:$PATH
 
@@ -56,10 +55,8 @@ alias memo='cat > /dev/null'
 alias nr='npm run'
 
 alias l=ls
-alias pd=popd
 alias v=vim
 alias gv=gvim
-alias s=sudo
 alias hi='history 0'
 alias ng=noglob
 alias g=git
@@ -432,6 +429,7 @@ function zsh-plugin-update(){
 }
 
 # プラグイン読み込み
+local plugin_url
 for plugin_url in $ZSH_PLUGINS; do
     local plugin="${${plugin_url%.git}##*/}"
     local plugin_file="${ZSHPLUGIN}/${plugin}/${plugin}.zsh"
