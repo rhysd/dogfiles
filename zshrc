@@ -539,9 +539,9 @@ fi
 
 # }}}
 
-######################
-#   filtering tool   #
-######################
+############
+#   Peco   #
+############
 if hash peco 2> /dev/null; then
 # {{{
 alias -g P='| peco'
@@ -635,26 +635,6 @@ if hash ghq 2> /dev/null; then
     }
     zle -N peco-ghq
     bindkey -M viins '^ ^ ' peco-ghq
-
-    function peco-ghq-open() {
-        local open
-        case $OSTYPE in
-        darwin*)
-            open="open"
-            ;;
-        linux*)
-            open="xdg-open"
-            ;;
-        esac
-
-        local selected_repo=$(ghq list | peco --prompt 'ghq-open >' --query "$LBUFFER")
-        if [ -n "$selected_repo" ]; then
-            $open "https://${selected_repo}"
-        fi
-        zle clear-screen
-    }
-    zle -N peco-ghq-open
-    bindkey -M viins '^ g' peco-ghq-open
 fi
 
 if [[ "$GOPATH" != "" ]]; then
@@ -690,22 +670,6 @@ function peco-git-log() {
 }
 zle -N peco-git-log
 bindkey -M viins '^ o' peco-git-log
-
-function peco-ls-l(){
-    local selected
-    selected=$(ls -l | grep -v ^total | peco --prompt 'ls-l >' | awk '{print $(NF)}')
-    if [ -d "$selected" ]; then
-        BUFFER="cd $selected"
-        zle accept-line
-        zle clear-screen
-    elif [ -f "$selected" ]; then
-        BUFFER="vim $selected"
-        zle accept-line
-        zle clear-screen
-    fi
-}
-zle -N peco-ls-l
-bindkey -M viins '^ l' peco-ls-l
 
 function peco-ls-l-insert(){
     local selected
@@ -820,13 +784,28 @@ function peco-man-list-all() {
 function peco-man() {
     local selected=$(peco-man-list-all | peco --prompt 'man >')
     if [[ "$selected" != "" ]]; then
-        local man=${${selected%.*}##*/}
-        BUFFER="man $man"
-        zle accept-line
+        man "$selected"
     fi
 }
 zle -N peco-man
 bindkey -M viins '^ m' peco-man
+
+function peco-git-cd() {
+    local cdup
+    cdup="$(git rev-parse --show-cdup 2>/dev/null)"
+    if [[ $? != 0 ]]; then
+        zle accept-line
+        return
+    fi
+
+    local selected="$(git ls-files "$cdup" | grep '/' | sed 's/\/[^\/]*$//g' | sort | uniq | peco --prompt 'git-cd >')"
+    if [[ "$selected" != "" ]]; then
+        BUFFER="cd $selected"
+        zle accept-line
+    fi
+}
+zle -N peco-git-cd
+bindkey -M viins '^ g' peco-git-cd
 
 function peco-source(){
     local sources
@@ -840,13 +819,12 @@ function peco-source(){
         cdr-insert \
         ghq \
         git-log \
+        git-cd \
         gopath \
-        ls-l \
         ls-l-insert \
         find-insert \
         locate \
         man \
-        memolist \
         neomru \
         neomru-insert \
         neobundle \
