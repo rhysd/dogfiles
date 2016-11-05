@@ -69,6 +69,7 @@ alias -g L='| less'
 alias -g V='| view -R -'
 alias -g D='> /dev/null 2>&1'
 alias -g X='| xargs'
+alias -g XV='| xargs -o | vim'
 alias -g SPONGE='> /tmp/zsh-sponge-tmp; cat /tmp/zsh-sponge-tmp >'
 
 if [[ $TMUX != "" ]]; then
