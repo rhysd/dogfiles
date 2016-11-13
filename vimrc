@@ -1332,6 +1332,37 @@ function! s:open_qiita_in_browser() abort
     OpenBrowser https://qiita.com/drafts/new
 endfunction
 command! -nargs=0 Qiita call <SID>open_qiita_in_browser()
+
+function! s:translate_markdown() abort
+    if &filetype !=# 'markdown'
+        echoerr 'Not a Markdown buffer!'
+    endif
+
+    if !executable('translate-markdown')
+        echoerr '`translate-markdown` command is not found!'
+    endif
+
+    let start = getpos("'<")
+    let end = getpos("'>")
+    let saved = getpos('.')
+
+    call setpos('.', start)
+    normal! v
+    call setpos('.', end)
+
+    let save_reg_g = getreg('g')
+    let save_regtype_g = getregtype('g')
+    try
+        normal! "gy
+        let input = getreg('g')
+    finally
+        call setreg('g', save_reg_g, save_regtype_g)
+    endtry
+
+    echo system('translate-markdown ja', input)
+endfunction
+command! -nargs=0 -range=% TranslateMarkdown call <SID>translate_markdown()<CR>
+AutocmdFT markdown noremap <buffer><Leader>T :TranslateMarkdown<CR>
 "}}}
 
 " 追加のハイライト {{{

@@ -535,6 +535,7 @@ fi
 if hash peco 2> /dev/null; then
 # {{{
 alias -g P='| peco'
+alias -g PX='| peco | xargs'
 
 function peco-pgrep() {
     if [[ $1 == "" ]]; then
