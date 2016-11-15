@@ -57,10 +57,10 @@ alias nr='npm run'
 alias l=ls
 alias v=vim
 alias gv=gvim
-alias hi='history 0'
+alias t=time
 alias ng=noglob
 alias g=git
-alias cl='clang++ -stdlib=libc++ -std=c++1y -O2 -Wall -Wextra'
+alias cl='clang++ -stdlib=libc++ -std=c++1y -Wall -Wextra'
 
 # global alias
 alias -g G='| grep'
@@ -81,17 +81,6 @@ if [ -d "$HOME/.vim/bundle/vim-vspec-matchers" ]; then
     alias vspec='PATH=/usr/local/bin:$PATH ~/.vim/bundle/vim-vspec/bin/vspec ~/.vim/bundle/vim-vspec ~/.vim/bundle/vim-vspec-matchers'
 else
     alias vspec='PATH=/usr/local/bin:$PATH ~/.vim/bundle/vim-vspec/bin/vspec ~/.vim/bundle/vim-vspec'
-fi
-
-# tmux wrapper
-if hash tmux 2> /dev/null; then
-    function t(){
-        if [[ $TMUX == "" && $# == 0 ]]; then
-            tmux new-session \; split-window -h \; select-pane -t 0
-        else
-            tmux $@
-        fi
-    }
 fi
 # }}}
 
@@ -839,6 +828,26 @@ function peco-source(){
 zle -N peco-source
 bindkey -M viins '^ ' peco-source
 
+function ag-peco-vim() {
+    local grepped
+    grepped="$(ag --vimgrep $*)"
+    if [[ "$grepped" == "" || "$?" != "0" ]]; then
+        return
+    fi
+
+    local selected="$(echo "$grepped" | peco --prompt 'git-grep >')"
+    if [[ "$selected" == "" ]]; then
+        return
+    fi
+
+    # Consider multiline support
+    local buf="" line
+    while read line; do
+        buf="$buf ${line%%:*}"
+    done <<< $selected
+
+    "$EDITOR" $(echo $buf)
+}
 # }}}
 fi
 
