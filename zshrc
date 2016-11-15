@@ -832,6 +832,7 @@ function ag-peco-vim() {
     local grepped
     grepped="$(ag --vimgrep $*)"
     if [[ "$grepped" == "" || "$?" != "0" ]]; then
+        echo "Error on ag --vimgrep $*" > 2
         return
     fi
 
@@ -846,7 +847,9 @@ function ag-peco-vim() {
         buf="$buf ${line%%:*}"
     done <<< $selected
 
-    "$EDITOR" $(echo $buf)
+    # Expose a string variable into arguments
+    #   vim 'foo bar' -> vim foo bar
+    "$EDITOR" ${=buf}
 }
 # }}}
 fi
