@@ -441,7 +441,15 @@ noremap gm m
 "Esc->Escで検索結果とエラーハイライトをクリア
 nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>
 "{数値}<Tab>でその行へ移動．それ以外だと通常の<Tab>の動きに
-noremap <expr><Tab> v:count != 0 ? "G" : "\<Tab>zvzz"
+function! s:go_to_line() abort
+    set number
+    augroup vimrc-go-to-line
+        autocmd!
+        autocmd InsertEnter,CursorHold * set nonumber | autocmd! vimrc-go-to-line
+    augroup END
+    return 'G'
+endfunction
+noremap <expr><Tab> v:count != 0 ? <SID>go_to_line() : "\<Tab>zvzz"
 " コマンドラインウィンドウ
 " 検索後画面の中心に。
 nnoremap n nzvzz
@@ -804,19 +812,18 @@ if neobundle#load_cache()
                 \ }
     NeoBundle 'rhysd/unite-n3337'
     NeoBundle 'rhysd/unite-go-import.vim'
+    NeoBundle 'rhysd/unite-oldfiles.vim'
 
     " カラースキーム
     NeoBundle 'rhysd/wallaby.vim'
+    NeoBundle 'rhysd/vim-color-spring-night'
     NeoBundle 'chriskempson/tomorrow-theme', {'rtp' : 'vim'}
 
     NeoBundle 'junegunn/seoul256.vim'
     NeoBundle 'tomasr/molokai'
     NeoBundle 'telamon/vim-color-github'
-    NeoBundle 'chriskempson/base16-vim'
-
     NeoBundle 'altercation/vim-colors-solarized'
     NeoBundle 'jonathanfilip/vim-lucius'
-    NeoBundle 'vyshane/vydark-vim-color'
 
     " For testing
     command! -nargs=1 NeoBundleMyPlugin
@@ -1342,11 +1349,12 @@ if !has('gui_running')
     if &t_Co < 256
         colorscheme default
     else
-        try
-            colorscheme wallaby
-        catch
-            colorscheme desert
-        endtry
+        if has('termguicolors')
+            set termguicolors
+            let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+            let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+        endif
+        colorscheme spring-night
     endif
 endif
 
@@ -1850,7 +1858,7 @@ nnoremap [unite]u                 :<C-u>Unite source<CR>
 "バッファを開いた時のパスを起点としたファイル検索
 nnoremap <silent>[unite]<Space>   :<C-u>UniteWithBufferDir -buffer-name=files -vertical file directory file/new<CR>
 "最近使用したファイル
-nnoremap <silent>[unite]m         :<C-u>Unite file_mru directory_mru zsh-cdr file/new<CR>
+nnoremap <silent>[unite]m         :<C-u>Unite file_mru directory_mru zsh-cdr oldfiles file/new<CR>
 "指定したディレクトリ以下を再帰的に開く
 nnoremap <silent>[unite]R       :<C-u>UniteWithBufferDir -no-start-insert file_rec/async -auto-resize<CR>
 "バッファ一覧
@@ -2011,7 +2019,7 @@ Autocmd BufWritePost *.rb call <SID>check_syntax('ruby')
 
 let g:quickrun_config['syntax/javascript'] = {
             \ 'command' : 'eslint',
-            \ 'cmdopt' : '-f unix',
+            \ 'cmdopt' : '',
             \ 'outputter' : 'quickfix',
             \ 'exec'    : '%c %o %s:p',
             \ 'runner' : 'vimproc',

@@ -1,6 +1,6 @@
 {
     "Prompt": "> ",
-    "InitialMatcher": "SmartCase",
+    "InitialFilter": "SmartCase",
     "Style": {
         "Prompt": ["green", "default"]
     },
