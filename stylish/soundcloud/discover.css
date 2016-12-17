@@ -1,0 +1,10 @@
+/* Refine https://soundcloud.com/discover */
+
+/* Remove right menu */
+.l-sidebar-right {
+    display: none;
+}
+.sc-border-light-right.l-main {
+    padding-right: 0;
+    margin-right: 0;
+}

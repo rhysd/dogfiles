@@ -1,0 +1,39 @@
+/* Refine https://mobile.twitter.com */
+
+/* side margin */
+._3xujJ3kq._3f2NsD-H {
+    margin-left: 0;
+    margin-right: 0;
+    max-width: 100% !important;
+}
+
+/* icon size */
+._3z_7jQwn._2rKrV7oY._3f2NsD-H {
+    max-width: 56px;
+}
+
+/* picture height in tweet */
+._2_y4lIt4._3f2NsD-H {
+    max-height: 180px;
+}
+
+/* mention event icons */
+._1p3yMRG3._2rKrV7oY._3f2NsD-H {
+    max-width: 56px;
+}
+
+/* replacement of picture in tweet */
+._1YeWCqJF {
+    bottom: auto;
+}
+
+/* link image height */
+.MLZaeRvv._1Yv_hemU.i1xnVt31 {
+    max-height: 180px;
+}
+
+/* 'Retweeted by' header margin */
+.ZE-08e-I {
+    -webkit-flex-grow: initial;
+    flex-grow: initial;
+}
