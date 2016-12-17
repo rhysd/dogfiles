@@ -1349,10 +1349,10 @@ if !has('gui_running')
     if &t_Co < 256
         colorscheme default
     else
-        if has('termguicolors')
-            set termguicolors
+        if has('termguicolors') && $TERM_PROGRAM ==# 'iTerm.app'
             let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
             let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+            set termguicolors
         endif
         colorscheme spring-night
     endif
@@ -2751,7 +2751,7 @@ unlet s:bundle
 
 " vim-airline "{{{
 if ! has('gui_running')
-    let g:airline_theme = 'wombat'
+    let g:airline_theme = 'spring_night'
 endif
 let g:airline#extensions#whitespace#enabled = 0
 "}}}
