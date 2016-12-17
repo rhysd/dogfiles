@@ -8,3 +8,8 @@
     padding-right: 0;
     margin-right: 0;
 }
+.soundGallery.m-fourPanels .soundGallery__sliderPanelSlide {
+    width: 16%;
+    -webkit-flex: 0 0 16%;
+    flex: 0 0 16%;
+}
