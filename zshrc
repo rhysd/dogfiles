@@ -642,6 +642,25 @@ if [[ "$GOPATH" != "" ]]; then
     bindkey -M viins '^ p' peco-gopath
 fi
 
+function peco-repos() {
+    local input
+
+    input="$(find "$GOPATH/src" -maxdepth 3 -mindepth 3 -name "*" -type d)"
+    input="${input}\n$(ghq list | sed "s#^#$(ghq root)/#")"
+    input="${input}\n$(ls -1 -d "$HOME/.vim/bundle/"*)"
+    input="${input}\n$(ls -1 -d "$HOME/.cache/dein/repos/"*)"
+    input="$(echo "$input" | sed "s#^$HOME#~#g")"
+
+    local selected_dir=$(echo "${input}" | peco --prompt 'repos >' --query "$LBUFFER")
+    if [ -n "$selected_dir" ]; then
+        BUFFER="cd ${selected_dir}"
+        zle accept-line
+    fi
+    zle clear-screen
+}
+zle -N peco-repos
+bindkey -M viins '^ ^r' peco-repos
+
 function peco-git-log() {
     local sed
     case $OSTYPE in
@@ -819,6 +838,7 @@ function peco-source(){
         neomru \
         neomru-insert \
         neobundle \
+        repos \
     )
     selected_source=$(echo ${(j/\n/)sources} | peco --prompt 'source >')
     zle clear-screen
