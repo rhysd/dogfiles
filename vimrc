@@ -11,7 +11,9 @@ set fileencodings=utf-8,cp932,euc-jp
 scriptencoding utf-8
 
 " This is vim, not vi.
-set nocompatible
+if &compatible
+    set nocompatible
+endif
 
 function! s:get_SID()
     return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeget_SID$')
