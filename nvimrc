@@ -560,9 +560,10 @@ function! s:rotate_in_line()
 endfunction
 
 " dein.vim
-if !isdirectory(expand('~/.config/dein/repos/github.com/Shougo/dein.vim'))
+let s:dein_repo_path = expand('~/.cache/dein/repos/github.com/Shougo/dein.vim')
+if !isdirectory(s:dein_repo_path)
     echo 'Installing dein.vim...'
-    let s:result = system('bash -c "$(curl -fsSL https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh)" -- ~/.config/dein')
+    let s:result = system('bash -c "$(curl -fsSL https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh)" -- ~/.cache/dein')
     if v:shell_error
         echon 'Error!'
         echo s:result
@@ -571,15 +572,13 @@ if !isdirectory(expand('~/.config/dein/repos/github.com/Shougo/dein.vim'))
     endif
     unlet! s:result
 endif
-set runtimepath^=~/.config/dein/repos/github.com/Shougo/dein.vim
+set runtimepath+=~/.cache/dein/repos/github.com/Shougo/dein.vim
 
-if !isdirectory('~/.cache/dein')
-    call mkdir($HOME . '/.cache/dein', 'p')
-endif
+let s:dein_cache_dir = expand('~/.cache/dein')
+if dein#load_state(s:dein_cache_dir)
+    call dein#begin(s:dein_cache_dir)
 
-call dein#begin(expand('~/.cache/dein'))
-
-if dein#load_cache()
+    call dein#add(s:dein_repo_path)
     call dein#add('rhysd/wallaby.vim')
     call dein#add('jonathanfilip/vim-lucius')
     call dein#add('rhysd/vim-dachs')
@@ -624,13 +623,14 @@ if dein#load_cache()
                 \ 'on_map' : '<Plug>(easymotion-',
                 \ })
 
-    call dein#save_cache()
+    call dein#end()
+    call dein#save_state()
 endif
-
-call dein#end()
 filetype plugin indent on
 
-Autocmd BufWritePost init.vim call dein#clear_cache()
+if dein#check_install()
+    call dein#install()
+endif
 
 " カラースキーム
 " シンタックスハイライト
@@ -639,10 +639,10 @@ set background=dark
 try
     if s:on_nyaovim
         colorscheme lucius
-    elseif $TMUX ==# ''
-        colorscheme wallaby
+        Autocmd VimEnter * AirlineTheme base16_ashes
     else
-        colorscheme desert
+        colorscheme wallaby
+        Autocmd VimEnter * AirlineTheme wombat
     endif
 catch
     colorscheme default
@@ -740,7 +740,6 @@ map : <Plug>(easymotion-overwin-f2)
 let g:airline_left_sep = '»'
 let g:airline_right_sep = '«'
 let g:airline_extensions = []
-Autocmd VimEnter * AirlineTheme base16_ashes
 
 if s:on_nyaovim
     " nyaovim-mini-browser
