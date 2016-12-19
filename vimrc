@@ -744,370 +744,415 @@ call neobundle#begin(expand('~/.vim/bundle'))
 if neobundle#load_cache()
 
     " GitHub上のリポジトリ
-    NeoBundleFetch 'Shougo/neobundle.vim'
-    NeoBundle 'Shougo/vimproc.vim', {
+    call neobundle#add('Shougo/neobundle.vim', { 'fetch': 1 })
+    call neobundle#add('Shougo/vimproc.vim', {
                 \ 'build' : {
                 \       'windows' : 'echo "Please build vimproc manually."',
                 \       'cygwin'  : 'make -f make_cygwin.mak',
                 \       'mac'     : 'make -f make_mac.mak',
                 \       'unix'    : 'make -f make_unix.mak',
                 \   }
-                \ }
-    NeoBundle 'Shougo/neosnippet.vim'
-    NeoBundle 'rhysd/inu-snippets'
-    NeoBundle 'thinca/vim-quickrun'
-    NeoBundle 'Shougo/unite-outline'
-    NeoBundle 'osyo-manga/unite-quickfix'
-    NeoBundle 'rhysd/quickrun-unite-quickfix-outputter'
-    NeoBundle 'Shougo/unite-help'
-    NeoBundle 'thinca/vim-unite-history'
-    NeoBundle 'vim-jp/vimdoc-ja'
-    NeoBundle 'jceb/vim-hier'
-    NeoBundle 'kana/vim-textobj-user'
-    NeoBundle 'thinca/vim-prettyprint'
-    NeoBundle 'kana/vim-operator-user'
-    NeoBundle 'kana/vim-vspec'
-    NeoBundle 'rhysd/vim-vspec-matchers'
-    NeoBundle 'rhysd/accelerated-jk'
-    NeoBundle 'kana/vim-smartinput'
-    NeoBundle 'kana/vim-niceblock'
-    NeoBundle 'thinca/vim-scouter'
-    NeoBundle 'h1mesuke/vim-alignta'
-    NeoBundle 'rhysd/clever-f.vim'
-    NeoBundle 'rhysd/unite-zsh-cdr.vim'
-    NeoBundle 'rhysd/unite-ruby-require.vim'
-    NeoBundle 'airblade/vim-gitgutter'
-    NeoBundle 'kana/vim-submode'
-    NeoBundle 'vim-airline/vim-airline'
-    NeoBundle 'vim-airline/vim-airline-themes'
-    NeoBundle 'rhysd/vim-numberstar'
-    NeoBundle 'rhysd/migemo-search.vim'
-    NeoBundle 'ujihisa/unite-colorscheme'
-    NeoBundle 'rhysd/unite-locate'
-    NeoBundle 'rhysd/conflict-marker.vim'
-    NeoBundle 'rhysd/vim-window-adjuster'
-    NeoBundle 'Shougo/neomru.vim'
-    NeoBundle 'rhysd/committia.vim'
-    NeoBundle 'rhysd/vim-dachs'
-    NeoBundle 'rust-lang/rust.vim'
-    NeoBundle 'rhysd/rust-doc.vim'
-    NeoBundle 'rhysd/vim-rustpeg'
-    NeoBundle 'cespare/vim-toml'
-    NeoBundle 'slim-template/vim-slim'
-    NeoBundle 'leafgarland/typescript-vim'
-    NeoBundle 'keith/tmux.vim'
-    NeoBundle 'rhysd/npm-filetypes.vim'
-    NeoBundle 'rhysd/github-complete.vim'
-    NeoBundle 'rhysd/vim-crystal'
-    NeoBundle 'thinca/vim-themis'
-    NeoBundle 'othree/yajs.vim'
-    NeoBundle 'rhysd/unite-redpen.vim'
-    NeoBundle 'rhysd/vim-wasm'
-    NeoBundle 'rhysd/vim-gfm-syntax'
+                \ })
+    call neobundle#add('Shougo/neosnippet.vim')
+    call neobundle#add('rhysd/inu-snippets')
+    call neobundle#add('thinca/vim-quickrun')
+    call neobundle#add('Shougo/unite-outline')
+    call neobundle#add('osyo-manga/unite-quickfix')
+    call neobundle#add('rhysd/quickrun-unite-quickfix-outputter')
+    call neobundle#add('Shougo/unite-help')
+    call neobundle#add('thinca/vim-unite-history')
+    call neobundle#add('vim-jp/vimdoc-ja')
+    call neobundle#add('jceb/vim-hier')
+    call neobundle#add('kana/vim-textobj-user')
+    call neobundle#add('thinca/vim-prettyprint')
+    call neobundle#add('kana/vim-operator-user')
+    call neobundle#add('kana/vim-vspec')
+    call neobundle#add('rhysd/vim-vspec-matchers')
+    call neobundle#add('rhysd/accelerated-jk')
+    call neobundle#add('kana/vim-smartinput')
+    call neobundle#add('kana/vim-niceblock')
+    call neobundle#add('thinca/vim-scouter')
+    call neobundle#add('h1mesuke/vim-alignta')
+    call neobundle#add('rhysd/clever-f.vim')
+    call neobundle#add('rhysd/unite-zsh-cdr.vim')
+    call neobundle#add('rhysd/unite-ruby-require.vim')
+    call neobundle#add('airblade/vim-gitgutter')
+    call neobundle#add('kana/vim-submode')
+    call neobundle#add('vim-airline/vim-airline')
+    call neobundle#add('vim-airline/vim-airline-themes')
+    call neobundle#add('rhysd/vim-numberstar')
+    call neobundle#add('rhysd/migemo-search.vim')
+    call neobundle#add('ujihisa/unite-colorscheme')
+    call neobundle#add('rhysd/unite-locate')
+    call neobundle#add('rhysd/conflict-marker.vim')
+    call neobundle#add('rhysd/vim-window-adjuster')
+    call neobundle#add('Shougo/neomru.vim')
+    call neobundle#add('rhysd/committia.vim')
+    call neobundle#add('rhysd/vim-dachs')
+    call neobundle#add('rust-lang/rust.vim')
+    call neobundle#add('rhysd/rust-doc.vim')
+    call neobundle#add('rhysd/vim-rustpeg')
+    call neobundle#add('cespare/vim-toml')
+    call neobundle#add('slim-template/vim-slim')
+    call neobundle#add('leafgarland/typescript-vim')
+    call neobundle#add('keith/tmux.vim')
+    call neobundle#add('rhysd/npm-filetypes.vim')
+    call neobundle#add('rhysd/github-complete.vim')
+    call neobundle#add('rhysd/vim-crystal')
+    call neobundle#add('thinca/vim-themis')
+    call neobundle#add('othree/yajs.vim')
+    call neobundle#add('rhysd/unite-redpen.vim')
+    call neobundle#add('rhysd/vim-wasm')
+    call neobundle#add('rhysd/vim-gfm-syntax')
 
     " unite.vim sources
-    NeoBundle 'sorah/unite-ghq'
-    NeoBundle 'rhysd/unite-codic.vim', {
+    call neobundle#add('sorah/unite-ghq')
+    call neobundle#add('rhysd/unite-codic.vim', {
                 \ 'depends' : [
                 \       'Shougo/unite.vim',
                 \       'koron/codic-vim',
                 \   ],
-                \ }
-    NeoBundle 'rhysd/unite-n3337'
-    NeoBundle 'rhysd/unite-go-import.vim'
-    NeoBundle 'rhysd/unite-oldfiles.vim'
+                \ })
+    call neobundle#add('rhysd/unite-n3337')
+    call neobundle#add('rhysd/unite-go-import.vim')
+    call neobundle#add('rhysd/unite-oldfiles.vim')
 
     " カラースキーム
-    NeoBundle 'rhysd/wallaby.vim'
-    NeoBundle 'rhysd/vim-color-spring-night'
-    NeoBundle 'chriskempson/tomorrow-theme', {'rtp' : 'vim'}
-    NeoBundle 'junegunn/seoul256.vim'
-    NeoBundle 'tomasr/molokai'
-    NeoBundle 'telamon/vim-color-github'
-    NeoBundle 'altercation/vim-colors-solarized'
-    NeoBundle 'jonathanfilip/vim-lucius'
-    NeoBundle 'tyrannicaltoucan/vim-quantum'
+    call neobundle#add('rhysd/wallaby.vim')
+    call neobundle#add('rhysd/vim-color-spring-night')
+    call neobundle#add('chriskempson/tomorrow-theme', {'rtp' : 'vim'})
+    call neobundle#add('junegunn/seoul256.vim')
+    call neobundle#add('tomasr/molokai')
+    call neobundle#add('telamon/vim-color-github')
+    call neobundle#add('altercation/vim-colors-solarized')
+    call neobundle#add('jonathanfilip/vim-lucius')
+    call neobundle#add('tyrannicaltoucan/vim-quantum')
 
     " For testing
     command! -nargs=1 NeoBundleMyPlugin
                 \ NeoBundle <args>, {
-                \   'base' : '~/Dev/github.com/rhysd',
+                \   'base' : '~/Develop/github.com/rhysd',
                 \   'type' : 'nosync',
                 \ }
 
     " 読み込みを遅延する
-    NeoBundleLazy 'Shougo/unite.vim', {
-                \   'autoload' : {
+    call neobundle#add('Shougo/unite.vim', {
+                \ 'lazy' : 1,
+                \ 'autoload' : {
                 \     'commands' : [{'name': 'Unite', 'complete' : 'customlist,unite#complete_source'},
                 \                   {'name': 'UniteWithBufferDir', 'complete' : 'customlist,unite#complete_source'},
                 \                   {'name': 'UniteWithCursorWord', 'complete' : 'customlist,unite#complete_source'},
                 \                   {'name': 'UniteWithWithInput', 'complete' : 'customlist,unite#complete_source'}]
                 \   }
-                \ }
+                \ })
 
-    NeoBundleLazy 'Shougo/vimfiler.vim', {
+    call neobundle#add('Shougo/vimfiler.vim', {
+                \ 'lazy' : 1,
                 \ 'depends' : 'Shougo/unite.vim',
                 \ 'autoload' : {
                 \     'commands' : ['VimFiler', 'VimFilerCurrentDir',
                 \                   'VimFilerBufferDir', 'VimFilerSplit',
                 \                   'VimFilerExplorer', 'VimFilerDouble']
-                \     }
-                \ }
+                \   }
+                \ })
 
-    NeoBundleLazy 'kana/vim-operator-replace', {
+    call neobundle#add('kana/vim-operator-replace', {
+                \ 'lazy' : 1,
                 \ 'autoload' : {
                 \     'mappings' : '<Plug>(operator-replace)'
-                \     }
-                \ }
+                \   }
+                \ })
 
-    NeoBundleLazy 'rhysd/vim-operator-trailingspace-killer', {
+    call neobundle#add('rhysd/vim-operator-trailingspace-killer', {
+                \ 'lazy' : 1,
                 \ 'autoload' : {
                 \     'mappings' : '<Plug>(operator-trailingspace-killer)'
-                \     }
-                \ }
+                \   }
+                \ })
 
-    NeoBundleLazy 'rhysd/vim-operator-surround', {
+    call neobundle#add('rhysd/vim-operator-surround', {
+                \ 'lazy' : 1,
                 \ 'depends' : 'tpope/vim-repeat',
                 \ 'autoload' : {
-                \       'mappings' : '<Plug>(operator-surround-'
+                \     'mappings' : '<Plug>(operator-surround-'
                 \   }
-                \ }
+                \ })
 
-    NeoBundleLazy 'tyru/caw.vim', {
+    call neobundle#add('tyru/caw.vim', {
+                \ 'lazy' : 1,
                 \ 'autoload' : {
-                \     'mappings' :
-                \         ['<Plug>(caw', '<Plug>(operator-caw)']
-                \     }
-                \ }
+                \     'mappings' : ['<Plug>(caw', '<Plug>(operator-caw)']
+                \   }
+                \ })
 
-    NeoBundleLazy 'vim-scripts/ZoomWin', {
+    call neobundle#add('vim-scripts/ZoomWin', {
+                \ 'lazy' : 1,
                 \ 'autoload' : {
                 \     'commands' : 'ZoomWin'
-                \     }
-                \ }
+                \   }
+                \ })
 
-    NeoBundleLazy 'kana/vim-altr'
+    call neobundle#add('kana/vim-altr', { 'lazy' : 1 })
 
-    NeoBundleLazy 'vim-jp/vital.vim', {
+    call neobundle#add('vim-jp/vital.vim', {
+                \ 'lazy' : 1,
                 \ 'autoload' : {
-                \       'commands' : ['Vitalize'],
+                \     'commands' : ['Vitalize'],
                 \   },
-                \ }
+                \ })
 
-    NeoBundleLazy 'tyru/open-browser.vim', {
+    call neobundle#add('tyru/open-browser.vim', {
+                \ 'lazy' : 1,
                 \ 'autoload' : {
                 \     'commands' : ['OpenBrowser', 'OpenBrowserSearch', 'OpenBrowserSmartSearch'],
                 \     'mappings' : '<Plug>(openbrowser-',
                 \   }
-                \ }
+                \ })
 
-    NeoBundleLazy 'tyru/open-browser-github.vim', {
+    call neobundle#add('tyru/open-browser-github.vim', {
+                \ 'lazy' : 1,
                 \ 'depends' : 'tyru/open-browser.vim',
                 \ 'autoload' : {
-                \       'commands' : ['OpenGithubFile', 'OpenGithubIssue', 'OpenGithubPullReq']
+                \     'commands' : ['OpenGithubFile', 'OpenGithubIssue', 'OpenGithubPullReq']
                 \   }
-                \ }
+                \ })
 
-    NeoBundleLazy 'glidenote/memolist.vim', {
+    call neobundle#add('glidenote/memolist.vim', {
+                \ 'lazy' : 1,
                 \ 'depends' : 'Shougo/unite.vim',
                 \ 'autoload' : {
                 \     'commands' : ['MemoNew', 'MemoList', 'MemoGrep']
                 \   }
-                \ }
+                \ })
 
-    NeoBundleLazy 'easymotion/vim-easymotion', {
+    call neobundle#add('easymotion/vim-easymotion', {
+                \ 'lazy' : 1,
                 \ 'autoload' : {
-                \       'mappings' : '<Plug>(easymotion-',
+                \     'mappings' : '<Plug>(easymotion-',
                 \   }
-                \ }
+                \ })
 
-    NeoBundleLazy 'kana/vim-textobj-indent', {
+    call neobundle#add('kana/vim-textobj-indent', {
+                \ 'lazy' : 1,
                 \ 'depends' : 'kana/vim-textobj-user',
                 \ 'autoload' : {
-                \       'mappings' : [['xo', 'ai'], ['xo', 'aI'], ['xo', 'ii'], ['xo', 'iI']]
+                \     'mappings' : [['xo', 'ai'], ['xo', 'aI'], ['xo', 'ii'], ['xo', 'iI']]
                 \   }
-                \ }
+                \ })
 
-    NeoBundleLazy 'kana/vim-textobj-line', {
+    call neobundle#add('kana/vim-textobj-line', {
+                \ 'lazy' : 1,
                 \ 'depends' : 'kana/vim-textobj-user',
                 \ 'autoload' : {
-                \       'mappings' : [['xo', 'al'], ['xo', 'il']]
+                \     'mappings' : [['xo', 'al'], ['xo', 'il']]
                 \   }
-                \ }
+                \ })
 
-    NeoBundleLazy 'rhysd/vim-textobj-wiw', {
+    call neobundle#add('rhysd/vim-textobj-wiw', {
+                \ 'lazy' : 1,
                 \ 'depends' : 'kana/vim-textobj-user',
                 \ 'autoload' : {
-                \       'mappings' : [['xo', 'am'], ['xo', 'im']]
+                \     'mappings' : [['xo', 'am'], ['xo', 'im']]
                 \   }
-                \ }
+                \ })
 
-    NeoBundleLazy 'sgur/vim-textobj-parameter', {
+    call neobundle#add('sgur/vim-textobj-parameter', {
+                \ 'lazy' : 1,
                 \ 'depends' : 'kana/vim-textobj-user',
                 \ 'autoload' : {
-                \       'mappings' : [['xo', 'a,'], ['xo', 'i,']]
+                \     'mappings' : [['xo', 'a,'], ['xo', 'i,']]
                 \   }
-                \ }
+                \ })
 
-    NeoBundleLazy 'thinca/vim-textobj-between', {
+    call neobundle#add('thinca/vim-textobj-between', {
+                \ 'lazy' : 1,
                 \ 'depends' : 'kana/vim-textobj-user',
                 \ 'autoload' : {
-                \       'mappings' : [['xo', 'af'], ['xo', 'if'], ['xo', '<Plug>(textobj-between-']]
+                \     'mappings' : [['xo', 'af'], ['xo', 'if'], ['xo', '<Plug>(textobj-between-']]
                 \   }
-                \ }
+                \ })
 
-    NeoBundleLazy 'rhysd/vim-textobj-word-column', {
+    call neobundle#add('rhysd/vim-textobj-word-column', {
+                \ 'lazy' : 1,
                 \ 'depends' : 'kana/vim-textobj-user',
                 \ 'autoload' : {
-                \       'mappings' : [['xo', 'av'], ['xo', 'aV'], ['xo', 'iv'], ['xo', 'iV']]
+                \     'mappings' : [['xo', 'av'], ['xo', 'aV'], ['xo', 'iv'], ['xo', 'iV']]
                 \   }
-                \ }
+                \ })
 
-    NeoBundleLazy 'kana/vim-textobj-entire', {
+    call neobundle#add('kana/vim-textobj-entire', {
+                \ 'lazy' : 1,
                 \ 'depends' : 'kana/vim-textobj-user',
                 \ 'autoload' : {
-                \       'mappings' : [['xo', 'ae'], ['xo', 'ie']]
+                \     'mappings' : [['xo', 'ae'], ['xo', 'ie']]
                 \   }
-                \ }
+                \ })
 
-    NeoBundleLazy 'kana/vim-textobj-fold', {
+    call neobundle#add('kana/vim-textobj-fold', {
+                \ 'lazy' : 1,
                 \ 'depends' : 'kana/vim-textobj-user',
                 \ 'autoload' : {
-                \       'mappings' : [['xo', 'az'], ['xo', 'iz']]
-                \ }
-                \ }
+                \     'mappings' : [['xo', 'az'], ['xo', 'iz']]
+                \   }
+                \ })
 
-    NeoBundleLazy 'rhysd/vim-textobj-anyblock', {
+    call neobundle#add('rhysd/vim-textobj-anyblock', {
+                \ 'lazy' : 1,
                 \ 'depends' : 'kana/vim-textobj-user',
                 \ 'autoload' : {
                 \       'mappings' : [['xo', 'ab'], ['xo', 'ib']]
                 \   }
-                \ }
+                \ })
 
-    NeoBundleLazy 'tpope/vim-fugitive', {
+    call neobundle#add('tpope/vim-fugitive', {
+                \ 'lazy' : 1,
                 \ 'autoload' : {
                 \       'commands' : ['Gstatus', 'Gcommit', 'Gwrite', 'Gdiff', 'Gblame', 'Git', 'Ggrep']
                 \   }
-                \ }
+                \ })
 
-    NeoBundleLazy 'rbtnn/puyo.vim', {
-            \ 'depends' : 'rbtnn/game_engine.vim',
-            \ 'autoload' : {
-            \       'commands' : 'Puyo'
-            \   }
-            \ }
+    call neobundle#add('rbtnn/puyo.vim', {
+                \ 'lazy' : 1,
+                \ 'depends' : 'rbtnn/game_engine.vim',
+                \ 'autoload' : {
+                \       'commands' : 'Puyo'
+                \   }
+                \ })
 
-    NeoBundleLazy 'thinca/vim-threes', {
-            \ 'autoload' : {
-            \       'commands' : 'ThreesStart'
-            \   }
-            \ }
+    call neobundle#add('thinca/vim-threes', {
+                \ 'lazy' : 1,
+                \ 'autoload' : {
+                \       'commands' : 'ThreesStart'
+                \   }
+                \ })
 
-    NeoBundleLazy 'rhysd/wandbox-vim', {
+    call neobundle#add('rhysd/wandbox-vim', {
+                \ 'lazy' : 1,
                 \ 'autoload' : {
                 \       'commands' : [{'name' : 'Wandbox', 'complete' : 'customlist,wandbox#complete_command'}, 'WandboxOptionList']
                 \   }
-                \ }
+                \ })
 
-    NeoBundleLazy 'thinca/vim-visualstar', {
+    call neobundle#add('thinca/vim-visualstar', {
+                \ 'lazy' : 1,
                 \ 'autoload' : {
                 \     'mappings' : [['x', '*'], ['x' , '#'], ['x', 'g*'], ['x', 'g#']],
                 \   }
-                \ }
+                \ })
 
-    NeoBundleLazy 'cohama/agit.vim', {
+    call neobundle#add('cohama/agit.vim', {
+                \ 'lazy' : 1,
                 \   'autoload' : {
                 \     'commands' : 'Agit'
                 \   }
-                \ }
+                \ })
 
-    NeoBundleLazy 'mattn/gist-vim', {
+    call neobundle#add('mattn/gist-vim', {
+                \ 'lazy' : 1,
                 \ 'depends' : 'mattn/webapi-vim',
                 \ 'autoload' : {
                 \     'commands' : 'Gist',
                 \   }
-                \ }
+                \ })
 
-    NeoBundleLazy 'rhysd/try-colorscheme.vim', {
-                \   'autoload' : {
+    call neobundle#add('rhysd/try-colorscheme.vim', {
+                \ 'lazy' : 1,
+                \ 'autoload' : {
                 \     'commands' : 'TryColorscheme',
                 \   }
-                \ }
+                \ })
 
-    NeoBundleLazy 'dhruvasagar/vim-table-mode', {
-                \   'autoload' : {
+    call neobundle#add('dhruvasagar/vim-table-mode', {
+                \ 'lazy' : 1,
+                \ 'autoload' : {
                 \     'commands' : ['TableModeToggle', 'TableModeEnable'],
                 \   }
-                \ }
+                \ })
 
     " if_lua プラグイン
     if s:meet_neocomplete_requirements
-        NeoBundle 'Shougo/neocomplete.vim'
+        call neobundle#add('Shougo/neocomplete.vim')
     endif
 
     " GUI オンリーなプラグイン
-    NeoBundleLazy 'nathanaelkane/vim-indent-guides', {
+    call neobundle#add('nathanaelkane/vim-indent-guides', {
+                \   'lazy' : 1,
+                \   'gui' : 1,
                 \   'autoload' : {
                 \     'filetypes' : ['haskell', 'python']
                 \   }
-                \ }
-    NeoBundleLazy 'tyru/restart.vim', {
+                \ })
+    call neobundle#add('tyru/restart.vim', {
+                \   'lazy' : 1,
                 \   'gui' : 1,
                 \   'autoload' : {
                 \     'commands' : 'Restart'
                 \   }
-                \ }
+                \ })
 
     " 特定のファイルタイプで読み込む
-    NeoBundleLazy 'rhysd/endwize.vim', {
+    call neobundle#add('rhysd/endwize.vim', {
+                \ 'lazy' : 1,
                 \ 'autoload' : {
                 \     'filetypes' : ['ruby', 'vim', 'sh', 'zsh', 'c', 'cpp', 'lua', 'dachs']
                 \     }
-                \ }
+                \ })
 
     " C++用のプラグイン
-    NeoBundleLazy 'vim-jp/vim-cpp', {
+    call neobundle#add('vim-jp/vim-cpp', {
+                \ 'lazy' : 1,
                 \ 'autoload' : {'filetypes' : 'cpp'}
-                \ }
-    NeoBundleLazy 'Rip-Rip/clang_complete', {
+                \ })
+    call neobundle#add('Rip-Rip/clang_complete', {
+                \ 'lazy' : 1,
                 \ 'autoload' : {'filetypes' : ['c', 'cpp']}
-                \ }
-    NeoBundleLazy 'rhysd/vim-clang-format', {
+                \ })
+    call neobundle#add('rhysd/vim-clang-format', {
+                \ 'lazy' : 1,
                 \ 'depends' : 'kana/vim-operator-user',
                 \ 'autoload' : {'filetypes' : ['c', 'cpp', 'objc']}
-                \ }
+                \ })
 
     " Haskell 用プラグイン
-    NeoBundleLazy 'ujihisa/unite-haskellimport', {
+    call neobundle#add('ujihisa/unite-haskellimport', {
+                \ 'lazy' : 1,
                 \ 'autoload' : {'filetypes' : 'haskell'}
-                \ }
-    NeoBundleLazy 'rhysd/vim2hs', {
+                \ })
+    call neobundle#add('rhysd/vim2hs', {
+                \ 'lazy' : 1,
                 \ 'autoload' : {'filetypes' : 'haskell'}
-                \ }
-    NeoBundleLazy 'rhysd/vim-filetype-haskell', {
+                \ })
+    call neobundle#add('rhysd/vim-filetype-haskell', {
+                \ 'lazy' : 1,
                 \ 'autoload' : {'filetypes' : 'haskell'}
-                \ }
-    NeoBundleLazy 'eagletmt/unite-haddock', {
+                \ })
+    call neobundle#add('eagletmt/unite-haddock', {
+                \ 'lazy' : 1,
                 \ 'autoload' : {'filetypes' : 'haskell'}
-                \ }
-    NeoBundleLazy 'ujihisa/neco-ghc', {
+                \ })
+    call neobundle#add('ujihisa/neco-ghc', {
+                \ 'lazy' : 1,
                 \ 'autoload' : {'filetypes' : 'haskell'}
-                \ }
-    NeoBundleLazy 'eagletmt/ghcmod-vim', {
+                \ })
+    call neobundle#add('eagletmt/ghcmod-vim', {
+                \ 'lazy' : 1,
                 \ 'autoload' : {'filetypes' : 'haskell'}
-                \ }
+                \ })
 
     " Ruby 用プラグイン
-    NeoBundleLazy 'rhysd/vim-textobj-ruby', {
+    call neobundle#add('rhysd/vim-textobj-ruby', {
+                \ 'lazy' : 1,
                 \ 'autoload' : {'filetypes' : 'ruby'}
-                \ }
-    NeoBundleLazy 'rhysd/unite-ruby-require.vim', {
+                \ })
+    call neobundle#add('rhysd/unite-ruby-require.vim', {
+                \ 'lazy' : 1,
                 \ 'autoload' : {'filetypes' : 'ruby'}
-                \ }
+                \ })
 
     " JavaScript 用プラグイン
     if s:enable_tern_for_vim
-        NeoBundleLazy 'marijnh/tern_for_vim', {
+        call neobundle#add('marijnh/tern_for_vim', {
+                    \ 'lazy' : 1,
                     \ 'build' : {
                     \     'windows' : 'echo "Please build tern manually."',
                     \     'cygwin'  : 'echo "Please build tern manually."',
@@ -1119,28 +1164,31 @@ if neobundle#load_cache()
                     \     'filetypes' : 'javascript'
                     \   },
                     \ 'commands' : ['TernDef', 'TernDoc', 'TernType', 'TernRefs', 'TernRename']
-                    \ }
+                    \ })
     endif
 
     " html, sass, scss 用プラグイン
-    NeoBundleLazy 'mattn/emmet-vim', {
-        \ 'autoload': {
-        \     'function_prefix': 'emmet',
-        \     'filetypes': ['html', 'haml', 'xhtml', 'liquid', 'css', 'scss', 'sass'],
-        \     'mappings' : ['i', '<Plug>(EmmetExpandAbbr)']
-        \   }
-        \ }
-    NeoBundleLazy 'othree/html5.vim', {
+    call neobundle#add('mattn/emmet-vim', {
+                \ 'lazy' : 1,
+                \ 'autoload': {
+                \     'function_prefix': 'emmet',
+                \     'filetypes': ['html', 'haml', 'xhtml', 'liquid', 'css', 'scss', 'sass'],
+                \     'mappings' : ['i', '<Plug>(EmmetExpandAbbr)']
+                \   }
+                \ })
+    call neobundle#add('othree/html5.vim', {
+                \ 'lazy' : 1,
                 \ 'autoload' : {
                 \     'filetypes' : ['html', 'xhtml'],
                 \     'commands' : ['HtmlIndentGet']
                 \   }
-                \ }
-    NeoBundleLazy 'tpope/vim-haml', {
+                \ })
+    call neobundle#add('tpope/vim-haml', {
+                \ 'lazy' : 1,
                 \ 'autoload' : {
                 \     'filetypes' : ['haml', 'sass', 'scss'],
                 \   }
-                \ }
+                \ })
 
     " Python
     NeoBundleLazy 'davidhalter/jedi-vim', {
@@ -1148,57 +1196,64 @@ if neobundle#load_cache()
             \     'filetypes' : 'python',
             \   }
             \ }
-    NeoBundleLazy 'hynek/vim-python-pep8-indent', {
-            \ 'autoload' : {
-            \     'filetypes' : 'python',
-            \   }
-            \ }
-    NeoBundleLazy 'digitaltoad/vim-jade', {
-            \ 'autoload' : {
-            \     'filetypes' : 'jade',
-            \   }
-            \ }
+    call neobundle#add('hynek/vim-python-pep8-indent', {
+                \ 'lazy' : 1,
+                \ 'autoload' : {
+                \     'filetypes' : 'python',
+                \   }
+                \ })
+    call neobundle#add('digitaltoad/vim-jade', {
+                \ 'lazy' : 1,
+                \ 'autoload' : {
+                \     'filetypes' : 'jade',
+                \   }
+                \ })
 
     " JSON
-    NeoBundleLazy 'elzr/vim-json', {
-            \ 'autoload' : {'filetypes' : 'json'}
-            \ }
+    call neobundle#add('elzr/vim-json', {
+                \ 'lazy' : 1,
+                \ 'autoload' : {'filetypes' : 'json'}
+                \ })
 
     " Go
-    NeoBundleLazy 'fatih/vim-go', {
-            \ 'autoload' : {
-            \     'filetypes' : 'go',
-            \     'commands' : ['GoImport', 'GoDrop', 'GoDef', 'GoVet', 'GoDoc', 'GoLint', 'GoRename', 'GoImports']
-            \   }
-            \ }
+    call neobundle#add('fatih/vim-go', {
+                \ 'lazy' : 1,
+                \ 'autoload' : {
+                \     'filetypes' : 'go',
+                \     'commands' : ['GoImport', 'GoDrop', 'GoDef', 'GoVet', 'GoDoc', 'GoLint', 'GoRename', 'GoImports']
+                \   }
+                \ })
 
     " LLVM IR
-    NeoBundle 'rhysd/vim-llvm'
+    call neobundle#add('rhysd/vim-llvm')
 
     " Swift
-    NeoBundleLazy 'Keithbsmiley/swift.vim', {
-            \ 'autoload' : {
-            \     'filetypes' : 'swift'
-            \   }
-            \ }
+    call neobundle#add('Keithbsmiley/swift.vim', {
+                \ 'lazy' : 1,
+                \ 'autoload' : {
+                \     'filetypes' : 'swift'
+                \   }
+                \ })
 
     " TypeScript
-    NeoBundleLazy 'Quramy/tsuquyomi', {
-            \ 'autoload' : {
-            \     'commands' : 'TsuOpen',
-            \     'function_prefix': 'tsuquyomi',
-            \   }
-            \ }
+    call neobundle#add('Quramy/tsuquyomi', {
+                \ 'lazy' : 1,
+                \ 'autoload' : {
+                \     'commands' : 'TsuOpen',
+                \     'function_prefix': 'tsuquyomi',
+                \   }
+                \ })
 
     " Rust
-    NeoBundleLazy 'racer-rust/vim-racer', {
-            \ 'autoload' : {
-            \     'filetypes' : 'rust'
-            \   }
-            \ }
+    call neobundle#add('racer-rust/vim-racer', {
+                \ 'lazy' : 1,
+                \ 'autoload' : {
+                \     'filetypes' : 'rust'
+                \   }
+                \ })
 
     " 書き込み権限の無いファイルを編集しようとした時
-    NeoBundleLazy 'sudo.vim'
+    call neobundle#add('sudo.vim', {'lazy' : 1})
 
     NeoBundleCheck
     NeoBundleSaveCache
