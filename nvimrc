@@ -589,6 +589,29 @@ if dein#load_state(s:dein_cache_dir)
     call dein#add('airblade/vim-gitgutter')
     call dein#add('vim-airline/vim-airline')
     call dein#add('vim-airline/vim-airline-themes')
+    call dein#add('keith/tmux.vim')
+    call dein#add('leafgarland/typescript-vim')
+    call dein#add('rhysd/vim-gfm-syntax')
+
+    call dein#add('kana/vim-textobj-user', {
+                \   'lazy': 1,
+                \ })
+    call dein#add('rhysd/vim-textobj-anyblock', {
+                \ 'depends' : 'vim-textobj-user',
+                \ 'on_map' : [['xo', 'ab'], ['xo', 'ib']],
+                \ })
+    call dein#add('kana/vim-textobj-indent', {
+                \ 'depends' : 'vim-textobj-user',
+                \ 'on_map' : [['xo', 'ai'], ['xo', 'aI'], ['xo', 'ii'], ['xo', 'iI']],
+                \ })
+    call dein#add('sgur/vim-textobj-parameter', {
+                \ 'depends' : 'kana/vim-textobj-user',
+                \ 'on_map' : [['xo', 'a,'], ['xo', 'i,']],
+                \ })
+    call dein#add('kana/vim-textobj-entire', {
+                \ 'depends' : 'kana/vim-textobj-user',
+                \ 'on_map' : [['xo', 'ae'], ['xo', 'ie']],
+                \ })
 
     call dein#add('rhysd/clever-f.vim', {
                 \   'rev' : 'dev',
