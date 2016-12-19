@@ -23,21 +23,19 @@ set winaltkeys=no
 " GUI autocmds
 Autocmd VimEnter * call Vimfiler_at_start()
 
-set background=light
-colorscheme solarized
-let g:airline_theme = 'solarized'
-
 function! Vimfiler_at_start()
     if empty(bufname('%'))
         VimFilerCurrentDir
     endif
 endfunction
 
-let g:haskell_conceal = 1
-
-if isdirectory(expand('~/.cabal/bin'))
-    let $PATH .= ':'.expand('~/.cabal/bin')
+let s:cabal_bin_dir = expand('~/.cabal/bin')
+if isdirectory(s:cabal_bin_dir)
+    let $PATH .= ':' . s:cabal_bin_dir
 endif
+
+colorscheme spring-night
+let g:airline_theme = 'spring_night'
 
 if has('mac')
     " do not load togglebg
@@ -49,8 +47,6 @@ if has('mac')
     set transparency=0 "初期背景透過0%
     nnoremap <expr><F12> &transparency+40 > 100 ? ":set transparency=0\<CR>" : ":let &transparency=&transparency+40\<CR>"
 elseif has('unix')
-    colorscheme molokai
-
     NeoBundleSource restart.vim
 
     " IM の起動キーを gVim に教える

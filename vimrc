@@ -714,6 +714,7 @@ if get(g:, 'linda_pp_startup_with_tiny', 0)
             \ || v:progname ==# 'vi'
             \ || ! exists('v:version') || v:version < 702
             \ || ! executable('git')
+    syntax enable
     finish
 endif
 "}}}
@@ -820,12 +821,12 @@ if neobundle#load_cache()
     NeoBundle 'rhysd/wallaby.vim'
     NeoBundle 'rhysd/vim-color-spring-night'
     NeoBundle 'chriskempson/tomorrow-theme', {'rtp' : 'vim'}
-
     NeoBundle 'junegunn/seoul256.vim'
     NeoBundle 'tomasr/molokai'
     NeoBundle 'telamon/vim-color-github'
     NeoBundle 'altercation/vim-colors-solarized'
     NeoBundle 'jonathanfilip/vim-lucius'
+    NeoBundle 'tyrannicaltoucan/vim-quantum'
 
     " For testing
     command! -nargs=1 NeoBundleMyPlugin
@@ -1380,19 +1381,24 @@ Autocmd ColorScheme * highlight link githubFlavoredMarkdownCode CursorLine
 syntax enable
 if !has('gui_running')
     if &t_Co < 256
+        set background=dark
         colorscheme default
     else
         if has('termguicolors') && $TERM_PROGRAM ==# 'iTerm.app'
             let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
             let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
             set termguicolors
+            colorscheme spring-night
+            let g:airline_theme = 'spring_night'
+        else
+            colorscheme wallaby
+            let g:airline_theme = 'wombat'
         endif
-        colorscheme spring-night
     endif
 endif
 
-" seoul256 バックグラウンドカラーの明るさ
 let g:seoul256_background = 233
+let g:quantum_black = 1
 " }}}
 
 " Ruby {{{
