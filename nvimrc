@@ -580,7 +580,7 @@ if dein#load_state(s:dein_cache_dir)
 
     call dein#add(s:dein_repo_path)
     call dein#add('rhysd/wallaby.vim')
-    call dein#add('jonathanfilip/vim-lucius')
+    call dein#add('rhysd/vim-color-spring-night')
     call dein#add('rhysd/vim-dachs')
     call dein#add('rhysd/nyaovim-popup-tooltip')
     call dein#add('rhysd/nyaovim-mini-browser')
@@ -625,26 +625,30 @@ if dein#load_state(s:dein_cache_dir)
 
     call dein#end()
     call dein#save_state()
+
+    if dein#check_install()
+        call dein#install()
+    endif
 endif
 filetype plugin indent on
-
-if dein#check_install()
-    call dein#install()
-endif
 
 " カラースキーム
 " シンタックスハイライト
 syntax enable
-set background=dark
+let s:true_color_enabled = $TERM_PROGRAM ==# 'iTerm.app'
+if s:true_color_enabled
+    set termguicolors
+endif
 try
-    if s:on_nyaovim
-        colorscheme lucius
-        Autocmd VimEnter * AirlineTheme base16_ashes
+    if s:on_nyaovim || s:true_color_enabled
+        colorscheme spring-night
+        let g:airline_theme = 'spring_night'
     else
         colorscheme wallaby
-        Autocmd VimEnter * AirlineTheme wombat
+        let g:airline_theme = 'wombat'
     endif
 catch
+    set background=dark
     colorscheme default
 endtry
 
