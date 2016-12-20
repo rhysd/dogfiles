@@ -650,13 +650,13 @@ AutocmdFT help call s:on_FileType_help_define_mappings()
 " quickfix のマッピング
 function! s:on_FileType_qf_define_mappings()
     nnoremap <buffer><silent> q :<C-u>cclose<CR>
-    nnoremap <buffer><silent> j :<C-u>cnext<CR>
-    nnoremap <buffer><silent> k :<C-u>cprevious<CR>
-    nnoremap <buffer><silent> J :<C-u>cfirst<CR>
-    nnoremap <buffer><silent> K :<C-u>clast<CR>
-    nnoremap <buffer><silent> n :<C-u>cnewer<CR>
-    nnoremap <buffer><silent> p :<C-u>colder<CR>
+    nnoremap <buffer><silent> j :<C-u>cnext<CR>:copen<CR>
+    nnoremap <buffer><silent> k :<C-u>cprevious<CR>:copen<CR>
+    nnoremap <buffer><silent> J :<C-u>cnfile<CR>:copen<CR>
+    nnoremap <buffer><silent> K :<C-u>cpfile<CR>:copen<CR>
     nnoremap <buffer><silent> l :<C-u>clist<CR>
+    " Clear <CR>
+    nnoremap <buffer><CR> <CR>
 endfunction
 AutocmdFT qf call s:on_FileType_qf_define_mappings()
 
@@ -3077,6 +3077,10 @@ omap ih <Plug>GitGutterTextObjectInnerPending
 omap ah <Plug>GitGutterTextObjectOuterPending
 xmap ih <Plug>GitGutterTextObjectInnerVisual
 xmap ah <Plug>GitGutterTextObjectOuterVisual
+" }}}
+
+" vim-gfm-syntax {{{
+let g:gfm_syntax_emoji_conceal = 1
 " }}}
 
 " プラットフォーム依存な設定をロードする "{{{
