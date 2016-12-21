@@ -76,15 +76,11 @@ set hlsearch
 set incsearch
 "コマンドラインでのIM無効化
 set noimcmdline
-" コマンドラインで cmd window を出すキー
-set cedit=<C-c>
 "バックスペースでなんでも消せるように
 set backspace=indent,eol,start
 " 改行時にコメントしない
 set formatoptions-=r
 set formatoptions-=o
-" 行継続で勝手にインデントしない
-" let g:vim_indent_cont = 0
 " 8進数インクリメントをオフにする
 set nrformats-=octal
 "ファイル切替時にファイルを隠す
@@ -101,8 +97,6 @@ set fileformats=unix,dos,mac
 set textwidth=0
 "コマンド表示いらない
 set noshowcmd
-"コマンド実行中は再描画しない
-set lazyredraw
 " 自前で用意したものへの path
 set path=.,/usr/include,/usr/local/include
 " 補完でプレビューウィンドウを開かない
@@ -141,8 +135,6 @@ let &formatlistpat .= '\|^\s*[*+-]\s*'
 set spelllang=en,cjk
 " 折り返しでインデントを保持
 set breakindent
-" 一時ディレクトリではバックアップを取らない
-set backupskip=/tmp/*,/private/tmp/*
 " 拡張補完メニュー
 set wildmenu
 
@@ -154,20 +146,10 @@ Autocmd CursorHold,CursorHoldI,WinEnter * setlocal cursorline
 
 " *.md で読み込む filetype を変更（デフォルトは modula2）
 Autocmd BufRead,BufNew,BufNewFile *.md,*.markdown,*.mkd setlocal ft=markdown
-" tmux
-Autocmd BufRead,BufNew,BufNewFile *tmux.conf setlocal ft=tmux
 " git config file
 Autocmd BufRead,BufNew,BufNewFile gitconfig setlocal ft=gitconfig
-" Gnuplot のファイルタイプを設定
-Autocmd BufRead,BufNew,BufNewFile *.plt,*.plot,*.gnuplot setlocal ft=gnuplot
 " Ruby の guard 用ファイル
 Autocmd BufRead,BufNew,BufNewFile Guardfile setlocal ft=ruby
-" JSON
-Autocmd BufRead,BufNew,BufNewFile *.json,*.jsonp setlocal ft=json
-" jade
-Autocmd BufRead,BufNew,BufNewFile *.jade setlocal ft=jade
-" Go
-Autocmd BufRead,BufNew,BufNewFile *.go setlocal ft=go
 
 " カーソル位置の復元
 Autocmd BufReadPost *
@@ -207,7 +189,7 @@ endif
 augroup InitialMessage
     autocmd!
     " 起動時メッセージ．ｲﾇｩ…
-    autocmd VimEnter * echo "(U＾ω＾) enjoy vimming!"
+    autocmd VimEnter * echo "(U^w^) enjoy vimming!"
 augroup END
 
 " ウィンドウ周りのユーティリティ "{{{
@@ -275,8 +257,6 @@ nnoremap <silent><C-q>
             \ :<C-u>call <SID>close_windows_like('s:is_target_window(winnr)')<CR>
 "}}}
 
-command! Date :<C-u>call setline('.', getline('.') . strftime('%Y/%m/%d (%a) %H:%M'))
-
 " エンコーディング指定オープン
 command! -bang -complete=file -nargs=? Utf8 edit<bang> ++enc=utf-8 <args>
 command! -bang -complete=file -nargs=? Sjis edit<bang> ++enc=cp932 <args>
@@ -308,14 +288,6 @@ function! s:smart_help(args)
         silent! AdjustWindowWidth --direction=shrink
     endif
 endfunction
-
-function! s:cmd_lcd(count)
-    let dir = expand('%:p' . repeat(':h', a:count + 1))
-    if isdirectory(dir)
-        execute 'lcd' fnameescape(dir)
-    endif
-endfunction
-command! -nargs=0 -count=0 Lcd  call s:cmd_lcd(<count>)
 
 " インデント
 command! -bang -nargs=1 SetIndent
@@ -356,8 +328,6 @@ vnoremap <C-j> }
 vnoremap <C-k> {
 " インサートモードに入らずに1文字追加
 nnoremap <silent><expr>m 'i'.nr2char(getchar())."\<Esc>"
-" 選択領域の頭に入力する（vim-niceblock を使うために vmap）
-vmap m I
 " gm にマーク機能を退避
 noremap gm m
 "Esc->Escで検索結果とエラーハイライトをクリア
@@ -382,10 +352,8 @@ endfunction
 nnoremap <silent><CR> :<C-u>call <SID>cmd_cr_n(v:count1)<CR>
 "Emacsライクなバインディング．ポップアップが出ないように移動．
 inoremap <C-e> <END>
-vnoremap <C-e> <END>
 cnoremap <C-e> <END>
 inoremap <C-a> <HOME>
-vnoremap <C-a> <HOME>
 cnoremap <C-a> <HOME>
 inoremap <silent><expr><C-n> pumvisible() ? "\<C-y>\<Down>" : "\<Down>"
 inoremap <silent><expr><C-p> pumvisible() ? "\<C-y>\<Up>" : "\<Up>"
@@ -438,10 +406,6 @@ inoremap <C-q> <C-d>
 nnoremap ge :<C-u>tabedit<Space>
 nnoremap gn :<C-u>tabnew<CR>
 nnoremap <silent>gx :<C-u>tabclose<CR>
-nnoremap <silent><A-h> gT
-nnoremap <silent><A-l> gt
-" 行表示・非表示の切り替え．
-nnoremap : :<C-u>set number! number?<CR>
 " クリップボードから貼り付け
 inoremap <C-r>+ <C-o>:set paste<CR><C-r>+<C-o>:set nopaste<CR>
 " コンマ後には空白を入れる
@@ -521,13 +485,12 @@ AutocmdFT help call s:on_FileType_help_define_mappings()
 
 " quickfix のマッピング
 AutocmdFT qf nnoremap <buffer><silent> q :<C-u>cclose<CR>
-AutocmdFT qf nnoremap <buffer><silent> j :<C-u>cnext!<CR>
-AutocmdFT qf nnoremap <buffer><silent> k :<C-u>cprevious!<CR>
-AutocmdFT qf nnoremap <buffer><silent> J :<C-u>cfirst<CR>
-AutocmdFT qf nnoremap <buffer><silent> K :<C-u>clast<CR>
-AutocmdFT qf nnoremap <buffer><silent> n :<C-u>cnewer<CR>
-AutocmdFT qf nnoremap <buffer><silent> p :<C-u>colder<CR>
+AutocmdFT qf nnoremap <buffer><silent> j :<C-u>cnext<CR>:copen<CR>
+AutocmdFT qf nnoremap <buffer><silent> k :<C-u>cprevious<CR>:copen<CR>
+AutocmdFT qf nnoremap <buffer><silent> J :<C-u>cnfile<CR>:copen<CR>
+AutocmdFT qf nnoremap <buffer><silent> K :<C-u>cpfile<CR>:copen<CR>
 AutocmdFT qf nnoremap <buffer><silent> l :<C-u>clist<CR>
+AutocmdFT qf nnoremap <buffer><CR> <CR>
 
 " 初回のみ a:cmd の動きをして，それ以降は行内をローテートする
 let s:smart_line_pos = -1
@@ -785,4 +748,3 @@ if s:on_nyaovim
     endfunction
     command! -nargs=* DevDocs call <SID>devdocs(<q-args>)
 endif
-
