@@ -756,11 +756,7 @@ if neobundle#load_cache()
     call neobundle#add('Shougo/neosnippet.vim')
     call neobundle#add('rhysd/inu-snippets')
     call neobundle#add('thinca/vim-quickrun')
-    call neobundle#add('Shougo/unite-outline')
-    call neobundle#add('osyo-manga/unite-quickfix')
     call neobundle#add('rhysd/quickrun-unite-quickfix-outputter')
-    call neobundle#add('Shougo/unite-help')
-    call neobundle#add('thinca/vim-unite-history')
     call neobundle#add('vim-jp/vimdoc-ja')
     call neobundle#add('jceb/vim-hier')
     call neobundle#add('kana/vim-textobj-user')
@@ -768,22 +764,15 @@ if neobundle#load_cache()
     call neobundle#add('kana/vim-operator-user')
     call neobundle#add('kana/vim-vspec')
     call neobundle#add('rhysd/vim-vspec-matchers')
-    call neobundle#add('rhysd/accelerated-jk')
     call neobundle#add('kana/vim-smartinput')
     call neobundle#add('kana/vim-niceblock')
-    call neobundle#add('thinca/vim-scouter')
     call neobundle#add('h1mesuke/vim-alignta')
     call neobundle#add('rhysd/clever-f.vim')
-    call neobundle#add('rhysd/unite-zsh-cdr.vim')
-    call neobundle#add('rhysd/unite-ruby-require.vim')
     call neobundle#add('airblade/vim-gitgutter')
     call neobundle#add('kana/vim-submode')
     call neobundle#add('vim-airline/vim-airline')
     call neobundle#add('vim-airline/vim-airline-themes')
-    call neobundle#add('rhysd/vim-numberstar')
     call neobundle#add('rhysd/migemo-search.vim')
-    call neobundle#add('ujihisa/unite-colorscheme')
-    call neobundle#add('rhysd/unite-locate')
     call neobundle#add('rhysd/conflict-marker.vim')
     call neobundle#add('rhysd/vim-window-adjuster')
     call neobundle#add('Shougo/neomru.vim')
@@ -801,21 +790,26 @@ if neobundle#load_cache()
     call neobundle#add('rhysd/vim-crystal')
     call neobundle#add('thinca/vim-themis')
     call neobundle#add('othree/yajs.vim')
-    call neobundle#add('rhysd/unite-redpen.vim')
     call neobundle#add('rhysd/vim-wasm')
     call neobundle#add('rhysd/vim-gfm-syntax')
 
     " unite.vim sources
+    call neobundle#add('Shougo/unite-outline')
+    call neobundle#add('osyo-manga/unite-quickfix')
+    call neobundle#add('Shougo/unite-help')
+    call neobundle#add('thinca/vim-unite-history')
+    call neobundle#add('rhysd/unite-zsh-cdr.vim')
+    call neobundle#add('rhysd/unite-ruby-require.vim')
+    call neobundle#add('ujihisa/unite-colorscheme')
+    call neobundle#add('rhysd/unite-locate')
     call neobundle#add('sorah/unite-ghq')
     call neobundle#add('rhysd/unite-codic.vim', {
-                \ 'depends' : [
-                \       'Shougo/unite.vim',
-                \       'koron/codic-vim',
-                \   ],
+                \   'depends' : 'koron/codic-vim',
                 \ })
     call neobundle#add('rhysd/unite-n3337')
     call neobundle#add('rhysd/unite-go-import.vim')
     call neobundle#add('rhysd/unite-oldfiles.vim')
+    call neobundle#add('rhysd/unite-redpen.vim')
 
     " カラースキーム
     call neobundle#add('rhysd/wallaby.vim')
@@ -823,7 +817,6 @@ if neobundle#load_cache()
     call neobundle#add('chriskempson/tomorrow-theme', {'rtp' : 'vim'})
     call neobundle#add('junegunn/seoul256.vim')
     call neobundle#add('tomasr/molokai')
-    call neobundle#add('telamon/vim-color-github')
     call neobundle#add('altercation/vim-colors-solarized')
     call neobundle#add('jonathanfilip/vim-lucius')
     call neobundle#add('tyrannicaltoucan/vim-quantum')
@@ -1011,21 +1004,6 @@ if neobundle#load_cache()
                 \   }
                 \ })
 
-    call neobundle#add('rbtnn/puyo.vim', {
-                \ 'lazy' : 1,
-                \ 'depends' : 'rbtnn/game_engine.vim',
-                \ 'autoload' : {
-                \       'commands' : 'Puyo'
-                \   }
-                \ })
-
-    call neobundle#add('thinca/vim-threes', {
-                \ 'lazy' : 1,
-                \ 'autoload' : {
-                \       'commands' : 'ThreesStart'
-                \   }
-                \ })
-
     call neobundle#add('rhysd/wandbox-vim', {
                 \ 'lazy' : 1,
                 \ 'autoload' : {
@@ -1037,13 +1015,6 @@ if neobundle#load_cache()
                 \ 'lazy' : 1,
                 \ 'autoload' : {
                 \     'mappings' : [['x', '*'], ['x' , '#'], ['x', 'g*'], ['x', 'g#']],
-                \   }
-                \ })
-
-    call neobundle#add('cohama/agit.vim', {
-                \ 'lazy' : 1,
-                \   'autoload' : {
-                \     'commands' : 'Agit'
                 \   }
                 \ })
 
@@ -1118,10 +1089,6 @@ if neobundle#load_cache()
                 \ 'lazy' : 1,
                 \ 'autoload' : {'filetypes' : 'haskell'}
                 \ })
-    call neobundle#add('rhysd/vim2hs', {
-                \ 'lazy' : 1,
-                \ 'autoload' : {'filetypes' : 'haskell'}
-                \ })
     call neobundle#add('rhysd/vim-filetype-haskell', {
                 \ 'lazy' : 1,
                 \ 'autoload' : {'filetypes' : 'haskell'}
@@ -1137,16 +1104,6 @@ if neobundle#load_cache()
     call neobundle#add('eagletmt/ghcmod-vim', {
                 \ 'lazy' : 1,
                 \ 'autoload' : {'filetypes' : 'haskell'}
-                \ })
-
-    " Ruby 用プラグイン
-    call neobundle#add('rhysd/vim-textobj-ruby', {
-                \ 'lazy' : 1,
-                \ 'autoload' : {'filetypes' : 'ruby'}
-                \ })
-    call neobundle#add('rhysd/unite-ruby-require.vim', {
-                \ 'lazy' : 1,
-                \ 'autoload' : {'filetypes' : 'ruby'}
                 \ })
 
     " JavaScript 用プラグイン
@@ -1168,14 +1125,6 @@ if neobundle#load_cache()
     endif
 
     " html, sass, scss 用プラグイン
-    call neobundle#add('mattn/emmet-vim', {
-                \ 'lazy' : 1,
-                \ 'autoload': {
-                \     'function_prefix': 'emmet',
-                \     'filetypes': ['html', 'haml', 'xhtml', 'liquid', 'css', 'scss', 'sass'],
-                \     'mappings' : ['i', '<Plug>(EmmetExpandAbbr)']
-                \   }
-                \ })
     call neobundle#add('othree/html5.vim', {
                 \ 'lazy' : 1,
                 \ 'autoload' : {
@@ -1200,12 +1149,6 @@ if neobundle#load_cache()
                 \ 'lazy' : 1,
                 \ 'autoload' : {
                 \     'filetypes' : 'python',
-                \   }
-                \ })
-    call neobundle#add('digitaltoad/vim-jade', {
-                \ 'lazy' : 1,
-                \ 'autoload' : {
-                \     'filetypes' : 'jade',
                 \   }
                 \ })
 
@@ -2188,54 +2131,11 @@ AutocmdFT cpp nnoremap <silent><buffer><Leader>qc :<C-u>QuickRun -type cpp/clang
 " }}}
 " }}}
 
-" accelerated-jk "{{{
-let g:accelerated_jk_enable_deceleration = 1
-nmap j <Plug>(accelerated_jk_gj)
-nmap k <Plug>(accelerated_jk_gk)
-"}}}
-
 " Hier.vim {{{
 nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>:HierClear<CR>
 " }}}
 
 " VimFilerの設定 {{{
-
-" VimFiler の読み込みを遅延しつつデフォルトのファイラに設定 {{{
-augroup LoadVimFiler
-    autocmd!
-    autocmd BufEnter,BufCreate,BufWinEnter * call <SID>load_vimfiler(expand('<amatch>'))
-augroup END
-
-" :edit {dir} や unite.vim などでディレクトリを開こうとした場合
-function! s:load_vimfiler(path)
-    if exists('g:loaded_vimfiler')
-        autocmd! LoadVimFiler
-        return
-    endif
-
-    let path = a:path
-    " for ':edit ~'
-    if fnamemodify(path, ':t') ==# '~'
-        let path = expand('~')
-    endif
-
-    if isdirectory(path)
-        NeoBundleSource vimfiler
-    endif
-
-    autocmd! LoadVimFiler
-endfunction
-
-" 起動時にディレクトリを指定した場合
-for arg in argv()
-    if isdirectory(getcwd().'/'.arg)
-        NeoBundleSource vimfiler.vim
-        autocmd! LoadVimFiler
-        break
-    endif
-endfor
-"}}}
-
 let g:loaded_netrwPlugin = 1
 let g:vimfiler_as_default_explorer = 1
 let g:vimfiler_safe_mode_by_default = 0
@@ -2262,7 +2162,8 @@ AutocmdFT vimfiler nnoremap <buffer><silent><C-h> :<C-u>Unite file_mru directory
 " unite.vim の file との連携
 AutocmdFT vimfiler
             \ nnoremap <buffer><silent>/
-            \ :<C-u>execute 'Unite' 'file:' . b:vimfiler.current_dir '-default-action=open_or_vimfiler'<CR>
+            \ :<C-u>execute 'Unite' 'file:' . b:vimfiler.current_dir '-default-action=open_or_vimfiler' '-start-insert'<CR>
+
 " git リポジトリに登録されたすべてのファイルを開く
 AutocmdFT vimfiler nnoremap <buffer><expr>ga vimfiler#do_action('git_repo_files')
 
@@ -2879,13 +2780,6 @@ function! s:memolist()
 endfunction
 "}}}
 
-" vim-numberstar {{{
-nnoremap <silent><expr>*  numberstar#key('*')
-nnoremap <silent><expr>#  numberstar#key('#')
-nnoremap <silent><expr>g* numberstar#key('g*')
-nnoremap <silent><expr>#* numberstar#key('#*')
-" }}}
-
 " migemo-search.vim {{{
 if executable('cmigemo')
     cnoremap <expr><CR> getcmdtype() =~# '^[/?]$' ? migemosearch#replace_search_word()."\<CR>zv" : "\<CR>"
@@ -2931,10 +2825,6 @@ let g:EasyMotion_smartcase = 1
 let g:EasyMotion_verbose = 0
 map : <Plug>(easymotion-overwin-f2)
 " }}}
-
-" ぷよ.vim {{{
-let g:puyo#updatetime = 500
-"}}}
 
 " wandbox-vim {{{
 let g:wandbox#echo_command = 'echomsg'
