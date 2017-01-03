@@ -171,18 +171,12 @@ set backupskip=/tmp/*,/private/tmp/*
 Autocmd CursorMoved,CursorMovedI,WinLeave * setlocal nocursorline
 Autocmd CursorHold,CursorHoldI,WinEnter * setlocal cursorline
 
-" *.md で読み込む filetype を変更（デフォルトは modula2）
-Autocmd BufRead,BufNew,BufNewFile *.md,*.markdown,*.mkd setlocal ft=markdown
-" tmux
-Autocmd BufRead,BufNew,BufNewFile *tmux.conf setlocal ft=tmux
 " git config file
 Autocmd BufRead,BufNew,BufNewFile gitconfig setlocal ft=gitconfig
 " Gnuplot のファイルタイプを設定
 Autocmd BufRead,BufNew,BufNewFile *.plt,*.plot,*.gnuplot setlocal ft=gnuplot
 " Ruby の guard 用ファイル
 Autocmd BufRead,BufNew,BufNewFile Guardfile setlocal ft=ruby
-" jade
-Autocmd BufRead,BufNew,BufNewFile *.jade setlocal ft=jade
 " Go
 Autocmd BufRead,BufNew,BufNewFile *_test.go setlocal ft=go.test
 " Swift
@@ -195,8 +189,6 @@ Autocmd BufRead,BufNew,BufNewFile *.jsx setlocal ft=javascript.jsx
 Autocmd BufRead,BufNew,BufNewFile *.tsx setlocal ft=typescript.jsx
 " JavaScript tests
 Autocmd BufRead,BufNew,BufNewFile *_test.js,*_test.jsx setlocal ft=javascript.test
-" eslintrc
-Autocmd BufRead,BufNew,BufNewFile .eslintrc setlocal ft=json
 
 " カーソル位置の復元
 Autocmd BufReadPost *
@@ -318,8 +310,6 @@ endfunction
 
 nnoremap <silent><C-q>
             \ :<C-u>call <SID>close_windows_like('s:is_target_window(winnr)')<CR>
-inoremap <silent><C-q>
-            \ <Esc>:call <SID>close_windows_like('s:is_target_window(winnr)')<CR>
 "}}}
 
 " vimrc を開く
@@ -343,7 +333,7 @@ function! s:edit_myvimrc()
         let files .= substitute(expand(gvimrc), '\n', ' ', 'g')
     endif
 
-    execute "args " . files
+    execute 'args ' . files
 endfunction
 
 " カレントパスをクリプボゥにコピー
@@ -396,9 +386,9 @@ endfunction
 " インデント
 command! -bang -nargs=1 SetIndent
             \ execute <bang>0 ? 'set' : 'setlocal'
-            \         'tabstop='.<q-args>
-            \         'shiftwidth='.<q-args>
-            \         'softtabstop='.<q-args>
+            \         'tabstop=' . <q-args>
+            \         'shiftwidth=' . <q-args>
+            \         'softtabstop=' . <q-args>
 
 " 文字数カウント
 command! -nargs=0 Wc %s/.//nge
@@ -412,7 +402,7 @@ noremap ; :
 if has('cmdline_hist')
     " コマンドラインウィンドウを使う
     " Note:
-    "   noremap ; q:i は使えない
+    "   noremap <Leader>; q:i は使えない
     "   マクロ記録中に q を記録終了に食われてしまう
     "   eval() にそのまま通すのは怖いので事前に &cedit をチェック
     noremap <silent><expr><Leader>; &cedit =~# '^<C-\a>$' ? ':'.eval('"\'.&cedit.'"').'i' : ':'
@@ -539,8 +529,6 @@ nnoremap <silent><Left>  <C-w><
 nnoremap <silent><Right> <C-w>>
 " ペーストした文字列をビジュアルモードで選択
 nnoremap <expr>gp '`['.strpart(getregtype(),0,1).'`]'
-" 貼り付けは P のほうが好みかも
-    " nnoremap p P
 " 最後にヤンクしたテキストを貼り付け．
 nnoremap P "0P
 " indent を下げる
@@ -685,24 +673,6 @@ function! s:move_forward_by_step()
         normal! $
     endif
 endfunction
-
-" 行頭 → 非空白行頭 → 行 をローテートする
-function! s:rotate_in_line()
-    let c = virtcol('.')
-
-    let cmd = c == 1 ? 'g^' : 'g$'
-    execute "normal! ".cmd
-
-    " 行頭にスペースがなかったときは行頭と行末をトグル
-    if c == virtcol('.')
-        if cmd == 'g^'
-            normal! g$
-        else
-            normal! g0
-        endif
-    endif
-endfunction
-
 " }}}
 
 "}}}
@@ -1040,6 +1010,13 @@ if neobundle#load_cache()
                 \   }
                 \ })
 
+    call neobundle#add('rhysd/vim-grammarous', {
+                \ 'lazy' : 1,
+                \ 'autoload' : {
+                \     'commands' : 'GrammarousCheck'
+                \   }
+                \ })
+
     " if_lua プラグイン
     if s:meet_neocomplete_requirements
         call neobundle#add('Shougo/neocomplete.vim')
@@ -1140,11 +1117,12 @@ if neobundle#load_cache()
                 \ })
 
     " Python
-    NeoBundleLazy 'davidhalter/jedi-vim', {
-            \ 'autoload' : {
-            \     'filetypes' : 'python',
-            \   }
-            \ }
+    call neobundle#add('davidhalter/jedi-vim', {
+                \ 'lazy' : 1,
+                \ 'autoload' : {
+                \     'filetypes' : 'python',
+                \   }
+                \ })
     call neobundle#add('hynek/vim-python-pep8-indent', {
                 \ 'lazy' : 1,
                 \ 'autoload' : {

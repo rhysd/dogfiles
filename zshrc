@@ -53,6 +53,7 @@ alias gvim='vim -g'
 alias sudo='sudo '
 alias memo='cat > /dev/null'
 alias nr='npm run'
+alias cr='cargo run --'
 
 alias l=ls
 alias v=vim
@@ -907,9 +908,6 @@ case $OSTYPE in
         export HOMEBREW_VERBOSE=true
         export HOMEBREW_EDITOR=vim
         export HOMEBREW_NO_ANALYTICS=1
-
-        # Appium
-        export JAVA_HOME=`/usr/libexec/java_home`
 
         # Git
         export PATH=$PATH:/usr/local/opt/git/share/git-core/contrib/diff-highlight
