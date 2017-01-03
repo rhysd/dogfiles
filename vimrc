@@ -15,7 +15,7 @@ if &compatible
     set nocompatible
 endif
 
-function! s:get_SID()
+function! s:get_SID() abort
     return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeget_SID$')
 endfunction
 let s:SID = s:get_SID()
@@ -198,7 +198,7 @@ Autocmd BufReadPost *
 " Hack #202: 自動的にディレクトリを作成する
 " http://vim-users.jp/2011/02/hack202/
 Autocmd BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'), v:cmdbang)
-function! s:auto_mkdir(dir, force)
+function! s:auto_mkdir(dir, force) abort
     if !isdirectory(a:dir) && (a:force ||
                 \    input(printf('"%s" does not exist. Create? [y/N]', a:dir)) =~? '^y\%[es]$')
         " call mkdir(iconv(a:dir, &encoding, &termencoding), 'p')
@@ -233,7 +233,7 @@ command! -nargs=0 GetHighlightingGroup
 if executable('chmod')
     Autocmd BufWritePost * call s:add_permission_x()
 
-    function! s:add_permission_x()
+    function! s:add_permission_x() abort
         let file = expand('%:p')
         if getline(1) =~# '^#![^[]' && !executable(file)
             silent! call vimproc#system('chmod a+x ' . shellescape(file))
@@ -248,7 +248,7 @@ augroup InitialMessage
 augroup END
 
 " ウィンドウ周りのユーティリティ "{{{
-function! s:close_window(winnr)
+function! s:close_window(winnr) abort
     if winbufnr(a:winnr) !=# -1
         execute a:winnr . 'wincmd w'
         execute 'wincmd c'
@@ -258,7 +258,7 @@ function! s:close_window(winnr)
     endif
 endfunction
 
-function! s:get_winnr_like(expr)
+function! s:get_winnr_like(expr) abort
     let ret = []
     let winnr = 1
     while winnr <= winnr('$')
@@ -271,7 +271,7 @@ function! s:get_winnr_like(expr)
     return ret
 endfunction
 
-function! s:close_windows_like(expr, ...)
+function! s:close_windows_like(expr, ...) abort
     let winnr_list = s:get_winnr_like(a:expr)
     " Close current window if current matches a:expr.
     " let winnr_list = s:move_current_winnr_to_head(winnr_list)
@@ -300,7 +300,7 @@ endfunction
 "}}}
 
 " あるウィンドウを他のウィンドウから閉じる "{{{
-function! s:is_target_window(winnr)
+function! s:is_target_window(winnr) abort
     let target_filetype = ['ref', 'unite', 'vimfiler']
     let target_buftype  = ['help', 'quickfix', 'nofile']
     let winbufnr = winbufnr(a:winnr)
@@ -314,7 +314,7 @@ nnoremap <silent><C-q>
 
 " vimrc を開く
 command! Vimrc call s:edit_myvimrc()
-function! s:edit_myvimrc()
+function! s:edit_myvimrc() abort
     let ghq_root = expand(substitute(system('git config ghq.root'), '\n$', '', ''))
     let vimrc = $MYVIMRC
     let gvimrc = $MYGVIMRC
@@ -338,7 +338,7 @@ endfunction
 
 " カレントパスをクリプボゥにコピー
 command! CopyCurrentPath :call s:copy_current_path()
-function! s:copy_current_path()
+function! s:copy_current_path() abort
     if has('win32') || has('win64')
         let c = substitute(expand('%:p'), '\\/', '\\', 'g')
     elseif has('unix')
@@ -360,7 +360,7 @@ command! -bang -complete=file -nargs=? Euc edit<bang> ++enc=eucjp <args>
 " 縦幅と横幅を見て help の開き方を決める
 command! -nargs=* -complete=help SmartHelp call <SID>smart_help(<q-args>)
 nnoremap <silent><Leader>h :<C-u>SmartHelp<Space><C-l>
-function! s:smart_help(args)
+function! s:smart_help(args) abort
     try
         if winwidth(0) > winheight(0) * 2
             " 縦分割
@@ -452,7 +452,7 @@ nnoremap # *zvzz
 cnoremap <expr>/ <SID>escaped_char_on_cmdline('/')
 cnoremap <expr>< <SID>escaped_char_on_cmdline('<')
 cnoremap <expr>> <SID>escaped_char_on_cmdline('>')
-function! s:escaped_char_on_cmdline(c)
+function! s:escaped_char_on_cmdline(c) abort
     if getcmdtype() !~# '[?/]'
         return a:c
     endif
@@ -469,7 +469,7 @@ function! s:escaped_char_on_cmdline(c)
     return '\' . a:c
 endfunction
 " 空行挿入
-function! s:cmd_cr_n(count)
+function! s:cmd_cr_n(count) abort
     for _ in range(a:count)
         call append('.', '')
     endfor
@@ -508,7 +508,7 @@ nmap s <C-w>
 " 現在のウィンドウのみを残す
 nnoremap <C-w>O <C-w>o
 " バッファを削除
-function! s:delete_current_buf()
+function! s:delete_current_buf() abort
     let bufnr = bufnr('%')
     bnext
     if bufnr == bufnr('%') | enew | endif
@@ -578,7 +578,7 @@ nnoremap <silent><C-w>l :<C-u>call <SID>jump_window_wrapper('l', 'h')<CR>
 " Git
 nnoremap git :<C-u>!tig<CR>
 
-function! s:jump_window_wrapper(cmd, fallback)
+function! s:jump_window_wrapper(cmd, fallback) abort
     let old = winnr()
     execute 'normal!' "\<C-w>" . a:cmd
 
@@ -588,7 +588,7 @@ function! s:jump_window_wrapper(cmd, fallback)
 endfunction
 
 " 連結時にスペースを入れない
-function! s:cmd_gJ()
+function! s:cmd_gJ() abort
     normal! J
     if getline('.')[col('.')-1] ==# ' '
         normal! "_x
@@ -596,7 +596,7 @@ function! s:cmd_gJ()
 endfunction
 nnoremap gJ :<C-u>call <SID>cmd_gJ()<CR>
 " コマンドラインウィンドウ設定
-function! s:cmdline_window_settings()
+function! s:cmdline_window_settings() abort
     " コマンドラインウィンドウを閉じられるようにする
     nnoremap <silent><buffer>q          :<C-u>q<CR>
     nnoremap <silent><buffer><Esc>      :<C-u>q<CR>
@@ -616,7 +616,7 @@ nnoremap <expr>l foldclosed(line('.')) != -1 ? 'zo' : 'l'
 nnoremap <expr><Leader>cl ":\<C-u>set colorcolumn=".(&cc == 0 ? v:count == 0 ? col('.') : v:count : 0)."\<CR>"
 
 " help のマッピング
-function! s:on_FileType_help_define_mappings()
+function! s:on_FileType_help_define_mappings() abort
     if &l:readonly
         " カーソル下のタグへ飛ぶ
         nnoremap <buffer>J <C-]>
@@ -636,7 +636,7 @@ endfunction
 AutocmdFT help call s:on_FileType_help_define_mappings()
 
 " quickfix のマッピング
-function! s:on_FileType_qf_define_mappings()
+function! s:on_FileType_qf_define_mappings() abort
     nnoremap <buffer><silent> q :<C-u>cclose<CR>
     nnoremap <buffer><silent> j :<C-u>cnext<CR>:copen<CR>
     nnoremap <buffer><silent> k :<C-u>cprevious<CR>:copen<CR>
@@ -648,7 +648,7 @@ function! s:on_FileType_qf_define_mappings()
 endfunction
 AutocmdFT qf call s:on_FileType_qf_define_mappings()
 
-function! s:move_backward_by_step()
+function! s:move_backward_by_step() abort
     let col = col('.')
     normal! g^
     let c = col('.')
@@ -661,7 +661,7 @@ function! s:move_backward_by_step()
     endif
 endfunction
 
-function! s:move_forward_by_step()
+function! s:move_forward_by_step() abort
     let col = col('.')
     normal! g^
     let c = col('.')
@@ -1193,7 +1193,7 @@ Autocmd BufWritePost *vimrc,*gvimrc NeoBundleClearCache
 " Git helpers {{{
 
 " git のルートディレクトリを返す
-function! s:git_root_dir()
+function! s:git_root_dir() abort
     if(system('git rev-parse --is-inside-work-tree') ==# "true\n")
         return system('git rev-parse --show-cdup')
     else
@@ -1202,7 +1202,7 @@ function! s:git_root_dir()
 endfunction
 
 " git add 用マッピング {{{
-function! s:git_add(fname)
+function! s:git_add(fname) abort
     if ! filereadable(a:fname)
         echoerr 'file cannot be opened'
         return
@@ -1220,7 +1220,7 @@ nnoremap <silent><Leader>ga :<C-u>GitAddThisFile<CR>
 "}}}
 
 " git blame 用 {{{
-function! s:git_blame(fname, ...)
+function! s:git_blame(fname, ...) abort
     execute 'lcd' fnamemodify(a:fname, ':p:h')
     let range = (a:0==0 ? line('.') : a:1.','.a:2)
     let errfmt = &errorformat
@@ -1238,31 +1238,12 @@ vnoremap <silent><Leader>gb :GitBlameRange<CR>
 " git commit ではインサートモードに入る
 Autocmd VimEnter COMMIT_EDITMSG if getline(1) == '' | execute 1 | startinsert | endif
 
-function! s:hubrowse(...)
-    if !executable('hub')
-        echoerr "'hub' command is not found"
-        return
-    endif
-
-    let dir = expand('%:p:h')
-    if a:0 > 1
-        let repo = shellescape(a:1)
-    else
-        let repo = '--'
-    endif
-
-    let subcmd = a:000[-1]
-
-    echom system(printf('cd %s && hub browse %s %s', shellescape(dir), repo, shellescape(subcmd)))
-endfunction
-
-command! -nargs=+ Hubrowse call <SID>hubrowse(<f-args>)
 command! -nargs=* GitIssue call call("<SID>hubrowse", split("<args> issues"))
 "}}}
 
 " 他の helper {{{
 " 本体に同梱されている matchit.vim のロードと matchpair の追加
-function! s:matchit(...)
+function! s:matchit(...) abort
     if !exists('s:matchit_loaded')
         runtime macros/matchit.vim
         let s:matchit_loaded = 1
@@ -1388,7 +1369,7 @@ Autocmd BufRead Guardfile setlocal filetype=ruby
 let s:ruby_template = ['#!/usr/bin/env ruby', '']
 Autocmd BufNewFile *.rb call append(0, s:ruby_template) | normal! G
 
-function! s:toggle_binding_pry()
+function! s:toggle_binding_pry() abort
     if getline('.') =~# '^\s*binding\.pry\s*$'
         normal! "_ddk
     else
@@ -1404,7 +1385,7 @@ AutocmdFT ruby nnoremap <buffer><silent><Leader>p :<C-u>call <SID>toggle_binding
 " C++ ラベル字下げ設定
 set cinoptions& cinoptions+=:0,g0,N-1,m1
 
-function! s:open_online_cpp_doc()
+function! s:open_online_cpp_doc() abort
     let l = getline('.')
 
     if l =~# '^\s*#\s*include\s\+<.\+>'
@@ -1444,7 +1425,7 @@ AutocmdFT haskell inoremap <buffer>;; ::
 
 " Vim script "{{{
 " gf を拡張し，autoload 関数を開けるように対応
-function! s:jump_to_autoload_function_definition()
+function! s:jump_to_autoload_function_definition() abort
     let current_line = getline('.')
     let name_pattern = '\h\k*\%(#\h\k*\)*\ze#\h\k*('
     let begin = match(current_line, name_pattern)
@@ -1493,7 +1474,7 @@ AutocmdFT haml,html,css SetIndent 2
 Autocmd BufRead,BufNew,BufNewFile *.ejs setlocal ft=html
 
 " 保存時に html 自動生成
-function! s:generate_html()
+function! s:generate_html() abort
     if &filetype ==# 'haml' && executable('haml')
         let html = expand('%:p:r') . '.html'
         let cmdline = join(['haml', expand('%'), '>', html], ' ')
@@ -1518,12 +1499,12 @@ let g:markdown_fenced_languages = [
 
 " Dachs {{{
 " For Readme
-function! s:bold(...)
+function! s:bold(...) abort
     for k in a:000
         execute '%s/\%(#[^#]*\)\@<!\<' . k . '\>/<b>&<\/b>/geI'
     endfor
 endfunction
-function! s:to_readme_embdable_html()
+function! s:to_readme_embdable_html() abort
     if &filetype !=# 'dachs'
         echoerr 'This command is for Dachs.'
         return
@@ -1543,7 +1524,7 @@ function! s:to_readme_embdable_html()
 endfunction
 command -nargs=0 ToReadmeEmbdableHTML call <SID>to_readme_embdable_html()
 
-function! s:check_dachs_syntax()
+function! s:check_dachs_syntax() abort
     let root = finddir('Dachs', ';')
     if root ==# ''
         return
@@ -1557,7 +1538,7 @@ AutocmdFT dachs setl errorformat=Error\ in\ line:%l,\ col:%c
 
 " JSON {{{
 " 自動的にオブジェクトのキーをクォートで囲む
-function! s:json_colon()
+function! s:json_colon() abort
     let current_line = getline('.')
     if current_line[col('.')-1] !=# ':' || current_line !~# '\w\+\s*:$'
         return
@@ -1581,14 +1562,14 @@ AutocmdFT json SetIndent 2
 " }}}
 
 " Python {{{
-function! s:python_settings()
+function! s:python_settings() abort
     setlocal noautoindent nosmartindent nocindent
 endfunction
 AutocmdFT python call <SID>python_settings()
 "}}}
 
 " Go {{{
-function! s:golang_settings()
+function! s:golang_settings() abort
     " ハードタブ推奨
     setlocal noexpandtab
 
@@ -1782,7 +1763,7 @@ let g:neosnippet#disable_runtime_snippets = {'_' : 1}
 
 " unite.vim {{{
 let s:bundle = neobundle#get("unite.vim")
-function! s:bundle.hooks.on_source(bundle)
+function! s:bundle.hooks.on_source(bundle) abort
     " 無指定にすることで高速化
     let g:unite_source_file_mru_filename_format = ''
     " most recently used のリストサイズ
@@ -1798,7 +1779,7 @@ function! s:bundle.hooks.on_source(bundle)
 
     " Git リポジトリのすべてのファイルを開くアクション {{{
     let git_repo = { 'description' : 'all file in git repository' }
-    function! git_repo.func(candidate)
+    function! git_repo.func(candidate) abort
         if(system('git rev-parse --is-inside-work-tree') ==# "true\n" )
             execute 'args'
                     \ join( filter(split(system('git ls-files `git rev-parse --show-cdup`'), '\n')
@@ -1816,7 +1797,7 @@ function! s:bundle.hooks.on_source(bundle)
                 \ 'description' : 'open a file or open a directory with vimfiler',
                 \ 'is_selectable' : 1,
                 \ }
-    function! open_or_vimfiler.func(candidates)
+    function! open_or_vimfiler.func(candidates) abort
         for candidate in a:candidates
             if candidate.kind ==# 'directory'
                 execute 'VimFiler' candidate.action__path
@@ -1831,7 +1812,7 @@ function! s:bundle.hooks.on_source(bundle)
     " Finder for Mac
     if has('mac')
         let finder = { 'description' : 'open with Finder.app' }
-        function! finder.func(candidate)
+        function! finder.func(candidate) abort
             if a:candidate.kind ==# 'directory'
                 call unite#util#system('open -a Finder '.a:candidate.action__path)
             endif
@@ -2435,8 +2416,8 @@ nmap <Leader>co <Plug>(caw:jump:comment-next)
 nmap <Leader>cO <Plug>(caw:jump:comment-prev)
 " caw 用オペレータ
 let s:bundle = neobundle#get("caw.vim")
-function! s:bundle.hooks.on_source(bundle)
-    function! s:op_caw_commentout(motion_wise)
+function! s:bundle.hooks.on_source(bundle) abort
+    function! s:op_caw_commentout(motion_wise) abort
         if a:motion_wise ==# 'char'
             execute 'normal' "`[v`]\<Plug>(caw:wrap:toggle)"
         else
@@ -2507,7 +2488,7 @@ AutocmdFT haskell nnoremap <buffer><silent><Esc><Esc> :<C-u>nohlsearch<CR>:HierC
 AutocmdFT haskell nnoremap <buffer><Leader>ge :<C-u>GhcModExpand<CR>
 Autocmd BufWritePost *.hs GhcModCheckAndLintAsync
 let g:ghcmod_open_quickfix_function = s:SID . 'open_quickfix_with_unite'
-function! s:open_quickfix_with_unite()
+function! s:open_quickfix_with_unite() abort
     Unite -no-empty -no-start-insert quickfix
 endfunction
 "}}}
@@ -2599,7 +2580,7 @@ vnoremap <Leader>O :OpenGithubFile<CR>
 " filetype definition
 Autocmd BufRead,BufNew,BufNewFile *_spec.vim setlocal ft=vim.vspec
 
-function! s:vspec(file, opts)
+function! s:vspec(file, opts) abort
     if ! isdirectory($HOME.'/.vim/bundle/vim-vspec')
         echoerr "Error: vspec is not found."
     endif
@@ -2613,25 +2594,13 @@ function! s:vspec(file, opts)
 endfunction
 command! -nargs=* Vspec call <SID>vspec(expand('%:p'), <q-args>)
 
-if executable('vim-flavor')
-    function! s:flavor()
-        let t = fnamemodify(finddir('t', '.;'), ':h')
-        if t == ''
-            echoerr "a directory named 't' is not found"
-            return
-        endif
-        execute 'QuickRun' 'sh' '-src' '''PATH=/usr/local/bin:$PATH cd '.t.' && vim-flavor test'''
-    endfunction
-    command! -nargs=0 Flavor call <SID>flavor()
-endif
-
 let g:quickrun_config['vim.vspec'] = {
         \ 'exec' : 'PATH=/usr/local/bin:$PATH %c %o',
         \ 'cmdopt' :  '-u NONE -i NONE -N -e -s -S'
         \ . ' %{' . s:SID.'vspec_helper([getcwd(), isdirectory($HOME."/.vim/bundle/vim-vspec-matchers") ? $HOME."/.vim/bundle/vim-vspec-matchers" : ""], expand("%"))}',
         \ 'command' : 'vim',
         \ }
-function! s:vspec_helper(paths, target)
+function! s:vspec_helper(paths, target) abort
     let vspec_path = matchstr(split(&runtimepath, ','), 'vspec')
     let paths  = map([vspec_path] + copy(a:paths)
         \ , '"''".substitute(v:val, "\\", "/", "g")."''"')
@@ -2701,7 +2670,7 @@ call submode#map('altr', 'n', 'r', 'A', 'sA')
 
 " vim-altr {{{
 let s:bundle = neobundle#get("vim-altr")
-function! s:bundle.hooks.on_source(bundle)
+function! s:bundle.hooks.on_source(bundle) abort
     " for vimrc
     if has('mac')
         call altr#define('.vimrc', '.gvimrc', '.mac.vimrc')
@@ -2746,7 +2715,7 @@ endif
 let g:memolist_memo_suffix = 'md'
 let g:memolist_unite = 1
 
-function! s:memolist()
+function! s:memolist() abort
     " delete swap files because they make unite auto preview hung up
     for swap in glob(g:memolist_path.'/.*.sw?', 1, 1)
         if swap !~# '^\.\+$' && filereadable(swap)
@@ -2767,7 +2736,7 @@ endif
 " vim-fugitive {{{
 nnoremap <Leader>gs :<C-u>Gstatus<CR>
 nnoremap <Leader>gC :<C-u>Gcommit -v<CR>
-function! s:fugitive_commit()
+function! s:fugitive_commit() abort
     ZoomWin
     Gcommit -v
     silent only
@@ -2782,7 +2751,7 @@ nnoremap <Leader>gd :<C-u>Gdiff<CR>
 nnoremap <Leader>gb :<C-u>Gblame<CR>
 
 let s:bundle = neobundle#get("vim-fugitive")
-function! s:bundle.hooks.on_post_source(bundle)
+function! s:bundle.hooks.on_post_source(bundle) abort
     doautoall fugitive BufReadPost
     AutocmdFT fugitiveblame nnoremap <buffer>? :<C-u>SmartHelp :Gblame<CR>
     AutocmdFT gitcommit     if expand('%:t') ==# 'index' | nnoremap <buffer>? :<C-u>SmartHelp :Gstatus<CR> | endif
@@ -2812,11 +2781,11 @@ noremap <Leader>wb :<C-u>Wandbox<CR>
 
 " tern_for_vim {{{
 let s:hooks = neobundle#get_hooks('tern_for_vim')
-function! s:hooks.on_source(bundle)
+function! s:hooks.on_source(bundle) abort
     call s:setup_tern()
 endfunction
 unlet s:hooks
-function! s:setup_tern()
+function! s:setup_tern() abort
     nnoremap <buffer><Leader>td :<C-u>TernDef<CR>
     nnoremap <buffer><Leader>tk :<C-u>TernDoc<CR>
     nnoremap <buffer><silent><Leader>tt :<C-u>TernType<CR>
@@ -2834,7 +2803,7 @@ let g:user_emmet_settings = { 'lang' : 'ja' }
 
 " IndentGuide {{{
 let s:bundle = neobundle#get("vim-indent-guides")
-function! s:bundle.hooks.on_post_source(bundle)
+function! s:bundle.hooks.on_post_source(bundle) abort
     let g:indent_guides_guide_size = 1
     let g:indent_guides_auto_colors = 1
     if !has('gui_running') && &t_Co >= 256
@@ -2852,7 +2821,7 @@ let g:jedi#auto_initialization = 0
 let g:jedi#auto_vim_configuration = 0
 let g:jedi#popup_select_first = 0
 
-function! s:jedi_settings()
+function! s:jedi_settings() abort
     nnoremap <buffer><Leader>jr :<C-u>call jedi#rename()<CR>
     nnoremap <buffer><Leader>jg :<C-u>call jedi#goto_assignments()<CR>
     nnoremap <buffer><Leader>jd :<C-u>call jedi#goto_definitions()<CR>
@@ -2873,7 +2842,7 @@ let g:clang_type_inspector#automatic_inspection = 0
 
 " committia.vim {{{
 let g:committia_hooks = {}
-function! g:committia_hooks.edit_open(info)
+function! g:committia_hooks.edit_open(info) abort
     " Additional settings
     setlocal spell
 
@@ -2952,7 +2921,7 @@ let g:gfm_syntax_emoji_conceal = 1
 " }}}
 
 " プラットフォーム依存な設定をロードする "{{{
-function! SourceIfExist(path)
+function! SourceIfExist(path) abort
     if filereadable(a:path)
         execute 'source' a:path
     endif
