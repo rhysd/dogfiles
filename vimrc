@@ -1130,12 +1130,6 @@ if neobundle#load_cache()
                 \   }
                 \ })
 
-    " JSON
-    call neobundle#add('elzr/vim-json', {
-                \ 'lazy' : 1,
-                \ 'autoload' : {'filetypes' : 'json'}
-                \ })
-
     " Go
     call neobundle#add('fatih/vim-go', {
                 \ 'lazy' : 1,
