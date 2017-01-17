@@ -45,7 +45,7 @@
 [github]
 	user = rhysd
 [ghq]
-	root = ~/Dev
+	root = ~/Develop
 [filter "lfs"]
 	clean = git-lfs clean %f
 	smudge = git-lfs smudge %f
