@@ -1,6 +1,7 @@
 {
   "gvimrc": "~/.gvimrc",
   "keyremap4macbook": "~/Library/Application Support/KeyRemap4MacBook/private.xml",
+  "karabiner.json": "~/.config/karabiner/karabiner.json",
   "mac.vimrc": "~/.mac.vimrc",
   "nvimrc": "~/.config/nvim/init.vim",
   "nyaovim": "~/.config/nyaovim",
