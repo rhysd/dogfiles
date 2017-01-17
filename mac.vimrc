@@ -13,16 +13,13 @@ if exists('+macmeta')
     set macmeta
 endif
 
-AutocmdFT cpp setlocal path=.,/usr/local/Cellar/llvm34/HEAD/lib/llvm-3.4/include/c++/v1,/Library/Developer/CommandLineTools/usr/lib/c++/v1,/usr/local/opt/gcc49/lib/gcc/x86_64-apple-darwin13.1.0/4.9.0/include/c++,/usr/local/include,/usr/include
+AutocmdFT cpp setlocal path=.,/usr/local/Cellar/llvm/HEAD/lib/llvm-3.4/include/c++/v1,/Library/Developer/CommandLineTools/usr/lib/c++/v1,/usr/local/include,/usr/include
 
 let g:quickrun_config.cpp = {
-            \ 'command' : 'clang++-3.5',
+            \ 'command' : 'clang++',
             \ 'cmdopt' : '-std=c++1y -Wall -Wextra -O2',
             \ }
 let g:quickrun_config.ruby = { 'exec' : $HOME.'/.rbenv/shims/ruby %o %s' }
-
-" open-pdf で brew の findutils を使う
-let g:unite_pdf_search_cmd = '/usr/local/bin/locate -l 30 "*%s*.pdf"'
 
 " Mac の辞書.appで開く {{{
 " 引数に渡したワードを検索

@@ -1051,9 +1051,18 @@ if neobundle#load_cache()
                 \ 'lazy' : 1,
                 \ 'autoload' : {'filetypes' : 'cpp'}
                 \ })
+
+    if has('mac')
+        let g:clang_library_path = '/Library/Developer/CommandLineTools/usr/lib'
+    else
+        let g:clang_library_path = '/usr/lib/llvm/lib'
+    endif
+    let s:clang_complete_available = has('python') && filereadable(g:clang_library_path)
+
     call neobundle#add('Rip-Rip/clang_complete', {
                 \ 'lazy' : 1,
-                \ 'autoload' : {'filetypes' : ['c', 'cpp']}
+                \ 'autoload' : {'filetypes' : ['c', 'cpp']},
+                \ 'fetch' : !s:clang_complete_available,
                 \ })
     call neobundle#add('rhysd/vim-clang-format', {
                 \ 'lazy' : 1,
