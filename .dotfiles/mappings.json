@@ -4,7 +4,6 @@
   "eslintrc": "~/.eslintrc.json",
   "gitconfig": "~/.gitconfig",
   "global.gitignore": "~/.global.gitignore",
-  "npmrc": "~/.npmrc",
   "peco": "~/.config/peco",
   "tmux.conf": "~/.tmux.conf",
   "zshrc": "~/.zshrc"
