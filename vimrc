@@ -1592,6 +1592,9 @@ function! s:golang_settings() abort
     let g:go_highlight_array_whitespace_error = 0
 
     let g:go_metalinter_autosave_enabled = ['vet', 'golint']
+    if executable('gofmtrlx')
+        let g:go_fmt_command = 'gofmtrlx'
+    endif
 
     nnoremap <buffer><Space>i :<C-u>Unite go/import -start-insert<CR>
     nnoremap <buffer><Leader>i :<C-u>GoImports<CR>
@@ -2482,10 +2485,6 @@ let g:operator#surround#blocks =
 map <silent>gy <Plug>(operator-surround-append)
 map <silent>gd <Plug>(operator-surround-delete)
 map <silent>gc <Plug>(operator-surround-replace)
-nmap <silent>gdd <Plug>(operator-surround-delete)<Plug>(textobj-anyblock-a)
-nmap <silent>gcc <Plug>(operator-surround-replace)<Plug>(textobj-anyblock-a)
-nmap <silent>gdb <Plug>(operator-surround-delete)<Plug>(textobj-between-a)
-nmap <silent>gcb <Plug>(operator-surround-replace)<Plug>(textobj-between-a)
 "}}}
 "}}}
 
