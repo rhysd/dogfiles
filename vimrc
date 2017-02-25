@@ -1531,7 +1531,7 @@ function! s:to_readme_embdable_html() abort
 
     setlocal filetype=html
 endfunction
-command -nargs=0 ToReadmeEmbdableHTML call <SID>to_readme_embdable_html()
+command! -nargs=0 ToReadmeEmbdableHTML call <SID>to_readme_embdable_html()
 
 function! s:check_dachs_syntax() abort
     let root = finddir('Dachs', ';')
@@ -2866,7 +2866,7 @@ endfunction
 
 " gist-vim {{{
 let g:gist_open_browser_after_post = 1
-func s:show_on_web(...)
+function! s:show_on_web(...)
     let after_post = g:gist_open_browser_after_post
     let g:gist_open_browser_after_post = 0
     if a:0 == 1
@@ -2898,7 +2898,7 @@ command! -nargs=? ShowOnWeb call <SID>show_on_web(<f-args>)
 " }}}
 
 " vim-prettyprint {{{
-function AP(...) abort
+function! AP(...) abort
     silent tabnew! +:put!\ =call('prettyprint#prettyprint',a:000) __AWESOME_PRINT__
     setlocal ft=vim buftype=nofile
     execute 0
