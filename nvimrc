@@ -560,26 +560,30 @@ if dein#load_state(s:dein_cache_dir)
                 \   'lazy': 1,
                 \ })
     call dein#add('rhysd/vim-textobj-anyblock', {
-                \ 'depends' : 'vim-textobj-user',
-                \ 'on_map' : [['xo', 'ab'], ['xo', 'ib']],
+                \   'depends' : 'vim-textobj-user',
+                \   'lazy': 1,
+                \   'on_map' : [['xo', 'ab'], ['xo', 'ib']],
                 \ })
     call dein#add('kana/vim-textobj-indent', {
-                \ 'depends' : 'vim-textobj-user',
-                \ 'on_map' : [['xo', 'ai'], ['xo', 'aI'], ['xo', 'ii'], ['xo', 'iI']],
+                \   'depends' : 'vim-textobj-user',
+                \   'lazy': 1,
+                \   'on_map' : [['xo', 'ai'], ['xo', 'aI'], ['xo', 'ii'], ['xo', 'iI']],
                 \ })
     call dein#add('sgur/vim-textobj-parameter', {
-                \ 'depends' : 'kana/vim-textobj-user',
-                \ 'on_map' : [['xo', 'a,'], ['xo', 'i,']],
+                \   'depends' : 'kana/vim-textobj-user',
+                \   'lazy': 1,
+                \   'on_map' : [['xo', 'a,'], ['xo', 'i,']],
                 \ })
     call dein#add('kana/vim-textobj-entire', {
-                \ 'depends' : 'kana/vim-textobj-user',
-                \ 'on_map' : [['xo', 'ae'], ['xo', 'ie']],
+                \   'depends' : 'kana/vim-textobj-user',
+                \   'lazy' : 1,
+                \   'on_map' : [['xo', 'ae'], ['xo', 'ie']],
                 \ })
 
     call dein#add('rhysd/clever-f.vim', {
                 \   'rev' : 'dev',
-                \   'lazy' : 1,
-                \   'on_map' : '<Plug>(clever-f-',
+                \   'lazy': 1,
+                \   'on_map' : [['n', 'f'], ['n', 'F'], ['n', 't'], ['n', 'T']],
                 \ })
 
     call dein#add('thinca/vim-quickrun', {
@@ -605,8 +609,13 @@ if dein#load_state(s:dein_cache_dir)
                 \ })
 
     call dein#add('easymotion/vim-easymotion', {
-                \ 'lazy' : 1,
-                \ 'on_map' : '<Plug>(easymotion-',
+                \   'lazy' : 1,
+                \   'on_map' : '<Plug>(easymotion-',
+                \ })
+
+    call dein#add('rhysd/vim-grammarous', {
+                \   'lazy' : 1, 
+                \   'on_cmd' : 'GrammarousCheck',
                 \ })
 
     call dein#end()

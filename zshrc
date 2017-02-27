@@ -62,6 +62,7 @@ alias t=time
 alias ng=noglob
 alias g=git
 alias cl='clang++ -stdlib=libc++ -std=c++1y -Wall -Wextra'
+alias m=make
 
 # global alias
 alias -g G='| grep'
@@ -474,11 +475,6 @@ if hash rbenv 2> /dev/null; then
             rehash
         fi
     }
-fi
-
-# git uses hub (this is not dangerous)
-if hash hub 2> /dev/null; then
-    eval "$(hub alias -s)"
 fi
 
 # PWD を移動するごとにディレクトリ内のファイルを表示

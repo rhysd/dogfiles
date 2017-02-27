@@ -707,7 +707,7 @@ if has('vim_starting')
 endif
 
 let s:meet_neocomplete_requirements = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
-let s:enable_tern_for_vim = has('python') && executable('npm')
+let s:enable_tern_for_vim = (has('python') || has('python3')) && executable('npm')
 
 call neobundle#begin(expand('~/.vim/bundle'))
 
@@ -1093,22 +1093,21 @@ if neobundle#load_cache()
                 \ })
 
     " JavaScript 用プラグイン
-    if s:enable_tern_for_vim
-        call neobundle#add('marijnh/tern_for_vim', {
-                    \ 'lazy' : 1,
-                    \ 'build' : {
-                    \     'windows' : 'echo "Please build tern manually."',
-                    \     'cygwin'  : 'echo "Please build tern manually."',
-                    \     'mac'     : 'npm install',
-                    \     'unix'    : 'npm install',
-                    \   },
-                    \ 'autoload' : {
-                    \     'functions' : ['tern#Complete', 'tern#Enable'],
-                    \     'filetypes' : 'javascript'
-                    \   },
-                    \ 'commands' : ['TernDef', 'TernDoc', 'TernType', 'TernRefs', 'TernRename']
-                    \ })
-    endif
+    call neobundle#add('marijnh/tern_for_vim', {
+                \ 'lazy' : 1,
+                \ 'fetch' : !s:enable_tern_for_vim,
+                \ 'build' : {
+                \     'windows' : 'echo "Please build tern manually."',
+                \     'cygwin'  : 'echo "Please build tern manually."',
+                \     'mac'     : 'npm install',
+                \     'unix'    : 'npm install',
+                \   },
+                \ 'autoload' : {
+                \     'functions' : ['tern#Complete', 'tern#Enable'],
+                \     'filetypes' : 'javascript'
+                \   },
+                \ 'commands' : ['TernDef', 'TernDoc', 'TernType', 'TernRefs', 'TernRename']
+                \ })
 
     " html, sass, scss 用プラグイン
     call neobundle#add('othree/html5.vim', {
@@ -1592,6 +1591,10 @@ function! s:golang_settings() abort
     let g:go_highlight_array_whitespace_error = 0
 
     let g:go_metalinter_autosave_enabled = ['vet', 'golint']
+    if executable('gofmtrlx')
+        let g:go_fmt_command = 'gofmtrlx'
+    endif
+
     if executable('gofmtrlx')
         let g:go_fmt_command = 'gofmtrlx'
     endif
