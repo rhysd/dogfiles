@@ -63,6 +63,7 @@ alias ng=noglob
 alias g=git
 alias cl='clang++ -stdlib=libc++ -std=c++1y -Wall -Wextra'
 alias m=make
+alias d=docker
 
 # global alias
 alias -g G='| grep'

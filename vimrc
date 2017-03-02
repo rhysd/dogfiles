@@ -2056,17 +2056,15 @@ let g:quickrun_config['syntax/python'] = {
             \ }
 Autocmd BufWritePost *.py call <SID>check_syntax('python')
 
-let g:vimrc_llc_command = 'llc'
-if exists('g:vimrc_llc_command')
-    let g:quickrun_config['syntax/llvm'] = {
-                \ 'command' : g:vimrc_llc_command,
-                \ 'cmdopt' : '-filetype=null -o=/dev/null',
-                \ 'exec' : '%c %o %s:p',
-                \ 'outputter' : 'quickfix',
-                \ 'runner' : 'vimproc',
-                \ }
-    Autocmd BufWritePost *.ll QuickRun -type syntax/llvm
-endif
+
+let g:quickrun_config['syntax/llvm'] = {
+            \ 'command' : 'llc',
+            \ 'cmdopt' : '-filetype=null -o=/dev/null',
+            \ 'exec' : '%c %o %s:p',
+            \ 'outputter' : 'quickfix',
+            \ 'runner' : 'vimproc',
+            \ }
+Autocmd BufWritePost *.ll call <SID>check_syntax('llvm')
 
 let g:quickrun_config['syntax/crystal'] = {
             \   'command' : 'crystal',
