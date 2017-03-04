@@ -762,6 +762,7 @@ if neobundle#load_cache()
     call neobundle#add('othree/yajs.vim')
     call neobundle#add('rhysd/vim-wasm')
     call neobundle#add('rhysd/vim-gfm-syntax')
+    call neobundle#add('ekalinin/Dockerfile.vim')
 
     " unite.vim sources
     call neobundle#add('Shougo/unite-outline')
@@ -2091,6 +2092,16 @@ let g:quickrun_config['syntax/css'] = {
             \   'errorformat' : '%-P%f,%*[\ ]%l:%c%*[\ ]%*[✖⚠]%*[\ ]%m,%-Q',
             \ }
 Autocmd BufWritePost *.css call <SID>check_syntax('css')
+
+let g:quickrun_config['syntax/dockerfile'] = {
+            \   'runner' : 'vimproc',
+            \   'outputter' : 'quickfix',
+            \   'command' : 'hadolint',
+            \   'cmdopt' : '',
+            \   'exec' : '%c %o %s:p',
+            \   'errorformat' : '%f:%l DL%n %m,%f DL%n %m',
+            \ }
+Autocmd BufWritePost Dockerfile call <SID>check_syntax('dockerfile')
 
 "QuickRunのキーマップ {{{
 nnoremap <Leader>q  <Nop>
