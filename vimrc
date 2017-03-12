@@ -1054,7 +1054,7 @@ if neobundle#load_cache()
                 \ })
 
     if has('mac')
-        let g:clang_library_path = '/Library/Developer/CommandLineTools/usr/lib'
+        let g:clang_library_path = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/'
     else
         let g:clang_library_path = '/usr/lib/llvm/lib'
     endif

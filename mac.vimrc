@@ -13,7 +13,7 @@ if exists('+macmeta')
     set macmeta
 endif
 
-AutocmdFT cpp setlocal path=.,/Library/Developer/CommandLineTools/usr/include/c++/v1,/usr/local/include,/usr/include
+AutocmdFT cpp setlocal path=.,/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1,/usr/local/include,/usr/include
 
 let g:quickrun_config.cpp = {
             \ 'command' : 'clang++',
