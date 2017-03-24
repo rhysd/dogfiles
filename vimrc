@@ -1301,37 +1301,6 @@ function! s:open_qiita_in_browser() abort
     OpenBrowser https://qiita.com/drafts/new
 endfunction
 command! -nargs=0 Qiita call <SID>open_qiita_in_browser()
-
-function! s:translate_markdown() abort
-    if &filetype !=# 'markdown'
-        echoerr 'Not a Markdown buffer!'
-    endif
-
-    if !executable('translate-markdown')
-        echoerr '`translate-markdown` command is not found!'
-    endif
-
-    let start = getpos("'<")
-    let end = getpos("'>")
-    let saved = getpos('.')
-
-    call setpos('.', start)
-    normal! v
-    call setpos('.', end)
-
-    let save_reg_g = getreg('g')
-    let save_regtype_g = getregtype('g')
-    try
-        normal! "gy
-        let input = getreg('g')
-    finally
-        call setreg('g', save_reg_g, save_regtype_g)
-    endtry
-
-    echo system('translate-markdown ja', input)
-endfunction
-command! -nargs=0 -range=% TranslateMarkdown call <SID>translate_markdown()<CR>
-AutocmdFT markdown noremap <buffer><Leader>T :TranslateMarkdown<CR>
 "}}}
 
 " 追加のハイライト {{{
@@ -2878,35 +2847,6 @@ endfunction
 
 " gist-vim {{{
 let g:gist_open_browser_after_post = 1
-function! s:show_on_web(...)
-    let after_post = g:gist_open_browser_after_post
-    let g:gist_open_browser_after_post = 0
-    if a:0 == 1
-        let color = g:colors_name
-        execute 'colorscheme' a:1
-    end
-
-    try
-        noautocmd TOhtml
-        Gist -a -c
-
-        let url = getreg(&clipboard =~# 'plus$' ? '+' : '*')
-        if stridx(url, 'https://gist.github.com') != 0
-            throw "URL is not copied"
-        endif
-        let raw_url = substitute(url, 'gist\.github\.com', 'rawgit.com/anonymous', '') . '/raw/' . expand('%')
-        bdelete!
-
-        execute 'OpenBrowser' raw_url
-
-    finally
-        if exists('color')
-            execute 'colorscheme' color
-        endif
-        let g:gist_open_browser_after_post = after_post
-    endtry
-endfunc
-command! -nargs=? ShowOnWeb call <SID>show_on_web(<f-args>)
 " }}}
 
 " vim-prettyprint {{{

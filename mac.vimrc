@@ -51,3 +51,25 @@ let g:clang_user_options = '-std=c++1y -I /Library/Developer/CommandLineTools/us
 
 " gist-vim
 let g:gist_clip_command = 'pbcopy'
+
+if has('gui_running')
+    function! s:show_on_safari() abort
+        TOhtml
+        if expand('%') !=# 'Untitled.html'
+            echoerr 'Failed to make HTML from current buffer'
+        endif
+        let f = expand('~/tmp.html')
+        execute 'silent! write!' f
+        if !filereadable(f)
+            echoerr 'Cannot save generated HTML ' . f
+        endif
+        call system('open -a Safari ' + f)
+        if v:shell_error
+            echoerr 'Failed to open Safari'
+        endif
+        call delete(f)
+        bwipeout!
+        quit
+    endfunction
+    command! -nargs=0 ShowOnSafari call <SID>show_on_safari()
+endif
