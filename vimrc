@@ -1282,25 +1282,6 @@ function! s:shiba(args) abort
     call vimproc#system('shiba --deatch ' . path)
 endfunction
 command! -nargs=? -complete=file Shiba call <SID>shiba([<f-args>])
-
-function! s:open_qiita_in_browser() abort
-    if &ft !=# 'markdown'
-        echoerr 'This buffer is not a markdown document!'
-    endif
-
-    let line = search('^\%(- \)\+-\=$', 'n')
-    if line == 0 || line == line('$')
-        echoerr 'Header separator was not found!'
-    endif
-
-    let lines = join(getline(line, '$'), "\n")
-    if lines =~# '^\n*$'
-        echoerr 'Body is empty!'
-    endif
-    call setreg(&clipboard =~# 'plus$' ? '+' : '*', lines, 'V')
-    OpenBrowser https://qiita.com/drafts/new
-endfunction
-command! -nargs=0 Qiita call <SID>open_qiita_in_browser()
 "}}}
 
 " 追加のハイライト {{{
@@ -1346,16 +1327,6 @@ Autocmd BufRead Guardfile setlocal filetype=ruby
 
 let s:ruby_template = ['#!/usr/bin/env ruby', '']
 Autocmd BufNewFile *.rb call append(0, s:ruby_template) | normal! G
-
-function! s:toggle_binding_pry() abort
-    if getline('.') =~# '^\s*binding\.pry\s*$'
-        normal! "_ddk
-    else
-        normal! obinding.pry
-    endif
-endfunction
-AutocmdFT ruby nnoremap <buffer><silent><Leader>p :<C-u>call <SID>toggle_binding_pry()<CR>
-
 "}}}
 
 " C++ {{{
@@ -1363,33 +1334,6 @@ AutocmdFT ruby nnoremap <buffer><silent><Leader>p :<C-u>call <SID>toggle_binding
 " C++ ラベル字下げ設定
 set cinoptions& cinoptions+=:0,g0,N-1,m1
 
-function! s:open_online_cpp_doc() abort
-    let l = getline('.')
-
-    if l =~# '^\s*#\s*include\s\+<.\+>'
-        let header = matchstr(l, '^\s*#\s*include\s\+<\zs.\+\ze>')
-        if header =~# '^boost'
-            execute 'OpenBrowser' 'http://www.google.com/cse?cx=011577717147771266991:jigzgqluebe&q='.matchstr(header, 'boost/\zs[^/>]\+\ze')
-        else
-            execute 'OpenBrowser' 'http://en.cppreference.com/mwiki/index.php?title=Special:Search&search='.matchstr(header, '\zs[^/>]\+\ze')
-        endif
-    else
-        let cword = expand('<cword>')
-        if cword ==# ''
-            return
-        endif
-        let line_head = getline('.')[:col('.')-1]
-        if line_head =~# 'boost::[[:alnum:]:]*$'
-            execute 'OpenBrowser' 'http://www.google.com/cse?cx=011577717147771266991:jigzgqluebe&q='.cword
-        elseif line_head =~# 'std::[[:alnum:]:]*$'
-            execute 'OpenBrowser' 'http://en.cppreference.com/mwiki/index.php?title=Special:Search&search='.cword
-        else
-            normal! K
-        endif
-    endif
-endfunction
-
-AutocmdFT cpp nnoremap <silent><buffer>K :<C-u>call <SID>open_online_cpp_doc()<CR>
 AutocmdFT cpp setlocal matchpairs+=<:>
 AutocmdFT cpp inoremap <buffer>, ,<Space>
 AutocmdFT cpp inoremap <expr> e getline('.')[col('.') - 6:col('.') - 2] ==# 'const' ? 'expr ' : 'e'
@@ -1465,14 +1409,7 @@ Autocmd BufWritePost *.haml call <SID>generate_html()
 " Markdown {{{
 AutocmdFT markdown nnoremap <buffer><silent><Leader>= :<C-u>call append('.', repeat('=', strdisplaywidth(getline('.'))))<CR>
 AutocmdFT markdown nnoremap <buffer><silent><Leader>- :<C-u>call append('.', repeat('-', strdisplaywidth(getline('.'))))<CR>
-let g:markdown_fenced_languages = [
-            \  'cpp',
-            \  'ruby',
-            \  'vim',
-            \  'go',
-            \  'typescript',
-            \  'json',
-            \ ]
+let g:markdown_fenced_languages = ['json']
 "}}}
 
 " Dachs {{{
@@ -1548,7 +1485,6 @@ AutocmdFT python call <SID>python_settings()
 
 " Go {{{
 function! s:golang_settings() abort
-    " ハードタブ推奨
     setlocal noexpandtab
 
     let g:go_snippet_engine = "neosnippet"
@@ -1563,10 +1499,8 @@ function! s:golang_settings() abort
     let g:go_metalinter_autosave_enabled = ['vet', 'golint']
     if executable('gofmtrlx')
         let g:go_fmt_command = 'gofmtrlx'
-    endif
-
-    if executable('gofmtrlx')
-        let g:go_fmt_command = 'gofmtrlx'
+    elseif executable('goimports')
+        let g:go_fmt_command = 'goimports'
     endif
 
     nnoremap <buffer><Space>i :<C-u>Unite go/import -start-insert<CR>
@@ -1664,7 +1598,6 @@ if !exists('g:neocomplete#sources#include#paths')
 endif
 let g:neocomplete#sources#include#paths.cpp  = '.,/usr/local/include'
 let g:neocomplete#sources#include#paths.c    = '.,/usr/include'
-let g:neocomplete#sources#include#paths.perl = '.,/System/Library/Perl,/Users/rhayasd/Programs'
 "インクルード文のパターンを指定
 let g:neocomplete#sources#include#patterns = { 'c' : '^\s*#\s*include', 'cpp' : '^\s*#\s*include', 'ruby' : '^\s*require', 'perl' : '^\s*use', }
 "インクルード先のファイル名の解析パターン
@@ -1753,7 +1686,7 @@ function! s:bundle.hooks.on_source(bundle) abort
     let g:unite_source_file_mru_filename_format = ''
     " most recently used のリストサイズ
     let g:unite_source_file_mru_limit = 100
-    " unite-grep で使うコマンド
+    " unite-grep で使うオプション
     let g:unite_source_grep_default_opts = "-Hn --color=never"
     " the silver searcher を unite-grep のバックエンドにする
     if executable('ag')
@@ -1924,14 +1857,8 @@ let g:quickrun_config['c/llvm'] = {
             \ 'type' : 'c/clang',
             \ 'exec' : '%c %o -emit-llvm -S %s -o -',
             \ }
-" プリプロセスのみ
-let g:quickrun_config['cpp/preprocess/g++'] = { 'type' : 'cpp/g++', 'exec' : '%c -P -E %s' }
-let g:quickrun_config['cpp/preprocess/clang++'] = { 'type' : 'cpp/clang++', 'exec' : '%c -P -E %s' }
-let g:quickrun_config['cpp/preprocess'] = { 'type' : 'cpp', 'exec' : '%c -P -E %s' }
 "outputter
 let g:quickrun_unite_quickfix_outputter_unite_context = { 'no_empty' : 1 }
-" runner vimproc における polling 間隔
-let g:quickrun_config['_']['runner/vimproc/updatetime'] = 500
 Autocmd BufReadPost,BufNewFile [Rr]akefile{,.rb}
             \ let b:quickrun_config = {'exec': 'rake -f %s'}
 " tmux
@@ -1940,11 +1867,7 @@ let g:quickrun_config['tmux'] = {
             \ 'cmdopt' : 'source-file',
             \ 'exec' : ['%c %o %s:p', 'echo "sourced %s"'],
             \ }
-" Swift
-let g:quickrun_config['swift/llvm'] = {
-            \   'type' : 'swift',
-            \   'exec' : ['%c swiftc -emit-ir %s'],
-            \ }
+
 let g:quickrun_config['llvm'] = {
             \   'exec' : 'llvm-as-3.4 %s:p -o=- | lli-3.4 - %a',
             \ }
@@ -1994,19 +1917,9 @@ let g:quickrun_config['syntax/ruby'] = {
             \ 'runner' : 'vimproc',
             \ 'outputter' : 'quickfix',
             \ 'command' : 'ruby',
-            \ 'exec' : '%c -c %s:p %o',
+            \ 'exec' : '%c -c %s:p %o > /dev/null',
             \ }
 Autocmd BufWritePost *.rb call <SID>check_syntax('ruby')
-
-let g:quickrun_config['syntax/javascript'] = {
-            \ 'command' : 'eslint',
-            \ 'cmdopt' : '',
-            \ 'outputter' : 'quickfix',
-            \ 'exec'    : '%c %o %s:p',
-            \ 'runner' : 'vimproc',
-            \ 'errorformat' : '%f:%l:%c: %m',
-            \ }
-Autocmd BufWritePost *.js,*.jsx call <SID>check_syntax('javascript')
 
 let g:quickrun_config['syntax/haml'] = {
             \ 'runner' : 'vimproc',
@@ -2025,7 +1938,6 @@ let g:quickrun_config['syntax/python'] = {
             \ 'errorformat' : '%f:%l:%m',
             \ }
 Autocmd BufWritePost *.py call <SID>check_syntax('python')
-
 
 let g:quickrun_config['syntax/llvm'] = {
             \ 'command' : 'llc',
@@ -2077,9 +1989,6 @@ nnoremap <Leader>q  <Nop>
 nnoremap <silent><Leader>qr :<C-u>QuickRun<CR>
 vnoremap <silent><Leader>qr :QuickRun<CR>
 nnoremap <silent><Leader>qR :<C-u>QuickRun<Space>
-" clang で実行する
-let g:quickrun_config['cpp/clang'] = { 'command' : 'clang++', 'cmdopt' : '-stdlib=libc++ -std=c++11 -Wall -Wextra -O2' }
-AutocmdFT cpp nnoremap <silent><buffer><Leader>qc :<C-u>QuickRun -type cpp/clang<CR>
 " }}}
 " }}}
 
@@ -2093,8 +2002,7 @@ let g:vimfiler_as_default_explorer = 1
 let g:vimfiler_safe_mode_by_default = 0
 let g:vimfiler_split_command = 'vertical rightbelow vsplit'
 let g:vimfiler_execute_file_list = { '_' : 'vim', 'pdf' : 'open', 'mp3' : 'open', 'jpg' : 'open',
-                                   \ 'png' : 'open',
-                                   \ }
+                                   \ 'png' : 'open' }
 let g:vimfiler_split_rule = 'botright'
 
 " vimfiler.vim のキーマップ {{{
@@ -2681,9 +2589,6 @@ unlet s:bundle
 " }}}
 
 " vim-airline "{{{
-if ! has('gui_running')
-    let g:airline_theme = 'spring_night'
-endif
 let g:airline#extensions#whitespace#enabled = 0
 "}}}
 
@@ -2695,10 +2600,12 @@ nnoremap <Leader>mg :<C-u>execute 'Unite' 'grep:'.g:memolist_path '-auto-preview
 if isdirectory(expand('~/Dropbox/memo'))
     let g:memolist_path = expand('~/Dropbox/memo')
 else
-    if !isdirectory(expand('~/.vim/memo'))
-        call mkdir(expand('~/.vim/memo'), 'p')
+    let s:dir = expand('~/.vim/memo')
+    if !isdirectory(s:dir)
+        call mkdir(s:dir, 'p')
     endif
-    let g:memolist_path = expand('~/.vim/memo')
+    let g:memolist_path = s:dir
+    unlet s:dir
 endif
 
 let g:memolist_memo_suffix = 'md'
@@ -2764,7 +2671,7 @@ map : <Plug>(easymotion-overwin-f2)
 
 " wandbox-vim {{{
 let g:wandbox#echo_command = 'echomsg'
-let g:wandbox#default_compiler = get(g:, 'wandbox#default_compiler', {'cpp' : 'gcc-head,clang-head', 'ruby' : 'mruby'})
+let g:wandbox#default_compiler = get(g:, 'wandbox#default_compiler', {'cpp' : 'gcc-head,clang-head'})
 noremap <Leader>wb :<C-u>Wandbox<CR>
 "}}}
 
@@ -2822,11 +2729,6 @@ function! s:jedi_settings() abort
 endfunction
 
 AutocmdFT python call <SID>jedi_settings()
-" }}}
-
-" clang-type-inspector.vim {{{
-AutocmdFT cpp nmap <Leader>t <Plug>(clang-inspect-type-at-cursor)
-let g:clang_type_inspector#automatic_inspection = 0
 " }}}
 
 " committia.vim {{{
