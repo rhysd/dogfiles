@@ -31,9 +31,7 @@
 	adu = add -u :/
 	co  = checkout
 	cob = checkout -b
-	sh  = show
 	lsf = ls-files
-	lst = ls-tree
 	gr  = grep
 	lop = log -p
 	rmr = rm -r
@@ -46,10 +44,6 @@
 	user = rhysd
 [ghq]
 	root = ~/Develop
-[filter "lfs"]
-	clean = git-lfs clean %f
-	smudge = git-lfs smudge %f
-	required = true
 [tig]
 	main-view-date = short
 [pager]

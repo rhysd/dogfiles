@@ -7,7 +7,7 @@
 .DS_Store
 Thumbs.db
 
-# C and C++ compiled files
+# Compiled files
 *.o
 *.a
 *.lib
@@ -16,7 +16,3 @@ Thumbs.db
 *.dll
 *.pch
 a.out
-
-# Haskell compiled files
-*.o
-*.hi
