@@ -4,6 +4,8 @@
 ._3xujJ3kq._3f2NsD-H {
     margin-left: 0;
     margin-right: 0;
+    padding-left: 8px;
+    padding-right: 8px;
     max-width: 100% !important;
 }
 
@@ -41,4 +43,9 @@
 /* datetime textsize */
 ._2l-FpbrQ {
     font-size: 0.7em;
+}
+
+/* kill tweet actions */
+._32ievKrg {
+    display: none;
 }
