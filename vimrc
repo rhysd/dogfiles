@@ -763,6 +763,13 @@ if neobundle#load_cache()
     call neobundle#add('rhysd/vim-wasm')
     call neobundle#add('rhysd/vim-gfm-syntax')
     call neobundle#add('ekalinin/Dockerfile.vim')
+    call neobundle#add('rhysd/y-output.vim')
+    call neobundle#add('vim-jp/vim-cpp')
+    call neobundle#add('rhysd/vim-filetype-haskell')
+    call neobundle#add('othree/html5.vim')
+    call neobundle#add('hail2u/vim-css3-syntax')
+    call neobundle#add('tpope/vim-haml')
+
 
     " unite.vim sources
     call neobundle#add('Shougo/unite-outline')
@@ -1048,11 +1055,6 @@ if neobundle#load_cache()
                 \ })
 
     " C++用のプラグイン
-    call neobundle#add('vim-jp/vim-cpp', {
-                \ 'lazy' : 1,
-                \ 'autoload' : {'filetypes' : 'cpp'}
-                \ })
-
     if has('mac')
         let g:clang_library_path = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/'
     else
@@ -1073,10 +1075,6 @@ if neobundle#load_cache()
 
     " Haskell 用プラグイン
     call neobundle#add('ujihisa/unite-haskellimport', {
-                \ 'lazy' : 1,
-                \ 'autoload' : {'filetypes' : 'haskell'}
-                \ })
-    call neobundle#add('rhysd/vim-filetype-haskell', {
                 \ 'lazy' : 1,
                 \ 'autoload' : {'filetypes' : 'haskell'}
                 \ })
@@ -1110,27 +1108,6 @@ if neobundle#load_cache()
                 \ 'commands' : ['TernDef', 'TernDoc', 'TernType', 'TernRefs', 'TernRename']
                 \ })
 
-    " html, sass, scss 用プラグイン
-    call neobundle#add('othree/html5.vim', {
-                \ 'lazy' : 1,
-                \ 'autoload' : {
-                \     'filetypes' : ['html', 'xhtml'],
-                \     'commands' : ['HtmlIndentGet']
-                \   }
-                \ })
-    call neobundle#add('hail2u/vim-css3-syntax', {
-                \ 'lazy' : 1,
-                \ 'autoload' : {
-                \     'filetypes' : 'css',
-                \   }
-                \ })
-    call neobundle#add('tpope/vim-haml', {
-                \ 'lazy' : 1,
-                \ 'autoload' : {
-                \     'filetypes' : ['haml', 'sass', 'scss'],
-                \   }
-                \ })
-
     " Python
     call neobundle#add('davidhalter/jedi-vim', {
                 \ 'lazy' : 1,
@@ -1158,6 +1135,7 @@ if neobundle#load_cache()
     call neobundle#add('rhysd/vim-llvm')
 
     " Swift
+    " Delay loading because it contains plugin/ directory
     call neobundle#add('Keithbsmiley/swift.vim', {
                 \ 'lazy' : 1,
                 \ 'autoload' : {
@@ -1394,16 +1372,6 @@ AutocmdFT html,javascript
 AutocmdFT haml inoremap <expr> k getline('.')[col('.') - 2] ==# 'k' ? "\<BS>%" : 'k'
 AutocmdFT haml,html,css SetIndent 2
 Autocmd BufRead,BufNew,BufNewFile *.ejs setlocal ft=html
-
-" 保存時に html 自動生成
-function! s:generate_html() abort
-    if &filetype ==# 'haml' && executable('haml')
-        let html = expand('%:p:r') . '.html'
-        let cmdline = join(['haml', expand('%'), '>', html], ' ')
-        call vimproc#system_bg(cmdline)
-    endif
-endfunction
-Autocmd BufWritePost *.haml call <SID>generate_html()
 "}}}
 
 " Markdown {{{
