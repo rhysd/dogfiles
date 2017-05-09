@@ -36,6 +36,7 @@
 	lop = log -p
 	rmr = rm -r
 	mgn = merge --no-ff
+	pr-remote-add = config --add remote.origin.fetch +refs/pull/*/head:refs/remotes/origin/pr/*
 [diff]
 	compactionHeuristic = true
 [push]
