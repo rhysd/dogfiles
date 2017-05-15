@@ -46,7 +46,11 @@
 [ghq]
 	root = ~/Develop
 [tig]
-	main-view-date = short
+	main-view-date = custom
+	main-view-date-format = "%Y-%m-%d"
+[tig "bind"]
+	generic = <Ctrl-f> scroll-page-down
+	generic = <Ctrl-b> scroll-page-up
 [pager]
 	diff = diff-highlight | less
 # I need to find the way to fallback into normal diff for environment where
