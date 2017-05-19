@@ -1464,6 +1464,7 @@ function! s:golang_settings() abort
     let g:go_highlight_extra_types = 0
     let g:go_highlight_space_tab_error = 0
     let g:go_highlight_array_whitespace_error = 0
+    let g:go_highlight_functions = 1
 
     let g:go_metalinter_autosave_enabled = ['vet', 'golint']
     if executable('gofmtrlx')
@@ -1471,6 +1472,7 @@ function! s:golang_settings() abort
     elseif executable('goimports')
         let g:go_fmt_command = 'goimports'
     endif
+    let g:go_snippet_engine = ''
 
     nnoremap <buffer><Space>i :<C-u>Unite go/import -start-insert<CR>
     nnoremap <buffer><Leader>i :<C-u>GoImports<CR>
