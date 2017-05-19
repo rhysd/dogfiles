@@ -189,7 +189,7 @@ endif
 augroup InitialMessage
     autocmd!
     " 起動時メッセージ．ｲﾇｩ…
-    autocmd VimEnter * echo "(U^w^) enjoy vimming!"
+    autocmd VimEnter * echo "(U^w^) enjoy nvimming!"
 augroup END
 
 " ウィンドウ周りのユーティリティ "{{{
@@ -411,9 +411,9 @@ inoremap <C-r>+ <C-o>:set paste<CR><C-r>+<C-o>:set nopaste<CR>
 " コンマ後には空白を入れる
 inoremap , ,<Space>
 " 賢く行頭・非空白行頭・行末の移動
-nnoremap <silent>M :<C-u>call <SID>rotate_horizontal_move('g^')<CR>
-nnoremap <silent>H :<C-u>call <SID>rotate_horizontal_move('g0')<CR>
-nnoremap <silent>L :<C-u>call <SID>rotate_horizontal_move('g$')<CR>
+nnoremap M g^
+nnoremap H g0
+nnoremap L g$
 vnoremap M g^
 vnoremap H g0
 vnoremap L g$
@@ -492,36 +492,6 @@ AutocmdFT qf nnoremap <buffer><silent> K :<C-u>cpfile<CR>:copen<CR>
 AutocmdFT qf nnoremap <buffer><silent> l :<C-u>clist<CR>
 AutocmdFT qf nnoremap <buffer><CR> <CR>
 
-" 初回のみ a:cmd の動きをして，それ以降は行内をローテートする
-let s:smart_line_pos = -1
-function! s:rotate_horizontal_move(cmd)
-    let line = line('.')
-    if s:smart_line_pos == line . a:cmd
-        call <SID>rotate_in_line()
-    else
-        execute "normal! " . a:cmd
-        " 最後に移動した行とマッピングを保持
-        let s:smart_line_pos = line . a:cmd
-    endif
-endfunction
-
-" 行頭 → 非空白行頭 → 行 をローテートする
-function! s:rotate_in_line()
-    let c = virtcol('.')
-
-    let cmd = c == 1 ? 'g^' : 'g$'
-    execute "normal! ".cmd
-
-    " 行頭にスペースがなかったときは行頭と行末をトグル
-    if c == virtcol('.')
-        if cmd == 'g^'
-            normal! g$
-        else
-            normal! g0
-        endif
-    endif
-endfunction
-
 " dein.vim
 let s:dein_repo_path = expand('~/.cache/dein/repos/github.com/Shougo/dein.vim')
 if !isdirectory(s:dein_repo_path)
@@ -597,11 +567,6 @@ if dein#load_state(s:dein_cache_dir)
                 \   'on_cmd' : ['OpenBrowser', 'OpenBrowserSearch', 'OpenBrowserSmartSearch'],
                 \   'on_map' : '<Plug>(openbrowser-',
                 \ })
-
-    call dein#add('tyru/open-browser.vim', {
-                \   'lazy' : 1,
-                \   'on_map' : '<Plug>(openbrowser-',
-                \ })
     call dein#add('tyru/open-browser-github.vim', {
                 \   'lazy' : 1,
                 \   'on_cmd' : ['OpenGithubFile', 'OpenGithubIssue', 'OpenGithubPullReq'],
@@ -651,7 +616,6 @@ let g:clever_f_smart_case = 1
 let g:clever_f_across_no_line = 1
 let g:clever_f_use_migemo = 1
 
-
 let g:quickrun_no_default_key_mappings = 1
 " quickrun_configの初期化
 let g:quickrun_config = get(g:, 'quickrun_config', {})
@@ -697,9 +661,9 @@ let g:quickrun_config['tmux'] = {
             \ 'cmdopt' : 'source-file',
             \ 'exec' : ['%c %o %s:p', 'echo "sourced %s"'],
             \ }
-
+" LLVM
 let g:quickrun_config['llvm'] = {
-            \   'exec' : 'llvm-as-3.4 %s:p -o=- | lli-3.4 - %a',
+            \   'exec' : 'llvm-as %s:p -o=- | lli - %a',
             \ }
 
 " QuickRunのキーマップ
