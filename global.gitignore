@@ -16,3 +16,7 @@ Thumbs.db
 *.dll
 *.pch
 a.out
+
+# Credential files
+credentials.*
+credential.*
