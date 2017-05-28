@@ -2440,8 +2440,26 @@ AutocmdFT dachs
 " open-browser.vim "{{{
 nmap <Leader>o <Plug>(openbrowser-smart-search)
 xmap <Leader>o <Plug>(openbrowser-smart-search)
-nnoremap <Leader>O :<C-u>OpenGithubFile<CR>
 vnoremap <Leader>O :OpenGithubFile<CR>
+nnoremap <Leader>O :<C-u>OpenGithubFile<CR>
+function! s:open_github_here() abort
+    let [number, start, end] = matchstrpos(getline('.'), '#\d\+')
+    if number ==# ''
+        let l = line('.')
+        call openbrowser#github#file([], 1, l, l)
+        return
+    endif
+
+    let idx = col('.') - 1
+    if idx < start || end < idx
+        let l = line('.')
+        call openbrowser#github#file([], 1, l, l)
+        return
+    endif
+
+    execute 'OpenGithubIssue' number[1:]
+endfunction
+command! -nargs=0 -bar GitHubHere call <SID>open_github_here()
 "}}}
 
 " vim-vspec {{{
