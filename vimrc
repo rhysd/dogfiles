@@ -205,12 +205,6 @@ function! s:auto_mkdir(dir, force) abort
         call mkdir(a:dir, 'p')
     endif
 endfunction
-" ファイルタイプを書き込み時に自動判別
-Autocmd BufWritePost
-    \ * if &l:filetype ==# '' || exists('b:ftdetect')
-    \ |   unlet! b:ftdetect
-    \ |   filetype detect
-    \ | endif
 " git commit message のときは折りたたまない(diff で中途半端な折りたたみになりがち)
 " git commit message のときはスペルをチェックする
 AutocmdFT gitcommit setlocal nofoldenable spell
@@ -448,26 +442,6 @@ nnoremap n nzvzz
 nnoremap N Nzvzz
 nnoremap * *zvzz
 nnoremap # *zvzz
-" 検索で / をエスケープしなくて良くする（素の / を入力したくなったら<C-v>/）
-cnoremap <expr>/ <SID>escaped_char_on_cmdline('/')
-cnoremap <expr>< <SID>escaped_char_on_cmdline('<')
-cnoremap <expr>> <SID>escaped_char_on_cmdline('>')
-function! s:escaped_char_on_cmdline(c) abort
-    if getcmdtype() !~# '[?/]'
-        return a:c
-    endif
-
-    let p = getcmdpos()
-    if p < 2
-        return '\' . a:c
-    endif
-
-    if getcmdline()[p-2] ==# '\'
-        return a:c
-    endif
-
-    return '\' . a:c
-endfunction
 " 空行挿入
 function! s:cmd_cr_n(count) abort
     for _ in range(a:count)
@@ -628,9 +602,6 @@ function! s:on_FileType_help_define_mappings() abort
         nnoremap <buffer>u <C-u>
         nnoremap <buffer>d <C-d>
         nnoremap <buffer>q :<C-u>q<CR>
-        " カーソル下の単語を help で調べる
-        " AutocmdFT help nnoremap <buffer>K :<C-u>help <C-r><C-w><CR>
-        " TODO v で選択した範囲を help
     endif
 endfunction
 AutocmdFT help call s:on_FileType_help_define_mappings()
@@ -770,7 +741,6 @@ if neobundle#load_cache()
     call neobundle#add('othree/html5.vim')
     call neobundle#add('hail2u/vim-css3-syntax')
     call neobundle#add('tpope/vim-haml')
-
 
     " unite.vim sources
     call neobundle#add('Shougo/unite-outline')
@@ -1061,7 +1031,7 @@ if neobundle#load_cache()
     else
         let g:clang_library_path = '/usr/lib/llvm/lib'
     endif
-    let s:clang_complete_available = has('python') && filereadable(g:clang_library_path)
+    let s:clang_complete_available = has('python') && isdirectory(g:clang_library_path)
 
     call neobundle#add('Rip-Rip/clang_complete', {
                 \ 'lazy' : 1,
