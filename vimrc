@@ -2248,28 +2248,15 @@ let g:caw_no_default_keymappings = 1
 
 " キーマッピング {{{
 " 行コメント
-nmap <Leader>cc <Plug>(caw:i:toggle)
+nmap <Leader>cc <Plug>(caw:hatpos:toggle)
 " 行末尾コメント
-nmap <Leader>ca <Plug>(caw:a:toggle)
+nmap <Leader>ca <Plug>(caw:dollarpos:toggle)
 " ブロックコメント
 nmap <Leader>cb <Plug>(caw:wrap:toggle)
 " 改行後コメント
 nmap <Leader>co <Plug>(caw:jump:comment-next)
 nmap <Leader>cO <Plug>(caw:jump:comment-prev)
-" caw 用オペレータ
-let s:bundle = neobundle#get("caw.vim")
-function! s:bundle.hooks.on_source(bundle) abort
-    function! s:op_caw_commentout(motion_wise) abort
-        if a:motion_wise ==# 'char'
-            execute 'normal' "`[v`]\<Plug>(caw:wrap:toggle)"
-        else
-            execute "normal" "`[V`]\<Plug>(caw:i:toggle)"
-        endif
-    endfunction
-    call operator#user#define('caw', s:SID.'op_caw_commentout')
-endfunction
-unlet s:bundle
-map <Leader>c <Plug>(operator-caw)
+map <Leader>c <Plug>(caw:hatpos:toggle:operator)
 "}}}
 
 "}}}
