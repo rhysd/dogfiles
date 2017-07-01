@@ -20,3 +20,6 @@ a.out
 # Credential files
 credentials.*
 credential.*
+
+# Cache directories
+.crystal
