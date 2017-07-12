@@ -2728,6 +2728,10 @@ xmap ah <Plug>GitGutterTextObjectOuterVisual
 let g:gfm_syntax_emoji_conceal = 1
 " }}}
 
+" vim-grammarous {{{
+let g:grammarous#show_first_error = 1
+" }}}
+
 " プラットフォーム依存な設定をロードする "{{{
 function! SourceIfExist(path) abort
     if filereadable(a:path)
