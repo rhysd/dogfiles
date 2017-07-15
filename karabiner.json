@@ -1,6 +1,60 @@
 {
+    "global": {
+        "check_for_updates_on_startup": true,
+        "show_in_menu_bar": true,
+        "show_profile_name_in_menu_bar": false
+    },
     "profiles": [
         {
+            "complex_modifications": {
+                "parameters": {
+                    "basic.to_if_alone_timeout_milliseconds": 1000
+                },
+                "rules": [
+                    {
+                        "description": "Left Command to Eisuu",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "left_command"
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "left_command"
+                                    }
+                                ],
+                                "to_if_alone": [
+                                    {
+                                        "key_code": "japanese_eisuu"
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Right Command to Kana",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "right_command"
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "right_command"
+                                    }
+                                ],
+                                "to_if_alone": [
+                                    {
+                                        "key_code": "japanese_kana"
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
+                    }
+                ]
+            },
             "devices": [],
             "fn_function_keys": {
                 "f1": "display_brightness_decrement",
@@ -21,19 +75,11 @@
             "simple_modifications": {
                 "caps_lock": "left_control",
                 "grave_accent_and_tilde": "escape",
-                "left_command": "left_command",
-                "right_command": "right_command",
                 "right_shift": "grave_accent_and_tilde"
-            },
-            "standalone_keys": {
-                "left_control": "escape",
-                "left_command": "japanese_eisuu",
-                "right_command": "japanese_kana"
             },
             "virtual_hid_keyboard": {
                 "caps_lock_delay_milliseconds": 0,
-                "keyboard_type": "ansi",
-                "standalone_keys_delay_milliseconds": 0
+                "keyboard_type": "ansi"
             }
         }
     ]
