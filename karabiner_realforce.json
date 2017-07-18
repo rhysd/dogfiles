@@ -6,6 +6,12 @@
     },
     "profiles": [
         {
+            "complex_modifications": {
+                "parameters": {
+                    "basic.to_if_alone_timeout_milliseconds": 1000
+                },
+                "rules": []
+            },
             "devices": [
                 {
                     "disable_built_in_keyboard_if_exists": false,
@@ -35,10 +41,13 @@
             "name": "Default profile",
             "selected": true,
             "simple_modifications": {
+                "application": "fn",
                 "caps_lock": "left_control",
                 "grave_accent_and_tilde": "escape",
+                "japanese_pc_katakana": "right_command",
                 "japanese_pc_nfer": "japanese_eisuu",
                 "japanese_pc_xfer": "japanese_kana",
+                "left_control": "left_option",
                 "left_option": "left_command"
             },
             "virtual_hid_keyboard": {
