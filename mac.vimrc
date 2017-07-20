@@ -15,10 +15,6 @@ endif
 
 AutocmdFT cpp setlocal path=.,/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1,/usr/local/include,/usr/include
 
-let g:quickrun_config.cpp = {
-            \ 'command' : 'clang++',
-            \ 'cmdopt' : '-std=c++1y -Wall -Wextra -O2',
-            \ }
 let g:quickrun_config.ruby = { 'exec' : $HOME . '/.rbenv/shims/ruby %o %s' }
 
 " Mac の辞書.appで開く {{{
@@ -44,10 +40,6 @@ let g:unite_source_ruby_require_ruby_command = $HOME . '/.rbenv/shims/ruby'
 " airline
 let g:airline_left_sep = '»'
 let g:airline_right_sep = '«'
-
-" clang_complete
-let g:clang_library_path = '/Library/Developer/CommandLineTools/usr/lib'
-let g:clang_user_options = '-std=c++1y -I /Library/Developer/CommandLineTools/usr/include/c++/v1 -I /usr/local/include'
 
 " gist-vim
 let g:gist_clip_command = 'pbcopy'

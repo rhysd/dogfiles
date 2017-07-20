@@ -1027,7 +1027,9 @@ if neobundle#load_cache()
 
     " C++用のプラグイン
     if has('mac')
-        let g:clang_library_path = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/'
+        let s:xcode_usr_path = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/'
+        let g:clang_library_path = s:xcode_usr_path . 'lib/'
+        let g:clang_user_options = '-std=c++1y -I ' . s:xcode_usr_path . 'include/c++/v1 -I /usr/local/include'
     else
         let g:clang_library_path = '/usr/lib/llvm/lib'
     endif
