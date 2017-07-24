@@ -1784,13 +1784,12 @@ let g:quickrun_config._ = {
             \ 'outputter' : 'unite_quickfix',
             \ 'split' : 'rightbelow',
             \ 'hook/hier_update/enable' : 1,
-            \ 'runner/vimproc/updatetime' : 500,
+            \ 'runner' : 'job',
             \ }
 "C++
 let g:quickrun_config.cpp = {
             \ 'command' : 'clang++',
             \ 'cmdopt' : '-std=c++1y -Wall -Wextra -O2',
-            \ 'hook/quickrunex/enable' : 1,
             \ }
 let g:quickrun_config['cpp/llvm'] = {
             \ 'type' : 'cpp/clang++',
@@ -1849,7 +1848,6 @@ function! s:check_syntax(ft) abort
 endfunction
 
 let g:quickrun_config['syntax/cpp/g++'] = {
-            \ 'runner' : 'vimproc',
             \ 'outputter' : 'quickfix',
             \ 'command' : 'g++',
             \ 'cmdopt' : '-std=c++1y -Wall -Wextra -O2',
@@ -1857,7 +1855,6 @@ let g:quickrun_config['syntax/cpp/g++'] = {
             \ }
 
 let g:quickrun_config['syntax/ruby'] = {
-            \ 'runner' : 'vimproc',
             \ 'outputter' : 'quickfix',
             \ 'command' : 'ruby',
             \ 'exec' : '%c -c %s:p %o > /dev/null',
@@ -1865,7 +1862,6 @@ let g:quickrun_config['syntax/ruby'] = {
 Autocmd BufWritePost *.rb call <SID>check_syntax('ruby')
 
 let g:quickrun_config['syntax/haml'] = {
-            \ 'runner' : 'vimproc',
             \ 'command' : 'haml',
             \ 'outputter' : 'quickfix',
             \ 'exec'    : '%c -c %o %s:p',
@@ -1877,7 +1873,6 @@ let g:quickrun_config['syntax/python'] = {
             \ 'command' : 'pyflakes',
             \ 'exec' : '%c %o %s:p',
             \ 'outputter' : 'quickfix',
-            \ 'runner' : 'vimproc',
             \ 'errorformat' : '%f:%l:%m',
             \ }
 Autocmd BufWritePost *.py call <SID>check_syntax('python')
@@ -1887,7 +1882,6 @@ let g:quickrun_config['syntax/llvm'] = {
             \ 'cmdopt' : '-filetype=null -o=/dev/null',
             \ 'exec' : '%c %o %s:p',
             \ 'outputter' : 'quickfix',
-            \ 'runner' : 'vimproc',
             \ }
 Autocmd BufWritePost *.ll call <SID>check_syntax('llvm')
 
@@ -1896,7 +1890,6 @@ let g:quickrun_config['syntax/crystal'] = {
             \   'cmdopt' : 'run --no-codegen --no-color',
             \   'exec' : '%c %o %s:p',
             \   'outputter' : 'quickfix',
-            \   'runner' : 'vimproc',
             \ }
 Autocmd BufWritePost *.cr call <SID>check_syntax('crystal')
 
@@ -1918,7 +1911,6 @@ let g:quickrun_config['syntax/css'] = {
 Autocmd BufWritePost *.css call <SID>check_syntax('css')
 
 let g:quickrun_config['syntax/dockerfile'] = {
-            \   'runner' : 'vimproc',
             \   'outputter' : 'quickfix',
             \   'command' : 'hadolint',
             \   'cmdopt' : '',
