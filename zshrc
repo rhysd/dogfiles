@@ -426,11 +426,11 @@ local plugin_url
 for plugin_url in $ZSH_PLUGINS; do
     local plugin="${${plugin_url%.git}##*/}"
     local plugin_file="${ZSHPLUGIN}/${plugin}/${plugin}.zsh"
-    local plugin_file_="${ZSHPLUGIN}/${plugin}/${${plugin}##zsh-}.zsh"
+    local plugin_file2="${ZSHPLUGIN}/${plugin}/${${plugin}##zsh-}.zsh"
     if [ -f "$plugin_file" ]; then
         source "$plugin_file"
-    elif [ -f "$plugin_file_" ]; then
-        source "$plugin_file_"
+    elif [ -f "$plugin_file2" ]; then
+        source "$plugin_file2"
     else
         echo "Plugin source not found: ${plugin_file}.  Please install plugin with 'zsh-plugin-update'."
     fi
@@ -895,11 +895,6 @@ case $OSTYPE in
 
         # global aliases
         alias -g C='| pbcopy'
-
-        # completions
-        if [ -d /usr/local/share/zsh-completions ]; then
-            fpath=(/usr/local/share/zsh-completions $fpath)
-        fi
 
         #Homebrew
         export HOMEBREW_VERBOSE=true
