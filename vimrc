@@ -339,7 +339,7 @@ function! s:copy_current_path() abort
         let c = expand('%:p')
     endif
 
-    if &clipboard ==# 'plus$'
+    if &clipboard =~# 'plus$'
         let @+ = c
     else
         let @* = c
@@ -975,13 +975,6 @@ if neobundle#load_cache()
                 \   }
                 \ })
 
-    call neobundle#add('rhysd/try-colorscheme.vim', {
-                \ 'lazy' : 1,
-                \ 'autoload' : {
-                \     'commands' : 'TryColorscheme',
-                \   }
-                \ })
-
     call neobundle#add('dhruvasagar/vim-table-mode', {
                 \ 'lazy' : 1,
                 \ 'autoload' : {
@@ -1197,8 +1190,6 @@ vnoremap <silent><Leader>gb :GitBlameRange<CR>
 
 " git commit ではインサートモードに入る
 Autocmd VimEnter COMMIT_EDITMSG if getline(1) == '' | execute 1 | startinsert | endif
-
-command! -nargs=* GitIssue call call("<SID>hubrowse", split("<args> issues"))
 "}}}
 
 " 他の helper {{{
