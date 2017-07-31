@@ -679,6 +679,14 @@ endif
 
 let s:meet_neocomplete_requirements = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
 let s:enable_tern_for_vim = (has('python') || has('python3')) && executable('npm')
+if has('mac')
+    let s:xcode_usr_path = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/'
+    let g:clang_library_path = s:xcode_usr_path . 'lib/'
+    let g:clang_user_options = '-std=c++1y -I ' . s:xcode_usr_path . 'include/c++/v1 -I /usr/local/include'
+else
+    let g:clang_library_path = '/usr/lib/llvm/lib'
+endif
+let s:clang_complete_available = has('python') && isdirectory(g:clang_library_path)
 
 call neobundle#begin(expand('~/.vim/bundle'))
 
@@ -1019,15 +1027,6 @@ if neobundle#load_cache()
                 \ })
 
     " C++用のプラグイン
-    if has('mac')
-        let s:xcode_usr_path = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/'
-        let g:clang_library_path = s:xcode_usr_path . 'lib/'
-        let g:clang_user_options = '-std=c++1y -I ' . s:xcode_usr_path . 'include/c++/v1 -I /usr/local/include'
-    else
-        let g:clang_library_path = '/usr/lib/llvm/lib'
-    endif
-    let s:clang_complete_available = has('python') && isdirectory(g:clang_library_path)
-
     call neobundle#add('Rip-Rip/clang_complete', {
                 \ 'lazy' : 1,
                 \ 'autoload' : {'filetypes' : ['c', 'cpp']},
