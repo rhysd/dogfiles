@@ -46,19 +46,28 @@ let g:gist_clip_command = 'pbcopy'
 
 if has('gui_running')
     function! s:show_on_safari() abort
+        let src = expand('%')
         TOhtml
-        if expand('%') !=# 'Untitled.html'
-            echoerr 'Failed to make HTML from current buffer'
+        if expand('%') !=# src . '.html'
+            echoerr 'Failed to make HTML from current buffer: ' . expand('%')
         endif
+
         let f = expand('~/tmp.html')
         execute 'silent! write!' f
         if !filereadable(f)
             echoerr 'Cannot save generated HTML ' . f
+            return
         endif
-        call system('open -a Safari ' + f)
+
+        call system('open -a Safari ' . f)
         if v:shell_error
-            echoerr 'Failed to open Safari'
+            echoerr 'Failed to open Safari: ' + f
+            return
         endif
+
+        " Need to wait Safari starting before deleting the temporary file
+        sleep 1
+
         call delete(f)
         bwipeout!
         quit
