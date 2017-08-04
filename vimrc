@@ -1621,12 +1621,6 @@ function! s:bundle.hooks.on_source(bundle) abort
     let g:unite_source_file_mru_limit = 100
     " unite-grep で使うオプション
     let g:unite_source_grep_default_opts = "-Hn --color=never"
-    " the silver searcher を unite-grep のバックエンドにする
-    if executable('ag')
-        let g:unite_source_grep_command = 'ag'
-        let g:unite_source_grep_default_opts = '--nocolor --nogroup --column'
-        let g:unite_source_grep_recursive_opt = ''
-    endif
 
     " Git リポジトリのすべてのファイルを開くアクション {{{
     let git_repo = { 'description' : 'all file in git repository' }
