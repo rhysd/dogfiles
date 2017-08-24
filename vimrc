@@ -1816,10 +1816,10 @@ let g:quickrun_config['slim'] = {
             \   'exec' : '%c %o %s:p',
             \ }
 
-let g:quickrun_config['javascript/babel'] = {
-            \   'command' : 'babel',
-            \   'exec' : ['%c %o %s:p -o %s:p.babel', 'node %s:p.babel'],
-            \   'hook/sweep/files': '%S:p.babel',
+let g:quickrun_config['gocaml'] = {
+            \   'command' : $GOPATH . '/src/github.com/rhysd/gocaml/gocaml',
+            \   'exec' : ['%c %o %s:p', '%s:p:r %a'],
+            \   'errorformat' : '',
             \ }
 
 " シンタックスチェック
