@@ -310,20 +310,20 @@ nnoremap <silent><C-q>
 command! Vimrc call s:edit_myvimrc()
 function! s:edit_myvimrc() abort
     let ghq_root = expand(substitute(system('git config ghq.root'), '\n$', '', ''))
-    let vimrc = $MYVIMRC
-    let gvimrc = $MYGVIMRC
-    for dir in [ghq_root . '/github.com/rhysd/', $HOME . '/Github/']
-        if isdirectory(dir)
-            let vimrc = dir . '/dotfiles/vimrc*'
-            let gvimrc = dir . '/dotfiles/gvimrc*'
-        endif
-    endfor
+    let dotfiles = ghq_root . '/github.com/rhysd/dogfiles/'
+    if isdirectory(dotfiles)
+        let vimrc = dotfiles . 'vimrc*'
+        let gvimrc = dotfiles .'gvimrc*'
+    else
+        let vimrc = $MYVIMRC
+        let gvimrc = $MYGVIMRC
+    endif
 
-    let files = ""
-    if !empty($MYVIMRC)
+    let files = ''
+    if vimrc !=# ''
         let files .= substitute(expand(vimrc), '\n', ' ', 'g')
     endif
-    if !empty($MYGVIMRC)
+    if gvimrc !=# ''
         let files .= substitute(expand(gvimrc), '\n', ' ', 'g')
     endif
 
@@ -370,7 +370,7 @@ function! s:smart_help(args) abort
     if &buftype ==# 'help'
         " 横幅を確保できないときはタブで開く
         if winwidth(0) < 80
-            execute 'quit'
+            quit
             execute 'tab help ' . a:args
         endif
         silent! AdjustWindowWidth --direction=shrink
@@ -549,8 +549,6 @@ nnoremap <silent><C-w>h :<C-u>call <SID>jump_window_wrapper('h', 'l')<CR>
 nnoremap <silent><C-w>j :<C-u>call <SID>jump_window_wrapper('j', 'k')<CR>
 nnoremap <silent><C-w>k :<C-u>call <SID>jump_window_wrapper('k', 'j')<CR>
 nnoremap <silent><C-w>l :<C-u>call <SID>jump_window_wrapper('l', 'h')<CR>
-" Git
-nnoremap git :<C-u>!tig<CR>
 
 function! s:jump_window_wrapper(cmd, fallback) abort
     let old = winnr()
@@ -1152,40 +1150,6 @@ function! s:git_root_dir() abort
         echoerr 'current directory is outside git working tree'
     endif
 endfunction
-
-" git add 用マッピング {{{
-function! s:git_add(fname) abort
-    if ! filereadable(a:fname)
-        echoerr 'file cannot be opened'
-        return
-    endif
-    execute 'lcd' fnamemodify(a:fname, ':h')
-    let result = system('git add '.a:fname)
-    if v:shell_error
-        echoerr 'failed to add: '.result
-    else
-        echo fnamemodify(a:fname, ':t') . ' is added:'
-    endif
-endfunction
-command! -nargs=0 GitAddThisFile call <SID>git_add(expand('%:p'))
-nnoremap <silent><Leader>ga :<C-u>GitAddThisFile<CR>
-"}}}
-
-" git blame 用 {{{
-function! s:git_blame(fname, ...) abort
-    execute 'lcd' fnamemodify(a:fname, ':p:h')
-    let range = (a:0==0 ? line('.') : a:1.','.a:2)
-    let errfmt = &errorformat
-    set errorformat=.*
-    cgetexpr system('git blame -L '.range.' '.fnamemodify(a:fname, ':p'))
-    let &errorformat = errfmt
-    Unite quickfix -no-start-insert
-endfunction
-command! -nargs=0 GitBlameThisLine call <SID>git_blame(expand('%'))
-command! -range GitBlameRange call <SID>git_blame(expand('%'), <line1>, <line2>)
-nnoremap <silent><Leader>gb :<C-u>GitBlameThisLine<CR>
-vnoremap <silent><Leader>gb :GitBlameRange<CR>
-"}}}
 
 " git commit ではインサートモードに入る
 Autocmd VimEnter COMMIT_EDITMSG if getline(1) == '' | execute 1 | startinsert | endif
