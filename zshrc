@@ -10,16 +10,14 @@ export PATH=/usr/local/bin:$PATH
 # ワード単位移動の挙動
 export WORDCHARS=
 
-if [ -d $HOME/.cabal ]; then
-    export PATH=$HOME/.cabal/bin:$PATH
-fi
-
 if [ -d $HOME/.cargo/bin ]; then
     export PATH=$HOME/.cargo/bin:$PATH
 fi
 
 if [ -d $HOME/.opam ]; then
     export PATH=$HOME/.opam/system/bin:$PATH
+    # OPAM configuration
+    source ~/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
 fi
 
 export DOTZSH=$HOME/.zsh
