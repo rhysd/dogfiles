@@ -1664,8 +1664,6 @@ nnoremap [unite]u                 :<C-u>Unite source<CR>
 nnoremap <silent>[unite]<Space>   :<C-u>UniteWithBufferDir -buffer-name=files -vertical file directory file/new<CR>
 "最近使用したファイル
 nnoremap <silent>[unite]m         :<C-u>Unite file_mru directory_mru zsh-cdr oldfiles file/new<CR>
-"指定したディレクトリ以下を再帰的に開く
-nnoremap <silent>[unite]R       :<C-u>UniteWithBufferDir -no-start-insert file_rec/async -auto-resize<CR>
 "バッファ一覧
 nnoremap <silent>[unite]b         :<C-u>Unite -immediately -no-empty -auto-preview buffer<CR>
 "プログラミングにおけるアウトラインの表示
@@ -1676,10 +1674,6 @@ nnoremap <silent>[unite]c         :<C-u>Unite output<CR>
 nnoremap <silent>[unite]gr        :<C-u>Unite -no-start-insert grep<CR>
 "Uniteバッファの復元
 nnoremap <silent>[unite]r         :<C-u>UniteResume<CR>
-" Unite ソース一覧
-nnoremap <silent>[unite]s         :<C-u>Unite source -vertical<CR>
-" NeoBundle
-nnoremap <silent>[unite]nb        :<C-u>Unite neobundle/update:all -auto-quit -keep-focus -log<CR>
 " Haskell Import
 AutocmdFT haskell nnoremap <buffer>[unite]hd :<C-u>Unite haddock<CR>
 AutocmdFT haskell nnoremap <buffer>[unite]ho :<C-u>Unite hoogle<CR>
@@ -1688,9 +1682,6 @@ AutocmdFT haskell nnoremap <buffer><expr>[unite]hi
                     \                                 :":\<C-u>UniteWithCursorWord haskellimport\<CR>"
 " Git のルートディレクトリを開く
 nnoremap <silent><expr>[unite]fg  ":\<C-u>Unite file -input=".fnamemodify(<SID>git_root_dir(),":p")
-" alignta (visual)
-vnoremap <silent>[unite]aa        :<C-u>Unite alignta:arguments<CR>
-vnoremap <silent>[unite]ao        :<C-u>Unite alignta:options<CR>
 " C++ インクルードファイル
 AutocmdFT cpp nnoremap <buffer>[unite]i :<C-u>Unite file_include -vertical<CR>
 " help(項目が多いので，検索語を入力してから絞り込む)
