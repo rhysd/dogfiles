@@ -747,6 +747,7 @@ if neobundle#load_cache()
     call neobundle#add('othree/html5.vim')
     call neobundle#add('hail2u/vim-css3-syntax')
     call neobundle#add('tpope/vim-haml')
+    call neobundle#add('w0rp/ale')
 
     " unite.vim sources
     call neobundle#add('Shougo/unite-outline')
@@ -1786,20 +1787,7 @@ function! s:check_syntax(ft) abort
     execute 'QuickRun' '-type' type
 endfunction
 
-let g:quickrun_config['syntax/cpp/g++'] = {
-            \ 'outputter' : 'quickfix',
-            \ 'command' : 'g++',
-            \ 'cmdopt' : '-std=c++1y -Wall -Wextra -O2',
-            \ 'exec' : '%c %o -fsyntax-only %s:p'
-            \ }
-
-let g:quickrun_config['syntax/ruby'] = {
-            \ 'outputter' : 'quickfix',
-            \ 'command' : 'ruby',
-            \ 'exec' : '%c -c %s:p %o > /dev/null',
-            \ }
-Autocmd BufWritePost *.rb call <SID>check_syntax('ruby')
-
+" TODO: Add this to ALE
 let g:quickrun_config['syntax/haml'] = {
             \ 'command' : 'haml',
             \ 'outputter' : 'quickfix',
@@ -1808,14 +1796,7 @@ let g:quickrun_config['syntax/haml'] = {
             \ }
 Autocmd BufWritePost *.haml call <SID>check_syntax('haml')
 
-let g:quickrun_config['syntax/python'] = {
-            \ 'command' : 'pyflakes',
-            \ 'exec' : '%c %o %s:p',
-            \ 'outputter' : 'quickfix',
-            \ 'errorformat' : '%f:%l:%m',
-            \ }
-Autocmd BufWritePost *.py call <SID>check_syntax('python')
-
+" TODO: Add this to ALE
 let g:quickrun_config['syntax/llvm'] = {
             \ 'command' : 'llc',
             \ 'cmdopt' : '-filetype=null -o=/dev/null',
@@ -1823,40 +1804,6 @@ let g:quickrun_config['syntax/llvm'] = {
             \ 'outputter' : 'quickfix',
             \ }
 Autocmd BufWritePost *.ll call <SID>check_syntax('llvm')
-
-let g:quickrun_config['syntax/crystal'] = {
-            \   'command' : 'crystal',
-            \   'cmdopt' : 'run --no-codegen --no-color',
-            \   'exec' : '%c %o %s:p',
-            \   'outputter' : 'quickfix',
-            \ }
-Autocmd BufWritePost *.cr call <SID>check_syntax('crystal')
-
-let g:quickrun_config['syntax/typescript'] = {
-            \   'command' : 'tslint',
-            \   'exec' : '%c %o %s:p',
-            \   'outputter' : 'quickfix',
-            \   'errorformat' : '%f[%l\\, %c]: %m',
-            \ }
-Autocmd BufWritePost *.ts,*.tsx call <SID>check_syntax('typescript')
-
-let g:quickrun_config['syntax/css'] = {
-            \   'command' : 'stylelint',
-            \   'exec' : '%c %o %s:p',
-            \   'cmdopt' : '--no-color',
-            \   'outputter' : 'quickfix',
-            \   'errorformat' : '%-P%f,%*[\ ]%l:%c%*[\ ]%*[✖⚠]%*[\ ]%m,%-Q',
-            \ }
-Autocmd BufWritePost *.css call <SID>check_syntax('css')
-
-let g:quickrun_config['syntax/dockerfile'] = {
-            \   'outputter' : 'quickfix',
-            \   'command' : 'hadolint',
-            \   'cmdopt' : '',
-            \   'exec' : '%c %o %s:p',
-            \   'errorformat' : '%f:%l DL%n %m,%f DL%n %m',
-            \ }
-Autocmd BufWritePost Dockerfile call <SID>check_syntax('dockerfile')
 
 "QuickRunのキーマップ {{{
 nnoremap <Leader>q  <Nop>
