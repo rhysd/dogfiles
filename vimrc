@@ -2612,6 +2612,14 @@ let g:gfm_syntax_emoji_conceal = 1
 let g:grammarous#show_first_error = 1
 " }}}
 
+" ale {{{
+let g:ale_lint_on_text_changed = 'normal'
+let g:ale_lint_on_insert_leave = 0
+let g:ale_completion_enabled = 0
+let g:ale_fix_on_save = 0
+nmap <Leader>al <Plug>(ale_next)
+" }}}
+
 " プラットフォーム依存な設定をロードする "{{{
 function! SourceIfExist(path) abort
     if filereadable(a:path)
