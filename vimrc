@@ -1787,38 +1787,9 @@ let g:quickrun_config['gocaml'] = {
             \   'errorformat' : '',
             \ }
 
-" シンタックスチェック
-function! s:check_syntax(ft) abort
-    let type = 'syntax/' . a:ft
-    if has_key(g:quickrun_config[type], 'command') && !executable(g:quickrun_config[type].command)
-        return
-    endif
-    execute 'QuickRun' '-type' type
-endfunction
-
-" TODO: Add this to ALE
-let g:quickrun_config['syntax/haml'] = {
-            \ 'command' : 'haml',
-            \ 'outputter' : 'quickfix',
-            \ 'exec'    : '%c -c %o %s:p',
-            \ 'errorformat' : 'Haml error on line %l: %m,Syntax error on line %l: %m,%-G%.%#',
-            \ }
-Autocmd BufWritePost *.haml call <SID>check_syntax('haml')
-
-" TODO: Add this to ALE
-let g:quickrun_config['syntax/llvm'] = {
-            \ 'command' : 'llc',
-            \ 'cmdopt' : '-filetype=null -o=/dev/null',
-            \ 'exec' : '%c %o %s:p',
-            \ 'outputter' : 'quickfix',
-            \ }
-Autocmd BufWritePost *.ll call <SID>check_syntax('llvm')
-
 "QuickRunのキーマップ {{{
-nnoremap <Leader>q  <Nop>
-nnoremap <silent><Leader>qr :<C-u>QuickRun<CR>
-vnoremap <silent><Leader>qr :QuickRun<CR>
-nnoremap <silent><Leader>qR :<C-u>QuickRun<Space>
+nnoremap <silent><Leader>q :<C-u>QuickRun<CR>
+vnoremap <silent><Leader>q :QuickRun<CR>
 " }}}
 " }}}
 
