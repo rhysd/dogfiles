@@ -1,12 +1,7 @@
-" vim:ft=vim:fdm=marker:
+scriptencoding utf-8
 
 " 不可視文字
 set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
-" brew と rbenv のパスを追加
-"MacVim Kaoriyaに標準で入っている辞書を無効化
-if has('kaoriya')
-    let g:plugin_dicwin_disable = 1
-endif
 
 " option キーを Alt として使う．
 if exists('+macmeta')
@@ -44,6 +39,11 @@ let g:airline_right_sep = '«'
 " gist-vim
 let g:gist_clip_command = 'pbcopy'
 
+" ale
+if !executable('llc')
+    let g:ale_llvm_llc_executable = '/usr/local/opt/llvm/bin/llc'
+endif
+
 if has('gui_running')
     function! s:show_on_safari() abort
         let src = expand('%')
@@ -74,3 +74,5 @@ if has('gui_running')
     endfunction
     command! -nargs=0 ShowOnSafari call <SID>show_on_safari()
 endif
+
+" vim:ft=vim:fdm=marker:

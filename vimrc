@@ -2598,7 +2598,7 @@ let g:ale_lint_on_insert_leave = 0
 let g:ale_completion_enabled = 0
 let g:ale_fix_on_save = 0
 nmap <Leader>al <Plug>(ale_next)
-let g:ale_llvm_llc_executable = $HOME . '/.go/src/llvm.org/llvm/bindings/go/llvm/workdir/llvm_build/bin/llc'
+let g:ale_vim_vint_show_style_issues = 0
 " }}}
 
 " プラットフォーム依存な設定をロードする "{{{
