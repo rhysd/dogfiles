@@ -493,17 +493,21 @@ AutocmdFT qf nnoremap <buffer><silent> l :<C-u>clist<CR>
 AutocmdFT qf nnoremap <buffer><CR> <CR>
 
 " dein.vim
+function! s:install_dein() abort
+    echo 'Installing dein.vim...'
+    let cmd =
+        \ 'curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh && ' .
+        \ '(sh ./installer.sh ~/.cache/dein || rm installer.sh)'
+    let out = system(cmd)
+    if v:shell_error
+        echohl ErrorMsg | echom 'Error!: ' . out | echohl None
+    else
+        echo 'dein.vim was installed to ~/.cache/dein'
+    endif
+endfunction
 let s:dein_repo_path = expand('~/.cache/dein/repos/github.com/Shougo/dein.vim')
 if !isdirectory(s:dein_repo_path)
-    echo 'Installing dein.vim...'
-    let s:result = system('bash -c "$(curl -fsSL https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh)" -- ~/.cache/dein')
-    if v:shell_error
-        echon 'Error!'
-        echo s:result
-    else
-        echon 'OK'
-    endif
-    unlet! s:result
+    call s:install_dein()
 endif
 set runtimepath+=~/.cache/dein/repos/github.com/Shougo/dein.vim
 
@@ -551,7 +555,6 @@ if dein#load_state(s:dein_cache_dir)
                 \ })
 
     call dein#add('rhysd/clever-f.vim', {
-                \   'rev' : 'dev',
                 \   'lazy': 1,
                 \   'on_map' : [['n', 'f'], ['n', 'F'], ['n', 't'], ['n', 'T']],
                 \ })
