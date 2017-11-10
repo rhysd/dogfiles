@@ -304,7 +304,7 @@ endfunction
 
 " あるウィンドウを他のウィンドウから閉じる "{{{
 function! s:is_target_window(winnr) abort
-    let target_filetype = ['ref', 'unite', 'vimfiler']
+    let target_filetype = ['ref', 'unite']
     let target_buftype  = ['help', 'quickfix', 'nofile']
     let winbufnr = winbufnr(a:winnr)
     return index(target_filetype, getbufvar(winbufnr, '&filetype')) >= 0 ||
@@ -757,6 +757,7 @@ if neobundle#load_cache()
     call neobundle#add('hail2u/vim-css3-syntax')
     call neobundle#add('tpope/vim-haml')
     call neobundle#add('w0rp/ale')
+    call neobundle#add('justinmk/vim-dirvish')
 
     " unite.vim sources
     call neobundle#add('Shougo/unite-outline')
@@ -801,16 +802,6 @@ if neobundle#load_cache()
                 \                   {'name': 'UniteWithBufferDir', 'complete' : 'customlist,unite#complete_source'},
                 \                   {'name': 'UniteWithCursorWord', 'complete' : 'customlist,unite#complete_source'},
                 \                   {'name': 'UniteWithWithInput', 'complete' : 'customlist,unite#complete_source'}]
-                \   }
-                \ })
-
-    call neobundle#add('Shougo/vimfiler.vim', {
-                \ 'lazy' : 1,
-                \ 'depends' : 'Shougo/unite.vim',
-                \ 'autoload' : {
-                \     'commands' : ['VimFiler', 'VimFilerCurrentDir',
-                \                   'VimFilerBufferDir', 'VimFilerSplit',
-                \                   'VimFilerExplorer', 'VimFilerDouble']
                 \   }
                 \ })
 
@@ -1154,11 +1145,17 @@ Autocmd BufWritePost *vimrc,*gvimrc NeoBundleClearCache
 
 " git のルートディレクトリを返す
 function! s:git_root_dir() abort
-    if(system('git rev-parse --is-inside-work-tree') ==# "true\n")
-        return system('git rev-parse --show-cdup')
-    else
-        echoerr 'current directory is outside git working tree'
+    let out = system('git rev-parse --is-inside-work-tree')
+    if v:shell_error
+        echohl ErrorMsg | echo out | echohl None
+        return
     endif
+    let out = system('git rev-parse --show-cdup')
+    if v:shell_error
+        echohl ErrorMsg | echo out | echohl None
+        return
+    endif
+    return out
 endfunction
 
 " git commit ではインサートモードに入る
@@ -1526,7 +1523,6 @@ let g:neocomplete#sources#omni#input_patterns.gitcommit = ''
 " neocomplete 補完用関数
 let g:neocomplete#sources#vim#complete_functions = {
     \ 'Unite' : 'unite#complete_source',
-    \ 'VimFiler' : 'vimfiler#complete',
     \}
 let g:neocomplete#force_overwrite_completefunc = 1
 if !exists('g:neocomplete#force_omni_input_patterns')
@@ -1611,21 +1607,21 @@ function! s:bundle.hooks.on_source(bundle) abort
     call unite#custom#action('file', 'git_repo_files', git_repo)
     " }}}
 
-    " ファイルなら開き，ディレクトリなら VimFiler に渡す {{{
-    let open_or_vimfiler = {
-                \ 'description' : 'open a file or open a directory with vimfiler',
+    " ファイルなら開き，ディレクトリなら dirvish に渡す {{{
+    let open_or_dirvish = {
+                \ 'description' : 'open a file or open a directory with dirvish',
                 \ 'is_selectable' : 1,
                 \ }
-    function! open_or_vimfiler.func(candidates) abort
+    function! open_or_dirvish.func(candidates) abort
         for candidate in a:candidates
             if candidate.kind ==# 'directory'
-                execute 'VimFiler' candidate.action__path
+                execute 'Dirvish' candidate.action__path
                 return
             endif
         endfor
         execute 'args' join(map(a:candidates, 'v:val.action__path'), ' ')
     endfunction
-    call unite#custom#action('file', 'open_or_vimfiler', open_or_vimfiler)
+    call unite#custom#action('file', 'open_or_dirvish', open_or_dirvish)
     "}}}
 
     " Finder for Mac
@@ -1640,7 +1636,7 @@ function! s:bundle.hooks.on_source(bundle) abort
     endif
 
     call unite#custom#profile('source/quickfix,source/outline,source/line,source/line/fast,source/grep', 'context', {'prompt_direction' : 'top'})
-    call unite#custom#profile('source/ghq', 'context', {'default_action' : 'vimfiler'})
+    call unite#custom#profile('source/ghq', 'context', {'default_action' : 'open_or_dirvish'})
 
     call unite#custom#profile('default', 'context', {
                 \ 'start_insert' : 1,
@@ -1713,7 +1709,6 @@ nnoremap <silent>[unite]l :<C-u>UniteWithInput locate<CR>
 " 検索
 nnoremap <silent>[unite]/ :<C-u>execute 'Unite grep:'.expand('%:p').' -input='.escape(substitute(@/, '^\\v', '', ''), ' \')<CR>
 " ghq
-nnoremap <silent>[unite]gg :<C-u>Unite -start-insert -default-action=vimfiler ghq directory_mru<CR>
 " }}}
 
 " }}}
@@ -1795,51 +1790,6 @@ vnoremap <silent><Leader>q :QuickRun<CR>
 
 " Hier.vim {{{
 nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>:HierClear<CR>
-" }}}
-
-" VimFilerの設定 {{{
-let g:loaded_netrwPlugin = 1
-let g:vimfiler_as_default_explorer = 1
-let g:vimfiler_safe_mode_by_default = 0
-let g:vimfiler_split_command = 'vertical rightbelow vsplit'
-let g:vimfiler_execute_file_list = { '_' : 'vim', 'pdf' : 'open', 'mp3' : 'open', 'jpg' : 'open',
-                                   \ 'png' : 'open' }
-let g:vimfiler_split_rule = 'botright'
-
-" vimfiler.vim のキーマップ {{{
-" smart s mapping for edit or cd
-AutocmdFT vimfiler nmap <buffer><silent><expr> l vimfiler#smart_cursor_map(
-            \ "\<Plug>(vimfiler_cd_file)",
-            \ "\<Plug>(vimfiler_edit_file)")
-
-" 'a'nother
-AutocmdFT vimfiler nmap <buffer><silent>a <Plug>(vimfiler_switch_to_another_vimfiler)
-" unite.vim に合わせる
-AutocmdFT vimfiler nmap <buffer><silent><Tab> <Plug>(vimfiler_choose_action)
-" <Space> の代わりに u を unite.vim のプレフィクスに使う
-AutocmdFT vimfiler nmap <buffer><silent>u [unite]
-" unite.vim の file_mru との連携
-AutocmdFT vimfiler nnoremap <buffer><silent><C-h> :<C-u>Unite file_mru directory_mru<CR>
-" unite.vim の file との連携
-AutocmdFT vimfiler
-            \ nnoremap <buffer><silent>/
-            \ :<C-u>execute 'Unite' 'file:' . b:vimfiler.current_dir '-default-action=open_or_vimfiler' '-start-insert'<CR>
-
-" git リポジトリに登録されたすべてのファイルを開く
-AutocmdFT vimfiler nnoremap <buffer><expr>ga vimfiler#do_action('git_repo_files')
-
-nnoremap <Leader>f                <Nop>
-nnoremap <Leader>ff               :<C-u>VimFiler<CR>
-nnoremap <Leader>fs               :<C-u>VimFilerSplit<CR>
-nnoremap <Leader><Leader>         :<C-u>VimFiler<CR>
-nnoremap <Leader>fq               :<C-u>VimFiler -no-quit<CR>
-nnoremap <Leader>fh               :<C-u>VimFiler ~<CR>
-nnoremap <Leader>fc               :<C-u>VimFilerCurrentDir<CR>
-nnoremap <Leader>fb               :<C-u>VimFilerBufferDir<CR>
-nnoremap <silent><expr><Leader>fg ":\<C-u>VimFiler " . <SID>git_root_dir() . '\<CR>'
-nnoremap <silent><expr><Leader>fe ":\<C-u>VimFilerExplorer " . <SID>git_root_dir() . '\<CR>'
-nnoremap <Leader>fd               :<C-u>VimFilerDouble -tab<CR>
-" }}}
 " }}}
 
 " vim-smartinput"{{{
@@ -2599,6 +2549,24 @@ let g:ale_completion_enabled = 0
 let g:ale_fix_on_save = 0
 nmap <Leader>al <Plug>(ale_next)
 let g:ale_vim_vint_show_style_issues = 0
+" }}}
+
+" dirvish {{{
+function! s:on_dirvish() abort
+    nmap <buffer><silent>l <CR>
+    nmap <buffer><silent>h <Plug>(dirvish_up)
+endfunction
+augroup dirvish-vimrc
+    autocmd!
+    autocmd FileType dirvish call <SID>on_dirvish()
+augroup END
+let g:loaded_netrwPlugin = 1
+nnoremap <Leader>f <Nop>
+nnoremap <silent><Leader><Leader> :<C-u>Dirvish<CR>
+nnoremap <silent><Leader>ff :<C-u>Dirvish<CR>
+nnoremap <silent><Leader>fs :<C-u>botright vsplit <Bar> Dirvish<CR>
+nnoremap <silent><Leader>fb :<C-u>execute 'Dirvish' expand('%:p:h')<CR>
+nnoremap <silent><expr><Leader>fg ":\<C-u>Dirvish " . <SID>git_root_dir() . "\<CR>"
 " }}}
 
 " プラットフォーム依存な設定をロードする "{{{
