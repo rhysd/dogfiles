@@ -758,6 +758,7 @@ if neobundle#load_cache()
     call neobundle#add('tpope/vim-haml')
     call neobundle#add('w0rp/ale')
     call neobundle#add('justinmk/vim-dirvish')
+    call neobundle#add('rhysd/unite-dirvish.vim')
 
     " unite.vim sources
     call neobundle#add('Shougo/unite-outline')
@@ -2555,6 +2556,8 @@ let g:ale_vim_vint_show_style_issues = 0
 function! s:on_dirvish() abort
     nmap <buffer><silent>l <CR>
     nmap <buffer><silent>h <Plug>(dirvish_up)
+    nnoremap <buffer><silent>O :<C-u>execute 'OpenBrowser' getline('.')<CR>
+    nnoremap <buffer>/ :<C-u>Unite dirvish<CR>
 endfunction
 augroup dirvish-vimrc
     autocmd!
