@@ -1148,12 +1148,12 @@ Autocmd BufWritePost *vimrc,*gvimrc NeoBundleClearCache
 function! s:git_root_dir() abort
     let out = system('git rev-parse --is-inside-work-tree')
     if v:shell_error
-        echoerr out
+        echohl ErrorMSg | echom out | echohl None
         return ''
     endif
     let out = system('git rev-parse --show-cdup')
     if v:shell_error
-        echoerr out
+        echohl ErrorMSg | echom out | echohl None
         return ''
     endif
     return out
