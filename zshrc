@@ -24,6 +24,11 @@ export DOTZSH=$HOME/.zsh
 if [ ! -d $DOTZSH ];then
     mkdir -p $DOTZSH
 fi
+
+# ユーザ定義補完 (compinit より前に必要)
+if [ -d ~/.zsh/site-functions ]; then
+    fpath=(~/.zsh/site-functions ${fpath})
+fi
 # }}}
 
 ###############
@@ -171,11 +176,6 @@ setopt \
 #   Completion   #
 ##################
 # {{{
-# ユーザ定義補完
-if [ -d ~/.zsh/site-functions ]; then
-    fpath=(~/.zsh/site-functions ${fpath})
-fi
-
 # 補完に使うソース
 zstyle ':completion:*' completer _complete _expand _list _match _prefix
 
