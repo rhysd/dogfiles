@@ -2554,7 +2554,7 @@ let g:ale_vim_vint_show_style_issues = 0
 
 " dirvish {{{
 function! s:on_dirvish() abort
-    nmap <buffer><silent>l <CR>
+    nnoremap <buffer><silent>l :<C-u>.call dirvish#open('edit', 0)<CR>
     nmap <buffer><silent>h <Plug>(dirvish_up)
     nnoremap <buffer><silent>O :<C-u>execute 'OpenBrowser' getline('.')<CR>
     nnoremap <buffer>/ :<C-u>Unite dirvish<CR>
@@ -2566,9 +2566,8 @@ augroup END
 let g:loaded_netrwPlugin = 1
 nnoremap <Leader>f <Nop>
 nnoremap <silent><Leader><Leader> :<C-u>Dirvish<CR>
-nnoremap <silent><Leader>ff :<C-u>Dirvish<CR>
+nnoremap <silent><Leader>ff :<C-u>execute 'Dirvish' expand('%:p:h')<CR>
 nnoremap <silent><Leader>fs :<C-u>botright vsplit <Bar> Dirvish<CR>
-nnoremap <silent><Leader>fb :<C-u>execute 'Dirvish' expand('%:p:h')<CR>
 nnoremap <silent><expr><Leader>fg ":\<C-u>Dirvish " . <SID>git_root_dir() . "\<CR>"
 " }}}
 
