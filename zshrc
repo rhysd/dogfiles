@@ -196,6 +196,12 @@ zstyle ':completion:*' use-cache true
 
 # git をエイリアス時にも補完できるようにする
 compdef _git g=git
+compdef _docker d=docker
+
+# TODO: 補完定義ファイルを手で管理しなくて良いようにする．
+# 1. zsh-completions のうちシステムに入っているコマンドのみ有効にする
+# 2. zsh-completions 以外の箇所の補完定義ファイルもソースとして登録できるようにする（i.e. docker）
+# 3. コマンド一発で更新できるようにする
 # }}}
 
 ##############
