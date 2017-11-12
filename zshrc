@@ -21,13 +21,8 @@ if [ -d $HOME/.opam ]; then
 fi
 
 export DOTZSH=$HOME/.zsh
-if [ ! -d $DOTZSH ];then
+if [ ! -d $DOTZSH ]; then
     mkdir -p $DOTZSH
-fi
-
-# ユーザ定義補完 (compinit より前に必要)
-if [ -d ~/.zsh/site-functions ]; then
-    fpath=(~/.zsh/site-functions ${fpath})
 fi
 # }}}
 
@@ -114,6 +109,55 @@ function source-file(){
 function pg(){
     ps aux | grep "$1" | grep -v grep
 }
+# }}}
+
+####################
+#  補完定義の管理  #
+####################
+# {{{
+function zsh-update-comp-defs() {
+    local links urls comps file
+
+    comps="$DOTZSH/site-functions"
+    urls=(
+        https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_go
+        https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_jq
+        https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker
+        https://raw.githubusercontent.com/docker/compose/master/contrib/completion/zsh/_docker-compose
+    )
+
+    for url in $urls; do
+        file="$comps/${url:t}"
+        echo "Downloading complation definition '${file}'"
+        if curl -f -L "$url" > "$file"; then
+            chmod +x "$file"
+        else
+            echo "Failed to download ${url}"
+            rm -rf $file
+        fi
+        echo
+    done
+
+    if which rustup > /dev/null; then
+        echo "Setting up completion definitions for rust toolchain"
+        rustup completions zsh > "$comps/_rustup" && chmod +x "$comps/_rustup"
+
+        local toolchain
+        toolchain="$(rustup toolchain list | grep ' (default)')"
+        toolchain="${toolchain%% \(default\)}"
+        if [[ "$toolchain" != "" ]]; then
+            ln -s "$HOME/.rustup/toolchains/$toolchain/share/zsh/site-functions/_cargo" "$comps/_cargo"
+        fi
+    fi
+}
+
+# ユーザ定義補完 (compinit より前に必要)
+if [ ! -d "$DOTZSH/site-functions" ]; then
+    mkdir "$DOTZSH/site-functions"
+    zsh-update-comp-defs
+fi
+
+fpath=(~/.zsh/site-functions ${fpath})
 # }}}
 
 ##########################
