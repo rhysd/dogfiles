@@ -151,13 +151,13 @@ function zsh-update-comp-defs() {
     fi
 }
 
-# ユーザ定義補完 (compinit より前に必要)
 if [ ! -d "$DOTZSH/site-functions" ]; then
     mkdir "$DOTZSH/site-functions"
     zsh-update-comp-defs
 fi
 
-fpath=(~/.zsh/site-functions ${fpath})
+# ユーザ定義補完のパス追加 (compinit より前に必要)
+fpath=("$DOTZSH/site-functions" ${fpath})
 # }}}
 
 ##########################
@@ -241,11 +241,6 @@ zstyle ':completion:*' use-cache true
 # git をエイリアス時にも補完できるようにする
 compdef _git g=git
 compdef _docker d=docker
-
-# TODO: 補完定義ファイルを手で管理しなくて良いようにする．
-# 1. zsh-completions のうちシステムに入っているコマンドのみ有効にする
-# 2. zsh-completions 以外の箇所の補完定義ファイルもソースとして登録できるようにする（i.e. docker）
-# 3. コマンド一発で更新できるようにする
 # }}}
 
 ##############
