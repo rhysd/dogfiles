@@ -755,10 +755,8 @@ if neobundle#load_cache()
     call neobundle#add('rhysd/vim-filetype-haskell')
     call neobundle#add('othree/html5.vim')
     call neobundle#add('hail2u/vim-css3-syntax')
-    call neobundle#add('tpope/vim-haml')
     call neobundle#add('w0rp/ale')
     call neobundle#add('justinmk/vim-dirvish')
-    call neobundle#add('rhysd/unite-dirvish.vim')
 
     " unite.vim sources
     call neobundle#add('Shougo/unite-outline')
@@ -776,7 +774,7 @@ if neobundle#load_cache()
     call neobundle#add('rhysd/unite-n3337')
     call neobundle#add('rhysd/unite-go-import.vim')
     call neobundle#add('rhysd/unite-oldfiles.vim')
-    call neobundle#add('rhysd/unite-redpen.vim')
+    call neobundle#add('rhysd/unite-dirvish.vim')
 
     " カラースキーム
     call neobundle#add('rhysd/wallaby.vim')
@@ -997,10 +995,9 @@ if neobundle#load_cache()
                 \   }
                 \ })
 
-    " if_lua プラグイン
-    if s:meet_neocomplete_requirements
-        call neobundle#add('Shougo/neocomplete.vim')
-    endif
+    call neobundle#add('Shougo/neocomplete.vim', {
+                \ 'fetch' : !s:meet_neocomplete_requirements,
+                \ })
 
     " GUI オンリーなプラグイン
     call neobundle#add('nathanaelkane/vim-indent-guides', {
@@ -1166,13 +1163,17 @@ Autocmd VimEnter COMMIT_EDITMSG if getline(1) == '' | execute 1 | startinsert | 
 " 他の helper {{{
 " 本体に同梱されている matchit.vim のロードと matchpair の追加
 function! s:matchit(...) abort
-    if !exists('s:matchit_loaded')
-        runtime macros/matchit.vim
-        let s:matchit_loaded = 1
+    if exists('s:matchit_loaded')
+        return
     endif
-    let default_pairs = [&matchpairs]
-    let b:match_words = get(b:, 'match_words', '') . ',' . join(default_pairs, ',') . ',' . join(a:000, ',')
+    if v:version >= 800
+        packadd! matchit
+    else
+        runtime macros/matchit.vim
+    endif
+    let s:matchit_loaded = 1
 endfunction
+AutocmdFT vim,zsh,sh,ruby,ocaml,make,html,xml call <SID>matchit()
 
 " Shiba
 function! s:shiba(args) abort
@@ -1235,7 +1236,6 @@ AutocmdFT ruby SetIndent 2
 AutocmdFT ruby inoremap <buffer><C-s> self.
 AutocmdFT ruby inoremap <buffer>;; ::
 AutocmdFT ruby nnoremap <buffer>[unite]r :<C-u>Unite ruby/require<CR>
-AutocmdFT ruby call s:matchit()
 Autocmd BufRead Guardfile setlocal filetype=ruby
 
 let s:ruby_template = ['#!/usr/bin/env ruby', '']
@@ -1280,7 +1280,6 @@ function! s:jump_to_autoload_function_definition() abort
 endfunction
 
 AutocmdFT vim inoremap , ,<Space>
-AutocmdFT vim call <SID>matchit()
 AutocmdFT vim nnoremap <silent><buffer>gf :<C-u>call <SID>jump_to_autoload_function_definition()<CR>
 AutocmdFT vim nnoremap <silent><buffer>K :<C-u>call <SID>smart_help(expand('<cword>'))<CR>
 "}}}

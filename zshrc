@@ -146,6 +146,7 @@ function zsh-update-comp-defs() {
         toolchain="$(rustup toolchain list | grep ' (default)')"
         toolchain="${toolchain%% \(default\)}"
         if [[ "$toolchain" != "" ]]; then
+            rm -rf "$comps/_cargo"
             ln -s "$HOME/.rustup/toolchains/$toolchain/share/zsh/site-functions/_cargo" "$comps/_cargo"
         fi
     fi
