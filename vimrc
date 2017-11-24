@@ -1019,7 +1019,7 @@ if neobundle#load_cache()
     call neobundle#add('rhysd/endwize.vim', {
                 \ 'lazy' : 1,
                 \ 'autoload' : {
-                \     'filetypes' : ['ruby', 'vim', 'sh', 'zsh', 'c', 'cpp', 'lua', 'dachs']
+                \     'filetypes' : ['ruby', 'vim', 'sh', 'zsh', 'c', 'cpp', 'lua', 'dachs', 'vimspec']
                 \     }
                 \ })
 
@@ -2208,6 +2208,11 @@ AutocmdFT dachs
     \ let b:endwize_pattern = '^\s*\%(in\s\+\|+\s\+\|-\s\+\)\=\zs\%(func\|proc\|if\|unless\|case\|for\|class\|init\)\>\%(.*[^.:@$]\<end\>\)\@!\|\<do\ze\%(\s*|.*|\|\<let\>\%(.*[^.:@$]\<in\>\)\@!\)\=\s*$' |
     \ let b:endwize_syngroups = 'dachsConditional,dachsControl,dachsFuncDefine,dachsRepeat,dachsClassDefine' |
     \ let b:endwize_comment = '#'
+AutocmdFT vimspec
+    \ let b:endwize_addition = 'End' |
+    \ let b:endwize_words = 'Describe,Context,It,Before,After' |
+    \ let b:endwize_syngroups = 'vimspecCommand' |
+    \ let b:endwize_comment = '"'
 "}}}
 
 " open-browser.vim "{{{
