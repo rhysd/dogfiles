@@ -1782,6 +1782,12 @@ let g:quickrun_config['gocaml'] = {
             \   'errorformat' : '',
             \ }
 
+let g:quickrun_config['vimspec'] = {
+            \   'command' : $HOME . '/.vim/bundle/vim-themis/bin/themis',
+            \   'exec' : '%c %o %s:p',
+            \   'errorformat' : '',
+            \ }
+
 "QuickRunのキーマップ {{{
 nnoremap <silent><Leader>q :<C-u>QuickRun<CR>
 vnoremap <silent><Leader>q :QuickRun<CR>
