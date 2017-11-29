@@ -519,10 +519,6 @@ if dein#load_state(s:dein_cache_dir)
     call dein#add('rhysd/wallaby.vim')
     call dein#add('rhysd/vim-color-spring-night')
     call dein#add('rhysd/vim-dachs')
-    call dein#add('rhysd/nyaovim-popup-tooltip')
-    call dein#add('rhysd/nyaovim-mini-browser')
-    call dein#add('rhysd/nyaovim-markdown-preview')
-    call dein#add('rhysd/nyaovim-tree-view')
     call dein#add('airblade/vim-gitgutter')
     call dein#add('vim-airline/vim-airline')
     call dein#add('vim-airline/vim-airline-themes')
@@ -585,6 +581,17 @@ if dein#load_state(s:dein_cache_dir)
                 \   'lazy' : 1, 
                 \   'on_cmd' : 'GrammarousCheck',
                 \ })
+
+    if s:on_nyaovim
+        let s:opts = { 'rtp' : '' }
+    else
+        let s:opts = {}
+    endif
+    call dein#add('rhysd/nyaovim-popup-tooltip', s:opts)
+    call dein#add('rhysd/nyaovim-mini-browser', s:opts)
+    call dein#add('rhysd/nyaovim-markdown-preview', s:opts)
+    call dein#add('rhysd/nyaovim-tree-view', s:opts)
+    unlet s:opts
 
     call dein#end()
     call dein#save_state()
