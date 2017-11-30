@@ -250,69 +250,44 @@ augroup InitialMessage
     autocmd VimEnter * echo "(U'w') enjoy vimming!"
 augroup END
 
-" ウィンドウ周りのユーティリティ "{{{
-function! s:close_window(winnr) abort
-    if winbufnr(a:winnr) !=# -1
-        execute a:winnr . 'wincmd w'
-        execute 'wincmd c'
-        return 1
-    else
-        return 0
-    endif
-endfunction
+" 一時ウィンドウを閉じる "{{{
+function! s:close_temp_windows() abort
+    let target_filetype = ['unite']
+    let target_buftype  = ['help', 'quickfix', 'nofile', 'terminal']
 
-function! s:get_winnr_like(expr) abort
-    let ret = []
-    let winnr = 1
-    while winnr <= winnr('$')
+    let wins = []
+    let winnr = winnr('$')
+    while winnr > 0
         let bufnr = winbufnr(winnr)
-        if eval(a:expr)
-            call add(ret, winnr)
+        if index(target_filetype, getbufvar(bufnr, '&filetype')) >= 0 ||
+                \ index(target_buftype, getbufvar(bufnr, '&buftype')) >= 0
+            call add(wins, winnr)
         endif
-        let winnr = winnr + 1
+        let winnr -= 1
     endwhile
-    return ret
-endfunction
 
-function! s:close_windows_like(expr, ...) abort
-    let winnr_list = s:get_winnr_like(a:expr)
-    " Close current window if current matches a:expr.
-    " let winnr_list = s:move_current_winnr_to_head(winnr_list)
-    if empty(winnr_list)
+    if empty(wins)
         return
     endif
 
-    let first_only = exists('a:1')
     let prev_winnr = winnr()
+
     try
-        for winnr in reverse(sort(winnr_list))
-            call s:close_window(winnr)
-            if first_only
-                return 1
+        for winnr in wins
+            if winbufnr(winnr) != -1
+                execute winnr . 'wincmd w'
+                execute 'wincmd c'
             endif
         endfor
-        return 0
     finally
         " Back to previous window.
-        let cur_winnr = winnr()
-        if cur_winnr !=# prev_winnr && winbufnr(prev_winnr) !=# -1
+        if winnr() !=# prev_winnr && winbufnr(prev_winnr) !=# -1
             execute prev_winnr . 'wincmd w'
         endif
     endtry
 endfunction
-"}}}
 
-" あるウィンドウを他のウィンドウから閉じる "{{{
-function! s:is_target_window(winnr) abort
-    let target_filetype = ['ref', 'unite']
-    let target_buftype  = ['help', 'quickfix', 'nofile']
-    let winbufnr = winbufnr(a:winnr)
-    return index(target_filetype, getbufvar(winbufnr, '&filetype')) >= 0 ||
-                \ index(target_buftype, getbufvar(winbufnr, '&buftype')) >= 0
-endfunction
-
-nnoremap <silent><C-q>
-            \ :<C-u>call <SID>close_windows_like('s:is_target_window(winnr)')<CR>
+nnoremap <silent><C-q> :<C-u>call <SID>close_temp_windows()<CR>
 "}}}
 
 " vimrc を開く
@@ -653,6 +628,13 @@ function! s:move_forward_by_step() abort
 endfunction
 " }}}
 
+if exists(':terminal')
+    set termkey=<Esc>
+    nnoremap <Space><Space> :<C-u>terminal ++close<CR>
+    " XXX: This kills original <Esc><Esc>, which sends raw '<Esc>' to
+    " shell
+    tmap <Esc><Esc> <Esc>N
+endif
 "}}}
 
 " 最小限の設定と最小限のプラグインだけ読み込む {{{
@@ -1591,7 +1573,7 @@ function! s:bundle.hooks.on_source(bundle) abort
     " Git リポジトリのすべてのファイルを開くアクション {{{
     let git_repo = { 'description' : 'all file in git repository' }
     function! git_repo.func(candidate) abort
-        if(system('git rev-parse --is-inside-work-tree') ==# "true\n" )
+        if system('git rev-parse --is-inside-work-tree') ==# "true\n"
             execute 'args'
                     \ join( filter(split(system('git ls-files `git rev-parse --show-cdup`'), '\n')
                             \ , 'empty(v:val) || isdirectory(v:val) || filereadable(v:val)') )
@@ -1663,7 +1645,7 @@ map     <Space> [unite]
 " コマンドラインウィンドウで Unite コマンドを入力
 nnoremap [unite]u                 :<C-u>Unite source<CR>
 "バッファを開いた時のパスを起点としたファイル検索
-nnoremap <silent>[unite]<Space>   :<C-u>UniteWithBufferDir -buffer-name=files -vertical file directory file/new<CR>
+nnoremap <silent>[unite]ff        :<C-u>UniteWithBufferDir -buffer-name=files -vertical file directory file/new<CR>
 "最近使用したファイル
 nnoremap <silent>[unite]m         :<C-u>Unite file_mru directory_mru zsh-cdr oldfiles file/new<CR>
 "バッファ一覧
