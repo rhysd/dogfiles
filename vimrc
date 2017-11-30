@@ -630,7 +630,15 @@ endfunction
 
 if exists(':terminal')
     set termkey=<Esc>
-    nnoremap <Space><Space> :<C-u>terminal ++close<CR>
+    function! s:open_terminal() abort
+        if winwidth(0) >= 160
+            let split = 'vsplit'
+        else
+            let split = 'split'
+        endif
+        execute 'topleft' split ' | terminal ++curwin ++close'
+    endfunction
+    nnoremap <silent><Space><Space> :<C-u>call <SID>open_terminal()<CR>
     " XXX: This kills original <Esc><Esc>, which sends raw '<Esc>' to
     " shell
     tmap <Esc><Esc> <Esc>N
