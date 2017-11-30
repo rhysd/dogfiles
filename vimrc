@@ -712,14 +712,11 @@ if neobundle#load_cache()
     call neobundle#add('Shougo/neosnippet.vim')
     call neobundle#add('rhysd/inu-snippets')
     call neobundle#add('thinca/vim-quickrun')
-    call neobundle#add('rhysd/quickrun-unite-quickfix-outputter')
     call neobundle#add('vim-jp/vimdoc-ja')
     call neobundle#add('jceb/vim-hier')
     call neobundle#add('kana/vim-textobj-user')
     call neobundle#add('thinca/vim-prettyprint')
     call neobundle#add('kana/vim-operator-user')
-    call neobundle#add('kana/vim-vspec')
-    call neobundle#add('rhysd/vim-vspec-matchers')
     call neobundle#add('kana/vim-smartinput')
     call neobundle#add('kana/vim-niceblock')
     call neobundle#add('h1mesuke/vim-alignta')
@@ -760,7 +757,6 @@ if neobundle#load_cache()
 
     " unite.vim sources
     call neobundle#add('Shougo/unite-outline')
-    call neobundle#add('osyo-manga/unite-quickfix')
     call neobundle#add('Shougo/unite-help')
     call neobundle#add('thinca/vim-unite-history')
     call neobundle#add('rhysd/unite-zsh-cdr.vim')
@@ -1725,7 +1721,7 @@ let g:quickrun_no_default_key_mappings = 1
 let g:quickrun_config = get(g:, 'quickrun_config', {})
 "QuickRun 結果の開き方
 let g:quickrun_config._ = {
-            \ 'outputter' : 'unite_quickfix',
+            \ 'outputter' : 'quickfix',
             \ 'split' : 'rightbelow',
             \ 'hook/hier_update/enable' : 1,
             \ 'runner' : 'job',
@@ -2239,54 +2235,6 @@ function! s:open_github_here() abort
 endfunction
 command! -nargs=0 -bar GitHubHere call <SID>open_github_here()
 "}}}
-
-" vim-vspec {{{
-" filetype definition
-Autocmd BufRead,BufNew,BufNewFile *_spec.vim setlocal ft=vim.vspec
-
-function! s:vspec(file, opts) abort
-    if ! isdirectory($HOME.'/.vim/bundle/vim-vspec')
-        echoerr "Error: vspec is not found."
-    endif
-
-    let args = ' '
-    if isdirectory($HOME.'/.vim/bundle/vim-vspec-matchers')
-        let args .= '$HOME/.vim/bundle/vim-vspec-matchers '
-    endif
-
-    execute 'QuickRun' 'sh' '-src' '''PATH=/usr/local/bin:$PATH $HOME/.vim/bundle/vim-vspec/bin/vspec $HOME/.vim/bundle/vim-vspec '.args.a:opts.' '.a:file.''''
-endfunction
-command! -nargs=* Vspec call <SID>vspec(expand('%:p'), <q-args>)
-
-let g:quickrun_config['vim.vspec'] = {
-        \ 'exec' : 'PATH=/usr/local/bin:$PATH %c %o',
-        \ 'cmdopt' :  '-u NONE -i NONE -N -e -s -S'
-        \ . ' %{' . s:SID.'vspec_helper([getcwd(), isdirectory($HOME."/.vim/bundle/vim-vspec-matchers") ? $HOME."/.vim/bundle/vim-vspec-matchers" : ""], expand("%"))}',
-        \ 'command' : 'vim',
-        \ }
-function! s:vspec_helper(paths, target) abort
-    let vspec_path = matchstr(split(&runtimepath, ','), 'vspec')
-    let paths  = map([vspec_path] + copy(a:paths)
-        \ , '"''".substitute(v:val, "\\", "/", "g")."''"')
-    let target = substitute(a:target, "\\", "/", "g")
-    let lines =
-        \ ['function! s:main()'
-        \ , '  let standard_paths = split(&runtimepath, ",")[1:-2]'
-        \ , '  let non_standard_paths = [' . join(reverse(paths), ",") . ']'
-        \ , '  let all_paths = copy(standard_paths)'
-        \ , '  for i in non_standard_paths'
-        \ , '    let all_paths = [i] + all_paths + [i . "/after"]'
-        \ , '  endfor'
-        \ , '  let &runtimepath = join(all_paths, ",")'
-        \ , '  1 verbose call vspec#test("' . target . '")'
-        \ , '  qall!'
-        \ , 'endfunction'
-        \ , 'call s:main()']
-    let temp = tempname()
-    call writefile(lines, temp)
-    return temp
-endfunction
-" }}}
 
 " clever-f.vim "{{{
 let g:clever_f_smart_case = 1
