@@ -348,17 +348,16 @@ function! s:smart_help(args) abort
         endif
     catch /^Vim\%((\a\+)\)\=:E149/
         echohl ErrorMsg
-        echomsg "E149: Sorry, no help for " . a:args
+        echomsg 'E149: Sorry, no help for ' . a:args
         echohl None
+        return
     endtry
-    if &buftype ==# 'help'
-        " 横幅を確保できないときはタブで開く
-        if winwidth(0) < 80
-            quit
-            execute 'tab help ' . a:args
-        endif
-        silent! AdjustWindowWidth --direction=shrink
+    " 横幅を確保できないときはタブで開く
+    if winwidth(0) < 80
+        quit
+        execute 'tab help ' . a:args
     endif
+    silent! AdjustWindowWidth --direction=shrink
 endfunction
 
 " インデント
@@ -660,12 +659,12 @@ endif
 " neobundle.vim の設定 {{{
 " neobundle.vim が無ければインストールする
 if ! isdirectory(expand('~/.vim/bundle'))
-    echon "Installing neobundle.vim..."
+    echon 'Installing neobundle.vim...'
     silent call mkdir(expand('~/.vim/bundle'), 'p')
     silent !git clone https://github.com/Shougo/neobundle.vim $HOME/.vim/bundle/neobundle.vim
-    echo "done."
+    echo 'done.'
     if v:shell_error
-        echoerr "neobundle.vim installation has failed!"
+        echoerr 'neobundle.vim installation has failed!'
         finish
     endif
 endif
@@ -1375,7 +1374,7 @@ AutocmdFT python call <SID>python_settings()
 function! s:golang_settings() abort
     setlocal noexpandtab
 
-    let g:go_snippet_engine = "neosnippet"
+    let g:go_snippet_engine = 'neosnippet'
     let g:go_highlight_trailing_whitespace_error = 0
     let g:go_play_open_browser = 1
 
@@ -1569,14 +1568,14 @@ let g:neosnippet#disable_runtime_snippets = {'_' : 1}
 "}}}
 
 " unite.vim {{{
-let s:bundle = neobundle#get("unite.vim")
+let s:bundle = neobundle#get('unite.vim')
 function! s:bundle.hooks.on_source(bundle) abort
     " 無指定にすることで高速化
     let g:unite_source_file_mru_filename_format = ''
     " most recently used のリストサイズ
     let g:unite_source_file_mru_limit = 100
     " unite-grep で使うオプション
-    let g:unite_source_grep_default_opts = "-Hn --color=never"
+    let g:unite_source_grep_default_opts = '-Hn --color=never'
 
     " Git リポジトリのすべてのファイルを開くアクション {{{
     let git_repo = { 'description' : 'all file in git repository' }
@@ -1967,7 +1966,7 @@ call smartinput#define_rule({
 call smartinput#define_rule({
             \   'at'    : '\%#',
             \   'char'  : '<CR>',
-            \   'input' : "<CR><C-r>=endwize#crend()<CR>",
+            \   'input' : '<CR><C-r>=endwize#crend()<CR>',
             \   'filetype' : ['vim', 'ruby', 'sh', 'zsh', 'dachs'],
             \   })
 call smartinput#define_rule({
@@ -2100,7 +2099,7 @@ let g:operator#surround#blocks =
             \       { 'block' : ['{', '}'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['b'] },
             \       { 'block' : ['<', '>'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['a'] },
             \       { 'block' : ['"', '"'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['q'] },
-            \       { 'block' : ["'", "'"], 'motionwise' : ['char', 'line', 'block'], 'keys' : ["s"] },
+            \       { 'block' : ["'", "'"], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['s'] },
             \   ]
             \ }
 map <silent>gy <Plug>(operator-surround-append)
@@ -2163,25 +2162,25 @@ let g:unite_source_alignta_preset_arguments = [
       \ ["Align at '{'", '{'   ],
       \ ["Align at '<'", '0 <' ],
       \ ["Align at ','", '01 ,' ],
-      \ ["Align first spaces", '0 \s/1' ],
+      \ ['Align first spaces', '0 \s/1' ],
       \]
 
 let g:unite_source_alignta_preset_options = [
-      \ ["Justify Left",             '<<' ],
-      \ ["Justify Center",           '||' ],
-      \ ["Justify Right",            '>>' ],
-      \ ["Justify None",             '==' ],
-      \ ["Shift Left",               '<-' ],
-      \ ["Shift Right",              '->' ],
-      \ ["Shift Left  [Tab]",        '<--'],
-      \ ["Shift Right [Tab]",        '-->'],
-      \ ["Margin 0:0",               '0'  ],
-      \ ["Margin 0:1",               '01' ],
-      \ ["Margin 1:0",               '10' ],
-      \ ["Margin 1:1",               '1'  ],
-      \ [" : (key: val)",            '01 :'],
-      \ [" , (ruby array #comment)", ',\zs 0:1 #'],
-      \ ["Not space",                '\S\+'],
+      \ ['Justify Left',             '<<' ],
+      \ ['Justify Center',           '||' ],
+      \ ['Justify Right',            '>>' ],
+      \ ['Justify None',             '==' ],
+      \ ['Shift Left',               '<-' ],
+      \ ['Shift Right',              '->' ],
+      \ ['Shift Left  [Tab]',        '<--'],
+      \ ['Shift Right [Tab]',        '-->'],
+      \ ['Margin 0:0',               '0'  ],
+      \ ['Margin 0:1',               '01' ],
+      \ ['Margin 1:0',               '10' ],
+      \ ['Margin 1:1',               '1'  ],
+      \ [' : (key: val)',            '01 :'],
+      \ [' , (ruby array #comment)', ',\zs 0:1 #'],
+      \ ['Not space',                '\S\+'],
       \]
 
 " }}}
@@ -2273,7 +2272,7 @@ call submode#map('altr', 'n', 'r', 'A', 'sA')
 " }}}
 
 " vim-altr {{{
-let s:bundle = neobundle#get("vim-altr")
+let s:bundle = neobundle#get('vim-altr')
 function! s:bundle.hooks.on_source(bundle) abort
     " for vimrc
     if has('mac')
@@ -2343,7 +2342,7 @@ function! s:fugitive_commit() abort
     ZoomWin
     Gcommit -v
     silent only
-    if getline('.') == ''
+    if getline('.') ==# ''
         startinsert
     endif
 endfunction
@@ -2353,7 +2352,7 @@ nnoremap <Leader>ga :<C-u>Gwrite<CR>
 nnoremap <Leader>gd :<C-u>Gdiff<CR>
 nnoremap <Leader>gb :<C-u>Gblame<CR>
 
-let s:bundle = neobundle#get("vim-fugitive")
+let s:bundle = neobundle#get('vim-fugitive')
 function! s:bundle.hooks.on_post_source(bundle) abort
     doautoall fugitive BufReadPost
     AutocmdFT fugitiveblame nnoremap <buffer>? :<C-u>SmartHelp :Gblame<CR>
@@ -2405,7 +2404,7 @@ let g:user_emmet_settings = { 'lang' : 'ja' }
 "}}}
 
 " IndentGuide {{{
-let s:bundle = neobundle#get("vim-indent-guides")
+let s:bundle = neobundle#get('vim-indent-guides')
 function! s:bundle.hooks.on_post_source(bundle) abort
     let g:indent_guides_guide_size = 1
     let g:indent_guides_auto_colors = 1
@@ -2469,7 +2468,7 @@ command! -nargs=+ -complete=expression AP call AP(<args>)
 " }}}
 
 " vim-table-mode {{{
-let g:table_mode_corner = "|"
+let g:table_mode_corner = '|'
 " }}}
 
 " vim-gitgutter {{{
@@ -2529,14 +2528,14 @@ function! SourceIfExist(path) abort
 endfunction
 
 if has('mac')
-    call SourceIfExist($HOME."/.mac.vimrc")
+    call SourceIfExist($HOME . '/.mac.vimrc')
 elseif has('unix')
-    call SourceIfExist($HOME.'/.linux.vimrc')
+    call SourceIfExist($HOME . '/.linux.vimrc')
 elseif has('win32') || has('win64')
-    call SourceIfExist($HOME.'/_windows.vimrc')
+    call SourceIfExist($HOME . '/_windows.vimrc')
 endif
 
-call SourceIfExist($HOME.'/.local.vimrc')
+call SourceIfExist($HOME . '/.local.vimrc')
 "}}}
 
 " vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8:
