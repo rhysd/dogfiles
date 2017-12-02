@@ -53,7 +53,5 @@
 	generic = <Ctrl-b> scroll-page-up
 [pager]
 	diff = diff-highlight | less
-# I need to find the way to fallback into normal diff for environment where
-# git is earlier than 2.9
-# [interactive]
-# 	difffilter = diff-highlight
+[interactive]
+	difffilter = diff-highlight
