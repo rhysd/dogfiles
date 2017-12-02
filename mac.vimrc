@@ -14,9 +14,9 @@ let g:quickrun_config.ruby = { 'exec' : $HOME . '/.rbenv/shims/ruby %o %s' }
 
 " Mac の辞書.appで開く {{{
 " 引数に渡したワードを検索
-command! -range -nargs=? MacDict call system('open '.shellescape('dict://'.<q-args>))
+command! -range -nargs=? MacDict call system('open ' . shellescape('dict://' . <q-args>))
 " カーソル下のワードを検索
-command! -nargs=0 MacDictCWord call system('open '.shellescape('dict://'.shellescape(expand('<cword>'))))
+command! -nargs=0 MacDictCWord call system('open ' . shellescape('dict://' . expand('<cword>')))
 " 辞書.app を閉じる
 command! -nargs=0 MacDictClose call system("osascript -e 'tell application \"Dictionary\" to quit'")
 " 辞書にフォーカスを当てる
