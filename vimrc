@@ -1711,9 +1711,11 @@ let g:quickrun_no_default_key_mappings = 1
 let g:quickrun_config = get(g:, 'quickrun_config', {})
 "QuickRun 結果の開き方
 let g:quickrun_config._ = {
-            \ 'outputter' : 'quickfix',
+            \ 'outputter' : 'error',
+            \ 'outputter/error/success' : 'buffer',
+            \ 'outputter/error/error' : 'quickfix',
+            \ 'outputter/buffer/close_on_empty' : 1,
             \ 'split' : 'rightbelow',
-            \ 'hook/hier_update/enable' : 1,
             \ 'runner' : 'job',
             \ }
 "C++
