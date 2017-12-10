@@ -275,8 +275,15 @@ function! s:close_temp_windows() abort
     try
         for winnr in wins
             if winbufnr(winnr) != -1
-                execute winnr . 'wincmd w'
-                execute 'wincmd c'
+                " Note:
+                " This 'if' statement is necessary because command-line window
+                " does not allow to use :execute in its window. When current
+                " window is command-line window, it can be closed properly by
+                " skipping the :execute.
+                if winnr() != winnr
+                    execute winnr . 'wincmd w'
+                endif
+                wincmd c
             endif
         endfor
     finally
