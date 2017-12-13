@@ -1009,10 +1009,16 @@ if neobundle#load_cache()
 
     " 特定のファイルタイプで読み込む
     call neobundle#add('rhysd/endwize.vim', {
-                \ 'lazy' : 1,
-                \ 'autoload' : {
+                \   'lazy' : 1,
+                \   'autoload' : {
                 \     'filetypes' : ['ruby', 'vim', 'sh', 'zsh', 'c', 'cpp', 'lua', 'dachs', 'vimspec']
-                \     }
+                \   }
+                \ })
+    call neobundle#add('hotwatermorning/auto-git-diff', {
+                \   'lazy' : 1,
+                \   'autoload' : {
+                \     'filetypes' : 'gitrebase',
+                \   }
                 \ })
 
     " C++用のプラグイン
