@@ -2533,6 +2533,14 @@ nnoremap <silent><Leader>fs :<C-u>botright vsplit <Bar> Dirvish<CR>
 nnoremap <silent><expr><Leader>fg ":\<C-u>Dirvish " . <SID>git_root_dir() . "\<CR>"
 " }}}
 
+" auto-git-diff {{{
+function! s:setup_auto_git_diff() abort
+    nmap <buffer><C-n> <Plug>(auto_git_diff_scroll_down_half)
+    nmap <buffer><C-p> <Plug>(auto_git_diff_scroll_up_half)
+endfunction
+AutocmdFT gitrebase call <SID>setup_auto_git_diff()
+" }}}
+
 " プラットフォーム依存な設定をロードする "{{{
 function! SourceIfExist(path) abort
     if filereadable(a:path)
