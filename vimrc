@@ -1454,6 +1454,10 @@ let s:zsh_template = ['#!/usr/bin/env zsh', '']
 Autocmd BufNewFile *.zsh call append(0, s:sh_template) | normal! G
 " }}}
 
+" vimspec {{{
+AutocmdFT vimspec setlocal foldmethod=marker
+" }}}
+
 if s:meet_neocomplete_requirements
 " neocomplete.vim {{{
 "AutoComplPopを無効にする

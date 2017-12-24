@@ -40,39 +40,9 @@ let g:airline_right_sep = '«'
 let g:gist_clip_command = 'pbcopy'
 
 " ale
-if !executable('llc')
-    let g:ale_llvm_llc_executable = '/usr/local/opt/llvm/bin/llc'
-endif
-
-if has('gui_running')
-    function! s:show_on_safari() abort
-        let src = expand('%')
-        TOhtml
-        if expand('%') !=# src . '.html'
-            echoerr 'Failed to make HTML from current buffer: ' . expand('%')
-        endif
-
-        let f = expand('~/tmp.html')
-        execute 'silent! write!' f
-        if !filereadable(f)
-            echoerr 'Cannot save generated HTML ' . f
-            return
-        endif
-
-        call system('open -a Safari ' . f)
-        if v:shell_error
-            echoerr 'Failed to open Safari: ' + f
-            return
-        endif
-
-        " Need to wait Safari starting before deleting the temporary file
-        sleep 1
-
-        call delete(f)
-        bwipeout!
-        quit
-    endfunction
-    command! -nargs=0 ShowOnSafari call <SID>show_on_safari()
+let s:llc_executable = '/usr/local/opt/llvm/bin/llc'
+if filereadable(s:llc_executable)
+    let g:ale_llvm_llc_executable = s:llc_executable
 endif
 
 " vim:ft=vim:fdm=marker:

@@ -21,11 +21,11 @@ set guioptions+=M
 set winaltkeys=no
 
 " GUI autocmds
-Autocmd VimEnter * call Vimfiler_at_start()
+Autocmd VimEnter * call <SID>dirvish_at_start()
 
-function! Vimfiler_at_start()
+function! s:dirvish_at_start()
     if empty(bufname('%'))
-        VimFilerCurrentDir
+        Dirvish
     endif
 endfunction
 
@@ -46,9 +46,36 @@ if has('mac')
     " F12 で透過率を3段階に切り替え(0, 40, 80)
     set transparency=0 "初期背景透過0%
     nnoremap <expr><F12> &transparency+40 > 100 ? ":set transparency=0\<CR>" : ":let &transparency=&transparency+40\<CR>"
-elseif has('unix')
-    NeoBundleSource restart.vim
 
+    function! s:show_on_safari() abort
+        let src = expand('%')
+        TOhtml
+        if expand('%') !=# src . '.html'
+            echoerr 'Failed to make HTML from current buffer: ' . expand('%')
+        endif
+
+        let f = expand('~/tmp.html')
+        execute 'silent! write!' f
+        if !filereadable(f)
+            echoerr 'Cannot save generated HTML ' . f
+            return
+        endif
+
+        call system('open -a Safari ' . f)
+        if v:shell_error
+            echoerr 'Failed to open Safari: ' + f
+            return
+        endif
+
+        " Need to wait Safari starting before deleting the temporary file
+        sleep 1
+
+        call delete(f)
+        bwipeout!
+        quit
+    endfunction
+    command! -nargs=0 ShowOnSafari call <SID>show_on_safari()
+elseif has('unix')
     " IM の起動キーを gVim に教える
     " set imactivatekey=S-space
     set iminsert=2
