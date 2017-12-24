@@ -67,21 +67,14 @@ alias d=docker
 alias -g G='| grep'
 alias -g GI='| grep -i'
 alias -g L='| less'
-alias -g V='| view -R -'
+alias -g V='| vim --not-a-term -R -'
 alias -g D='> /dev/null 2>&1'
 alias -g X='| xargs'
-alias -g XV='| xargs -o | vim'
+alias -g XV='| xargs -o | vim --not-a-term'
 alias -g SPONGE='> /tmp/zsh-sponge-tmp; cat /tmp/zsh-sponge-tmp >'
 
 if [[ $TMUX != "" ]]; then
     alias -g BG=' 2>&1 | xargs tmux display-message &'
-fi
-
-# vspec
-if [ -d "$HOME/.vim/bundle/vim-vspec-matchers" ]; then
-    alias vspec='PATH=/usr/local/bin:$PATH ~/.vim/bundle/vim-vspec/bin/vspec ~/.vim/bundle/vim-vspec ~/.vim/bundle/vim-vspec-matchers'
-else
-    alias vspec='PATH=/usr/local/bin:$PATH ~/.vim/bundle/vim-vspec/bin/vspec ~/.vim/bundle/vim-vspec'
 fi
 # }}}
 
