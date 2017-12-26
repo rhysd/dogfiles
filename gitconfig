@@ -13,18 +13,21 @@
 	cm  = commit -v
 	cmm = commit -m
 	cma = commit -v --amend
+	cmf = commit --fixup
 	cl  = clone
 	di  = diff
 	dic = diff --cached
 	dis = diff --stat
 	lo  = log --graph --pretty=format:'%C(Yellow)%h %C(Cyan)%ad %C(White)%s%C(Green)%d %C(Red)[%an]' --date=short
 	mg  = merge
+	mga = merge --abort
 	ps  = push
 	pl  = pull
 	plr = pull --rebase
 	rb  = rebase
 	rbi = rebase -i
 	rbc = rebase --continue
+	rba = rebase --abort
 	re  = remote
 	ad  = add
 	adp = add -p
