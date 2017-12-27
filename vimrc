@@ -709,7 +709,6 @@ if neobundle#load_cache()
     call neobundle#add('rhysd/inu-snippets')
     call neobundle#add('thinca/vim-quickrun')
     call neobundle#add('vim-jp/vimdoc-ja')
-    call neobundle#add('jceb/vim-hier')
     call neobundle#add('kana/vim-textobj-user')
     call neobundle#add('thinca/vim-prettyprint')
     call neobundle#add('kana/vim-operator-user')
@@ -1798,10 +1797,6 @@ vnoremap <silent><Leader>q :QuickRun<CR>
 " }}}
 " }}}
 
-" Hier.vim {{{
-nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>:HierClear<CR>
-" }}}
-
 " vim-smartinput"{{{
 " 括弧内のスペース
 call smartinput#map_to_trigger('i', '<Space>', '<Space>', '<Space>')
@@ -2129,7 +2124,7 @@ map <silent>gc <Plug>(operator-surround-replace)
 AutocmdFT haskell nnoremap <buffer><C-t> :<C-u>GhcModType<CR>
 AutocmdFT haskell let &l:statusline = '%{empty(getqflist()) ? "[No Errors] " : "[Errors Found] "}'
                                             \ . (empty(&l:statusline) ? &statusline : &l:statusline)
-AutocmdFT haskell nnoremap <buffer><silent><Esc><Esc> :<C-u>nohlsearch<CR>:HierClear<CR>:GhcModTypeClear<CR>
+AutocmdFT haskell nnoremap <buffer><silent><Esc><Esc> :<C-u>nohlsearch<CR>:GhcModTypeClear<CR>
 AutocmdFT haskell nnoremap <buffer><Leader>ge :<C-u>GhcModExpand<CR>
 Autocmd BufWritePost *.hs GhcModCheckAndLintAsync
 let g:ghcmod_open_quickfix_function = s:SID . 'open_quickfix_with_unite'
