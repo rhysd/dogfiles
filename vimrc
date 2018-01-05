@@ -1506,7 +1506,7 @@ let g:neocomplete#filename#include#exprs = {
             \ }
 " オムニ補完を有効にする(ruby のオムニ補完は挙動が怪しいので off)
 AutocmdFT html   setlocal omnifunc=htmlcomplete#CompleteTags
-AutocmdFT css    setlocal omnifunc=csscomplete#CompleteCss
+AutocmdFT css    setlocal omnifunc=csscomplete#CompleteCSS
 " オムニ補完を実行するパターン
 if !exists('g:neocomplete#sources#omni#input_patterns')
     let g:neocomplete#sources#omni#input_patterns = {}
