@@ -1026,11 +1026,6 @@ if neobundle#load_cache()
                 \ 'autoload' : {'filetypes' : ['c', 'cpp']},
                 \ 'fetch' : !s:clang_complete_available,
                 \ })
-    call neobundle#add('rhysd/vim-clang-format', {
-                \ 'lazy' : 1,
-                \ 'depends' : 'kana/vim-operator-user',
-                \ 'autoload' : {'filetypes' : ['c', 'cpp', 'objc']}
-                \ })
 
     " Haskell 用プラグイン
     call neobundle#add('ujihisa/unite-haskellimport', {
@@ -2088,20 +2083,6 @@ map <Leader>r <Plug>(operator-replace)
 vmap p <Plug>(operator-replace)
 " operator-blank-killer
 map <silent><Leader>k <Plug>(operator-trailingspace-killer)
-" vim-clang-format
-let g:clang_format#style_options = {
-            \   'AllowShortIfStatementsOnASingleLine' : 'true',
-            \ }
-let g:clang_format#filetype_style_options = {
-            \ 'javascript' : {},
-            \ 'cpp' : {
-            \     'AccessModifierOffset' : -4,
-            \     'AlwaysBreakTemplateDeclarations' : 'true',
-            \     'Standard' : 'C++11',
-            \     'BreakBeforeBraces' : 'Stroustrup',
-            \   }
-            \ }
-AutocmdFT c,cpp,javascript map <buffer><Leader>x <Plug>(operator-clang-format)
 " vim-operator-surround {{{
 let g:operator#surround#blocks =
             \ {
