@@ -1719,7 +1719,7 @@ let g:unite_n3337_pdf = $HOME.'/Documents/C++/n3337.pdf'
 AutocmdFT cpp nnoremap <buffer>[unite]n :<C-u>Unite n3337<CR>
 "}}}
 
-" vim-quickrunの設定 {{{
+" vim-quickrun {{{
 "<Leader>r を使わない
 let g:quickrun_no_default_key_mappings = 1
 " quickrun_configの初期化
@@ -2511,6 +2511,13 @@ let g:ale_completion_enabled = 0
 let g:ale_fix_on_save = 0
 nmap <Leader>al <Plug>(ale_next)
 let g:ale_vim_vint_show_style_issues = 0
+let g:ale_fixers = {
+    \   'javascript': ['eslint', 'prettier'],
+    \   'typescript': ['tslint', 'prettier'],
+    \   'c': ['clang-format'],
+    \   'cpp': ['clang-format'],
+    \ }
+AutocmdFT typescript,javascript,c,cpp let b:ale_fix_on_save = 1
 " }}}
 
 " dirvish {{{
