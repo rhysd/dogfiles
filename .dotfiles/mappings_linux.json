@@ -7,5 +7,6 @@
   "nyaovim": "~/.config/nyaovim",
   "ranger": "~/.config/ranger",
   "rc.lua": "~/.config/awesome/rc.lua",
+  "prettier.json": "~/.prettier.json",
   "vimrc": "~/.vimrc"
 }

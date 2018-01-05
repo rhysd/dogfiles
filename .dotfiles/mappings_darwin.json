@@ -6,5 +6,6 @@
   "nvimrc": "~/.config/nvim/init.vim",
   "nyaovim": "~/.config/nyaovim",
   "ranger": "~/.config/ranger",
+  "prettierrc.json": "~/.prettierrc.json",
   "vimrc": "~/.vimrc"
 }
