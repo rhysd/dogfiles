@@ -2495,10 +2495,11 @@ let g:ale_vim_vint_show_style_issues = 0
 let g:ale_fixers = {
     \   'javascript': ['eslint', 'prettier'],
     \   'typescript': ['tslint', 'prettier'],
+    \   'css': ['prettier'],
     \   'c': ['clang-format'],
     \   'cpp': ['clang-format'],
     \ }
-AutocmdFT typescript,javascript,c,cpp let b:ale_fix_on_save = 1
+AutocmdFT typescript,javascript,css,c,cpp let b:ale_fix_on_save = 1
 " }}}
 
 " dirvish {{{
