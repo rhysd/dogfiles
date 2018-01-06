@@ -2498,8 +2498,10 @@ let g:ale_fixers = {
     \   'css': ['prettier'],
     \   'c': ['clang-format'],
     \   'cpp': ['clang-format'],
+    \   'python': ['yapf'],
+    \   'rust': ['rustfmt'],
     \ }
-AutocmdFT typescript,javascript,css,c,cpp let b:ale_fix_on_save = 1
+AutocmdFT typescript,javascript,css,c,cpp,python,rust let b:ale_fix_on_save = 1
 " }}}
 
 " dirvish {{{
