@@ -20,14 +20,14 @@ set guioptions+=M
 " メニューにアクセスしない
 set winaltkeys=no
 
-" GUI autocmds
-Autocmd VimEnter * call <SID>dirvish_at_start()
-
-function! s:dirvish_at_start()
+function! s:dirvish_at_start() abort
     if empty(bufname('%'))
         Dirvish
     endif
 endfunction
+
+" GUI autocmds
+Autocmd VimEnter * if empty(bufname('%')) | Dirvish | endif
 
 let s:cabal_bin_dir = expand('~/.cabal/bin')
 if isdirectory(s:cabal_bin_dir)
