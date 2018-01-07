@@ -1682,8 +1682,8 @@ AutocmdFT haskell nnoremap <buffer>[unite]ho :<C-u>Unite hoogle<CR>
 AutocmdFT haskell nnoremap <buffer><expr>[unite]hi
                     \        empty(expand("<cWORD>")) ? ":\<C-u>Unite haskellimport\<CR>"
                     \                                 :":\<C-u>UniteWithCursorWord haskellimport\<CR>"
-" Git のルートディレクトリを開く
-nnoremap <silent><expr>[unite]fg  ":\<C-u>Unite file -input=".fnamemodify(<SID>git_root_dir(),":p")
+" Git で管理されているファイルから選んで開く
+nnoremap <silent><expr>[unite]fg  ":\<C-u>Unite file_rec/git:".fnamemodify(<SID>git_root_dir(),":p")
 " C++ インクルードファイル
 AutocmdFT cpp nnoremap <buffer>[unite]i :<C-u>Unite file_include -vertical<CR>
 " help(項目が多いので，検索語を入力してから絞り込む)

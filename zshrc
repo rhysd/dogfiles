@@ -52,6 +52,8 @@ alias sudo='sudo '
 alias memo='cat > /dev/null'
 alias nr='npm run'
 alias cr='cargo run --'
+alias apv='ag-peco-vim'
+alias gpv='git-peco-vim'
 
 alias l=ls
 alias v=vim
@@ -683,7 +685,6 @@ function peco-repos() {
     input="$(find "$GOPATH/src" -maxdepth 3 -mindepth 3 -name "*" -type d)"
     input="${input}\n$(ghq list | sed "s#^#$(ghq root)/#")"
     input="${input}\n$(ls -1 -d "$HOME/.vim/bundle/"*)"
-    input="${input}\n$(ls -1 -d "$HOME/.cache/dein/repos/"*)"
     input="$(echo "$input" | sed "s#^$HOME#~#g")"
 
     local selected_dir=$(echo "${input}" | peco --prompt 'repos >' --query "$LBUFFER")
@@ -906,6 +907,21 @@ function ag-peco-vim() {
     # Expose a string variable into arguments
     #   vim 'foo bar' -> vim foo bar
     "$EDITOR" ${=buf}
+}
+
+function git-peco-vim() {
+    local cdup
+    cdup="$(git rev-parse --show-cdup 2>/dev/null)"
+    if [[ $? != 0 ]]; then
+        echo 'Not in Git repository' 2>&1
+        return
+    fi
+
+    local selected="$(git ls-files "${cdup}"| peco --prompt 'git-files-vim >')"
+    if [[ "$selected" == "" ]]; then
+        return
+    fi
+    "$EDITOR" ${=selected}
 }
 # }}}
 fi
