@@ -1683,7 +1683,7 @@ AutocmdFT haskell nnoremap <buffer><expr>[unite]hi
                     \        empty(expand("<cWORD>")) ? ":\<C-u>Unite haskellimport\<CR>"
                     \                                 :":\<C-u>UniteWithCursorWord haskellimport\<CR>"
 " Git で管理されているファイルから選んで開く
-nnoremap <silent><expr>[unite]fg  ":\<C-u>Unite file_rec/git:".fnamemodify(<SID>git_root_dir(),":p")
+nnoremap <silent><expr>[unite]p  ":\<C-u>Unite file_rec/git:".fnamemodify(<SID>git_root_dir(),':p')
 " C++ インクルードファイル
 AutocmdFT cpp nnoremap <buffer>[unite]i :<C-u>Unite file_include -vertical<CR>
 " help(項目が多いので，検索語を入力してから絞り込む)
@@ -1692,8 +1692,6 @@ nnoremap <silent>[unite]hh        :<C-u>UniteWithInput help -vertical<CR>
 nnoremap <silent>[unite]hc        :<C-u>Unite -buffer-name=lines history/command -start-insert<CR>
 nnoremap <silent>[unite]hs        :<C-u>Unite -buffer-name=lines history/search<CR>
 nnoremap <silent>[unite]hy        :<C-u>Unite -buffer-name=lines history/yank<CR>
-" プロジェクトのファイル一覧
-nnoremap <silent>[unite]p         :<C-u>Unite file_rec:! file/new<CR>
 " unite-lines ファイル内インクリメンタル検索
 nnoremap <silent><expr> [unite]L line('$') > 5000 ?
             \ ":\<C-u>Unite -no-split -start-insert -auto-preview line/fast\<CR>" :
