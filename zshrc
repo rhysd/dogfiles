@@ -682,8 +682,8 @@ fi
 function peco-repos() {
     local input
 
-    input="$(find "$GOPATH/src" -maxdepth 3 -mindepth 3 -name "*" -type d)"
-    input="${input}\n$(ghq list | sed "s#^#$(ghq root)/#")"
+    input="$(ghq list | sed "s#^#$(ghq root)/#")"
+    input="${input}\n$(find "$GOPATH/src" -maxdepth 3 -mindepth 3 -name "*" -type d)"
     input="${input}\n$(ls -1 -d "$HOME/.vim/bundle/"*)"
     input="$(echo "$input" | sed "s#^$HOME#~#g")"
 
