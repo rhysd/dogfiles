@@ -749,6 +749,7 @@ if neobundle#load_cache()
     call neobundle#add('hail2u/vim-css3-syntax')
     call neobundle#add('w0rp/ale')
     call neobundle#add('justinmk/vim-dirvish')
+    call neobundle#add('tpope/vim-markdown')
 
     " unite.vim sources
     call neobundle#add('Shougo/unite-outline')
@@ -1114,6 +1115,14 @@ if neobundle#load_cache()
                 \   }
                 \ })
 
+    " markdown
+    call neobundle#add('tyru/markdown-codehl-onthefly.vim', {
+                \ 'lazy' : 1,
+                \ 'autoload' : {
+                \     'filetypes' : 'markdown'
+                \   }
+                \ })
+
     " 書き込み権限の無いファイルを編集しようとした時
     call neobundle#add('sudo.vim', {'lazy' : 1})
 
@@ -1303,7 +1312,6 @@ Autocmd BufRead,BufNew,BufNewFile *.ejs setlocal ft=html
 " Markdown {{{
 AutocmdFT markdown nnoremap <buffer><silent><Leader>= :<C-u>call append('.', repeat('=', strdisplaywidth(getline('.'))))<CR>
 AutocmdFT markdown nnoremap <buffer><silent><Leader>- :<C-u>call append('.', repeat('-', strdisplaywidth(getline('.'))))<CR>
-let g:markdown_fenced_languages = ['json']
 "}}}
 
 " Dachs {{{
