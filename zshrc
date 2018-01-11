@@ -662,7 +662,7 @@ if hash ghq 2> /dev/null; then
         zle clear-screen
     }
     zle -N peco-ghq
-    bindkey -M viins '^ ^ ' peco-ghq
+    bindkey -M viins '^ ^g' peco-ghq
 fi
 
 if [[ "$GOPATH" != "" ]]; then
@@ -695,7 +695,7 @@ function peco-repos() {
     zle clear-screen
 }
 zle -N peco-repos
-bindkey -M viins '^ ^r' peco-repos
+bindkey -M viins '^ ^ ' peco-repos
 
 function peco-git-log() {
     local sed
