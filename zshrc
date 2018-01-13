@@ -117,6 +117,11 @@ function zsh-update-comp-defs() {
     urls=(
         https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_go
         https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_jq
+        https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_node
+        https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_cmake
+        https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_bundle
+        https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_ghc
+        https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_perf
         https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker
         https://raw.githubusercontent.com/docker/compose/master/contrib/completion/zsh/_docker-compose
     )
