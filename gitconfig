@@ -41,12 +41,13 @@
 	mgn = merge --no-ff
 	checkout-pr = "!f(){ \
 			if [ -z \"$1\" ]; then\
-				echo 'Usage: git checkout {PR number}' 1>&2;\
+				echo 'Usage: git checkout-pr {PR number}' 1>&2;\
 				exit 1;\
 			fi;\
 			git fetch origin \"pull/$1/head:pr-$1\";\
 			git checkout \"pr-$1\";\
 		};f"
+	copr = checkout-pr
 [diff]
 	compactionHeuristic = true
 [push]
