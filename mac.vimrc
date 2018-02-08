@@ -45,4 +45,30 @@ if filereadable(s:llc_executable)
     let g:ale_llvm_llc_executable = s:llc_executable
 endif
 
+" PlantUML
+function! s:preview_plantuml(fpath) abort
+    if &filetype !=# 'plantuml' || &buftype ==# 'nofile' || !executable('plantuml')
+        echohl ErrorMsg | echomsg 'Cannot preview PlantUML. File is not a PlantUML file, nor `plantuml` command is not found' | echohl None
+        return
+    endif
+
+    let fpath = a:fpath
+    if fpath ==# ''
+        let fpath = expand('%:p')
+    endif
+
+    let dir = fpath
+    if !isdirectory(fpath)
+        let dir = fnamemodify(fpath, ':h')
+    endif
+
+    if dir ==# ''
+        echohl ErrorMsg | echomsg 'Cannot get a file of current buffer.' | echohl None
+        return
+    endif
+
+    let cmd = ['/bin/sh', '-c', 'cd ' . dir . ' && plantuml -gui']
+    call job_start(cmd)
+endfunction
+command! -bar -nargs=? PlantUML call s:preview_plantuml(<q-args>)
 " vim:ft=vim:fdm=marker:

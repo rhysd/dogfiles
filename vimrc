@@ -750,6 +750,7 @@ if neobundle#load_cache()
     call neobundle#add('w0rp/ale')
     call neobundle#add('justinmk/vim-dirvish')
     call neobundle#add('tpope/vim-markdown')
+    call neobundle#add('aklt/plantuml-syntax')
 
     " unite.vim sources
     call neobundle#add('Shougo/unite-outline')
