@@ -1382,6 +1382,7 @@ AutocmdFT json SetIndent 2
 " Python {{{
 function! s:python_settings() abort
     setlocal noautoindent nosmartindent nocindent
+    syntax keyword Constant self
 endfunction
 AutocmdFT python call <SID>python_settings()
 "}}}
