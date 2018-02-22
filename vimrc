@@ -2513,6 +2513,16 @@ let g:ale_fixers = {
     \   'json': ['fixjson'],
     \ }
 AutocmdFT typescript,javascript,css,c,cpp,python,rust,json let b:ale_fix_on_save = 1
+function! s:toggle_ale_fix() abort
+    if !exists('b:ale_fix_on_save') || !b:ale_fix_on_save
+        let b:ale_fix_on_save = 1
+        echo 'Enabled ALE fixer'
+    else
+        let b:ale_fix_on_save = 0
+        echo 'Disabled ALE fixer'
+    endif
+endfunction
+command! -nargs=0 -bar ALEToggleFix call <SID>toggle_ale_fix()
 " }}}
 
 " dirvish {{{
