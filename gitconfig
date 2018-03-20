@@ -7,38 +7,41 @@
 [color]
 	ui = true
 [alias]
-	st  = status -sb
-	bl  = blame
-	br  = branch
-	cm  = commit -v
-	cmm = commit -m
-	cma = commit -v --amend
-	cmf = commit --fixup
-	cl  = clone
-	di  = diff
-	dic = diff --cached
-	dis = diff --stat
-	lo  = log --graph --pretty=format:'%C(Yellow)%h %C(Cyan)%ad %C(White)%s%C(Green)%d %C(Red)[%an]' --date=short
-	mg  = merge
-	mga = merge --abort
-	ps  = push
-	pl  = pull
-	plr = pull --rebase
-	rb  = rebase
-	rbi = rebase -i
-	rbc = rebase --continue
-	rba = rebase --abort
-	re  = remote
 	ad  = add
 	adp = add -p
 	adu = add -u :/
+	bl  = blame
+	br  = branch
+	cl  = clone
+	cm  = commit -v
+	cma = commit -v --amend
+	cmf = commit --fixup
+	cmm = commit -m
 	co  = checkout
 	cob = checkout -b
-	lsf = ls-files
+	di  = diff
+	dic = diff --cached
+	dis = diff --stat
 	gr  = grep
+	lo  = log --graph --pretty=format:'%C(Yellow)%h %C(Cyan)%ad %C(White)%s%C(Green)%d %C(Red)[%an]' --date=short
 	lop = log -p
-	rmr = rm -r
+	lsf = ls-files
+	mg  = merge
+	mga = merge --abort
 	mgn = merge --no-ff
+	pl  = pull
+	plr = pull --rebase
+	ps  = push
+	rb  = rebase
+	rba = rebase --abort
+	rbc = rebase --continue
+	rbi = rebase -i
+	re  = remote
+	rmc = rm --cached
+	rmr = rm -r
+	rmrc = rm -r --cached
+	st  = status -sb
+	pushf = push --force-with-lease
 	checkout-pr = "!f(){ \
 			if [ -z \"$1\" ]; then\
 				echo 'Usage: git checkout-pr {PR number}' 1>&2;\
