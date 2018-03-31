@@ -198,6 +198,8 @@ Autocmd BufRead,BufNew,BufNewFile *.jsx setlocal ft=javascript.jsx
 Autocmd BufRead,BufNew,BufNewFile *.tsx setlocal ft=typescript.jsx
 " JavaScript tests
 Autocmd BufRead,BufNew,BufNewFile *_test.js,*_test.jsx setlocal ft=javascript.test
+" Vader
+Autocmd BufRead,BufNew,BufNewFile *.vader setlocal ft=vader
 
 " カーソル位置の復元
 Autocmd BufReadPost *
@@ -992,6 +994,14 @@ if neobundle#load_cache()
                 \ 'fetch' : !s:meet_neocomplete_requirements,
                 \ })
 
+    call neobundle#add('junegunn/vader.vim', {
+                \ 'lazy' : 1,
+                \ 'autoload' : {
+                \     'commands' : 'Vader',
+                \     'filetypes' : 'vader',
+                \   }
+                \ })
+
     " GUI オンリーなプラグイン
     call neobundle#add('nathanaelkane/vim-indent-guides', {
                 \   'lazy' : 1,
@@ -1238,7 +1248,7 @@ AutocmdFT ruby SetIndent 2
 AutocmdFT ruby inoremap <buffer><C-s> self.
 AutocmdFT ruby inoremap <buffer>;; ::
 AutocmdFT ruby nnoremap <buffer>[unite]r :<C-u>Unite ruby/require<CR>
-Autocmd BufRead Guardfile setlocal filetype=ruby
+Autocmd BufRead,BufNew,BufNewFile Guardfile setlocal filetype=ruby
 
 let s:ruby_template = ['#!/usr/bin/env ruby', '']
 Autocmd BufNewFile *.rb call append(0, s:ruby_template) | normal! G
