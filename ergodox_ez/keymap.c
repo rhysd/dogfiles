@@ -1,10 +1,19 @@
 // How to build:
-//  $ make teensy KEYMAP=rhysd SLEEP_LED_ENABLE=no
+// 1. Link this file to keyboards/ergodox_ez/keymaps/rhysd/keymap.c
+// 2. Compile it with the following command:
+//
+//   $ make ergodox_ez:rhysd teensy KEYMAP=rhysd SLEEP_LED_ENABLE=no
+//
+// 3. Load hex file with teensy loader
+//
+//   $ teensy_loader_cli -mmcu=atmega32u4 -w ergodox_ez_rhysd.hex
+//
+// Ref: https://rhysd.hatenablog.com/entry/2016/08/29/090105
 //
 // Netable differences vs. the default firmware for the ErgoDox EZ:
 // 1. The Cmd key is now on the right side, making Cmd+Space easier.
 // 2. The media keys work on OSX (But not on Windows).
-#include "ergodox.h"
+#include QMK_KEYBOARD_H
 #include "debug.h"
 #include "action_layer.h"
 
@@ -36,7 +45,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 // If it accepts an argument (i.e, is a function), it doesn't need KC_.
 // Otherwise, it needs KC_*
-[BASE] = KEYMAP(  // layer 0 : default
+[BASE] = LAYOUT_ergodox(  // layer 0 : default
         // left hand
         KC_ESC,       KC_1,    KC_2,   KC_3,   KC_4,   KC_5,   KC_6,
         KC_TAB,       KC_Q,    KC_W,   KC_E,   KC_R,   KC_T,   KC_LCBR,
@@ -162,29 +171,84 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
 
 // Runs just one time when the keyboard initializes.
 void matrix_init_user(void) {
-
+#ifdef RGBLIGHT_COLOR_LAYER_0
+  rgblight_setrgb(RGBLIGHT_COLOR_LAYER_0);
+#endif
 };
 
 // Runs constantly in the background, in a loop.
 void matrix_scan_user(void) {
 
-    uint8_t layer = biton32(layer_state);
+};
 
-    ergodox_board_led_off();
-    ergodox_right_led_1_off();
-    ergodox_right_led_2_off();
-    ergodox_right_led_3_off();
-    switch (layer) {
-      // TODO: Make this relevant to the ErgoDox EZ.
-        case 1:
-            ergodox_right_led_1_on();
-            break;
-        case 2:
-            ergodox_right_led_2_on();
-            break;
-        default:
-            // none
-            break;
+// Runs whenever there is a layer state change.
+uint32_t layer_state_set_user(uint32_t state) {
+  ergodox_board_led_off();
+  ergodox_right_led_1_off();
+  ergodox_right_led_2_off();
+  ergodox_right_led_3_off();
+
+  uint8_t layer = biton32(state);
+  switch (layer) {
+      case 0:
+        #ifdef RGBLIGHT_COLOR_LAYER_0
+          rgblight_setrgb(RGBLIGHT_COLOR_LAYER_0);
+        #else
+        #ifdef RGBLIGHT_ENABLE
+          rgblight_init();
+        #endif
+        #endif
+        break;
+      case 1:
+        ergodox_right_led_1_on();
+        #ifdef RGBLIGHT_COLOR_LAYER_1
+          rgblight_setrgb(RGBLIGHT_COLOR_LAYER_1);
+        #endif
+        break;
+      case 2:
+        ergodox_right_led_2_on();
+        #ifdef RGBLIGHT_COLOR_LAYER_2
+          rgblight_setrgb(RGBLIGHT_COLOR_LAYER_2);
+        #endif
+        break;
+      case 3:
+        ergodox_right_led_3_on();
+        #ifdef RGBLIGHT_COLOR_LAYER_3
+          rgblight_setrgb(RGBLIGHT_COLOR_LAYER_3);
+        #endif
+        break;
+      case 4:
+        ergodox_right_led_1_on();
+        ergodox_right_led_2_on();
+        #ifdef RGBLIGHT_COLOR_LAYER_4
+          rgblight_setrgb(RGBLIGHT_COLOR_LAYER_4);
+        #endif
+        break;
+      case 5:
+        ergodox_right_led_1_on();
+        ergodox_right_led_3_on();
+        #ifdef RGBLIGHT_COLOR_LAYER_5
+          rgblight_setrgb(RGBLIGHT_COLOR_LAYER_5);
+        #endif
+        break;
+      case 6:
+        ergodox_right_led_2_on();
+        ergodox_right_led_3_on();
+        #ifdef RGBLIGHT_COLOR_LAYER_6
+          rgblight_setrgb(RGBLIGHT_COLOR_LAYER_6);
+        #endif
+        break;
+      case 7:
+        ergodox_right_led_1_on();
+        ergodox_right_led_2_on();
+        ergodox_right_led_3_on();
+        #ifdef RGBLIGHT_COLOR_LAYER_7
+          rgblight_setrgb(RGBLIGHT_COLOR_LAYER_6);
+        #endif
+        break;
+      default:
+        break;
     }
 
+  return state;
 };
