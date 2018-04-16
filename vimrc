@@ -1318,6 +1318,9 @@ AutocmdFT html,javascript
 AutocmdFT haml inoremap <expr> k getline('.')[col('.') - 2] ==# 'k' ? "\<BS>%" : 'k'
 AutocmdFT haml,html,css SetIndent 2
 Autocmd BufRead,BufNew,BufNewFile *.ejs setlocal ft=html
+
+" <i> のイタリック表示や <b> のボールド表示を無効にする
+let g:html_my_rendering = 0
 "}}}
 
 " Markdown {{{
