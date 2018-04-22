@@ -763,9 +763,6 @@ if neobundle#load_cache()
     call neobundle#add('ujihisa/unite-colorscheme')
     call neobundle#add('rhysd/unite-locate')
     call neobundle#add('sorah/unite-ghq')
-    call neobundle#add('rhysd/unite-codic.vim', {
-                \   'depends' : 'koron/codic-vim',
-                \ })
     call neobundle#add('rhysd/unite-n3337')
     call neobundle#add('rhysd/unite-go-import.vim')
     call neobundle#add('rhysd/unite-oldfiles.vim')
@@ -1529,7 +1526,7 @@ let g:neocomplete#keyword_patterns['default'] = '\h\w*'
 if executable('/usr/local/bin/ctags')
     let g:neocomplete#ctags_command = '/usr/local/bin/ctags'
 elseif executable('/usr/bin/ctags')
-    let g:neocomplete#ctags_command = '/usr/bin/gctags'
+    let g:neocomplete#ctags_command = '/usr/bin/ctags'
 endif
 " Ruby の外部ファイルの拡張子
 let g:neocomplete#sources#file_include#exts
