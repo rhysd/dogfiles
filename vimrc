@@ -1387,6 +1387,7 @@ endfunction
 AutocmdFT json inoremap <buffer>: :<C-o>:call <SID>json_colon()<CR>
 AutocmdFT json inoremap <buffer><C-j> <End>,<CR>
 AutocmdFT json SetIndent 2
+AutocmdFT json setlocal foldmethod=syntax foldlevel=99
 " }}}
 
 " Python {{{
