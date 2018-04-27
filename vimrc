@@ -753,6 +753,7 @@ if neobundle#load_cache()
     call neobundle#add('justinmk/vim-dirvish')
     call neobundle#add('tpope/vim-markdown')
     call neobundle#add('aklt/plantuml-syntax')
+    call neobundle#add('nelstrom/vim-markdown-folding')
 
     " unite.vim sources
     call neobundle#add('Shougo/unite-outline')
@@ -1323,6 +1324,7 @@ let g:html_my_rendering = 0
 " Markdown {{{
 AutocmdFT markdown nnoremap <buffer><silent><Leader>= :<C-u>call append('.', repeat('=', strdisplaywidth(getline('.'))))<CR>
 AutocmdFT markdown nnoremap <buffer><silent><Leader>- :<C-u>call append('.', repeat('-', strdisplaywidth(getline('.'))))<CR>
+AutocmdFT markdown setlocal foldlevel=99
 "}}}
 
 " Dachs {{{
