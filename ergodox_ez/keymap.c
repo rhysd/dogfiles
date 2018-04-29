@@ -1,8 +1,11 @@
 // How to build:
-// 1. Link this file to keyboards/ergodox_ez/keymaps/rhysd/keymap.c
-// 2. Compile it with the following command:
 //
-//   $ make ergodox_ez:rhysd teensy KEYMAP=rhysd SLEEP_LED_ENABLE=no
+//   0. Modify $DEBOUNCE macro variable to proper value
+//      (currenctly setting 18) in config.h
+//   1. Link this file to keyboards/ergodox_ez/keymaps/rhysd/keymap.c
+//   2. Compile it with the following command:
+//
+//   $ make ergodox_ez:rhysd:teensy KEYMAP=rhysd SLEEP_LED_ENABLE=no
 //
 // 3. Load hex file with teensy loader
 //
@@ -13,6 +16,8 @@
 // Netable differences vs. the default firmware for the ErgoDox EZ:
 // 1. The Cmd key is now on the right side, making Cmd+Space easier.
 // 2. The media keys work on OSX (But not on Windows).
+//
+// clang-format off
 #include QMK_KEYBOARD_H
 #include "debug.h"
 #include "action_layer.h"
