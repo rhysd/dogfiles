@@ -743,54 +743,6 @@ function peco-find-insert(){
 zle -N peco-find-insert
 bindkey -M viins '^ f' peco-find-insert
 
-function peco-insert(){
-    local selected
-    selected=$(eval ${BUFFER} | peco --prompt 'insert >')
-    BUFFER="${selected}"
-    CURSOR=$#BUFFER
-    zle redisplay
-}
-zle -N peco-insert
-bindkey -M viins '^ ^M' peco-insert
-
-function peco-neomru-insert() {
-    if ! [ -f "$HOME/.cache/neomru/file" ]; then
-        return
-    fi
-
-    local selected
-    selected=$(cat ~/.cache/neomru/{file,directory} | sed "1 d" | peco --prompt 'neomru-insert >')
-    BUFFER="$BUFFER$selected"
-    CURSOR=$#BUFFER
-    zle redisplay
-}
-zle -N peco-neomru-insert
-bindkey -M viins '^ n' peco-neomru-insert
-
-function peco-neomru(){
-    if ! [ -f "$HOME/.cache/neomru/file" ]; then
-        return
-    fi
-
-    local editor
-    if [[ "$1" != "" ]]; then
-        editor=$1
-    elif [[ "$EDITOR" != "" ]]; then
-        editor=$EDITOR
-    else
-        editor="vim"
-    fi
-
-    local selected
-    selected=$(cat ~/.cache/neomru/{file,directory} | sed "1 d" | peco --prompt 'neomru >')
-    if [[ "$selected" != "" ]]; then
-        BUFFER="$editor $selected"
-        zle accept-line
-    fi
-}
-zle -N peco-neomru
-bindkey -M viins '^ n' peco-neomru
-
 function peco-directory-entries() {
     if ! [ -d "$1" ]; then
         return
@@ -809,13 +761,6 @@ function peco-neobundle(){
 }
 zle -N peco-neobundle
 bindkey -M viins '^ b' peco-neobundle
-
-function peco-memolist(){
-    BUFFER="vim $(peco-directory-entries "$HOME/Dropbox/memo")"
-    zle accept-line
-}
-zle -N peco-memolist
-bindkey -M viins '^ ^m' peco-memolist
 
 function peco-man-list-all() {
     local parent dir file
@@ -877,8 +822,6 @@ function peco-source(){
         find-insert \
         locate \
         man \
-        neomru \
-        neomru-insert \
         neobundle \
         repos \
     )
