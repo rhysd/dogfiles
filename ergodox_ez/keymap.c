@@ -5,7 +5,7 @@
 //   1. Link this file to keyboards/ergodox_ez/keymaps/rhysd/keymap.c
 //   2. Compile it with the following command:
 //
-//   $ make ergodox_ez:rhysd:teensy KEYMAP=rhysd SLEEP_LED_ENABLE=no
+//   $ make ergodox_ez:rhysd:teensy SLEEP_LED_ENABLE=no
 //
 // 3. Load hex file with teensy loader
 //
