@@ -440,12 +440,14 @@ ZSH_PLUGINS=(
     https://github.com/zsh-users/zsh-syntax-highlighting.git
     https://github.com/zsh-users/zsh-autosuggestions.git
     https://github.com/Tarrasch/zsh-bd.git
+    https://github.com/hchbaw/opp.zsh.git
 )
 
 # プラグインを更新するコマンド
-function zsh-plugin-update(){
+function zsh-plugin-update() {
     local cwd=$PWD
 
+    local plugin_url
     for plugin_url in $ZSH_PLUGINS; do
         local plugin="${${plugin_url%.git}##*/}"
         local plugin_dir="${ZSHPLUGIN}/${plugin}"
@@ -467,19 +469,25 @@ function zsh-plugin-update(){
 }
 
 # プラグイン読み込み
-local plugin_url
-for plugin_url in $ZSH_PLUGINS; do
-    local plugin="${${plugin_url%.git}##*/}"
-    local plugin_file="${ZSHPLUGIN}/${plugin}/${plugin}.zsh"
-    local plugin_file2="${ZSHPLUGIN}/${plugin}/${${plugin}##zsh-}.zsh"
-    if [ -f "$plugin_file" ]; then
-        source "$plugin_file"
-    elif [ -f "$plugin_file2" ]; then
-        source "$plugin_file2"
-    else
-        echo "Plugin source not found: ${plugin_file}.  Please install plugin with 'zsh-plugin-update'."
-    fi
-done
+function zsh-plugin-load() {
+    local plugin_url
+    for plugin_url in $ZSH_PLUGINS; do
+        local plugin="${${plugin_url%.git}##*/}"
+        local plugin_file="${ZSHPLUGIN}/${plugin}/${plugin}.zsh"  # zsh-foo/zsh-foo.zsh
+        local plugin_file2="${ZSHPLUGIN}/${plugin}/${${plugin}##zsh-}.zsh"  # zsh-foo/foo.zsh
+        local plugin_file3="${ZSHPLUGIN}/${plugin}/${plugin}"  # foo.zsh/foo.zsh
+        if [ -f "$plugin_file" ]; then
+            source "$plugin_file"
+        elif [ -f "$plugin_file2" ]; then
+            source "$plugin_file2"
+        elif [ -f "$plugin_file3" ]; then
+            source "$plugin_file3"
+        else
+            echo "Plugin source not found: ${plugin_file}.  Please install plugin with 'zsh-plugin-update'."
+        fi
+    done
+}
+zsh-plugin-load
 
 # zsh-autosuggestions {{{
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=241"
