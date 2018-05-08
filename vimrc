@@ -2543,7 +2543,7 @@ let g:ale_completion_enabled = 0
 let g:ale_fix_on_save = 0
 nmap <Leader>al <Plug>(ale_next)
 let g:ale_vim_vint_show_style_issues = 0
-let g:ale_fixers = {
+let s:ale_fixers = {
     \   'javascript': ['eslint', 'prettier'],
     \   'typescript': ['tslint', 'prettier'],
     \   'css': ['prettier'],
@@ -2553,8 +2553,22 @@ let g:ale_fixers = {
     \   'rust': ['rustfmt'],
     \   'json': ['fixjson'],
     \ }
+let g:ale_linters = {
+    \   'python': ['pylint', 'mypy'],
+    \ }
+let g:ale_fixers = s:ale_fixers
 AutocmdFT typescript,javascript,css,c,cpp,python,rust,json let b:ale_fix_on_save = 1
-function! s:toggle_ale_fix() abort
+function! s:toggle_ale_fix(bang) abort
+    if a:bang
+        if empty(g:ale_fixers)
+            let g:ale_fixers = s:ale_fixers
+            echo 'Enabled ALE fixer (global)'
+        else
+            let g:ale_fixers = {}
+            echo 'Disabled ALE fixer (global)'
+        endif
+        return
+    endif
     if !exists('b:ale_fix_on_save') || !b:ale_fix_on_save
         let b:ale_fix_on_save = 1
         echo 'Enabled ALE fixer'
@@ -2563,7 +2577,7 @@ function! s:toggle_ale_fix() abort
         echo 'Disabled ALE fixer'
     endif
 endfunction
-command! -nargs=0 -bar ALEToggleFix call <SID>toggle_ale_fix()
+command! -nargs=0 -bar -bang ALEToggleFix call <SID>toggle_ale_fix(<bang>0)
 " }}}
 
 " dirvish {{{
