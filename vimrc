@@ -2541,6 +2541,8 @@ let g:ale_lint_on_text_changed = 'normal'
 let g:ale_lint_on_insert_leave = 0
 let g:ale_completion_enabled = 0
 let g:ale_fix_on_save = 0
+let g:ale_set_balloons = 0
+
 nmap <Leader>al <Plug>(ale_next)
 let g:ale_vim_vint_show_style_issues = 0
 let s:ale_fixers = {
