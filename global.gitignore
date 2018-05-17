@@ -23,3 +23,6 @@ credential.*
 
 # Cache directories
 .crystal
+
+# A directory containing Python's virtual environment
+.venv
