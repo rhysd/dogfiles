@@ -25,11 +25,10 @@ delfunction s:get_SID
 augroup MyVimrc
     autocmd!
 augroup END
-command! -nargs=* Autocmd autocmd MyVimrc <args>
-command! -nargs=* AutocmdFT autocmd MyVimrc FileType <args>
-" XXX
-AutocmdFT vim highlight def link myVimAutocmd vimAutoCmd
-AutocmdFT vim match myVimAutocmd /\<\%(Autocmd\|AutocmdFT\)\>/
+command! -nargs=+ Autocmd autocmd MyVimrc <args>
+command! -nargs=+ AutocmdFT autocmd MyVimrc FileType <args>
+Autocmd VimEnter,WinEnter .vimrc,.gvimrc,vimrc,gvimrc syn keyword myVimAutocmd Autocmd AutocmdFT contained containedin=vimIsCommand
+Autocmd ColorScheme * highlight def link myVimAutocmd vimAutoCmd
 
 " user-defined prefix
 let g:mapleader = ','
