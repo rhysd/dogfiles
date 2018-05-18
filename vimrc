@@ -636,7 +636,11 @@ endfunction
 " }}}
 
 if exists(':terminal')
-    set termkey=<Esc>
+    if exists('+termwinkey')
+        set termwinkey=<Esc>
+    else
+        set termkey=<Esc>
+    endif
     function! s:open_terminal() abort
         if winwidth(0) >= 160
             let split = 'vsplit'
