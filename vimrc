@@ -757,6 +757,7 @@ if neobundle#load_cache()
     call neobundle#add('tpope/vim-markdown')
     call neobundle#add('aklt/plantuml-syntax')
     call neobundle#add('nelstrom/vim-markdown-folding')
+    call neobundle#add('machakann/vim-highlightedyank')
 
     " unite.vim sources
     call neobundle#add('Shougo/unite-outline')
@@ -2610,6 +2611,12 @@ function! s:setup_auto_git_diff() abort
     nmap <buffer><C-p> <Plug>(auto_git_diff_scroll_up_half)
 endfunction
 AutocmdFT gitrebase call <SID>setup_auto_git_diff()
+" }}}
+
+" vim-highlightedyank {{{
+if !exists('##TextYankPost')
+    map y <Plug>(highlightedyank)
+endif
 " }}}
 
 " プラットフォーム依存な設定をロードする "{{{
