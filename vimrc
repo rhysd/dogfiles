@@ -1244,7 +1244,7 @@ function! s:start_repl(args) abort
                 \ })
     echo 'Started REPL at buffer ' . bufnr
 endfunction
-command! -nargs=* Repl call <SID>start_repl([<q-args>])
+command! -nargs=* Repl call <SID>start_repl([<f-args>])
 "}}}
 
 " 追加のハイライト {{{
