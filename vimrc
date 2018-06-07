@@ -2558,6 +2558,7 @@ let g:table_mode_corner = '|'
 let g:gitgutter_map_keys = 0
 nnoremap <Leader>gg :<C-u>GitGutterLineHighlightsToggle<CR>
 nnoremap <Leader>gh :<C-u>GitGutterStageHunk<CR>
+nnoremap <Leader>gu :<C-u>GitGutterUndoHunk<CR>
 nmap <Leader>gp <Plug>GitGutterPreviewHunk
 nmap ]h <Plug>GitGutterNextHunk
 nmap [h <Plug>GitGutterPrevHunk
