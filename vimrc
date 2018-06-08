@@ -758,6 +758,7 @@ if neobundle#load_cache()
     call neobundle#add('aklt/plantuml-syntax')
     call neobundle#add('nelstrom/vim-markdown-folding')
     call neobundle#add('machakann/vim-highlightedyank')
+    call neobundle#add('PProvost/vim-ps1')
 
     " unite.vim sources
     call neobundle#add('Shougo/unite-outline')
