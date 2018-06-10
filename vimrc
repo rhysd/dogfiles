@@ -2629,6 +2629,7 @@ function! s:on_dirvish() abort
     nmap <buffer><silent>h <Plug>(dirvish_up)
     nnoremap <buffer><silent>O :<C-u>execute 'OpenBrowser' getline('.')<CR>
     nnoremap <buffer>/ :<C-u>Unite dirvish<CR>
+    nnoremap <buffer>~ :<C-u>Dirvish ~<CR>
 endfunction
 augroup dirvish-vimrc
     autocmd!
