@@ -964,7 +964,7 @@ if neobundle#load_cache()
                 \   }
                 \ })
 
-    call neobundle#add('thinca/vim-visualstar', {
+    call neobundle#add('rhysd/vim-visualstar', {
                 \ 'lazy' : 1,
                 \ 'autoload' : {
                 \     'mappings' : [['x', '*'], ['x' , '#'], ['x', 'g*'], ['x', 'g#']],
