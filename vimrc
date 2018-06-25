@@ -966,6 +966,7 @@ if neobundle#load_cache()
 
     call neobundle#add('rhysd/vim-visualstar', {
                 \ 'lazy' : 1,
+                \ 'rev' : 'prevent-TextYankPost',
                 \ 'autoload' : {
                 \     'mappings' : [['x', '*'], ['x' , '#'], ['x', 'g*'], ['x', 'g#']],
                 \   }
@@ -2560,6 +2561,7 @@ let g:gitgutter_map_keys = 0
 nnoremap <Leader>gg :<C-u>GitGutterLineHighlightsToggle<CR>
 nnoremap <Leader>gh :<C-u>GitGutterStageHunk<CR>
 nnoremap <Leader>gu :<C-u>GitGutterUndoHunk<CR>
+nnoremap <Leader>gA :<C-u>GitGutterAll<CR>
 nmap <Leader>gp <Plug>GitGutterPreviewHunk
 nmap ]h <Plug>GitGutterNextHunk
 nmap [h <Plug>GitGutterPrevHunk
