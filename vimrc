@@ -1753,37 +1753,31 @@ unlet s:bundle
 noremap [unite] <Nop>
 map     <Space> [unite]
 " コマンドラインウィンドウで Unite コマンドを入力
-nnoremap [unite]u                 :<C-u>Unite source<CR>
+nnoremap [unite]u                :<C-u>Unite source<CR>
 "バッファを開いた時のパスを起点としたファイル検索
-nnoremap <silent>[unite]ff        :<C-u>UniteWithBufferDir -buffer-name=files -vertical file directory file/new<CR>
+nnoremap <silent>[unite]ff       :<C-u>UniteWithBufferDir -buffer-name=files -vertical file directory file/new<CR>
 "最近使用したファイル
-nnoremap <silent>[unite]m         :<C-u>Unite file_mru directory_mru zsh-cdr oldfiles file/new<CR>
+nnoremap <silent>[unite]m        :<C-u>Unite file_mru directory_mru zsh-cdr oldfiles file/new<CR>
 "バッファ一覧
-nnoremap <silent>[unite]b         :<C-u>Unite -immediately -no-empty -auto-preview buffer<CR>
+nnoremap <silent>[unite]b        :<C-u>Unite -immediately -no-empty buffer<CR>
 "プログラミングにおけるアウトラインの表示
-nnoremap <silent>[unite]o         :<C-u>Unite outline -vertical -no-start-insert<CR>
+nnoremap <silent>[unite]o        :<C-u>Unite outline -vertical -no-start-insert<CR>
 "コマンドの出力
-nnoremap <silent>[unite]c         :<C-u>Unite output<CR>
+nnoremap <silent>[unite]c        :<C-u>Unite output<CR>
 "grep検索．
-nnoremap <silent>[unite]gr        :<C-u>Unite -no-start-insert grep<CR>
+nnoremap <silent>[unite]gr       :<C-u>Unite -no-start-insert grep<CR>
 "Uniteバッファの復元
-nnoremap <silent>[unite]r         :<C-u>UniteResume<CR>
-" Haskell Import
-AutocmdFT haskell nnoremap <buffer>[unite]hd :<C-u>Unite haddock<CR>
-AutocmdFT haskell nnoremap <buffer>[unite]ho :<C-u>Unite hoogle<CR>
-AutocmdFT haskell nnoremap <buffer><expr>[unite]hi
-                    \        empty(expand("<cWORD>")) ? ":\<C-u>Unite haskellimport\<CR>"
-                    \                                 :":\<C-u>UniteWithCursorWord haskellimport\<CR>"
+nnoremap <silent>[unite]r        :<C-u>UniteResume<CR>
 " Git で管理されているファイルから選んで開く
-nnoremap <silent><expr>[unite]p  ":\<C-u>Unite file_rec/git:".fnamemodify(<SID>git_root_dir(),':p')
+nnoremap <silent><expr>[unite]p ":\<C-u>Unite file_rec/git:".fnamemodify(<SID>git_root_dir(),':p')
 " C++ インクルードファイル
 AutocmdFT cpp nnoremap <buffer>[unite]i :<C-u>Unite file_include -vertical<CR>
 " help(項目が多いので，検索語を入力してから絞り込む)
-nnoremap <silent>[unite]hh        :<C-u>UniteWithInput help -vertical<CR>
+nnoremap <silent>[unite]hh       :<C-u>UniteWithInput help -vertical<CR>
 " 履歴
-nnoremap <silent>[unite]hc        :<C-u>Unite -buffer-name=lines history/command -start-insert<CR>
-nnoremap <silent>[unite]hs        :<C-u>Unite -buffer-name=lines history/search<CR>
-nnoremap <silent>[unite]hy        :<C-u>Unite -buffer-name=lines history/yank<CR>
+nnoremap <silent>[unite]hc       :<C-u>Unite -buffer-name=lines history/command -start-insert<CR>
+nnoremap <silent>[unite]hs       :<C-u>Unite -buffer-name=lines history/search<CR>
+nnoremap <silent>[unite]hy       :<C-u>Unite -buffer-name=lines history/yank<CR>
 " unite-lines ファイル内インクリメンタル検索
 nnoremap <silent><expr> [unite]L line('$') > 5000 ?
             \ ":\<C-u>Unite -no-split -start-insert -auto-preview line/fast\<CR>" :
@@ -1794,7 +1788,12 @@ nnoremap [unite]C :<C-u>Unite -auto-preview colorscheme<CR>
 nnoremap <silent>[unite]l :<C-u>UniteWithInput locate<CR>
 " 検索
 nnoremap <silent>[unite]/ :<C-u>execute 'Unite grep:'.expand('%:p').' -input='.escape(substitute(@/, '^\\v', '', ''), ' \')<CR>
-" ghq
+" Haskell Import
+AutocmdFT haskell nnoremap <buffer>[unite]hd :<C-u>Unite haddock<CR>
+AutocmdFT haskell nnoremap <buffer>[unite]ho :<C-u>Unite hoogle<CR>
+AutocmdFT haskell nnoremap <buffer><expr>[unite]hi
+                    \ empty(expand("<cWORD>")) ? ":\<C-u>Unite haskellimport\<CR>"
+                    \ : ":\<C-u>UniteWithCursorWord haskellimport\<CR>"
 " }}}
 
 " }}}
