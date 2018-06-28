@@ -16,9 +16,8 @@ augroup MyVimrc
 augroup END
 command! -nargs=* Autocmd autocmd MyVimrc <args>
 command! -nargs=* AutocmdFT autocmd MyVimrc FileType <args>
-" XXX
-AutocmdFT vim highlight def link myVimAutocmd vimAutoCmd
-AutocmdFT vim match myVimAutocmd /\<\(Autocmd\|AutocmdFT\)\>/
+Autocmd VimEnter,WinEnter init.vim syn keyword myVimAutocmd Autocmd AutocmdFT contained containedin=vimIsCommand
+Autocmd ColorScheme * highlight def link myVimAutocmd vimAutoCmd
 
 "エンコーディング
 set encoding=utf-8
@@ -462,6 +461,8 @@ nnoremap <expr>h col('.') == 1 && foldlevel(line('.')) > 0 ? 'zc' : 'h'
 nnoremap <expr>l foldclosed(line('.')) != -1 ? 'zo' : 'l'
 " colorcolumn
 nnoremap <expr><Leader>cl ":\<C-u>set colorcolumn=".(&cc == 0 ? v:count == 0 ? col('.') : v:count : 0)."\<CR>"
+" leave from terminal mode
+tnoremap <Esc><Esc> <C-\><C-n>
 
 " help のマッピング
 function! s:on_FileType_help_define_mappings()
@@ -525,6 +526,7 @@ if dein#load_state(s:dein_cache_dir)
     call dein#add('keith/tmux.vim')
     call dein#add('leafgarland/typescript-vim')
     call dein#add('rhysd/vim-gfm-syntax')
+    call dein#add('w0rp/ale')
 
     call dein#add('kana/vim-textobj-user', {
                 \   'lazy': 1,
@@ -549,18 +551,15 @@ if dein#load_state(s:dein_cache_dir)
                 \   'lazy' : 1,
                 \   'on_map' : [['xo', 'ae'], ['xo', 'ie']],
                 \ })
-
     call dein#add('rhysd/clever-f.vim', {
                 \   'lazy': 1,
-                \   'on_map' : [['n', 'f'], ['n', 'F'], ['n', 't'], ['n', 'T']],
+                \   'on_map' : [['nv', 'f'], ['nv', 'F'], ['nv', 't'], ['nv', 'T']],
                 \ })
-
     call dein#add('thinca/vim-quickrun', {
                 \   'lazy' : 1,
                 \   'on_cmd' : 'QuickRun',
                 \   'on_map' : '<Plug>(quickrun-',
                 \ })
-
     call dein#add('tyru/open-browser.vim', {
                 \   'lazy' : 1,
                 \   'on_cmd' : ['OpenBrowser', 'OpenBrowserSearch', 'OpenBrowserSmartSearch'],
@@ -571,21 +570,19 @@ if dein#load_state(s:dein_cache_dir)
                 \   'on_cmd' : ['OpenGithubFile', 'OpenGithubIssue', 'OpenGithubPullReq'],
                 \   'depends' : 'open-browser.vim',
                 \ })
-
     call dein#add('easymotion/vim-easymotion', {
                 \   'lazy' : 1,
                 \   'on_map' : '<Plug>(easymotion-',
                 \ })
-
     call dein#add('rhysd/vim-grammarous', {
                 \   'lazy' : 1, 
                 \   'on_cmd' : 'GrammarousCheck',
                 \ })
 
     if s:on_nyaovim
-        let s:opts = { 'rtp' : '' }
-    else
         let s:opts = {}
+    else
+        let s:opts = { 'rtp' : '' }
     endif
     call dein#add('rhysd/nyaovim-popup-tooltip', s:opts)
     call dein#add('rhysd/nyaovim-mini-browser', s:opts)
@@ -713,6 +710,54 @@ map : <Plug>(easymotion-overwin-f2)
 let g:airline_left_sep = '»'
 let g:airline_right_sep = '«'
 let g:airline_extensions = []
+
+" ALE
+let g:ale_lint_on_text_changed = 'normal'
+let g:ale_lint_on_insert_leave = 0
+let g:ale_completion_enabled = 0
+let g:ale_fix_on_save = 0
+let g:ale_set_balloons = 0
+
+nmap <Leader>al <Plug>(ale_next)
+let g:ale_vim_vint_show_style_issues = 0
+let s:ale_fixers = {
+    \   'javascript': ['eslint', 'prettier'],
+    \   'typescript': ['tslint', 'prettier'],
+    \   'css': ['prettier'],
+    \   'c': ['clang-format'],
+    \   'cpp': ['clang-format'],
+    \   'python': ['yapf'],
+    \   'rust': ['rustfmt'],
+    \   'json': ['fixjson'],
+    \ }
+let g:ale_linters = {
+    \   'python': ['pylint', 'mypy'],
+    \ }
+let g:ale_fixers = s:ale_fixers
+AutocmdFT typescript,javascript,css,c,cpp,python,rust,json let b:ale_fix_on_save = 1
+function! s:toggle_ale_fix(bang) abort
+    if a:bang
+        if empty(g:ale_fixers)
+            let g:ale_fixers = s:ale_fixers
+            echo 'Enabled ALE fixer (global)'
+        else
+            let g:ale_fixers = {}
+            echo 'Disabled ALE fixer (global)'
+        endif
+        return
+    endif
+    if !exists('b:ale_fix_on_save') || !b:ale_fix_on_save
+        let b:ale_fix_on_save = 1
+        echo 'Enabled ALE fixer'
+    else
+        let b:ale_fix_on_save = 0
+        echo 'Disabled ALE fixer'
+    endif
+endfunction
+command! -nargs=0 -bar -bang ALEToggleFix call <SID>toggle_ale_fix(<bang>0)
+if executable('/usr/local/opt/llvm/bin/llc')
+    let g:ale_llvm_llc_executable = '/usr/local/opt/llvm/bin/llc'
+endif
 
 if s:on_nyaovim
     " nyaovim-mini-browser
