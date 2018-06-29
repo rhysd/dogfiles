@@ -246,10 +246,10 @@ endfunction
 " あるウィンドウを他のウィンドウから閉じる "{{{
 function! s:is_target_window(winnr)
     let target_filetype = ['ref', 'unite', 'vimfiler']
-    let target_buftype  = ['help', 'quickfix']
-    let winbufnr = winbufnr(a:winnr)
-    return index(target_filetype, getbufvar(winbufnr, '&filetype')) >= 0 ||
-                \ index(target_buftype, getbufvar(winbufnr, '&buftype')) >= 0
+    let target_buftype  = ['help', 'quickfix', 'terminal']
+    let bufnr = winbufnr(a:winnr)
+    return index(target_filetype, getbufvar(bufnr, '&filetype')) >= 0 ||
+                \ index(target_buftype, getbufvar(bufnr, '&buftype')) >= 0
 endfunction
 
 nnoremap <silent><C-q>
@@ -461,6 +461,18 @@ nnoremap <expr>h col('.') == 1 && foldlevel(line('.')) > 0 ? 'zc' : 'h'
 nnoremap <expr>l foldclosed(line('.')) != -1 ? 'zo' : 'l'
 " colorcolumn
 nnoremap <expr><Leader>cl ":\<C-u>set colorcolumn=".(&cc == 0 ? v:count == 0 ? col('.') : v:count : 0)."\<CR>"
+function! s:start_term() abort
+    vsplit
+    if exists('s:prev_term') && bufexists(s:prev_term)
+        execute 'buffer' s:prev_term
+        startinsert
+        return
+    endif
+    terminal
+    startinsert
+    let s:prev_term = bufnr('%')
+endfunction
+nnoremap <Leader>t :<C-u>call <SID>start_term()<CR>
 " leave from terminal mode
 tnoremap <Esc><Esc> <C-\><C-n>
 
