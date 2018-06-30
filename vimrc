@@ -642,12 +642,17 @@ if exists(':terminal')
         set termkey=<Esc>
     endif
     function! s:open_terminal() abort
-        if winwidth(0) >= 160
-            let split = 'vsplit'
-        else
-            let split = 'split'
+        let terms = term_list()
+        if !empty(terms)
+            let w = bufwinnr(terms[0])
+            if w != -1
+                execute w . 'wincmd w'
+            else
+                execute winwidth(0) >= 160 ? 'vsplit' : 'split' '| bufffer' terms[0]
+            endif
+            return
         endif
-        execute 'topleft' split ' | terminal ++curwin ++close'
+        execute 'topleft' winwidth(0) >= 160 ? 'vsplit' : 'split' ' | terminal ++curwin ++close'
     endfunction
     nnoremap <silent><Space><Space> :<C-u>call <SID>open_terminal()<CR>
     " XXX: This kills original <Esc><Esc>, which sends raw '<Esc>' to
