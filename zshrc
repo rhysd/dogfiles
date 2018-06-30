@@ -913,6 +913,12 @@ case $OSTYPE in
 
         # Git
         export PATH=$PATH:/usr/local/opt/git/share/git-core/contrib/diff-highlight
+
+        # emscripten
+        if [ -f ~/.emscripten ]; then
+            export LLVM=/usr/local/opt/emscripten/libexec/llvm/bin
+            export BINARYEN=/usr/local/opt/binaryen
+        fi
         # }}}
         ;;
     linux*)
