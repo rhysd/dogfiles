@@ -2630,6 +2630,8 @@ command! -nargs=0 -bar -bang ALEToggleFix call <SID>toggle_ale_fix(<bang>0)
 " }}}
 
 " dirvish {{{
+" Shows all files in the order returned by glob()
+let g:dirvish_mode = 2
 function! s:on_dirvish() abort
     nnoremap <buffer><silent>l :<C-u>.call dirvish#open('edit', 0)<CR>
     nmap <buffer><silent>h <Plug>(dirvish_up)
