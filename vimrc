@@ -969,11 +969,10 @@ if neobundle#load_cache()
                 \   }
                 \ })
 
-    call neobundle#add('rhysd/vim-visualstar', {
+    call neobundle#add('haya14busa/vim-asterisk', {
                 \ 'lazy' : 1,
-                \ 'rev' : 'prevent-TextYankPost',
                 \ 'autoload' : {
-                \     'mappings' : [['x', '*'], ['x' , '#'], ['x', 'g*'], ['x', 'g#']],
+                \     'mappings' : '<Plug>(asterisk-',
                 \   }
                 \ })
 
@@ -2663,6 +2662,17 @@ AutocmdFT gitrebase call <SID>setup_auto_git_diff()
 if !exists('##TextYankPost')
     map y <Plug>(highlightedyank)
 endif
+" }}}
+
+" vim-asterisk {{{
+map *   <Plug>(asterisk-*)
+map #   <Plug>(asterisk-#)
+map g*  <Plug>(asterisk-g*)
+map g#  <Plug>(asterisk-g#)
+map z*  <Plug>(asterisk-z*)
+map gz* <Plug>(asterisk-gz*)
+map z#  <Plug>(asterisk-z#)
+map gz# <Plug>(asterisk-gz#)
 " }}}
 
 " プラットフォーム依存な設定をロードする "{{{
