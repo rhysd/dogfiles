@@ -1443,6 +1443,7 @@ function! s:python_settings() abort
     syntax keyword Constant self
 endfunction
 AutocmdFT python call <SID>python_settings()
+Autocmd BufRead,BufNew,BufNewFile *.pyi setlocal filetype=python
 "}}}
 
 " Go {{{
