@@ -1728,7 +1728,7 @@ function! s:bundle.hooks.on_source(bundle) abort
         call unite#custom#action('directory', 'finder', finder)
     endif
 
-    call unite#custom#profile('source/quickfix,source/outline,source/line,source/line/fast,source/grep', 'context', {'prompt_direction' : 'top'})
+    call unite#custom#profile('source/quickfix,source/outline,source/line,source/line,source/grep', 'context', {'prompt_direction' : 'top'})
     call unite#custom#profile('source/ghq', 'context', {'default_action' : 'open_or_dirvish'})
 
     call unite#custom#profile('default', 'context', {
@@ -1785,7 +1785,7 @@ nnoremap <silent>[unite]hs       :<C-u>Unite -buffer-name=lines history/search<C
 nnoremap <silent>[unite]hy       :<C-u>Unite -buffer-name=lines history/yank<CR>
 " unite-lines ファイル内インクリメンタル検索
 nnoremap <silent><expr> [unite]L line('$') > 5000 ?
-            \ ":\<C-u>Unite -no-split -start-insert -auto-preview line/fast\<CR>" :
+            \ ":\<C-u>Unite -no-split -start-insert -auto-preview line\<CR>" :
             \ ":\<C-u>Unite -start-insert -auto-preview line:all\<CR>"
 " カラースキーム
 nnoremap [unite]C :<C-u>Unite -auto-preview colorscheme<CR>
@@ -2604,6 +2604,7 @@ let s:ale_fixers = {
     \ }
 let g:ale_linters = {
     \   'python': ['pylint', 'mypy'],
+    \   'typescript': ['tslint', 'tsserver'],
     \ }
 let g:ale_fixers = s:ale_fixers
 AutocmdFT typescript,javascript,css,c,cpp,python,rust,json let b:ale_fix_on_save = 1
