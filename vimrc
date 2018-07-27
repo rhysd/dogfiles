@@ -2435,7 +2435,7 @@ function! s:fugitive_commit() abort
 endfunction
 nnoremap <Leader>gc :<C-u>call <SID>fugitive_commit()<CR>
 nnoremap <Leader>gl :<C-u>QuickRun sh -src 'git log --graph --oneline'<CR>
-nnoremap <Leader>ga :<C-u>Gwrite<CR>
+nnoremap <Leader>ga :<C-u>Gwrite <Bar> GitGutter<CR>
 nnoremap <Leader>gd :<C-u>Gdiff<CR>
 nnoremap <Leader>gb :<C-u>Gblame<CR>
 
