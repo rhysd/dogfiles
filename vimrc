@@ -369,7 +369,7 @@ function! s:smart_help(args) abort
 endfunction
 
 " インデント
-command! -bang -nargs=1 SetIndent
+command! -bang -bar -nargs=1 SetIndent
             \ execute <bang>0 ? 'set' : 'setlocal'
             \         'tabstop=' . <q-args>
             \         'shiftwidth=' . <q-args>
@@ -2554,6 +2554,7 @@ function! AP(...) abort
     nnoremap <buffer>q :<C-u>quit!
 endfunction
 command! -nargs=+ -complete=expression AP call AP(<args>)
+let g:prettyprint_indent = 2
 " }}}
 
 " vim-table-mode {{{
