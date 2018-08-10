@@ -1269,7 +1269,7 @@ if !has('gui_running')
         set background=dark
         colorscheme default
     else
-        if has('termguicolors') && $TERM_PROGRAM ==# 'iTerm.app'
+        if has('termguicolors') && ($TERM_PROGRAM ==# 'iTerm.app' || $TERM_PROGRAM ==# 'Alacritty')
             let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
             let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
             set termguicolors
