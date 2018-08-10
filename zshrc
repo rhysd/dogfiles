@@ -111,7 +111,7 @@ function pg(){
 ####################
 # {{{
 function zsh-update-comp-defs() {
-    local links urls comps file
+    local links urls comps file fname
 
     comps="$DOTZSH/site-functions"
     urls=(
@@ -125,10 +125,15 @@ function zsh-update-comp-defs() {
         https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker
         https://raw.githubusercontent.com/docker/compose/master/contrib/completion/zsh/_docker-compose
         https://raw.githubusercontent.com/motemen/ghq/master/zsh/_ghq
+        https://raw.githubusercontent.com/jwilm/alacritty/master/alacritty-completions.zsh
     )
 
     for url in $urls; do
-        file="$comps/${url:t}"
+        fname="${url:t}"
+        if [[ "$fname" == "alacritty-completions.zsh" ]]; then
+            fname="_alacritty"
+        fi
+        file="$comps/$fname"
         echo "Downloading complation definition '${file}'"
         if curl -f -L "$url" > "$file"; then
             chmod +x "$file"
