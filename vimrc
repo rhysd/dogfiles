@@ -761,7 +761,6 @@ if neobundle#load_cache()
     call neobundle#add('justinmk/vim-dirvish')
     call neobundle#add('tpope/vim-markdown')
     call neobundle#add('aklt/plantuml-syntax')
-    call neobundle#add('nelstrom/vim-markdown-folding')
     call neobundle#add('machakann/vim-highlightedyank')
     call neobundle#add('PProvost/vim-ps1')
 
@@ -774,7 +773,6 @@ if neobundle#load_cache()
     call neobundle#add('ujihisa/unite-colorscheme')
     call neobundle#add('rhysd/unite-locate')
     call neobundle#add('sorah/unite-ghq')
-    call neobundle#add('rhysd/unite-n3337')
     call neobundle#add('rhysd/unite-go-import.vim')
     call neobundle#add('rhysd/unite-oldfiles.vim')
     call neobundle#add('rhysd/unite-dirvish.vim')
@@ -1018,6 +1016,7 @@ if neobundle#load_cache()
                 \     'filetypes' : ['haskell', 'python']
                 \   }
                 \ })
+
     call neobundle#add('tyru/restart.vim', {
                 \   'lazy' : 1,
                 \   'gui' : 1,
@@ -1026,13 +1025,13 @@ if neobundle#load_cache()
                 \   }
                 \ })
 
-    " 特定のファイルタイプで読み込む
     call neobundle#add('rhysd/endwize.vim', {
                 \   'lazy' : 1,
                 \   'autoload' : {
                 \     'filetypes' : ['ruby', 'vim', 'sh', 'zsh', 'c', 'cpp', 'lua', 'dachs', 'vimspec']
                 \   }
                 \ })
+
     call neobundle#add('hotwatermorning/auto-git-diff', {
                 \   'lazy' : 1,
                 \   'autoload' : {
@@ -1089,6 +1088,7 @@ if neobundle#load_cache()
                 \     'filetypes' : 'python',
                 \   }
                 \ })
+
     call neobundle#add('hynek/vim-python-pep8-indent', {
                 \ 'lazy' : 1,
                 \ 'autoload' : {
@@ -1110,7 +1110,7 @@ if neobundle#load_cache()
 
     " Swift
     " Delay loading because it contains plugin/ directory
-    call neobundle#add('Keithbsmiley/swift.vim', {
+    call neobundle#add('keith/swift.vim', {
                 \ 'lazy' : 1,
                 \ 'autoload' : {
                 \     'filetypes' : 'swift'
@@ -1369,7 +1369,6 @@ let g:html_my_rendering = 0
 " Markdown {{{
 AutocmdFT markdown nnoremap <buffer><silent><Leader>= :<C-u>call append('.', repeat('=', strdisplaywidth(getline('.'))))<CR>
 AutocmdFT markdown nnoremap <buffer><silent><Leader>- :<C-u>call append('.', repeat('-', strdisplaywidth(getline('.'))))<CR>
-AutocmdFT markdown setlocal foldlevel=99
 "}}}
 
 " Dachs {{{
@@ -2638,7 +2637,6 @@ function! s:on_dirvish() abort
     nnoremap <buffer><silent>l :<C-u>.call dirvish#open('edit', 0)<CR>
     nmap <buffer><silent>h <Plug>(dirvish_up)
     nnoremap <buffer><silent>O :<C-u>execute 'OpenBrowser' getline('.')<CR>
-    nnoremap <buffer>/ :<C-u>Unite dirvish<CR>
     nnoremap <buffer>~ :<C-u>Dirvish ~<CR>
 endfunction
 augroup dirvish-vimrc
