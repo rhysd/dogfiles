@@ -1490,7 +1490,13 @@ let $RUST_SRC_PATH = $HOME . '/Develop/github.com/rust-lang/rust/src'
 let g:racer_cmd = 'racer'
 let g:racer_insert_paren = 0
 let g:racer_experimental_completer = 1
-AutocmdFT rust nnoremap <buffer><Leader>x :<C-u>RustFmt<CR>
+let g:rust_doc#define_map_K = 0
+function! s:setup_rust() abort
+    nnoremap <buffer><Leader>x :<C-u>RustFmt<CR>
+    nnoremap <buffer><silent>K :<C-u>Unite rust/doc:cursor -no-empty -immediately<CR>
+    vnoremap <buffer><silent>K :Unite rust/doc:visual -no-empty -immediately<CR>
+endfunction
+AutocmdFT rust call <SID>setup_rust()
 " }}}
 
 " TypeScript {{{
