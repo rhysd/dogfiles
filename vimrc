@@ -1366,11 +1366,6 @@ Autocmd BufRead,BufNew,BufNewFile *.ejs setlocal ft=html
 let g:html_my_rendering = 0
 "}}}
 
-" Markdown {{{
-AutocmdFT markdown nnoremap <buffer><silent><Leader>= :<C-u>call append('.', repeat('=', strdisplaywidth(getline('.'))))<CR>
-AutocmdFT markdown nnoremap <buffer><silent><Leader>- :<C-u>call append('.', repeat('-', strdisplaywidth(getline('.'))))<CR>
-"}}}
-
 " Dachs {{{
 " For Readme
 function! s:bold(...) abort
@@ -1477,10 +1472,14 @@ function! s:golang_settings() abort
 endfunction
 
 AutocmdFT go,go.test call <SID>golang_settings()
-AutocmdFT godoc nnoremap<buffer>q :<C-u>quit<CR>
-AutocmdFT godoc nnoremap<buffer>d <C-d>
-AutocmdFT godoc nnoremap<buffer>u <C-u>
-AutocmdFT godoc nnoremap<buffer>o :<C-u>Unite outline<CR>
+function! s:setup_godoc() abort
+    nnoremap<buffer>q :<C-u>quit<CR>
+    nnoremap<buffer>d <C-d>
+    nnoremap<buffer>u <C-u>
+    nnoremap<buffer>o :<C-u>Unite outline<CR>
+    nnoremap<buffer>? :<C-u>echo 'q=quit, d=down, u=up, o=outline'<CR>
+endfunction
+AutocmdFT godoc call <SID>godoc_settings()
 " }}}
 
 " Rust {{{
@@ -1519,7 +1518,7 @@ let g:zsh_fold_enable = 0
 let s:sh_template = ['#!/bin/bash', '']
 Autocmd BufNewFile *.sh call append(0, s:sh_template) | normal! G
 let s:zsh_template = ['#!/usr/bin/env zsh', '']
-Autocmd BufNewFile *.zsh call append(0, s:sh_template) | normal! G
+Autocmd BufNewFile *.zsh call append(0, s:zsh_template) | normal! G
 " }}}
 
 " vimspec {{{
