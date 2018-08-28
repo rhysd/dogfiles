@@ -2697,6 +2697,11 @@ if has('mac')
         set macmeta
     endif
 
+    " :quit 時にアプリケーションも終了する
+    if has('gui_running')
+        Autocmd VimLeave * macaction terminate:
+    endif
+
     AutocmdFT cpp setlocal path=.,/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1,/usr/local/include,/usr/include
 
     " Mac の辞書.appで開く {{{
