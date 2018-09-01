@@ -441,11 +441,13 @@ if [ ! -d $ZSHPLUGIN ]; then
     mkdir -p $ZSHPLUGIN
 fi
 
+# Note: zsh-syntax-highlighting must be at the last.
+# https://github.com/zsh-users/zsh-syntax-highlighting#why-must-zsh-syntax-highlightingzsh-be-sourced-at-the-end-of-the-zshrc-file
 ZSH_PLUGINS=(
-    https://github.com/zsh-users/zsh-syntax-highlighting.git
     https://github.com/zsh-users/zsh-autosuggestions.git
     https://github.com/Tarrasch/zsh-bd.git
     https://github.com/hchbaw/opp.zsh.git
+    https://github.com/zsh-users/zsh-syntax-highlighting.git
 )
 
 # プラグインを更新するコマンド
@@ -975,3 +977,6 @@ case $OSTYPE in
 esac
 
 source-file $HOME/.local.zshrc
+
+# Prevent a dog from crying at start up!
+true
