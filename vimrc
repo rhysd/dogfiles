@@ -722,7 +722,6 @@ if neobundle#load_cache()
     call neobundle#add('kana/vim-textobj-user')
     call neobundle#add('thinca/vim-prettyprint')
     call neobundle#add('kana/vim-operator-user')
-    call neobundle#add('kana/vim-smartinput')
     call neobundle#add('kana/vim-niceblock')
     call neobundle#add('h1mesuke/vim-alignta')
     call neobundle#add('rhysd/clever-f.vim')
@@ -1644,12 +1643,7 @@ inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
 inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
 inoremap <expr><C-y> neocomplete#cancel_popup()
-" HACK: This hack needs because of using both vim-smartinput and neocomplete
-" when <CR> is typed.
-"    A user types <CR> ->
-"    smart_close_popup() is called when pumvisible() ->
-"    <Plug>(physical_key_return) hooked by vim-smartinput is used
-imap <expr><CR> (pumvisible() ? neocomplete#smart_close_popup() : "")."\<Plug>(physical_key_return)"
+inoremap <expr><CR> neocomplete#smart_close_popup()."\<CR>\<C-r>=endwize#crend()\<CR>"
 " コマンドラインウィンドウでは Tab の挙動が変わるのでワークアラウンド
 Autocmd CmdwinEnter * inoremap <silent><buffer><Tab> <C-n>
 Autocmd CmdwinEnter * inoremap <expr><buffer><CR> (pumvisible() ? neocomplete#smart_close_popup() : "")."\<CR>"
@@ -1890,266 +1884,6 @@ vnoremap <silent><Leader>q :QuickRun<CR>
 " }}}
 " }}}
 
-" vim-smartinput"{{{
-" 括弧内のスペース
-call smartinput#map_to_trigger('i', '<Space>', '<Space>', '<Space>')
-call smartinput#define_rule({
-            \   'at'    : '(\%#)',
-            \   'char'  : '<Space>',
-            \   'input' : '<Space><Space><Left>',
-            \   })
-
-call smartinput#map_to_trigger('i', '<BS>', '<BS>', '<BS>')
-call smartinput#define_rule({
-            \   'at'    : '( \%# )',
-            \   'char'  : '<BS>',
-            \   'input' : '<Del><BS>',
-            \   })
-
-call smartinput#define_rule({
-            \   'at'    : '{\%#}',
-            \   'char'  : '<Space>',
-            \   'input' : '<Space><Space><Left>',
-            \   })
-
-call smartinput#define_rule({
-            \   'at'    : '{ \%# }',
-            \   'char'  : '<BS>',
-            \   'input' : '<Del><BS>',
-            \   })
-
-call smartinput#define_rule({
-            \   'at'    : '\[\%#\]',
-            \   'char'  : '<Space>',
-            \   'input' : '<Space><Space><Left>',
-            \   })
-
-call smartinput#define_rule({
-            \   'at'    : '\[ \%# \]',
-            \   'char'  : '<BS>',
-            \   'input' : '<Del><BS>',
-            \   })
-
-call smartinput#map_to_trigger('i', '<Plug>(physical_key_return)', '<CR>', '<CR>')
-" 行末のスペースを削除する
-call smartinput#define_rule({
-            \   'at'    : '\s\+\%#',
-            \   'char'  : '<CR>',
-            \   'input' : "<C-o>:call setline('.', substitute(getline('.'), '\\s\\+$', '', '')) <Bar> echo 'delete trailing spaces'<CR><CR>",
-            \   })
-
-" Ruby 文字列内変数埋め込み
-call smartinput#map_to_trigger('i', '#', '#', '#')
-call smartinput#define_rule({
-            \   'at'       : '\%#',
-            \   'char'     : '#',
-            \   'input'    : '#{}<Left>',
-            \   'filetype' : ['ruby'],
-            \   'syntax'   : ['Constant', 'Special'],
-            \   })
-
-" Ruby ブロック引数 ||
-call smartinput#map_to_trigger('i', '<Bar>', '<Bar>', '<Bar>')
-call smartinput#define_rule({
-            \   'at' : '\%({\|\<do\>\)\s*\%#',
-            \   'char' : '|',
-            \   'input' : '||<Left>',
-            \   'filetype' : ['ruby', 'dachs'],
-            \    })
-
-" テンプレート内のスペース
-call smartinput#define_rule({
-            \   'at' :       '<\%#>',
-            \   'char' :     '<Space>',
-            \   'input' :    '<Space><Space><Left>',
-            \   'filetype' : ['cpp'],
-            \   })
-call smartinput#define_rule({
-            \   'at' :       '< \%# >',
-            \   'char' :     '<BS>',
-            \   'input' :    '<Del><BS>',
-            \   'filetype' : ['cpp'],
-            \   })
-
-" ブロックコメント
-call smartinput#map_to_trigger('i', '*', '*', '*')
-call smartinput#define_rule({
-            \   'at'       : '\/\%#',
-            \   'char'     : '*',
-            \   'input'    : '**/<Left><Left>',
-            \   'filetype' : ['c', 'cpp'],
-            \   })
-call smartinput#define_rule({
-            \   'at'       : '/\*\%#\*/',
-            \   'char'     : '<Space>',
-            \   'input'    : '<Space><Space><Left>',
-            \   'filetype' : ['c', 'cpp'],
-            \   })
-call smartinput#define_rule({
-            \   'at'       : '/* \%# */',
-            \   'char'     : '<BS>',
-            \   'input'    : '<Del><BS>',
-            \   'filetype' : ['c', 'cpp'],
-            \   })
-
-" セミコロンの挙動
-call smartinput#map_to_trigger('i', ';', ';', ';')
-" 2回押しで :: の代わり（待ち時間無し）
-call smartinput#define_rule({
-            \   'at'       : ';\%#',
-            \   'char'     : ';',
-            \   'input'    : '<BS>::',
-            \   'filetype' : ['cpp', 'rust'],
-            \   })
-" boost:: の補完
-call smartinput#define_rule({
-            \   'at'       : '\<b;\%#',
-            \   'char'     : ';',
-            \   'input'    : '<BS>oost::',
-            \   'filetype' : ['cpp'],
-            \   })
-" std:: の補完
-call smartinput#define_rule({
-            \   'at'       : '\<s;\%#',
-            \   'char'     : ';',
-            \   'input'    : '<BS>td::',
-            \   'filetype' : ['cpp', 'rust'],
-            \   })
-" detail:: の補完
-call smartinput#define_rule({
-            \   'at'       : '\%(\s\|::\)d;\%#',
-            \   'char'     : ';',
-            \   'input'    : '<BS>etail::',
-            \   'filetype' : ['cpp'],
-            \   })
-" llvm:: の補完
-call smartinput#define_rule({
-            \   'at'       : '\%(\s\|::\)l;\%#',
-            \   'char'     : ';',
-            \   'input'    : '<BS>lvm::',
-            \   'filetype' : ['cpp'],
-            \   })
-" クラス定義や enum 定義の場合は末尾に;を付け忘れないようにする
-call smartinput#define_rule({
-            \   'at'       : '\%(\<struct\>\|\<class\>\|\<enum\>\)\s*\w\+.*\%#',
-            \   'char'     : '{',
-            \   'input'    : '{};<Left><Left>',
-            \   'filetype' : ['cpp'],
-            \   })
-" template に続く <> を補完
-call smartinput#define_rule({
-            \   'at'       : '\<template\>\s*\%#',
-            \   'char'     : '<',
-            \   'input'    : '<><Left>',
-            \   'filetype' : ['cpp'],
-            \   })
-
-" Vim の正規表現内で \( が入力されたときの \) の補完
-call smartinput#define_rule({
-            \   'at'       : '\\\%(\|%\|z\)\%#',
-            \   'char'     : '(',
-            \   'input'    : '(\)<Left><Left>',
-            \   'filetype' : ['vim'],
-            \   'syntax'   : ['String'],
-            \   })
-call smartinput#define_rule({
-            \   'at'       : '\\[%z](\%#\\)',
-            \   'char'     : '<BS>',
-            \   'input'    : '<Del><Del><BS><BS><BS>',
-            \   'filetype' : ['vim'],
-            \   'syntax'   : ['String'],
-            \   })
-call smartinput#define_rule({
-            \   'at'       : '\\(\%#\\)',
-            \   'char'     : '<BS>',
-            \   'input'    : '<Del><Del><BS><BS>',
-            \   'filetype' : ['vim'],
-            \   'syntax'   : ['String'],
-            \   })
-
-" my-endwise のための設定（手が焼ける…）
-call smartinput#define_rule({
-            \   'at'    : '\%#',
-            \   'char'  : '<CR>',
-            \   'input' : '<CR><C-r>=endwize#crend()<CR>',
-            \   'filetype' : ['vim', 'ruby', 'sh', 'zsh', 'dachs'],
-            \   })
-call smartinput#define_rule({
-            \   'at'    : '\s\+\%#',
-            \   'char'  : '<CR>',
-            \   'input' : "<C-o>:call setline('.', substitute(getline('.'), '\\s\\+$', '', ''))<CR><CR><C-r>=endwize#crend()<CR>",
-            \   'filetype' : ['vim', 'ruby', 'sh', 'zsh', 'dachs'],
-            \   })
-call smartinput#define_rule({
-            \   'at'    : '^#if\%(\|def\|ndef\)\s\+.*\%#',
-            \   'char'  : '<CR>',
-            \   'input' : "<C-o>:call setline('.', substitute(getline('.'), '\\s\\+$', '', ''))<CR><CR><C-r>=endwize#crend()<CR>",
-            \   'filetype' : ['c', 'cpp'],
-            \   })
-
-" \s= を入力したときに空白を挟む
-call smartinput#map_to_trigger('i', '=', '=', '=')
-call smartinput#define_rule(
-    \ { 'at'    : '\s\%#'
-    \ , 'char'  : '='
-    \ , 'input' : '= '
-    \ , 'filetype' : ['c', 'cpp', 'vim', 'ruby']
-    \ })
-
-" でも連続した == となる場合には空白は挟まない
-call smartinput#define_rule(
-    \ { 'at'    : '=\s\%#'
-    \ , 'char'  : '='
-    \ , 'input' : '<BS>= '
-    \ , 'filetype' : ['c', 'cpp', 'vim', 'ruby']
-    \ })
-
-" でも連続した =~ となる場合には空白は挟まない
-call smartinput#map_to_trigger('i', '~', '~', '~')
-call smartinput#define_rule(
-    \ { 'at'    : '=\s\%#'
-    \ , 'char'  : '~'
-    \ , 'input' : '<BS>~ '
-    \ , 'filetype' : ['c', 'cpp', 'vim', 'ruby']
-    \ })
-
-" Vim は ==# と =~# がある
-call smartinput#map_to_trigger('i', '#', '#', '#')
-call smartinput#define_rule(
-    \ { 'at'    : '=[~=]\s\%#'
-    \ , 'char'  : '#'
-    \ , 'input' : '<BS># '
-    \ , 'filetype' : ['vim']
-    \ })
-
-" Vim help
-call smartinput#define_rule(
-    \ { 'at'    : '\%#'
-    \ , 'char'  : '|'
-    \ , 'input' : '||<Left>'
-    \ , 'filetype' : ['help']
-    \ })
-call smartinput#define_rule(
-    \ { 'at'    : '|\%#|'
-    \ , 'char'  : '<BS>'
-    \ , 'input' : '<Del><BS>'
-    \ , 'filetype' : ['help']
-    \ })
-call smartinput#map_to_trigger('i', '*', '*', '*')
-call smartinput#define_rule(
-    \ { 'at'    : '\%#'
-    \ , 'char'  : '*'
-    \ , 'input' : '**<Left>'
-    \ , 'filetype' : ['help']
-    \ })
-call smartinput#define_rule(
-    \ { 'at'    : '\*\%#\*'
-    \ , 'char'  : '<BS>'
-    \ , 'input' : '<Del><BS>'
-    \ , 'filetype' : ['help']
-    \ })
-"}}}
-
 " caw.vim {{{
 " デフォルトマッピングを OFF
 let g:caw_no_default_keymappings = 1
@@ -2278,7 +2012,6 @@ let g:unite_source_alignta_preset_options = [
 
 " endwize.vim "{{{
 " 自動挿入された end の末尾に情報を付け加える e.g. end # if hoge
-
 let g:endwize_add_verbose_info_filetypes = ['c', 'cpp']
 AutocmdFT dachs
     \ let b:endwize_addition = '\=submatch(0)=="let" ? "in" : "end"' |
@@ -2291,6 +2024,9 @@ AutocmdFT vimspec
     \ let b:endwize_words = 'Describe,Context,It,Before,After' |
     \ let b:endwize_syngroups = 'vimspecCommand' |
     \ let b:endwize_comment = '"'
+if !s:meet_neocomplete_requirements
+    inoremap <CR> <CR><C-r>=endwize#crend()<CR>
+endif
 "}}}
 
 " open-browser.vim "{{{
