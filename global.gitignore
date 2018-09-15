@@ -1,7 +1,14 @@
-# Editors' backup files
-.\#*
-.*.sw?
-.sw?
+# Emacs
+*~
+\#*\#
+
+# Vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+/doc/tags
 
 # Platform-dependant data
 .DS_Store
@@ -26,3 +33,14 @@ credential.*
 
 # A directory containing Python's virtual environment
 .venv
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Ruby
+*.gem
+*.rbc
