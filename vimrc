@@ -1216,40 +1216,14 @@ function! s:shiba(args) abort
 endfunction
 command! -nargs=? -complete=file Shiba call <SID>shiba([<f-args>])
 
-" Note: utop does not work on Vim 8.1.26
-let s:repl_programs = {
-\   'ruby': ['pry', 'irb'],
-\   'python': ['ptpython', 'python'],
-\   'ocaml': ['ocaml'],
-\   'javascript': ['node'],
-\   'typescript': ['ts-node'],
-\   'haskell': ['ghci'],
-\ }
-function! s:start_repl(args) abort
-    let ft = &filetype
-    if !has_key(s:repl_programs, ft)
-        echom 'No REPL program found for this filetype'
-        return
+" scope 演算子用に ;; を :: に置き換える
+function! s:double_semi() abort
+    if getline('.')[col('.')-2] ==# ';'
+        return "\<BS>::"
     endif
-    let exe = ''
-    for cmd in s:repl_programs[ft]
-        if executable(cmd)
-            let exe = cmd
-            break
-        endif
-    endfor
-    if exe ==# ''
-        echom 'No REPL executable for filetype ' . ft . ' was found. Candidates: ' . string(s:repl_programs[ft])
-        return
-    endif
-    let bufnr = term_start([exe] + a:args, {
-                \   'term_name': 'REPL: ' . exe,
-                \   'vertical': 1,
-                \   'term_finish': 'close',
-                \ })
-    echo 'Started REPL at buffer ' . bufnr
+    return ';'
 endfunction
-command! -nargs=* Repl call <SID>start_repl([<f-args>])
+AutocmdFT cpp,rust inoremap <silent><buffer><expr>; <SID>double_semi()
 "}}}
 
 " 追加のハイライト {{{
