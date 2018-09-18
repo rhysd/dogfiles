@@ -462,17 +462,17 @@ function zsh-plugin-update() {
         if [ -d "$plugin_dir" ]; then
             # Update
             echo "Updating ${plugin}..."
-            builtin cd "$plugin_dir"
+            chpwd_functions= builtin cd "$plugin_dir"
             git pull
         else
             echo "Installing ${plugin}..."
-            builtin cd "$ZSHPLUGIN"
+            chpwd_functions= builtin cd "$ZSHPLUGIN"
             git clone "$plugin_url"
         fi
         echo
     done
 
-    cd "$cwd"
+    chpwd_functions= builtin cd "$cwd"
 }
 
 # プラグイン読み込み
