@@ -2307,6 +2307,7 @@ let g:ale_set_balloons = 0
 
 nmap <Leader>al <Plug>(ale_next)
 let g:ale_vim_vint_show_style_issues = 0
+let g:ale_sh_shfmt_options = '-i 4'
 let s:ale_fixers = {
     \   'javascript': ['eslint', 'prettier'],
     \   'typescript': ['tslint', 'prettier'],
@@ -2316,6 +2317,7 @@ let s:ale_fixers = {
     \   'python': ['yapf'],
     \   'rust': ['rustfmt'],
     \   'json': ['fixjson'],
+    \   'sh': ['shfmt'],
     \ }
 let g:ale_linters = {
     \   'python': ['pylint', 'mypy'],
