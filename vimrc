@@ -1099,7 +1099,7 @@ if neobundle#load_cache()
     call neobundle#add('fatih/vim-go', {
                 \ 'lazy' : 1,
                 \ 'autoload' : {
-                \     'filetypes' : 'go',
+                \     'filetypes' : ['go', 'gomod'],
                 \     'commands' : ['GoImport', 'GoDrop', 'GoDef', 'GoVet', 'GoDoc', 'GoLint', 'GoRename', 'GoImports']
                 \   }
                 \ })
@@ -1453,6 +1453,9 @@ function! s:setup_godoc() abort
     nnoremap<buffer>? :<C-u>echo 'q=quit, d=down, u=up, o=outline'<CR>
 endfunction
 AutocmdFT godoc call <SID>godoc_settings()
+
+Autocmd BufRead,BufNew,BufNewFile go.mod setlocal filetype=gomod
+Autocmd BufRead,BufNew,BufNewFile go.sum setlocal filetype=
 " }}}
 
 " Rust {{{
