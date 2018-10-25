@@ -1490,7 +1490,6 @@ let g:rust_doc#define_map_K = 0
 function! s:setup_rust() abort
     nnoremap <buffer><silent>K :<C-u>Unite rust/doc:cursor -no-empty -immediately<CR>
     vnoremap <buffer><silent>K :Unite rust/doc:visual -no-empty -immediately<CR>
-    " https://github.com/rhysd/rust.vim/tree/rust-test-command
     noremap <buffer><Leader>t :<C-u>RustTest<CR>
 endfunction
 AutocmdFT rust call <SID>setup_rust()
