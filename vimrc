@@ -1414,6 +1414,26 @@ Autocmd BufRead,BufNew,BufNewFile *.pyi setlocal filetype=python
 "}}}
 
 " Go {{{
+function! s:toggle_access() abort
+    let before = expand('<cword>')
+    if before ==# ''
+        echoerr 'No identifier found under cursor'
+        return
+    endif
+    let after = ''
+    let c = before[0]
+    if c =~# '\l'
+        let after = toupper(c) . before[1:]
+    elseif before[0] =~# '\u'
+        let after = tolower(c) . before[1:]
+    endif
+    if after ==# ''
+        echoerr "Word '" . before . "' does not start with uppder case nor lower case"
+        return
+    endif
+    execute 'GoRename' after
+endfunction
+
 function! s:golang_settings() abort
     setlocal noexpandtab
 
@@ -1442,6 +1462,7 @@ function! s:golang_settings() abort
     nnoremap <buffer><Leader>gr :<C-u>GoRename<Space>
     nnoremap <buffer><Leader>gi :<C-u>GoInfo<CR>
     nnoremap <buffer><Leader>gn :<C-u>GoSameIds<CR>
+    command! -buffer -nargs=0 -bar GoToggleAccess call <SID>toggle_access()
 endfunction
 
 AutocmdFT go,go.test call <SID>golang_settings()
