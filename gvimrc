@@ -74,7 +74,7 @@ if has('mac')
         bwipeout!
         quit
     endfunction
-    command! -nargs=0 ShowOnSafari call <SID>show_on_safari()
+    command! -nargs=0 -bar ShowOnSafari call <SID>show_on_safari()
 elseif has('unix')
     " IM の起動キーを gVim に教える
     " set imactivatekey=S-space
