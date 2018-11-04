@@ -762,6 +762,7 @@ if neobundle#load_cache()
     call neobundle#add('rhysd/plantuml-syntax')
     call neobundle#add('machakann/vim-highlightedyank')
     call neobundle#add('PProvost/vim-ps1')
+    call neobundle#add('rhysd/vim-github-actions')
 
     " unite.vim sources
     call neobundle#add('Shougo/unite-outline')
