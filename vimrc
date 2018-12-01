@@ -763,6 +763,7 @@ if neobundle#load_cache()
     call neobundle#add('machakann/vim-highlightedyank')
     call neobundle#add('PProvost/vim-ps1')
     call neobundle#add('rhysd/vim-github-actions')
+    call neobundle#add('rhysd/vim-notes-cli')
 
     " unite.vim sources
     call neobundle#add('Shougo/unite-outline')
@@ -1474,7 +1475,7 @@ function! s:setup_godoc() abort
     nnoremap<buffer>o :<C-u>Unite outline<CR>
     nnoremap<buffer>? :<C-u>echo 'q=quit, d=down, u=up, o=outline'<CR>
 endfunction
-AutocmdFT godoc call <SID>godoc_settings()
+AutocmdFT godoc call <SID>setup_godoc()
 
 Autocmd BufRead,BufNew,BufNewFile go.mod setlocal filetype=gomod
 Autocmd BufRead,BufNew,BufNewFile go.sum setlocal filetype=

@@ -126,6 +126,7 @@ function zsh-update-comp-defs() {
         https://raw.githubusercontent.com/docker/compose/master/contrib/completion/zsh/_docker-compose
         https://raw.githubusercontent.com/motemen/ghq/master/zsh/_ghq
         https://raw.githubusercontent.com/jwilm/alacritty/master/alacritty-completions.zsh
+        https://raw.githubusercontent.com/rhysd/notes-cli/master/completions/zsh/_notes
     )
 
     for url in $urls; do
