@@ -586,6 +586,14 @@ if hash go 2> /dev/null; then
     export PATH=$GOPATH/bin:$PATH
 fi
 
+# notes-cli
+if [ -d "$HOME/Dropbox/notes" ]; then
+    export NOTES_CLI_HOME="$HOME/Dropbox/notes"
+else
+    export NOTES_CLI_HOME="$HOME/.vim/notes"
+fi
+export NOTES_CLI_EDITOR="vim"
+
 # }}}
 
 ############
