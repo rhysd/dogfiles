@@ -867,14 +867,6 @@ if neobundle#load_cache()
                 \   }
                 \ })
 
-    call neobundle#add('glidenote/memolist.vim', {
-                \ 'lazy' : 1,
-                \ 'depends' : 'Shougo/unite.vim',
-                \ 'autoload' : {
-                \     'commands' : ['MemoNew', 'MemoList', 'MemoGrep']
-                \   }
-                \ })
-
     call neobundle#add('easymotion/vim-easymotion', {
                 \ 'lazy' : 1,
                 \ 'autoload' : {
@@ -2125,37 +2117,6 @@ unlet s:bundle
 let g:airline#extensions#whitespace#enabled = 0
 "}}}
 
-" memolist.vim "{{{
-nnoremap <Leader>mn :<C-u>MemoNew<CR>
-nnoremap <silent><Leader>ml :<C-u>call <SID>memolist()<CR>
-nnoremap <Leader>mg :<C-u>execute 'Unite' 'grep:'.g:memolist_path '-auto-preview'<CR>
-
-if isdirectory(expand('~/Dropbox/memo'))
-    let g:memolist_path = expand('~/Dropbox/memo')
-else
-    let s:dir = expand('~/.vim/memo')
-    if !isdirectory(s:dir)
-        call mkdir(s:dir, 'p')
-    endif
-    let g:memolist_path = s:dir
-    unlet s:dir
-endif
-
-let g:memolist_memo_suffix = 'md'
-let g:memolist_unite = 1
-
-function! s:memolist() abort
-    " delete swap files because they make unite auto preview hung up
-    for swap in glob(g:memolist_path.'/.*.sw?', 1, 1)
-        if swap !~# '^\.\+$' && filereadable(swap)
-            call delete(swap)
-        endif
-    endfor
-
-    MemoList
-endfunction
-"}}}
-
 " migemo-search.vim {{{
 if executable('cmigemo')
     cnoremap <expr><CR> getcmdtype() =~# '^[/?]$' ? migemosearch#replace_search_word()."\<CR>zv" : "\<CR>"
@@ -2419,6 +2380,11 @@ map z#  <Plug>(asterisk-z#)
 map gz# <Plug>(asterisk-gz#)
 " }}}
 
+" vim-notes-cli {{{
+nnoremap <Leader>mn :<C-u>NotesNew<CR>
+nnoremap <Leader>ml :<C-u>NotesList<CR>
+nnoremap <Leader>ms :<C-u>NotesSelect<CR>
+" }}}
 " プラットフォーム依存な設定をロードする "{{{
 function! SourceIfExist(path) abort
     if filereadable(a:path)
