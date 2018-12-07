@@ -722,14 +722,12 @@ if neobundle#load_cache()
     call neobundle#add('kana/vim-textobj-user')
     call neobundle#add('thinca/vim-prettyprint')
     call neobundle#add('kana/vim-operator-user')
-    call neobundle#add('kana/vim-niceblock')
     call neobundle#add('h1mesuke/vim-alignta')
     call neobundle#add('rhysd/clever-f.vim')
     call neobundle#add('airblade/vim-gitgutter')
     call neobundle#add('kana/vim-submode')
     call neobundle#add('vim-airline/vim-airline')
     call neobundle#add('vim-airline/vim-airline-themes')
-    call neobundle#add('rhysd/migemo-search.vim')
     call neobundle#add('rhysd/conflict-marker.vim')
     call neobundle#add('rhysd/vim-window-adjuster')
     call neobundle#add('Shougo/neomru.vim')
@@ -737,7 +735,6 @@ if neobundle#load_cache()
     call neobundle#add('rhysd/vim-dachs')
     call neobundle#add('rust-lang/rust.vim')
     call neobundle#add('rhysd/rust-doc.vim')
-    call neobundle#add('rhysd/vim-rustpeg')
     call neobundle#add('cespare/vim-toml')
     call neobundle#add('slim-template/vim-slim')
     call neobundle#add('leafgarland/typescript-vim')
@@ -950,13 +947,6 @@ if neobundle#load_cache()
                 \ 'lazy' : 1,
                 \ 'autoload' : {
                 \       'commands' : ['Gstatus', 'Gcommit', 'Gwrite', 'Gdiff', 'Gblame', 'Git', 'Ggrep']
-                \   }
-                \ })
-
-    call neobundle#add('rhysd/wandbox-vim', {
-                \ 'lazy' : 1,
-                \ 'autoload' : {
-                \       'commands' : [{'name' : 'Wandbox', 'complete' : 'customlist,wandbox#complete_command'}, 'WandboxOptionList']
                 \   }
                 \ })
 
@@ -1395,7 +1385,8 @@ endfunction
 AutocmdFT json inoremap <buffer>: :<C-o>:call <SID>json_colon()<CR>
 AutocmdFT json inoremap <buffer><C-j> <End>,<CR>
 AutocmdFT json SetIndent 2
-AutocmdFT json setlocal foldmethod=syntax foldlevel=99
+" foldmethod=syntax is not allowed with neocomplete
+" AutocmdFT json setlocal foldmethod=syntax foldlevel=99
 " }}}
 
 " Python {{{
@@ -2117,12 +2108,6 @@ unlet s:bundle
 let g:airline#extensions#whitespace#enabled = 0
 "}}}
 
-" migemo-search.vim {{{
-if executable('cmigemo')
-    cnoremap <expr><CR> getcmdtype() =~# '^[/?]$' ? migemosearch#replace_search_word()."\<CR>zv" : "\<CR>"
-endif
-"}}}
-
 " vim-fugitive {{{
 nnoremap <Leader>gs :<C-u>Gstatus<CR>
 nnoremap <Leader>gC :<C-u>Gcommit -v<CR>
@@ -2162,12 +2147,6 @@ let g:EasyMotion_smartcase = 1
 let g:EasyMotion_verbose = 0
 map : <Plug>(easymotion-overwin-f2)
 " }}}
-
-" wandbox-vim {{{
-let g:wandbox#echo_command = 'echomsg'
-let g:wandbox#default_compiler = get(g:, 'wandbox#default_compiler', {'cpp' : 'gcc-head,clang-head'})
-noremap <Leader>wb :<C-u>Wandbox<CR>
-"}}}
 
 " tern_for_vim {{{
 let s:hooks = neobundle#get_hooks('tern_for_vim')
