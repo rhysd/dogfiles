@@ -185,8 +185,6 @@ Autocmd BufRead,BufNew,BufNewFile gitconfig setlocal ft=gitconfig
 Autocmd BufRead,BufNew,BufNewFile *.plt,*.plot,*.gnuplot setlocal ft=gnuplot
 " Ruby の guard 用ファイル
 Autocmd BufRead,BufNew,BufNewFile Guardfile setlocal ft=ruby
-" Go
-Autocmd BufRead,BufNew,BufNewFile *_test.go setlocal ft=go.test
 " Swift
 Autocmd BufRead,BufNew,BufNewFile *.swift setlocal ft=swift
 " Mal,Crisp
@@ -1450,7 +1448,7 @@ function! s:golang_settings() abort
     command! -buffer -nargs=0 -bar GoToggleAccess call <SID>toggle_access()
 endfunction
 
-AutocmdFT go,go.test call <SID>golang_settings()
+AutocmdFT go call <SID>golang_settings()
 function! s:setup_godoc() abort
     nnoremap<buffer>q :<C-u>quit<CR>
     nnoremap<buffer>d <C-d>
@@ -2364,6 +2362,7 @@ nnoremap <Leader>mn :<C-u>NotesNew<CR>
 nnoremap <Leader>ml :<C-u>NotesList<CR>
 nnoremap <Leader>ms :<C-u>NotesSelect<CR>
 " }}}
+
 " プラットフォーム依存な設定をロードする "{{{
 function! SourceIfExist(path) abort
     if filereadable(a:path)
