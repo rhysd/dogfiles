@@ -653,9 +653,9 @@ if exists(':terminal')
         execute 'topleft' winwidth(0) >= 160 ? 'vsplit' : 'split' ' | terminal ++curwin ++close'
     endfunction
     nnoremap <silent><Space><Space> :<C-u>call <SID>open_terminal()<CR>
-    " XXX: This kills original <Esc><Esc>, which sends raw '<Esc>' to
-    " shell
+    " XXX: This kills original <Esc><Esc>, which sends raw '<Esc>' to shell
     tmap <Esc><Esc> <Esc>N
+    Autocmd TerminalOpen * if &buftype ==# 'terminal' | setlocal listchars= | endif
 endif
 "}}}
 
