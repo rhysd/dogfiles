@@ -12,6 +12,14 @@
 	adu = add -u :/
 	bl  = blame
 	br  = branch
+	checkout-pr = "!f(){ \
+			if [ -z \"$1\" ]; then\
+				echo 'Usage: git checkout-pr {PR number}' 1>&2;\
+				exit 1;\
+			fi;\
+			git fetch origin \"pull/$1/head:pr-$1\";\
+			git checkout \"pr-$1\";\
+		};f"
 	cl  = clone
 	cm  = commit -v
 	cma = commit -v --amend
@@ -19,6 +27,7 @@
 	cmm = commit -m
 	co  = checkout
 	cob = checkout -b
+	copr = checkout-pr
 	di  = diff
 	dic = diff --cached
 	dis = diff --stat
@@ -32,6 +41,8 @@
 	pl  = pull
 	plr = pull --rebase
 	ps  = push
+	pushf = push --force-with-lease
+	pr  = brws --pr
 	rb  = rebase
 	rba = rebase --abort
 	rbc = rebase --continue
@@ -41,16 +52,6 @@
 	rmr = rm -r
 	rmrc = rm -r --cached
 	st  = status -sb
-	pushf = push --force-with-lease
-	checkout-pr = "!f(){ \
-			if [ -z \"$1\" ]; then\
-				echo 'Usage: git checkout-pr {PR number}' 1>&2;\
-				exit 1;\
-			fi;\
-			git fetch origin \"pull/$1/head:pr-$1\";\
-			git checkout \"pr-$1\";\
-		};f"
-	copr = checkout-pr
 [diff]
 	compactionHeuristic = true
 [push]
