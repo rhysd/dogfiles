@@ -587,8 +587,12 @@ if dein#load_state(s:dein_cache_dir)
                 \   'on_map' : '<Plug>(easymotion-',
                 \ })
     call dein#add('rhysd/vim-grammarous', {
-                \   'lazy' : 1, 
+                \   'lazy' : 1,
                 \   'on_cmd' : 'GrammarousCheck',
+                \ })
+    call dein#add('rhysd/vim-notes-cli', {
+                \   'lazy' : 1,
+                \   'on_cmd' : ['Notes', 'NotesSelect', 'NotesNew', 'NotesList', 'NotesGrep'],
                 \ })
 
     if s:on_nyaovim
