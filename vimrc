@@ -759,6 +759,7 @@ if neobundle#load_cache()
     call neobundle#add('PProvost/vim-ps1')
     call neobundle#add('rhysd/vim-github-actions')
     call neobundle#add('rhysd/vim-notes-cli')
+    call neobundle#add('rhysd/vim-syntax-codeowners')
 
     " unite.vim sources
     call neobundle#add('Shougo/unite-outline')
