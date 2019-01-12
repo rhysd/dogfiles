@@ -68,7 +68,7 @@ alias d=docker
 # global alias
 alias -g G='| grep'
 alias -g GI='| grep -i'
-alias -g L='| less'
+alias -g L='| less -R'
 alias -g V='| vim --not-a-term -R -'
 alias -g D='> /dev/null 2>&1'
 alias -g X='| xargs'
