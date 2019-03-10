@@ -16,7 +16,7 @@ augroup MyVimrc
 augroup END
 command! -nargs=* Autocmd autocmd MyVimrc <args>
 command! -nargs=* AutocmdFT autocmd MyVimrc FileType <args>
-Autocmd VimEnter,WinEnter init.vim syn keyword myVimAutocmd Autocmd AutocmdFT contained containedin=vimIsCommand
+Autocmd VimEnter,WinEnter init.vim,nvimrc syn keyword myVimAutocmd Autocmd AutocmdFT contained containedin=vimIsCommand
 Autocmd ColorScheme * highlight def link myVimAutocmd vimAutoCmd
 
 "エンコーディング
@@ -117,8 +117,8 @@ set history=100
 " swap ファイル
 set noswapfile
 " 編集履歴を保存して終了する
-if ! isdirectory($HOME.'/.nvim/undo')
-    call mkdir($HOME.'/.nvim/undo', 'p')
+if !isdirectory($HOME . '/.nvim/undo')
+    call mkdir($HOME . '/.nvim/undo', 'p')
 endif
 set undodir=~/.nvim/undo
 set undofile
@@ -143,8 +143,6 @@ set wildmenu
 Autocmd CursorMoved,CursorMovedI,WinLeave * setlocal nocursorline
 Autocmd CursorHold,CursorHoldI,WinEnter * setlocal cursorline
 
-" *.md で読み込む filetype を変更（デフォルトは modula2）
-Autocmd BufRead,BufNew,BufNewFile *.md,*.markdown,*.mkd setlocal ft=markdown
 " git config file
 Autocmd BufRead,BufNew,BufNewFile gitconfig setlocal ft=gitconfig
 " Ruby の guard 用ファイル
@@ -171,7 +169,6 @@ command! -nargs=0 GetHighlightingGroup
             \ echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '>trans<'
             \ . synIDattr(synID(line('.'),col('.'),0),'name') . '>lo<'
             \ . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
-
 
 " スクリプトに実行可能属性を自動で付ける
 if executable('chmod')
@@ -501,7 +498,7 @@ command! -nargs=* -complete=shellcmd T call <SID>start_term(<q-args>)
 tnoremap <Esc><Esc> <C-\><C-n>
 
 " help のマッピング
-function! s:on_FileType_help_define_mappings()
+function! s:on_FileType_help_define_mappings() abort
     if &l:readonly
         " カーソル下のタグへ飛ぶ
         nnoremap <buffer>J <C-]>
@@ -521,13 +518,16 @@ endfunction
 AutocmdFT help call s:on_FileType_help_define_mappings()
 
 " quickfix のマッピング
-AutocmdFT qf nnoremap <buffer><silent> q :<C-u>cclose<CR>
-AutocmdFT qf nnoremap <buffer><silent> j :<C-u>cnext<CR>:copen<CR>
-AutocmdFT qf nnoremap <buffer><silent> k :<C-u>cprevious<CR>:copen<CR>
-AutocmdFT qf nnoremap <buffer><silent> J :<C-u>cnfile<CR>:copen<CR>
-AutocmdFT qf nnoremap <buffer><silent> K :<C-u>cpfile<CR>:copen<CR>
-AutocmdFT qf nnoremap <buffer><silent> l :<C-u>clist<CR>
-AutocmdFT qf nnoremap <buffer><CR> <CR>
+function! s:on_filetype_qf() abort
+    nnoremap <buffer><silent> q :<C-u>cclose<CR>
+    nnoremap <buffer><silent> j :<C-u>cnext<CR>:copen<CR>
+    nnoremap <buffer><silent> k :<C-u>cprevious<CR>:copen<CR>
+    nnoremap <buffer><silent> J :<C-u>cnfile<CR>:copen<CR>
+    nnoremap <buffer><silent> K :<C-u>cpfile<CR>:copen<CR>
+    nnoremap <buffer><silent> l :<C-u>clist<CR>
+    nnoremap <buffer><CR> <CR>
+endfunction
+AutocmdFT qf call s:on_filetype_qf()
 
 " dein.vim
 function! s:install_dein() abort
@@ -758,11 +758,17 @@ endif
 let g:gitgutter_map_keys = 0
 let g:gitgutter_realtime = 0
 let g:gitgutter_eager = 0
+nnoremap <Leader>gg :<C-u>GitGutterLineHighlightsToggle<CR>
 nnoremap <leader>ga :<C-u>GitGutterStageHunk<CR>
 nnoremap <leader>gr :<C-u>GitGutterRevertHunk<CR>
 nnoremap <leader>gp :<C-u>GitGutterPreviewHunk<CR>
 nnoremap <leader>g] :<C-u>GitGutterNextHunk<CR>
 nnoremap <leader>g[ :<C-u>GitGutterPrevHunk<CR>
+nnoremap <Leader>gh :<C-u>GitGutterStageHunk<CR>
+omap ih <Plug>GitGutterTextObjectInnerPending
+omap ah <Plug>GitGutterTextObjectOuterPending
+xmap ih <Plug>GitGutterTextObjectInnerVisual
+xmap ah <Plug>GitGutterTextObjectOuterVisual
 
 " EasyMotion
 let g:EasyMotion_do_mapping = 0
