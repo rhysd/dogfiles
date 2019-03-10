@@ -58,6 +58,7 @@ alias gpv='git-peco-vim'
 alias l=ls
 alias v=vim
 alias gv=gvim
+alias n=nvim
 alias t=time
 alias ng=noglob
 alias g=git
