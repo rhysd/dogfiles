@@ -461,18 +461,42 @@ nnoremap <expr>h col('.') == 1 && foldlevel(line('.')) > 0 ? 'zc' : 'h'
 nnoremap <expr>l foldclosed(line('.')) != -1 ? 'zo' : 'l'
 " colorcolumn
 nnoremap <expr><Leader>cl ":\<C-u>set colorcolumn=".(&cc == 0 ? v:count == 0 ? col('.') : v:count : 0)."\<CR>"
-function! s:start_term() abort
-    vsplit
-    if exists('s:prev_term') && bufexists(s:prev_term)
-        execute 'buffer' s:prev_term
+function! s:start_term(args) abort
+    if exists('s:term_win')
+        let winnr = win_id2win(s:term_win)
+        if winnr > 0
+            execute winnr . 'wincmd w'
+            let job_id = &channel
+            if job_id != 0 && a:args !=# ''
+                call jobsend(job_id, [a:args])
+            endif
+            startinsert
+            return
+        endif
+    endif
+
+    " 2 means height of status line
+    let s:term_win = nvim_open_win(bufnr('%'), v:true, &columns, &lines - 2, {
+                \   'relative': 'editor',
+                \   'row': 0,
+                \   'col': 0,
+                \ })
+
+    if exists('s:term_bufnr') && bufexists(s:term_bufnr)
+        execute 'buffer' s:term_bufnr
+        if a:args !=# ''
+            call jobsend(getbufvar(s:term_bufnr, '&channel'), [a:args])
+        endif
         startinsert
         return
     endif
-    terminal
+
+    execute 'terminal' a:args
     startinsert
-    let s:prev_term = bufnr('%')
+    let s:term_bufnr = bufnr('%')
 endfunction
-nnoremap <Leader>t :<C-u>call <SID>start_term()<CR>
+nnoremap <Leader>t :<C-u>call <SID>start_term('')<CR>
+command! -nargs=* -complete=shellcmd T call <SID>start_term(<q-args>)
 " leave from terminal mode
 tnoremap <Esc><Esc> <C-\><C-n>
 
