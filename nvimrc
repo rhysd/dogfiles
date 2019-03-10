@@ -555,7 +555,6 @@ if dein#load_state(s:dein_cache_dir)
     call dein#add(s:dein_repo_path)
     call dein#add('rhysd/wallaby.vim')
     call dein#add('rhysd/vim-color-spring-night')
-    call dein#add('rhysd/vim-dachs')
     call dein#add('airblade/vim-gitgutter')
     call dein#add('vim-airline/vim-airline')
     call dein#add('vim-airline/vim-airline-themes')
@@ -578,12 +577,12 @@ if dein#load_state(s:dein_cache_dir)
                 \   'on_map' : [['xo', 'ai'], ['xo', 'aI'], ['xo', 'ii'], ['xo', 'iI']],
                 \ })
     call dein#add('sgur/vim-textobj-parameter', {
-                \   'depends' : 'kana/vim-textobj-user',
+                \   'depends' : 'vim-textobj-user',
                 \   'lazy': 1,
                 \   'on_map' : [['xo', 'a,'], ['xo', 'i,']],
                 \ })
     call dein#add('kana/vim-textobj-entire', {
-                \   'depends' : 'kana/vim-textobj-user',
+                \   'depends' : 'vim-textobj-user',
                 \   'lazy' : 1,
                 \   'on_map' : [['xo', 'ae'], ['xo', 'ie']],
                 \ })
@@ -618,6 +617,30 @@ if dein#load_state(s:dein_cache_dir)
                 \   'lazy' : 1,
                 \   'on_cmd' : ['Notes', 'NotesSelect', 'NotesNew', 'NotesList', 'NotesGrep'],
                 \ })
+    call dein#add('rhysd/git-messenger.vim', {
+                \   'lazy' : 1,
+                \   'on_cmd' : 'GitMessenger',
+                \   'on_map' : '<Plug>(git-messenger',
+                \ })
+    call dein#add('kana/vim-operator-user', {
+                \   'lazy' : 1,
+                \ })
+    call dein#add('kana/vim-operator-replace', {
+                \   'lazy' : 1,
+                \   'depends' : 'vim-operator-user',
+                \   'on_map' : '<Plug>(operator-replace)',
+                \ })
+    call dein#add('rhysd/vim-operator-surround', {
+                \   'lazy' : 1,
+                \   'depends' : 'vim-operator-user',
+                \   'on_map' : '<Plug>(operator-surround-'
+                \ })
+    call dein#add('justinmk/vim-dirvish', {
+                \   'lazy' : 1,
+                \   'on_func' : 'dirvish#open',
+                \   'on_cmd' : 'Dirvish',
+                \ })
+
 
     if s:on_nyaovim
         let s:opts = {}
@@ -798,6 +821,31 @@ command! -nargs=0 -bar -bang ALEToggleFix call <SID>toggle_ale_fix(<bang>0)
 if executable('/usr/local/opt/llvm/bin/llc')
     let g:ale_llvm_llc_executable = '/usr/local/opt/llvm/bin/llc'
 endif
+
+" git-messenger
+let g:git_messenger_no_default_mappings = 1
+nmap <C-w>m <Plug>(git-messenger)
+
+" operator-replace
+map <Leader>r <Plug>(operator-replace)
+
+" operator-surround
+map <silent>gy <Plug>(operator-surround-append)
+map <silent>gd <Plug>(operator-surround-delete)
+map <silent>gc <Plug>(operator-surround-replace)
+
+" dirvish
+let g:loaded_netrwPlugin = 1
+" Shows all files in the order returned by glob()
+let g:dirvish_mode = 2
+function! s:on_dirvish() abort
+    nnoremap <buffer><silent>l :<C-u>.call dirvish#open('edit', 0)<CR>
+    nmap <buffer><silent>h <Plug>(dirvish_up)
+    nnoremap <buffer><silent>O :<C-u>execute 'OpenBrowser' getline('.')<CR>
+    nnoremap <buffer>~ :<C-u>Dirvish ~<CR>
+endfunction
+AutocmdFT dirvish call <SID>on_dirvish()
+nnoremap <silent><Leader><Leader> :<C-u>execute 'Dirvish' expand('%:p:h')<CR>
 
 if s:on_nyaovim
     " nyaovim-mini-browser
