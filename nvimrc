@@ -243,14 +243,13 @@ endfunction
 " あるウィンドウを他のウィンドウから閉じる "{{{
 function! s:is_target_window(winnr)
     let target_filetype = ['ref', 'unite', 'vimfiler']
-    let target_buftype  = ['help', 'quickfix', 'terminal']
+    let target_buftype  = ['help', 'quickfix', 'terminal', 'nofile']
     let bufnr = winbufnr(a:winnr)
     return index(target_filetype, getbufvar(bufnr, '&filetype')) >= 0 ||
                 \ index(target_buftype, getbufvar(bufnr, '&buftype')) >= 0
 endfunction
 
-nnoremap <silent><C-q>
-            \ :<C-u>call <SID>close_windows_like('s:is_target_window(winnr)')<CR>
+nnoremap <silent><C-q> :<C-u>call <SID>close_windows_like('s:is_target_window(winnr)')<CR>
 "}}}
 
 " エンコーディング指定オープン
@@ -609,10 +608,6 @@ if dein#load_state(s:dein_cache_dir)
                 \   'lazy' : 1,
                 \   'on_map' : '<Plug>(easymotion-',
                 \ })
-    call dein#add('rhysd/vim-grammarous', {
-                \   'lazy' : 1,
-                \   'on_cmd' : 'GrammarousCheck',
-                \ })
     call dein#add('rhysd/vim-notes-cli', {
                 \   'lazy' : 1,
                 \   'on_cmd' : ['Notes', 'NotesSelect', 'NotesNew', 'NotesList', 'NotesGrep'],
@@ -641,6 +636,9 @@ if dein#load_state(s:dein_cache_dir)
                 \   'on_cmd' : 'Dirvish',
                 \ })
 
+    " Completion
+    call dein#add('Shougo/deoplete.nvim')
+    call dein#add('autozimu/LanguageClient-neovim', {'build' : 'bash install.sh'})
 
     if s:on_nyaovim
         let s:opts = {}
@@ -852,6 +850,35 @@ function! s:on_dirvish() abort
 endfunction
 AutocmdFT dirvish call <SID>on_dirvish()
 nnoremap <silent><Leader><Leader> :<C-u>execute 'Dirvish' expand('%:p:h')<CR>
+
+" deoplete
+let g:deoplete#enable_at_startup = 1
+
+" LanguageClient-neovim
+let g:LanguageClient_serverCommands = {
+    \   'rust': ['rls'],
+    \   'python': ['pyls'],
+    \   'javascript': ['javascript-typescript-stdio'],
+    \   'typescript': ['javascript-typescript-stdio'],
+    \ }
+
+function! s:lc_setup() abort
+    command! -buffer Lookup call LanguageClient#textDocument_hover()
+    command! -buffer GoToDef call LanguageClient#textDocument_definition()
+    command! -buffer GoToTypedef call LanguageClient#textDocument_typeDefinition()
+    command! -buffer GoToImpl call LanguageClient#textDocument_implementation()
+    command! -buffer Rename call LanguageClient#textDocument_rename()
+
+    nnoremap <buffer><Leader>ll :<C-u>Lookup<CR>
+    nnoremap <buffer><Leader>ld :<C-u>GoToDef<CR>
+    nnoremap <buffer><Leader>lt :<C-u>GoToTypedef<CR>
+    nnoremap <buffer><Leader>li :<C-u>GoToImpl<CR>
+    nnoremap <buffer><silent>lr :<C-u>Rename<CR>
+
+    nnoremap <buffer><silent>K :<C-u>Lookup<CR>
+    nnoremap <buffer><silent>gd :<C-u>GoToDef<CR>
+endfunction
+AutocmdFT * if has_key(g:LanguageClient_serverCommands, &filetype) | call <SID>lc_setup() | endif
 
 if s:on_nyaovim
     " nyaovim-mini-browser
