@@ -329,6 +329,8 @@ noremap gm m
 nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>
 "{数値}<Tab>でその行へ移動．それ以外だと通常の<Tab>の動きに
 noremap <expr><Tab> v:count !=0 ? "G" : "\<Tab>zvzz"
+" タブで補完候補に移動
+inoremap <silent><expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 " コマンドラインウィンドウ
 " 検索後画面の中心に。
 nnoremap n nzvzz
@@ -450,8 +452,6 @@ endfunction
 Autocmd CmdwinEnter * call s:cmdline_window_settings()
 " 対応する括弧間の移動
 nmap 0 %
-" タブ文字を入力
-inoremap <C-Tab> <C-v><Tab>
 " 畳み込みを開く
 nnoremap <expr>h col('.') == 1 && foldlevel(line('.')) > 0 ? 'zc' : 'h'
 nnoremap <expr>l foldclosed(line('.')) != -1 ? 'zo' : 'l'
@@ -527,6 +527,12 @@ function! s:on_filetype_qf() abort
     nnoremap <buffer><CR> <CR>
 endfunction
 AutocmdFT qf call s:on_filetype_qf()
+
+" ファイルタイプごとの設定
+function! s:python_settings() abort
+    syntax keyword Constant self
+endfunction
+AutocmdFT python call <SID>python_settings()
 
 " dein.vim
 function! s:install_dein() abort
@@ -639,6 +645,8 @@ if dein#load_state(s:dein_cache_dir)
     " Completion
     call dein#add('Shougo/deoplete.nvim')
     call dein#add('autozimu/LanguageClient-neovim', {'build' : 'bash install.sh'})
+
+    " call dein#local("~/.vim/bundle", {}, [])
 
     if s:on_nyaovim
         let s:opts = {}
