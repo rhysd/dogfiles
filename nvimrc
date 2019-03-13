@@ -457,6 +457,7 @@ nnoremap <expr>h col('.') == 1 && foldlevel(line('.')) > 0 ? 'zc' : 'h'
 nnoremap <expr>l foldclosed(line('.')) != -1 ? 'zo' : 'l'
 " colorcolumn
 nnoremap <expr><Leader>cl ":\<C-u>set colorcolumn=".(&cc == 0 ? v:count == 0 ? col('.') : v:count : 0)."\<CR>"
+
 function! s:start_term(args) abort
     if exists('s:term_win')
         let winnr = win_id2win(s:term_win)
@@ -488,6 +489,7 @@ function! s:start_term(args) abort
     endif
 
     execute 'terminal' a:args
+    nnoremap <buffer>q :<C-u>quit<CR>
     startinsert
     let s:term_bufnr = bufnr('%')
 endfunction
@@ -495,6 +497,48 @@ nnoremap <Leader>t :<C-u>call <SID>start_term('')<CR>
 command! -nargs=* -complete=shellcmd T call <SID>start_term(<q-args>)
 " leave from terminal mode
 tnoremap <Esc><Esc> <C-\><C-n>
+
+function! s:close_zoom_win() abort
+    if !exists('s:zoom_win_id')
+        return
+    endif
+    let winnr = win_id2win(s:zoom_win_id)
+    if winnr != 0
+        execute winnr . 'wincmd c'
+    endif
+    unlet! s:zoom_win_id
+    autocmd! zoom-win-leave
+endfunction
+function! s:on_zoom_bufenter(bufnr) abort
+    autocmd! zoom-win-after-leave
+    if bufnr('%') != a:bufnr
+        execute 'buffer' a:bufnr
+    endif
+endfunction
+function! s:on_zoom_bufleave(bufnr) abort
+    call s:close_zoom_win()
+    augroup zoom-win-after-leave
+        execute 'autocmd BufEnter * call <SID>on_zoom_bufenter(' . a:bufnr . ')'
+    augroup END
+endfunction
+function! s:toggle_zoom_win(bufnr) abort
+    if exists('s:zoom_win_id')
+        call s:close_zoom_win()
+    else
+        let s:zoom_win_id = nvim_open_win(a:bufnr, v:true, &columns, &lines - 2, {
+                \   'relative': 'editor',
+                \   'row': 0,
+                \   'col': 0,
+                \ })
+        setlocal bufhidden=hide
+        augroup zoom-win-leave
+            execute 'autocmd BufLeave <buffer> call <SID>on_zoom_bufleave(' . a:bufnr . ')'
+            autocmd WinLeave <buffer> call <SID>close_zoom_win()
+        augroup END
+    endif
+endfunction
+command! -nargs=0 -bar ZoomWin call <SID>toggle_zoom_win(bufnr('%'))
+nnoremap <C-w>o :<C-u>ZoomWin<CR>
 
 " help のマッピング
 function! s:on_FileType_help_define_mappings() abort
@@ -505,7 +549,7 @@ function! s:on_FileType_help_define_mappings() abort
         nnoremap <buffer>K <C-t>
         " リンクしている単語を選択する
         nnoremap <buffer><silent><Tab> /\%(\_.\zs<Bar>[^ ]\+<Bar>\ze\_.\<Bar>CTRL-.\<Bar><[^ >]\+>\)<CR>
-        " そのた
+        " その他
         nnoremap <buffer>u <C-u>
         nnoremap <buffer>d <C-d>
         nnoremap <buffer>q :<C-u>q<CR>
