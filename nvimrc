@@ -499,6 +499,7 @@ command! -nargs=* -complete=shellcmd T call <SID>start_term(<q-args>)
 tnoremap <Esc><Esc> <C-\><C-n>
 
 function! s:close_zoom_win() abort
+    autocmd! zoom-win-leave
     if !exists('s:zoom_win_id')
         return
     endif
@@ -507,7 +508,7 @@ function! s:close_zoom_win() abort
         execute winnr . 'wincmd c'
     endif
     unlet! s:zoom_win_id
-    autocmd! zoom-win-leave
+    echo 'Zoom out'
 endfunction
 function! s:on_zoom_bufenter(bufnr) abort
     autocmd! zoom-win-after-leave
@@ -535,6 +536,7 @@ function! s:toggle_zoom_win(bufnr) abort
             execute 'autocmd BufLeave <buffer> call <SID>on_zoom_bufleave(' . a:bufnr . ')'
             autocmd WinLeave <buffer> call <SID>close_zoom_win()
         augroup END
+        echo 'Zoom in'
     endif
 endfunction
 command! -nargs=0 -bar ZoomWin call <SID>toggle_zoom_win(bufnr('%'))
