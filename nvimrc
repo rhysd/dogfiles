@@ -611,7 +611,6 @@ if dein#load_state(s:dein_cache_dir)
     call dein#add('vim-airline/vim-airline-themes')
     call dein#add('keith/tmux.vim')
     call dein#add('leafgarland/typescript-vim')
-    call dein#add('rhysd/vim-gfm-syntax')
     call dein#add('w0rp/ale')
 
     call dein#add('kana/vim-textobj-user', {
@@ -686,6 +685,11 @@ if dein#load_state(s:dein_cache_dir)
                 \   'lazy' : 1,
                 \   'on_func' : 'dirvish#open',
                 \   'on_cmd' : 'Dirvish',
+                \ })
+    call dein#add('tyru/caw.vim', {
+                \   'lazy' : 1,
+                \   'depends' : 'vim-operator-user',
+                \   'on_map' : '<Plug>(caw:',
                 \ })
 
     " Completion
@@ -933,6 +937,14 @@ function! s:lc_setup() abort
     nnoremap <buffer><silent>gd :<C-u>GoToDef<CR>
 endfunction
 AutocmdFT * if has_key(g:LanguageClient_serverCommands, &filetype) | call <SID>lc_setup() | endif
+
+" caw.vim
+let g:caw_no_default_keymappings = 1
+" 行コメント
+nmap <Leader>cc <Plug>(caw:hatpos:toggle)
+xmap <Leader>cc <Plug>(caw:hatpos:toggle:operator)
+" ブロックコメント
+map <Leader>cb <Plug>(caw:wrap:toggle:operator)
 
 if s:on_nyaovim
     " nyaovim-mini-browser
