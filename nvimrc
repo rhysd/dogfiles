@@ -136,6 +136,7 @@ set spelllang=en,cjk
 set breakindent
 " 拡張補完メニュー
 set wildmenu
+set wildoptions+=pum
 
 " 一定時間カーソルを移動しないとカーソルラインを表示（ただし，ウィンドウ移動時
 " はなぜか切り替わらない
@@ -574,6 +575,22 @@ function! s:on_filetype_qf() abort
 endfunction
 AutocmdFT qf call s:on_filetype_qf()
 
+" Git
+function! s:git(cmdline) abort
+    let dir = expand('%:p:h')
+    if dir ==# ''
+        let dir = getcwd()
+    endif
+    execute 'terminal' 'VIMRUNTIME= git -C' dir a:cmdline
+    let bufnr = bufnr('%')
+    let close_buf = printf('silent %d bdelete! | echo "Done: `git %s`"', bufnr, a:cmdline)
+    execute 'autocmd TermClose <buffer> if jobwait([&channel], 0)[0] == 0 | silent' close_buf '| endif'
+endfunction
+command! -nargs=* GitAdd call <SID>git('add %:p ' . <q-args>)
+command! -nargs=0 GitCommit call <SID>git('commit')
+nnoremap <silent><Leader>ga :<C-u>GitAdd<CR>
+nnoremap <silent><Leader>gc :<C-u>GitCommit<CR>
+
 " ファイルタイプごとの設定
 function! s:python_settings() abort
     syntax keyword Constant self
@@ -815,11 +832,11 @@ let g:gitgutter_map_keys = 0
 let g:gitgutter_realtime = 0
 let g:gitgutter_eager = 0
 nnoremap <Leader>gg :<C-u>GitGutterLineHighlightsToggle<CR>
-nnoremap <leader>ga :<C-u>GitGutterStageHunk<CR>
-nnoremap <leader>gr :<C-u>GitGutterRevertHunk<CR>
-nnoremap <leader>gp :<C-u>GitGutterPreviewHunk<CR>
-nnoremap <leader>g] :<C-u>GitGutterNextHunk<CR>
-nnoremap <leader>g[ :<C-u>GitGutterPrevHunk<CR>
+nnoremap <Leader>gs :<C-u>GitGutterStageHunk<CR>
+nnoremap <Leader>gr :<C-u>GitGutterRevertHunk<CR>
+nnoremap <Leader>gp :<C-u>GitGutterPreviewHunk<CR>
+nnoremap <Leader>g] :<C-u>GitGutterNextHunk<CR>
+nnoremap <Leader>g[ :<C-u>GitGutterPrevHunk<CR>
 nnoremap <Leader>gh :<C-u>GitGutterStageHunk<CR>
 omap ih <Plug>GitGutterTextObjectInnerPending
 omap ah <Plug>GitGutterTextObjectOuterPending
