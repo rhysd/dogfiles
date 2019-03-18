@@ -474,10 +474,12 @@ function! s:start_term(args) abort
     endif
 
     " 2 means height of status line
-    let s:term_win = nvim_open_win(bufnr('%'), v:true, &columns, &lines - 2, {
+    let s:term_win = nvim_open_win(bufnr('%'), v:true, {
                 \   'relative': 'editor',
                 \   'row': 0,
                 \   'col': 0,
+                \   'width': &columns,
+                \   'height': &lines - 2,
                 \ })
 
     if exists('s:term_bufnr') && bufexists(s:term_bufnr)
@@ -488,6 +490,8 @@ function! s:start_term(args) abort
         startinsert
         return
     endif
+
+    hi link NormalFloat Normal
 
     execute 'terminal' a:args
     nnoremap <buffer>q :<C-u>quit<CR>
@@ -527,10 +531,12 @@ function! s:toggle_zoom_win(bufnr) abort
     if exists('s:zoom_win_id')
         call s:close_zoom_win()
     else
-        let s:zoom_win_id = nvim_open_win(a:bufnr, v:true, &columns, &lines - 2, {
+        let s:zoom_win_id = nvim_open_win(a:bufnr, v:true, {
                 \   'relative': 'editor',
                 \   'row': 0,
                 \   'col': 0,
+                \   'width': &columns,
+                \   'height': &lines - 2,
                 \ })
         setlocal bufhidden=hide
         augroup zoom-win-leave
@@ -587,7 +593,7 @@ function! s:git(cmdline) abort
     execute 'autocmd TermClose <buffer> if jobwait([&channel], 0)[0] == 0 | silent' close_buf '| endif'
 endfunction
 command! -nargs=* GitAdd call <SID>git('add %:p ' . <q-args>)
-command! -nargs=0 GitCommit call <SID>git('commit')
+command! -nargs=* GitCommit call <SID>git('commit ' . <q-args>)
 nnoremap <silent><Leader>ga :<C-u>GitAdd<CR>
 nnoremap <silent><Leader>gc :<C-u>GitCommit<CR>
 
