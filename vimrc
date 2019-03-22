@@ -689,7 +689,6 @@ if has('vim_starting')
 endif
 
 let s:meet_neocomplete_requirements = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
-let s:enable_tern_for_vim = (has('python') || has('python3')) && executable('npm')
 if has('mac')
     let s:xcode_usr_path = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/'
     let g:clang_library_path = s:xcode_usr_path . 'lib/'
@@ -1044,23 +1043,6 @@ if neobundle#load_cache()
     call neobundle#add('eagletmt/ghcmod-vim', {
                 \ 'lazy' : 1,
                 \ 'autoload' : {'filetypes' : 'haskell'}
-                \ })
-
-    " JavaScript 用プラグイン
-    call neobundle#add('marijnh/tern_for_vim', {
-                \ 'lazy' : 1,
-                \ 'fetch' : !s:enable_tern_for_vim,
-                \ 'build' : {
-                \     'windows' : 'echo "Please build tern manually."',
-                \     'cygwin'  : 'echo "Please build tern manually."',
-                \     'mac'     : 'npm install',
-                \     'unix'    : 'npm install',
-                \   },
-                \ 'autoload' : {
-                \     'functions' : ['tern#Complete', 'tern#Enable'],
-                \     'filetypes' : 'javascript'
-                \   },
-                \ 'commands' : ['TernDef', 'TernDoc', 'TernType', 'TernRefs', 'TernRename']
                 \ })
 
     " Python
@@ -1611,10 +1593,6 @@ let g:neocomplete#force_omni_input_patterns.python = '\%([^. \t]\.\|^\s*@\|^\s*f
 call neocomplete#custom#source('neosnippet', 'min_pattern_length', 1)
 " オムニ補完に使う関数
 let g:neocomplete#sources#omni#functions = get(g:, 'neocomplete#sources#omni#functions', {})
-if s:enable_tern_for_vim
-    let g:neocomplete#sources#omni#functions.javascript = 'tern#Complete'
-    AutocmdFT javascript setlocal omnifunc=tern#Complete
-endif
 
 "neocompleteのマッピング
 inoremap <expr><C-g> neocomplete#undo_completion()
@@ -2146,21 +2124,6 @@ let g:EasyMotion_smartcase = 1
 let g:EasyMotion_verbose = 0
 map : <Plug>(easymotion-overwin-f2)
 " }}}
-
-" tern_for_vim {{{
-let s:hooks = neobundle#get_hooks('tern_for_vim')
-function! s:hooks.on_source(bundle) abort
-    call s:setup_tern()
-endfunction
-unlet s:hooks
-function! s:setup_tern() abort
-    nnoremap <buffer><Leader>td :<C-u>TernDef<CR>
-    nnoremap <buffer><Leader>tk :<C-u>TernDoc<CR>
-    nnoremap <buffer><silent><Leader>tt :<C-u>TernType<CR>
-    nnoremap <buffer><Leader>tK :<C-u>TernRefs<CR>
-    nnoremap <buffer><Leader>tr :<C-u>TernRename<CR>
-endfunction
-"}}}
 
 " emmet-vim {{{
 let g:user_emmet_mode = 'ivn'
