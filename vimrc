@@ -176,8 +176,8 @@ endif
 " 一定時間カーソルを移動しないとカーソルラインを表示（ただし，ウィンドウ移動時
 " はなぜか切り替わらない
 " http://d.hatena.ne.jp/thinca/20090530/1243615055
-Autocmd CursorMoved,CursorMovedI,WinLeave * setlocal nocursorline
-Autocmd CursorHold,CursorHoldI,WinEnter * setlocal cursorline
+Autocmd CursorMoved,CursorMovedI,WinLeave * noautocmd setlocal nocursorline
+Autocmd CursorHold,CursorHoldI,WinEnter * noautocmd setlocal cursorline
 
 " git config file
 Autocmd BufRead,BufNew,BufNewFile gitconfig setlocal ft=gitconfig
@@ -655,7 +655,10 @@ if exists(':terminal')
     nnoremap <silent><Space><Space> :<C-u>call <SID>open_terminal()<CR>
     " XXX: This kills original <Esc><Esc>, which sends raw '<Esc>' to shell
     tmap <Esc><Esc> <Esc>N
-    Autocmd TerminalOpen * if &buftype ==# 'terminal' | setlocal listchars= | endif
+    " Guard with exists() since it's very new (added at Vim 8.1)
+    if exists('##TerminalOpen')
+        Autocmd TerminalOpen * if &buftype ==# 'terminal' | setlocal listchars= | endif
+    endif
 endif
 "}}}
 
@@ -676,7 +679,12 @@ endif
 if ! isdirectory(expand('~/.vim/bundle'))
     echon 'Installing neobundle.vim...'
     silent call mkdir(expand('~/.vim/bundle'), 'p')
-    silent !git clone https://github.com/Shougo/neobundle.vim $HOME/.vim/bundle/neobundle.vim
+    if !has('win32')
+        silent !git clone https://github.com/Shougo/neobundle.vim $HOME/.vim/bundle/neobundle.vim
+    else
+        " $HOME does not work on cmd.exe
+        execute 'silent' '!git' 'clone' 'https://github.com/Shougo/neobundle.vim' expand('~/.vim/bundle/neobundle.vim')
+    endif
     echo 'done.'
     if v:shell_error
         echoerr 'neobundle.vim installation has failed!'
