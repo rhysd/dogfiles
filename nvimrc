@@ -954,7 +954,7 @@ function! s:lc_setup() abort
     nnoremap <buffer><Leader>ld :<C-u>GoToDef<CR>
     nnoremap <buffer><Leader>lt :<C-u>GoToTypedef<CR>
     nnoremap <buffer><Leader>li :<C-u>GoToImpl<CR>
-    nnoremap <buffer><silent>lr :<C-u>Rename<CR>
+    nnoremap <buffer><Leader>lr :<C-u>Rename<CR>
 
     nnoremap <buffer><silent>K :<C-u>Lookup<CR>
     nnoremap <buffer><silent>gd :<C-u>GoToDef<CR>
