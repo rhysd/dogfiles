@@ -713,11 +713,11 @@ if neobundle#load_cache()
     " GitHub上のリポジトリ
     call neobundle#add('Shougo/neobundle.vim', { 'fetch': 1 })
     call neobundle#add('Shougo/vimproc.vim', {
-                \ 'build' : {
-                \       'windows' : 'echo "Please build vimproc manually."',
-                \       'cygwin'  : 'make -f make_cygwin.mak',
-                \       'mac'     : 'make -f make_mac.mak',
-                \       'unix'    : 'make -f make_unix.mak',
+                \   'build' : {
+                \     'windows' : 'echo "Please build vimproc manually."',
+                \     'cygwin'  : 'make -f make_cygwin.mak',
+                \     'mac'     : 'make -f make_mac.mak',
+                \     'unix'    : 'make -f make_unix.mak',
                 \   }
                 \ })
     call neobundle#add('Shougo/neosnippet.vim')
@@ -1651,21 +1651,6 @@ function! s:bundle.hooks.on_source(bundle) abort
     " unite-grep で使うオプション
     let g:unite_source_grep_default_opts = '-Hn --color=never'
 
-    " Git リポジトリのすべてのファイルを開くアクション {{{
-    let git_repo = { 'description' : 'all file in git repository' }
-    function! git_repo.func(candidate) abort
-        if system('git rev-parse --is-inside-work-tree') ==# "true\n"
-            execute 'args'
-                    \ join( filter(split(system('git ls-files `git rev-parse --show-cdup`'), '\n')
-                            \ , 'empty(v:val) || isdirectory(v:val) || filereadable(v:val)') )
-        else
-            echoerr 'Not a git repository!'
-        endif
-    endfunction
-
-    call unite#custom#action('file', 'git_repo_files', git_repo)
-    " }}}
-
     " ファイルなら開き，ディレクトリなら dirvish に渡す {{{
     let open_or_dirvish = {
                 \ 'description' : 'open a file or open a directory with dirvish',
@@ -1737,6 +1722,9 @@ nnoremap <silent>[unite]o        :<C-u>Unite outline -vertical -no-start-insert<
 nnoremap <silent>[unite]c        :<C-u>Unite output<CR>
 "grep検索．
 nnoremap <silent>[unite]gr       :<C-u>Unite -no-start-insert grep<CR>
+"Git リポジトリ
+nnoremap <silent>[unite]gf       :<C-u>Unite file_rec/git<CR>
+nnoremap <silent>[unite]gg       :<C-u>Unite -no-start-insert grep/git<CR>
 "Uniteバッファの復元
 nnoremap <silent>[unite]r        :<C-u>UniteResume<CR>
 " Git で管理されているファイルから選んで開く
