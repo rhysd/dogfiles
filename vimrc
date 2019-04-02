@@ -1054,13 +1054,6 @@ if neobundle#load_cache()
                 \ })
 
     " Python
-    call neobundle#add('davidhalter/jedi-vim', {
-                \ 'lazy' : 1,
-                \ 'autoload' : {
-                \     'filetypes' : 'python',
-                \   }
-                \ })
-
     call neobundle#add('hynek/vim-python-pep8-indent', {
                 \ 'lazy' : 1,
                 \ 'autoload' : {
@@ -1596,7 +1589,6 @@ let g:neocomplete#force_overwrite_completefunc = 1
 if !exists('g:neocomplete#force_omni_input_patterns')
     let g:neocomplete#force_omni_input_patterns = {}
 endif
-let g:neocomplete#force_omni_input_patterns.python = '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*'
 " neosnippet だけは短いキーワードでも候補に出す
 call neocomplete#custom#source('neosnippet', 'min_pattern_length', 1)
 " オムニ補完に使う関数
@@ -2141,27 +2133,6 @@ function! s:bundle.hooks.on_post_source(bundle) abort
     call indent_guides#enable()
 endfunction
 unlet s:bundle
-" }}}
-
-" jedi-vim {{{
-let g:jedi#auto_initialization = 0
-let g:jedi#auto_vim_configuration = 0
-let g:jedi#popup_select_first = 0
-" 2 means showing call signatures in command-line area
-let g:jedi#show_call_signatures = 2
-
-function! s:jedi_settings() abort
-    nnoremap <buffer><Leader>jr :<C-u>call jedi#rename()<CR>
-    nnoremap <buffer><Leader>jg :<C-u>call jedi#goto_assignments()<CR>
-    nnoremap <buffer><Leader>jd :<C-u>call jedi#goto_definitions()<CR>
-    nnoremap <buffer>K :<C-u>call jedi#show_documentation()<CR>
-    nnoremap <buffer><Leader>ju :<C-u>call jedi#usages()<CR>
-    nnoremap <buffer><Leader>ji :<C-u>Pyimport<Space>
-    setlocal omnifunc=jedi#completions
-    command! -nargs=0 JediRename call jedi#rename()
-endfunction
-
-AutocmdFT python call <SID>jedi_settings()
 " }}}
 
 " committia.vim {{{
