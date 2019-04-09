@@ -52,8 +52,6 @@ alias sudo='sudo '
 alias memo='cat > /dev/null'
 alias nr='npm run'
 alias cr='cargo run --'
-alias apv='ag-peco-vim'
-alias gpv='git-peco-vim'
 
 alias l=ls
 alias v=vim
@@ -597,70 +595,72 @@ export NOTES_CLI_EDITOR="vim"
 
 # }}}
 
-############
-#   Peco   #
-############
-if hash peco 2> /dev/null; then
+###############
+#   FILTER    #
+###############
+export FILTER_CMD=fzf
+export FILTER_OPTS="--layout=reverse"
+if hash "$FILTER_CMD" 2> /dev/null; then
 # {{{
-alias -g P='| peco'
-alias -g PX='| peco | xargs'
+alias -g F="| $FILTER_CMD $FILTER_OPTS"
+alias -g FX="| $FILTER_CMD $FILTER_OPTS $FILTER_OPTS | xargs"
 
-function peco-pgrep() {
+function filter-pgrep() {
     if [[ $1 == "" ]]; then
-        peco=peco
+        filter="$FILTER_CMD $FILTER_OPTS"
     else
-        peco="peco --query \"$1\""
+        filter="$FILTER_CMD $FILTER_OPTS --query \"$1\""
     fi
-    ps aux | eval $peco --prompt "\"pgrep >\"" | awk '{ print $2 }'
+    ps aux | eval $FILTER_CMD $FILTER_OPTS --prompt "\"pgrep> \"" | awk '{ print $2 }'
 }
-zle -N peco-pgrep
+zle -N filter-pgrep
 
-function peco-pkill() {
+function filter-pkill() {
     if [[ $1 =~ "^-" ]]; then
         QUERY=""            # options only
     else
         QUERY=$1            # with a query
         [[ $# > 0 ]] && shift
     fi
-    peco-pgrep $QUERY | xargs kill $*
+    filter-pgrep $QUERY | xargs kill $*
 }
-zle -N peco-pkill
+zle -N filter-pkill
 
-function peco-history-insert() {
+function filter-history-insert() {
     local tac
     hash gtac 2> /dev/null && tac="gtac" || { hash tac 2> /dev/null && tac="tac" || { tac="tail -r" } }
-    BUFFER=$(fc -l -n 1 | eval $tac | peco  --prompt 'history-insert >' --query "$LBUFFER")
+    BUFFER=$(fc -l -n 1 | eval $tac | $FILTER_CMD $FILTER_OPTS  --prompt 'history-insert> ' --query "$LBUFFER")
     CURSOR=$#BUFFER         # move cursor
     zle -R -c               # refresh
 }
-zle -N peco-history-insert
+zle -N filter-history-insert
 
-function peco-history() {
+function filter-history() {
     local tac
     hash gtac 2> /dev/null && tac="gtac" || { hash tac 2> /dev/null && tac="tac" || { tac="tail -r" } }
-    BUFFER=$(fc -l -n 1 | eval $tac | peco --prompt 'history >' --query "$LBUFFER")
+    BUFFER=$(fc -l -n 1 | eval $tac | $FILTER_CMD $FILTER_OPTS --prompt 'history> ' --query "$LBUFFER")
     zle clear-screen
     zle accept-line
 }
-zle -N peco-history
-bindkey -M viins '^ h' peco-history
+zle -N filter-history
+bindkey -M viins '^ h' filter-history
 
-function peco-cdr-impl() {
+function filter-cdr-impl() {
     cdr -l | \
         sed -e 's/^[[:digit:]]*[[:blank:]]*//' | \
-        peco --prompt 'cdr >' --query "$LBUFFER"
+        $FILTER_CMD $FILTER_OPTS --prompt 'cdr> ' --query "$LBUFFER"
 }
-function peco-cdr-insert() {
+function filter-cdr-insert() {
     local selected
-    selected=$(cdr -l | sed -e 's/^[[:digit:]]*[[:blank:]]*//' | peco --prompt 'cdr-insert >')
+    selected=$(cdr -l | sed -e 's/^[[:digit:]]*[[:blank:]]*//' | $FILTER_CMD $FILTER_OPTS --prompt 'cdr-insert> ')
     BUFFER=${BUFFER}${selected}
     CURSOR=$#BUFFER
     zle redisplay
 }
-zle -N peco-cdr-insert
+zle -N filter-cdr-insert
 
-function peco-cdr() {
-    local destination="$(peco-cdr-impl)"
+function filter-cdr() {
+    local destination="$(filter-cdr-impl)"
     if [ -n "$destination" ]; then
         BUFFER="cd $destination"
         zle accept-line
@@ -668,11 +668,11 @@ function peco-cdr() {
         zle reset-prompt
     fi
 }
-zle -N peco-cdr
+zle -N filter-cdr
 
 function _advanced_tab(){
 if [[ $#BUFFER == 0 ]]; then
-    peco-cdr
+    filter-cdr
     zle redisplay
 else
     zle expand-or-complete
@@ -681,24 +681,24 @@ fi
 zle -N _advanced_tab
 
 bindkey -M viins '^I' _advanced_tab
-bindkey -M viins '^ r' peco-cdr
+bindkey -M viins '^ r' filter-cdr
 
 if hash ghq 2> /dev/null; then
-    function peco-ghq() {
-        local selected_dir=$(ghq list | peco --prompt 'ghq >' --query "$LBUFFER")
+    function filter-ghq() {
+        local selected_dir=$(ghq list | $FILTER_CMD $FILTER_OPTS --prompt 'ghq> ' --query "$LBUFFER")
         if [ -n "$selected_dir" ]; then
             BUFFER="cd $(ghq root)/${selected_dir}"
             zle accept-line
         fi
         zle clear-screen
     }
-    zle -N peco-ghq
-    bindkey -M viins '^ ^g' peco-ghq
+    zle -N filter-ghq
+    bindkey -M viins '^ ^g' filter-ghq
 fi
 
 if [[ "$GOPATH" != "" ]]; then
-    function peco-gopath() {
-        local selected=$(find "$GOPATH/src" -maxdepth 3 -mindepth 3 -name "*" -type d | peco --prompt 'GOPATH >' --query "$LBUFFER")
+    function filter-gopath() {
+        local selected=$(find "$GOPATH/src" -maxdepth 3 -mindepth 3 -name "*" -type d | $FILTER_CMD $FILTER_OPTS --prompt 'GOPATH> ' --query "$LBUFFER")
         if [ -n "$selected" ]; then
             BUFFER="cd $selected"
             zle accept-line
@@ -706,11 +706,11 @@ if [[ "$GOPATH" != "" ]]; then
             zle reset-prompt
         fi
     }
-    zle -N peco-gopath
-    bindkey -M viins '^ p' peco-gopath
+    zle -N filter-gopath
+    bindkey -M viins '^ p' filter-gopath
 fi
 
-function peco-repos() {
+function filter-repos() {
     local input
 
     input="$(ghq list | sed "s#^#$(ghq root)/#")"
@@ -718,17 +718,17 @@ function peco-repos() {
     input="${input}\n$(ls -1 -d "$HOME/.vim/bundle/"*)"
     input="$(echo "$input" | sed "s#^$HOME#~#g")"
 
-    local selected_dir=$(echo "${input}" | peco --prompt 'repos >' --query "$LBUFFER")
+    local selected_dir=$(echo "${input}" | $FILTER_CMD $FILTER_OPTS --prompt 'repos> ' --query "$LBUFFER")
     if [ -n "$selected_dir" ]; then
         BUFFER="cd ${selected_dir}"
         zle accept-line
     fi
     zle clear-screen
 }
-zle -N peco-repos
-bindkey -M viins '^ ^ ' peco-repos
+zle -N filter-repos
+bindkey -M viins '^ ^ ' filter-repos
 
-function peco-git-log() {
+function filter-git-log() {
     local sed
     case $OSTYPE in
     darwin*)
@@ -740,54 +740,54 @@ function peco-git-log() {
     esac
 
     local commit
-    commit=$(git log --no-color --oneline --graph --all --decorate | peco --prompt 'git-log >' | $sed -e "s/^\W\+\([0-9A-Fa-f]\+\).*$/\1/")
+    commit=$(git log --no-color --oneline --graph --all --decorate | $FILTER_CMD $FILTER_OPTS --prompt 'git-log> ' | $sed -e "s/^\W\+\([0-9A-Fa-f]\+\).*$/\1/")
     BUFFER="${BUFFER}${commit}"
     CURSOR=$#BUFFER
     zle redisplay
 }
-zle -N peco-git-log
-bindkey -M viins '^ o' peco-git-log
+zle -N filter-git-log
+bindkey -M viins '^ o' filter-git-log
 
-function peco-ls-l-insert(){
+function filter-ls-l-insert(){
     local selected
-    selected=$(ls -l | grep -v ^total | peco --prompt 'ls-l-insert >' | awk '{print $(NF)}')
+    selected=$(ls -l | grep -v ^total | $FILTER_CMD $FILTER_OPTS --prompt 'ls-l-insert> ' | awk '{print $(NF)}')
     BUFFER="${BUFFER}$selected"
     CURSOR=$#BUFFER
     zle redisplay
 }
-zle -N peco-ls-l-insert
-bindkey -M viins '^ l' peco-ls-l-insert
+zle -N filter-ls-l-insert
+bindkey -M viins '^ l' filter-ls-l-insert
 
-function peco-find-insert(){
+function filter-find-insert(){
     local selected
-    selected=$(find ./* | peco --prompt 'find-insert >')
+    selected=$(find ./* | $FILTER_CMD $FILTER_OPTS --prompt 'find-insert> ')
     BUFFER="${BUFFER}${selected}"
     CURSOR=$#BUFFER
     zle redisplay
 }
-zle -N peco-find-insert
-bindkey -M viins '^ f' peco-find-insert
+zle -N filter-find-insert
+bindkey -M viins '^ f' filter-find-insert
 
-function peco-directory-entries() {
+function filter-directory-entries() {
     if ! [ -d "$1" ]; then
         return
     fi
 
     local selected
-    selected=$(ls -1 "$1" | peco --prompt "$(basename "$1") >")
+    selected=$(ls -1 "$1" | $FILTER_CMD $FILTER_OPTS --prompt "$(basename "$1")> ")
     if [[ "$selected" != "" ]]; then
         echo "$1/$selected"
     fi
 }
 
-function peco-neobundle(){
-    BUFFER="cd $(peco-directory-entries "$HOME/.vim/bundle")"
+function filter-neobundle(){
+    BUFFER="cd $(filter-directory-entries "$HOME/.vim/bundle")"
     zle accept-line
 }
-zle -N peco-neobundle
-bindkey -M viins '^ b' peco-neobundle
+zle -N filter-neobundle
+bindkey -M viins '^ b' filter-neobundle
 
-function peco-man-list-all() {
+function filter-man-list-all() {
     local parent dir file
     local paths=("${(s/:/)$(man -aw)}")
     for parent in $paths; do
@@ -803,16 +803,16 @@ function peco-man-list-all() {
     done
 }
 
-function peco-man() {
-    local selected=$(peco-man-list-all | peco --prompt 'man >')
+function filter-man() {
+    local selected=$(filter-man-list-all | $FILTER_CMD $FILTER_OPTS --prompt 'man> ')
     if [[ "$selected" != "" ]]; then
         man "$selected"
     fi
 }
-zle -N peco-man
-bindkey -M viins '^ m' peco-man
+zle -N filter-man
+bindkey -M viins '^ m' filter-man
 
-function peco-git-cd() {
+function filter-git-cd() {
     local cdup
     cdup="$(git rev-parse --show-cdup 2>/dev/null)"
     if [[ $? != 0 ]]; then
@@ -820,16 +820,16 @@ function peco-git-cd() {
         return
     fi
 
-    local selected="$(git ls-files "$cdup" | grep '/' | sed 's/\/[^\/]*$//g' | sort | uniq | peco --prompt 'git-cd >')"
+    local selected="$(git ls-files "$cdup" | grep '/' | sed 's/\/[^\/]*$//g' | sort | uniq | $FILTER_CMD $FILTER_OPTS --prompt 'git-cd> ')"
     if [[ "$selected" != "" ]]; then
         BUFFER="cd $selected"
         zle accept-line
     fi
 }
-zle -N peco-git-cd
-bindkey -M viins '^ g' peco-git-cd
+zle -N filter-git-cd
+bindkey -M viins '^ g' filter-git-cd
 
-function peco-source(){
+function filter-source(){
     local sources
     local selected_source
     sources=( \
@@ -850,53 +850,14 @@ function peco-source(){
         neobundle \
         repos \
     )
-    selected_source=$(echo ${(j/\n/)sources} | peco --prompt 'source >')
+    selected_source=$(echo ${(j/\n/)sources} | $FILTER_CMD $FILTER_OPTS --prompt 'source> ')
     zle clear-screen
     if [[ "$selected_source" != "" ]]; then
-        zle peco-${selected_source}
+        zle filter-${selected_source}
     fi
 }
-zle -N peco-source
-bindkey -M viins '^ ' peco-source
-
-function ag-peco-vim() {
-    local grepped
-    grepped="$(ag --vimgrep $*)"
-    if [[ "$grepped" == "" || "$?" != "0" ]]; then
-        echo "Error on ag --vimgrep $*" > 2
-        return
-    fi
-
-    local selected="$(echo "$grepped" | peco --prompt 'git-grep >')"
-    if [[ "$selected" == "" ]]; then
-        return
-    fi
-
-    # Consider multiline support
-    local buf="" line
-    while read line; do
-        buf="$buf ${line%%:*}"
-    done <<< $selected
-
-    # Expose a string variable into arguments
-    #   vim 'foo bar' -> vim foo bar
-    "$EDITOR" ${=buf}
-}
-
-function git-peco-vim() {
-    local cdup
-    cdup="$(git rev-parse --show-cdup 2>/dev/null)"
-    if [[ $? != 0 ]]; then
-        echo 'Not in Git repository' 2>&1
-        return
-    fi
-
-    local selected="$(git ls-files "${cdup}"| peco --prompt 'git-files-vim >')"
-    if [[ "$selected" == "" ]]; then
-        return
-    fi
-    "$EDITOR" ${=selected}
-}
+zle -N filter-source
+bindkey -M viins '^ ' filter-source
 # }}}
 fi
 
