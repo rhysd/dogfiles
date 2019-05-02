@@ -178,7 +178,7 @@ if executable('chmod')
     function! s:add_permission_x()
         let file = expand('%:p')
         if getline(1) =~# '^#!' && !executable(file)
-            silent! call vimproc#system('chmod a+x ' . shellescape(file))
+            silent! call system('chmod a+x ' . shellescape(file))
         endif
     endfunction
 endif
@@ -809,8 +809,6 @@ let g:quickrun_config['cpp/preprocess/clang++'] = { 'type' : 'cpp/clang++', 'exe
 let g:quickrun_config['cpp/preprocess'] = { 'type' : 'cpp', 'exec' : '%c -P -E %s' }
 "outputter
 let g:quickrun_unite_quickfix_outputter_unite_context = { 'no_empty' : 1 }
-" runner vimproc における polling 間隔
-let g:quickrun_config['_']['runner/vimproc/updatetime'] = 500
 Autocmd BufReadPost,BufNewFile [Rr]akefile{,.rb}
             \ let b:quickrun_config = {'exec': 'rake -f %s'}
 " tmux
