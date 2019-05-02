@@ -459,6 +459,15 @@ nnoremap <expr>l foldclosed(line('.')) != -1 ? 'zo' : 'l'
 " colorcolumn
 nnoremap <expr><Leader>cl ":\<C-u>set colorcolumn=".(&cc == 0 ? v:count == 0 ? col('.') : v:count : 0)."\<CR>"
 
+" ;; -> ::
+function! s:double_semi() abort
+    if getline('.')[col('.')-2] ==# ';'
+        return "\<BS>::"
+    endif
+    return ';'
+endfunction
+AutocmdFT cpp,rust inoremap <silent><buffer><expr>; <SID>double_semi()
+
 function! s:start_term(args) abort
     if exists('s:term_win')
         let winnr = win_id2win(s:term_win)
