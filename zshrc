@@ -201,7 +201,6 @@ setopt \
   brace_ccl \
   complete_aliases \
   complete_in_word \
-  csh_null_glob \
   hist_expand \
   hist_ignore_dups \
   hist_ignore_space \
