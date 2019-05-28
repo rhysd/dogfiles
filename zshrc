@@ -24,6 +24,10 @@ export DOTZSH=$HOME/.zsh
 if [ ! -d $DOTZSH ]; then
     mkdir -p $DOTZSH
 fi
+
+# デフォルトで venv 以外で pip install できないようにする
+# グローバルでインストールしたい時は PIP_REQUIRE_VENV= pip install を使う
+export PIP_REQUIRE_VENV=true
 # }}}
 
 ###############
