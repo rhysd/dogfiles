@@ -566,6 +566,9 @@ function! s:python_settings() abort
 endfunction
 AutocmdFT python call <SID>python_settings()
 
+" LSP の hover で表示される markdown の表示改善
+let g:markdown_fenced_languages = ['rust']
+
 " dein.vim
 function! s:install_dein() abort
     echo 'Installing dein.vim...'
