@@ -512,52 +512,6 @@ command! -nargs=* -complete=shellcmd T call <SID>start_term(<q-args>)
 " leave from terminal mode
 tnoremap <Esc><Esc> <C-\><C-n>
 
-function! s:close_zoom_win() abort
-    autocmd! zoom-win-leave
-    if !exists('s:zoom_win_id')
-        return
-    endif
-    let winnr = win_id2win(s:zoom_win_id)
-    if winnr != 0
-        execute winnr . 'wincmd c'
-    endif
-    unlet! s:zoom_win_id
-    echo 'Zoom out'
-endfunction
-function! s:on_zoom_bufenter(bufnr) abort
-    autocmd! zoom-win-after-leave
-    if bufnr('%') != a:bufnr
-        execute 'buffer' a:bufnr
-    endif
-endfunction
-function! s:on_zoom_bufleave(bufnr) abort
-    call s:close_zoom_win()
-    augroup zoom-win-after-leave
-        execute 'autocmd BufEnter * call <SID>on_zoom_bufenter(' . a:bufnr . ')'
-    augroup END
-endfunction
-function! s:toggle_zoom_win(bufnr) abort
-    if exists('s:zoom_win_id')
-        call s:close_zoom_win()
-    else
-        let s:zoom_win_id = nvim_open_win(a:bufnr, v:true, {
-                \   'relative': 'editor',
-                \   'row': 0,
-                \   'col': 0,
-                \   'width': &columns,
-                \   'height': &lines - 2,
-                \ })
-        setlocal bufhidden=hide
-        augroup zoom-win-leave
-            execute 'autocmd BufLeave <buffer> call <SID>on_zoom_bufleave(' . a:bufnr . ')'
-            autocmd WinLeave <buffer> call <SID>close_zoom_win()
-        augroup END
-        echo 'Zoom in'
-    endif
-endfunction
-command! -nargs=0 -bar ZoomWin call <SID>toggle_zoom_win(bufnr('%'))
-nnoremap <C-w>o :<C-u>ZoomWin<CR>
-
 " help のマッピング
 function! s:on_FileType_help_define_mappings() abort
     if &l:readonly
