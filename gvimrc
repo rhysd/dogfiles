@@ -83,6 +83,9 @@ elseif has('unix')
     " フォント設定
     set guifont=Migu\ 2M\ 14
     set guioptions-=e
+elseif has('win32')
+    set guifont=Consolas:h10:cANSI:qDRAFT
+    set vb t_vb=
 endif
 
 call SourceIfExist($HOME . '/.local.gvimrc')

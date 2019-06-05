@@ -2338,7 +2338,7 @@ if has('mac')
     if filereadable('/usr/local/opt/llvm/bin/llc')
         let g:ale_llvm_llc_executable = '/usr/local/opt/llvm/bin/llc'
     endif
-elseif has('unix')
+elseif has('unix') || has('win32')
     " 不可視文字
     set listchars=tab:>-,trail:-,eol:$,extends:>,precedes:<,nbsp:%
     " 256色使う
