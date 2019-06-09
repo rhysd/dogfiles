@@ -21,6 +21,8 @@ endfunction
 let s:SID = s:get_SID()
 delfunction s:get_SID
 
+let s:on_win = has('win32')
+
 " Vimrc augroup
 augroup MyVimrc
     autocmd!
@@ -323,7 +325,7 @@ endfunction
 " カレントパスをクリプボゥにコピー
 command! CopyCurrentPath :call s:copy_current_path()
 function! s:copy_current_path() abort
-    if has('win32') || has('win64')
+    if s:on_win
         let c = substitute(expand('%:p'), '\\/', '\\', 'g')
     elseif has('unix')
         let c = expand('%:p')
@@ -679,7 +681,7 @@ endif
 if ! isdirectory(expand('~/.vim/bundle'))
     echon 'Installing neobundle.vim...'
     silent call mkdir(expand('~/.vim/bundle'), 'p')
-    if !has('win32')
+    if !s:on_win
         silent !git clone https://github.com/Shougo/neobundle.vim $HOME/.vim/bundle/neobundle.vim
     else
         " $HOME does not work on cmd.exe
@@ -1701,7 +1703,11 @@ nnoremap [unite]u                :<C-u>Unite source<CR>
 "バッファを開いた時のパスを起点としたファイル検索
 nnoremap <silent>[unite]ff       :<C-u>UniteWithBufferDir -buffer-name=files -vertical file directory file/new<CR>
 "最近使用したファイル
-nnoremap <silent>[unite]m        :<C-u>Unite file_mru directory_mru zsh-cdr oldfiles file/new<CR>
+if !s:on_win
+    nnoremap <silent>[unite]m    :<C-u>Unite file_mru directory_mru zsh-cdr oldfiles file/new<CR>
+else
+    nnoremap <silent>[unite]m    :<C-u>Unite file_mru directory_mru oldfiles file/new<CR>
+endif
 "バッファ一覧
 nnoremap <silent>[unite]b        :<C-u>Unite -immediately -no-empty buffer<CR>
 "プログラミングにおけるアウトラインの表示
@@ -2048,7 +2054,7 @@ function! s:bundle.hooks.on_source(bundle) abort
     " for vimrc
     if has('mac')
         call altr#define('.vimrc', '.gvimrc', '.mac.vimrc')
-    elseif has('win32') || has('win64')
+    elseif s:on_win
         call altr#define('_vimrc', '_gvimrc')
     elseif has('unix')
         call altr#define('.vimrc', '.gvimrc', '.linux.vimrc')
@@ -2334,12 +2340,11 @@ if has('mac')
     if filereadable('/usr/local/opt/llvm/bin/llc')
         let g:ale_llvm_llc_executable = '/usr/local/opt/llvm/bin/llc'
     endif
-elseif has('unix') || has('win32')
+elseif has('unix') || s:on_win
     " 不可視文字
     set listchars=tab:>-,trail:-,eol:$,extends:>,precedes:<,nbsp:%
     " 256色使う
     set t_Co=256
-" elseif has('win32') || has('win64')
 endif
 
 call SourceIfExist($HOME . '/.local.vimrc')
