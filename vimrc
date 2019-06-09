@@ -767,6 +767,7 @@ if neobundle#load_cache()
     call neobundle#add('rhysd/vim-github-actions')
     call neobundle#add('rhysd/vim-notes-cli')
     call neobundle#add('rhysd/vim-syntax-codeowners')
+    call neobundle#add('rhysd/git-messenger.vim')
 
     " unite.vim sources
     call neobundle#add('Shougo/unite-outline')
@@ -1128,17 +1129,12 @@ Autocmd BufWritePost *vimrc,*gvimrc NeoBundleClearCache
 
 " git のルートディレクトリを返す
 function! s:git_root_dir() abort
-    let out = system('git rev-parse --is-inside-work-tree')
-    if v:shell_error
-        echohl ErrorMSg | echom out | echohl None
-        return ''
+    let dir = expand('%:p:h')
+    let gitdir = gitmessenger#git#root_dir(dir)
+    if gitdir ==# ''
+        throw 'Outside of Git repository: ' . dir
     endif
-    let out = system('git rev-parse --show-cdup')
-    if v:shell_error
-        echohl ErrorMSg | echom out | echohl None
-        return ''
-    endif
-    return out
+    return gitdir
 endfunction
 
 " git commit ではインサートモードに入る
@@ -1715,12 +1711,12 @@ nnoremap <silent>[unite]c        :<C-u>Unite output<CR>
 "grep検索．
 nnoremap <silent>[unite]gr       :<C-u>Unite -no-start-insert grep<CR>
 "Git リポジトリ
-nnoremap <silent>[unite]gf       :<C-u>Unite file_rec/git<CR>
 nnoremap <silent>[unite]gg       :<C-u>Unite -no-start-insert grep/git<CR>
+" Git で管理されているファイルから選んで開く
+nnoremap <silent><expr>[unite]gf ":\<C-u>Unite file_rec/git:" . escape(substitute(<SID>git_root_dir(), '\', '/', 'g'), ':') . "\<CR>"
+nmap [unite]p [unite]gf
 "Uniteバッファの復元
 nnoremap <silent>[unite]r        :<C-u>UniteResume<CR>
-" Git で管理されているファイルから選んで開く
-nnoremap <silent><expr>[unite]p ":\<C-u>Unite file_rec/git:".fnamemodify(<SID>git_root_dir(),':p')
 " C++ インクルードファイル
 AutocmdFT cpp nnoremap <buffer>[unite]i :<C-u>Unite file_include -vertical<CR>
 " help(項目が多いので，検索語を入力してから絞り込む)
