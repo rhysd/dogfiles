@@ -661,6 +661,15 @@ if exists(':terminal')
     if exists('##TerminalOpen')
         Autocmd TerminalOpen * if &buftype ==# 'terminal' | setlocal listchars= | endif
     endif
+
+    if s:on_win
+        tnoremap <C-p> <Up>
+        tnoremap <C-n> <Down>
+        tnoremap <C-f> <Right>
+        tnoremap <C-b> <Left>
+        tnoremap <C-a> <Home>
+        tnoremap <C-e> <End>
+    endif
 endif
 "}}}
 
