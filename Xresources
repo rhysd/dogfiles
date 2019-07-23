@@ -1,16 +1,13 @@
 xterm*background: black
 xterm*foreground: gray
-! xterm*faceName: 'Ricty:style=Regular'
-xterm*faceName: 'Ricty'
+xterm*faceName: 'Noto Mono'
 xterm*faceSize: 10
 
 urxvt*termName: xterm
 urxvt*background: black
 urxvt*foreground: gray
-! urxvt*faceName: 'Ricty'
-! urxvt*faceSize: 10
-urxvt*font: xft:Ricty:pixelsize=18:antialias=true:hinting=true
-urxvt*boldFont: xft:Ricty:pixelsize=18:antialias=true:hinting=true
+urxvt*font: xft:Noto Mono:pixelsize=14:antialias=true:hinting=true
+urxvt*boldFont: xft:Noto Mono:pixelsize=14:antialias=true:hinting=true
 urxvt*saveLines: 1000000
 urxvt*scrollstyle: rxvt
 urxvt*transparent: true
