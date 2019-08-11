@@ -1111,14 +1111,6 @@ if neobundle#load_cache()
                 \   }
                 \ })
 
-    " markdown
-    call neobundle#add('tyru/markdown-codehl-onthefly.vim', {
-                \ 'lazy' : 1,
-                \ 'autoload' : {
-                \     'filetypes' : 'markdown'
-                \   }
-                \ })
-
     " 書き込み権限の無いファイルを編集しようとした時
     call neobundle#add('sudo.vim', {'lazy' : 1})
 
