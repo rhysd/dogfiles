@@ -136,7 +136,9 @@ set spelllang=en,cjk
 set breakindent
 " 拡張補完メニュー
 set wildmenu
-set wildoptions+=pum
+if has('nvim-0.4')
+    set wildoptions+=pum
+endif
 
 " 一定時間カーソルを移動しないとカーソルラインを表示（ただし，ウィンドウ移動時
 " はなぜか切り替わらない
