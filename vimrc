@@ -232,7 +232,6 @@ command! -nargs=0 GetHighlightingGroup
             \ . synIDattr(synID(line('.'),col('.'),0),'name') . '>lo<'
             \ . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
 
-
 " スクリプトに実行可能属性を自動で付ける
 if executable('chmod')
     Autocmd BufWritePost * call s:add_permission_x()
@@ -748,7 +747,6 @@ if neobundle#load_cache()
     call neobundle#add('rhysd/vim-window-adjuster')
     call neobundle#add('Shougo/neomru.vim')
     call neobundle#add('rhysd/committia.vim')
-    call neobundle#add('rhysd/vim-dachs')
     call neobundle#add('rust-lang/rust.vim')
     call neobundle#add('rhysd/rust-doc.vim')
     call neobundle#add('cespare/vim-toml')
@@ -777,7 +775,6 @@ if neobundle#load_cache()
     call neobundle#add('PProvost/vim-ps1')
     call neobundle#add('rhysd/vim-github-actions')
     call neobundle#add('rhysd/vim-notes-cli')
-    call neobundle#add('rhysd/vim-syntax-codeowners')
     call neobundle#add('rhysd/git-messenger.vim')
 
     " unite.vim sources
@@ -797,7 +794,6 @@ if neobundle#load_cache()
     call neobundle#add('rhysd/wallaby.vim')
     call neobundle#add('rhysd/vim-color-spring-night')
     call neobundle#add('chriskempson/tomorrow-theme', {'rtp' : 'vim'})
-    call neobundle#add('junegunn/seoul256.vim')
     call neobundle#add('tomasr/molokai')
     call neobundle#add('altercation/vim-colors-solarized')
     call neobundle#add('jonathanfilip/vim-lucius')
