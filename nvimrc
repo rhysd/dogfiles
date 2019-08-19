@@ -689,17 +689,6 @@ if dein#load_state(s:dein_cache_dir)
 
     " call dein#local("~/.vim/bundle", {}, [])
 
-    if s:on_nyaovim
-        let s:opts = {}
-    else
-        let s:opts = { 'rtp' : '' }
-    endif
-    call dein#add('rhysd/nyaovim-popup-tooltip', s:opts)
-    call dein#add('rhysd/nyaovim-mini-browser', s:opts)
-    call dein#add('rhysd/nyaovim-markdown-preview', s:opts)
-    call dein#add('rhysd/nyaovim-tree-view', s:opts)
-    unlet s:opts
-
     call dein#end()
     call dein#save_state()
 
@@ -791,13 +780,8 @@ AutocmdFT cpp nnoremap <silent><buffer><Leader>qc :<C-u>QuickRun -type cpp/clang
 " open-browser.vim
 nnoremap <Leader>O :<C-u>OpenGithubFile<CR>
 vnoremap <Leader>O :OpenGithubFile<CR>
-if s:on_nyaovim
-    nnoremap <Leader>o :<C-u>MiniBrowser <C-r><C-p><CR>
-    xnoremap <Leader>o y:<C-u>MiniBrowser <C-r>+<CR>
-else
-    nmap <Leader>o <Plug>(openbrowser-smart-search)
-    xmap <Leader>o <Plug>(openbrowser-smart-search)
-endif
+nmap <Leader>o <Plug>(openbrowser-smart-search)
+xmap <Leader>o <Plug>(openbrowser-smart-search)
 
 " GitGutter
 let g:gitgutter_map_keys = 0
@@ -934,21 +918,3 @@ nmap <Leader>cc <Plug>(caw:hatpos:toggle)
 xmap <Leader>cc <Plug>(caw:hatpos:toggle:operator)
 " ブロックコメント
 map <Leader>cb <Plug>(caw:wrap:toggle:operator)
-
-if s:on_nyaovim
-    " nyaovim-mini-browser
-    function! s:devdocs(query) abort
-        if a:query ==# ''
-            let cword = expand('<cword>')
-            if cword ==# ''
-                MiniBrowser http://devdocs.io/
-            else
-                execute 'MiniBrowser' 'http://devdocs.io/#q='.escape(cword, ' \')
-            endif
-            return
-        endif
-
-        execute 'MiniBrowser' 'http://devdocs.io/#q='.escape(a:query, ' \')
-    endfunction
-    command! -nargs=* DevDocs call <SID>devdocs(<q-args>)
-endif
