@@ -1354,7 +1354,12 @@ function! s:json_colon() abort
         return
     endif
 
-    let [prefix, key] = matchlist(current_line, '\(^\|.*\s\)\(\w\+\)\s*:$')[1:2]
+    let m = matchlist(current_line, '^\(\s*\)\([^"]\+\)\s*:$')
+    if m ==# []
+        return
+    endif
+
+    let [prefix, key] = m[1:2]
     call setline('.', prefix . '"' . key . '": ')
     let diff = len(getline('.')) - len(current_line)
     execute 'normal!' (diff > 0 ? diff . 'l' : -diff . 'h')
