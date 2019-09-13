@@ -135,17 +135,17 @@ set history=100
 " コマンドラインモードの補完を拡張
 set wildmenu
 " swap ファイル
-if ! isdirectory($HOME.'/.vim/swap')
-    call mkdir($HOME.'/.vim/swap', 'p')
-endif
 set directory=~/.vim/swap
+if !isdirectory(&directory)
+    call mkdir(&directory, 'p')
+endif
 " 編集履歴を保存して終了する
 if has('persistent_undo')
-    if ! isdirectory($HOME.'/.vim/undo')
-        call mkdir($HOME.'/.vim/undo', 'p')
-    endif
-    set undodir=~/.vim/undo
     set undofile
+    set undodir=~/.vim/undo
+    if !isdirectory(&undodir)
+        call mkdir(&undodir, 'p')
+    endif
 endif
 " command-line-window の縦幅
 set cmdwinheight=3
@@ -191,10 +191,6 @@ Autocmd BufRead,BufNew,BufNewFile Guardfile setlocal ft=ruby
 Autocmd BufRead,BufNew,BufNewFile *.swift setlocal ft=swift
 " Mal,Crisp
 Autocmd BufRead,BufNew,BufNewFile *.mal,*.crisp setlocal ft=lisp
-" JavaScript JSX
-Autocmd BufRead,BufNew,BufNewFile *.jsx setlocal ft=javascript.jsx
-" TypeScript JSX
-Autocmd BufRead,BufNew,BufNewFile *.tsx setlocal ft=typescript.jsx
 " JavaScript tests
 Autocmd BufRead,BufNew,BufNewFile *_test.js,*_test.jsx setlocal ft=javascript.test
 " Vader
@@ -228,9 +224,9 @@ endif
 
 " カーソル下のハイライトグループを取得
 command! -nargs=0 GetHighlightingGroup
-            \ echo 'hi<' . synIDattr(synID(line('.'),col('.'),1),'name') . '>trans<'
-            \ . synIDattr(synID(line('.'),col('.'),0),'name') . '>lo<'
-            \ . synIDattr(synIDtrans(synID(line('.'),col('.'),1)),'name') . '>'
+            \ echo 'hi<' . synIDattr(synID(line('.'), col('.'), 1), 'name') . '>trans<'
+            \ . synIDattr(synID(line('.'), col('.'), 0), 'name') . '>lo<'
+            \ . synIDattr(synIDtrans(synID(line('.'), col('.'), 1)), 'name') . '>'
 
 " スクリプトに実行可能属性を自動で付ける
 if executable('chmod')
@@ -298,28 +294,7 @@ nnoremap <silent><C-q> :<C-u>call <SID>close_temp_windows()<CR>
 "}}}
 
 " vimrc を開く
-command! Vimrc call s:edit_myvimrc()
-function! s:edit_myvimrc() abort
-    let ghq_root = expand(substitute(system('git config ghq.root'), '\n$', '', ''))
-    let dotfiles = ghq_root . '/github.com/rhysd/dogfiles/'
-    if isdirectory(dotfiles)
-        let vimrc = dotfiles . 'vimrc*'
-        let gvimrc = dotfiles .'gvimrc*'
-    else
-        let vimrc = $MYVIMRC
-        let gvimrc = $MYGVIMRC
-    endif
-
-    let files = ''
-    if vimrc !=# ''
-        let files .= substitute(expand(vimrc), '\n', ' ', 'g')
-    endif
-    if gvimrc !=# ''
-        let files .= substitute(expand(gvimrc), '\n', ' ', 'g')
-    endif
-
-    execute 'args ' . files
-endfunction
+command! Vimrc execute 'args' $MYVIMRC $MYGVIMRC
 
 " カレントパスをクリプボゥにコピー
 command! CopyCurrentPath :call s:copy_current_path()
@@ -686,9 +661,12 @@ endif
 
 " neobundle.vim の設定 {{{
 " neobundle.vim が無ければインストールする
-if ! isdirectory(expand('~/.vim/bundle'))
+let s:bundles_dir = expand('~/.vim/bundle')
+if !isdirectory(s:bundles_dir)
     echon 'Installing neobundle.vim...'
-    silent call mkdir(expand('~/.vim/bundle'), 'p')
+    if !isdirectory(s:bundles_dir)
+        call mkdir(s:bundles_dir, 'p')
+    endif
     if !s:on_win
         silent !git clone https://github.com/Shougo/neobundle.vim $HOME/.vim/bundle/neobundle.vim
     else
@@ -719,7 +697,6 @@ let s:clang_complete_available = has('python') && isdirectory(g:clang_library_pa
 call neobundle#begin(expand('~/.vim/bundle'))
 
 if neobundle#load_cache()
-
     " GitHub上のリポジトリ
     call neobundle#add('Shougo/neobundle.vim', { 'fetch': 1 })
     call neobundle#add('Shougo/vimproc.vim', {
