@@ -728,7 +728,7 @@ if neobundle#load_cache()
     call neobundle#add('rhysd/rust-doc.vim')
     call neobundle#add('cespare/vim-toml')
     call neobundle#add('slim-template/vim-slim')
-    call neobundle#add('leafgarland/typescript-vim')
+    call neobundle#add('HerringtonDarkholme/yats.vim')
     call neobundle#add('keith/tmux.vim')
     call neobundle#add('rhysd/npm-filetypes.vim')
     call neobundle#add('rhysd/github-complete.vim')
@@ -1441,6 +1441,7 @@ AutocmdFT rust call <SID>setup_rust()
 " }}}
 
 " TypeScript {{{
+let g:yats_host_keyword = 0
 let g:tsuquyomi_auto_open = 0
 function! s:tsu_open() abort
     call tsuquyomi#open()
