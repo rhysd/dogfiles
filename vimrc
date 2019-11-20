@@ -112,8 +112,6 @@ set fileformats=unix,dos,mac
 set textwidth=0
 "コマンド表示いらない
 set noshowcmd
-"コマンド実行中は再描画しない
-set lazyredraw
 " 自前で用意したものへの path
 set path=.,/usr/include,/usr/local/include
 " 補完でプレビューウィンドウを開かない
