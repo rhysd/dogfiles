@@ -3,3 +3,6 @@ extends: default
 rules:
   line-length: disable
   document-start: disable
+  truthy: disable
+
+# vim: ft=yaml
