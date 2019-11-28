@@ -21,12 +21,11 @@
         "browser": true
     },
     "parserOptions": {
-      "ecmaVersion": 6
+        "ecmaVersion": 2020
     },
     "extends": "eslint:recommended",
     "ecmaFeatures": {
         "jsx": true,
-        "modules": true,
-        "experimentalObjectRestSpread": true
+        "modules": true
     }
 }
