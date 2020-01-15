@@ -1,10 +1,11 @@
 {
+  "alacritty.yml": "~/.config/alacritty/alacritty.yml",
   "gvimrc": "~/.gvimrc",
   "karabiner.json": "~/.config/karabiner/karabiner.json",
   "nvimrc": "~/.config/nvim/init.vim",
   "nyaovim": "~/.config/nyaovim",
-  "ranger": "~/.config/ranger",
   "prettierrc.json": "~/.prettierrc.json",
-  "vimrc": "~/.vimrc",
-  "alacritty.yml": "~/.config/alacritty/alacritty.yml"
+  "ranger": "~/.config/ranger",
+  "rustfmt.toml": "~/.rustfmt.toml",
+  "vimrc": "~/.vimrc"
 }

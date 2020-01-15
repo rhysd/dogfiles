@@ -6,6 +6,7 @@
   "nyaovim": "~/.config/nyaovim",
   "ranger": "~/.config/ranger",
   "rc.lua": "~/.config/awesome/rc.lua",
+  "rustfmt.toml": "~/.config/rustfmt/rustfmt.toml",
   "prettier.json": "~/.prettier.json",
   "vimrc": "~/.vimrc"
 }

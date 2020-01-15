@@ -6,6 +6,6 @@
   "global.gitignore": "~/.global.gitignore",
   "peco": "~/.config/peco",
   "tmux.conf": "~/.tmux.conf",
-  "zshrc": "~/.zshrc",
-  "yamllint": "~/.config/yamllint/config"
+  "yamllint": "~/.config/yamllint/config",
+  "zshrc": "~/.zshrc"
 }
