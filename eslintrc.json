@@ -1,24 +1,27 @@
 {
     "rules": {
         "indent": [
-            2,
+            "error",
             4
         ],
-        "quotes": 0,
+        "quotes": "off",
         "linebreak-style": [
-            2,
+            "error",
             "unix"
         ],
         "semi": [
-            2,
+            "error",
             "always"
         ],
-        "no-console": 0
+        "eqeqeq": "error",
+        "no-console": "off"
     },
     "env": {
         "es6": true,
         "node": true,
-        "browser": true
+        "browser": true,
+        "worker": true,
+        "mocha": true
     },
     "parserOptions": {
         "ecmaVersion": 2020
