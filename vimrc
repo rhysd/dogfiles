@@ -247,7 +247,7 @@ augroup END
 " 一時ウィンドウを閉じる "{{{
 function! s:close_temp_windows() abort
     let target_filetype = ['unite']
-    let target_buftype  = ['help', 'quickfix', 'nofile', 'terminal']
+    let target_buftype  = ['help', 'quickfix', 'nofile', 'terminal', 'acwrite']
 
     let wins = []
     let winnr = winnr('$')
@@ -1494,6 +1494,10 @@ endfunction
 command! -bar -nargs=? PlantUML call s:preview_plantuml(<q-args>)
 " }}}
 
+" YAML {{{
+AutocmdFT yaml SetIndent 2
+" }}}
+
 if s:meet_neocomplete_requirements
 " neocomplete.vim {{{
 "AutoComplPopを無効にする
@@ -2157,13 +2161,13 @@ nnoremap <Leader>gg :<C-u>GitGutterLineHighlightsToggle<CR>
 nnoremap <Leader>gh :<C-u>GitGutterStageHunk<CR>
 nnoremap <Leader>gu :<C-u>GitGutterUndoHunk<CR>
 nnoremap <Leader>gA :<C-u>GitGutterAll<CR>
-nmap <Leader>gp <Plug>GitGutterPreviewHunk
-nmap ]h <Plug>GitGutterNextHunk
-nmap [h <Plug>GitGutterPrevHunk
-omap ih <Plug>GitGutterTextObjectInnerPending
-omap ah <Plug>GitGutterTextObjectOuterPending
-xmap ih <Plug>GitGutterTextObjectInnerVisual
-xmap ah <Plug>GitGutterTextObjectOuterVisual
+nmap <Leader>gp <Plug>(GitGutterPreviewHunk)
+nmap ]h <Plug>(GitGutterNextHunk)
+nmap [h <Plug>(GitGutterPrevHunk)
+omap ih <Plug>(GitGutterTextObjectInnerPending)
+omap ah <Plug>(GitGutterTextObjectOuterPending)
+xmap ih <Plug>(GitGutterTextObjectInnerVisual)
+xmap ah <Plug>(GitGutterTextObjectOuterVisual)
 " }}}
 
 " vim-gfm-syntax {{{

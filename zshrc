@@ -595,7 +595,6 @@ else
     export NOTES_CLI_HOME="$HOME/.vim/notes"
 fi
 export NOTES_CLI_EDITOR="vim"
-
 # }}}
 
 ###############
