@@ -1122,13 +1122,13 @@ function! s:matchit(...) abort
         return
     endif
     if v:version >= 800
-        packadd! matchit
+        packadd matchit
     else
         runtime macros/matchit.vim
     endif
     let s:matchit_loaded = 1
 endfunction
-AutocmdFT vim,zsh,sh,ruby,ocaml,make,html,xml call <SID>matchit()
+AutocmdFT vim,zsh,sh,ruby,ocaml,make,html,xml,rust call <SID>matchit()
 
 " Shiba
 function! s:shiba(args) abort
