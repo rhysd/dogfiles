@@ -7,6 +7,7 @@
   "ranger": "~/.config/ranger",
   "rc.lua": "~/.config/awesome/rc.lua",
   "rustfmt.toml": "~/.config/rustfmt/rustfmt.toml",
+  "cargo.toml": "~/.cargo/config",
   "prettier.json": "~/.prettier.json",
   "vimrc": "~/.vimrc"
 }

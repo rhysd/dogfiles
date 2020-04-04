@@ -7,5 +7,6 @@
   "prettierrc.json": "~/.prettierrc.json",
   "ranger": "~/.config/ranger",
   "rustfmt.toml": "~/.rustfmt.toml",
+  "cargo.toml": "~/.cargo/config",
   "vimrc": "~/.vimrc"
 }
