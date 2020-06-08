@@ -70,3 +70,5 @@
 	diff = diff-highlight | less
 [interactive]
 	difffilter = diff-highlight
+[pull]
+	rebase = false
