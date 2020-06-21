@@ -946,14 +946,6 @@ if neobundle#load_cache()
                 \   }
                 \ })
 
-    call neobundle#add('mattn/gist-vim', {
-                \ 'lazy' : 1,
-                \ 'depends' : 'mattn/webapi-vim',
-                \ 'autoload' : {
-                \     'commands' : 'Gist',
-                \   }
-                \ })
-
     call neobundle#add('dhruvasagar/vim-table-mode', {
                 \ 'lazy' : 1,
                 \ 'autoload' : {
