@@ -28,6 +28,21 @@
 	co  = checkout
 	cob = checkout -b
 	copr = checkout-pr
+	delete-remote-branch = push origin --delete
+	delete-branch = "!f(){\
+			if [ -z \"$1\" ]; then\
+				echo 'Usage: git delete-branch [REMOTE] BRANCH' 1>&2;\
+				exit 1;\
+			fi;\
+			if [ -z \"$2\" ]; then\
+				git push origin --delete \"$1\";\
+				git branch -D \"$1\";\
+			else\
+				git push \"$1\" --delete \"$2\";\
+				git branch -D \"$2\";\
+			fi;\
+		};f"
+	db = delete-branch
 	di  = diff
 	dic = diff --cached
 	dis = diff --stat
