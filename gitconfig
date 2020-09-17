@@ -29,7 +29,6 @@
 	co  = checkout
 	cob = checkout -b
 	copr = checkout-pr
-	delete-remote-branch = push origin --delete
 	delete-branch = "!f(){\
 			set -e;\
 			if [ -z \"$1\" ]; then\
