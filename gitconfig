@@ -47,6 +47,7 @@
 	di  = diff
 	dic = diff --cached
 	dis = diff --stat
+	diu = diff --diff-filter=U
 	gr  = grep
 	lo  = log --graph --pretty=format:'%C(Yellow)%h %C(Cyan)%ad %C(White)%s%C(Green)%d %C(Red)[%an]' --date=short
 	lop = log -p
@@ -88,3 +89,5 @@
 	difffilter = diff-highlight
 [pull]
 	rebase = false
+[merge]
+	conflictstyle = diff3
