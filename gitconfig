@@ -36,10 +36,10 @@
 				exit 1;\
 			fi;\
 			if [ -z \"$2\" ]; then\
-				git push origin --delete \"$1\";\
+				git push origin --delete \"$1\" --no-verify;\
 				git branch -D \"$1\";\
 			else\
-				git push \"$1\" --delete \"$2\";\
+				git push \"$1\" --delete \"$2\" --no-verify;\
 				git branch -D \"$2\";\
 			fi;\
 		};f"
