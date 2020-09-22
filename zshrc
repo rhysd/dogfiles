@@ -712,11 +712,17 @@ if [[ "$GOPATH" != "" ]]; then
 fi
 
 function filter-repos() {
-    local input
+    local input go vim
 
     input="$(ghq list | sed "s#^#$(ghq root)/#")"
-    input="${input}\n$(find "$GOPATH/src" -maxdepth 3 -mindepth 3 -name "*" -type d)"
-    input="${input}\n$(ls -1 -d "$HOME/.vim/bundle/"*)"
+    go="$(find "$GOPATH/src" -maxdepth 3 -mindepth 3 -name "*" -type d)"
+    if [ -n "$go" ]; then
+        input="${input}\n${go}"
+    fi
+    vim="$(ls -1 -d "$HOME/.vim/bundle/"*)"
+    if [ -n "$vim" ]; then
+        input="${input}\n${vim}"
+    fi
     input="$(echo "$input" | sed "s#^$HOME#~#g")"
 
     local selected_dir=$(echo "${input}" | $FILTER_CMD $FILTER_OPTS --prompt 'repos> ' --query "$LBUFFER")
