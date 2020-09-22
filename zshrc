@@ -449,7 +449,6 @@ fi
 ZSH_PLUGINS=(
     https://github.com/zsh-users/zsh-autosuggestions.git
     https://github.com/Tarrasch/zsh-bd.git
-    https://github.com/hchbaw/opp.zsh.git
     https://github.com/zsh-users/zsh-syntax-highlighting.git
 )
 
