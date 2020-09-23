@@ -1,0 +1,26 @@
+{
+  "settingsVersion": "1.66",
+  "exclusionRules": [
+    {
+      "pattern": "https?://mail.google.com/*",
+      "passKeys": ""
+    }
+  ],
+  "filterLinkHints": false,
+  "waitForEnterForFilteredHints": true,
+  "hideHud": false,
+  "keyMappings": "# Store: https://chrome.google.com/webstore/detail/vimium/dbepggeogbaibhgnhhndojpepiihcmeb?hl=ja\n# Repo: https://github.com/philc/vimium\n# Wiki: https://github.com/philc/vimium/wiki\n\nmap j scrollPageDown\nmap k scrollPageUp\nmap <C-f> scrollFullPageDown\nmap <C-b> scrollFullPageUp\nmap i focusInput\nmap I enterInsertMode\nmap t Vomnibar.activateTabSelection\nmap u goBack\nmap <C-r> goForward\nmap <C-j> scrollLeft\nmap <C-k> scrollRight\nmap h previousTab\nmap l nextTab\nmap <C-p> togglePinTab\n\n\n# Disable reload\nunmap r\n# Disable open clipboard URL\nunmap p\n# Disable open clipboard URL in new tab\nunmap P\n# enterInsertMode is mapped to I\nunmap gi\n# unpin is mapped to <C-p>\nunmap <A-p>",
+  "linkHintCharacters": "sadfjklewcmpgh",
+  "linkHintNumbers": "0123456789",
+  "newTabUrl": "about:newtab",
+  "nextPatterns": "next,more,newer,>,›,→,»,≫,>>",
+  "previousPatterns": "prev,previous,back,older,<,‹,←,«,≪,<<",
+  "regexFindMode": false,
+  "ignoreKeyboardLayout": false,
+  "scrollStepSize": 60,
+  "smoothScroll": false,
+  "grabBackFocus": false,
+  "searchEngines": "w: https://www.wikipedia.org/w/index.php?title=Special:Search&search=%s Wikipedia\ng: https://github.com/search?q=%s GitHub",
+  "searchUrl": "https://www.google.com/search?q=",
+  "userDefinedLinkHintCss": "div > .vimiumHintMarker {\n/* linkhint boxes */\nbackground: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFF785),\n  color-stop(100%,#FFC542));\nborder: 1px solid #E3BE23;\n}\n\ndiv > .vimiumHintMarker span {\n/* linkhint text */\ncolor: black;\nfont-weight: bold;\nfont-size: 12px;\n}\n\ndiv > .vimiumHintMarker > .matchingCharacter {\n}"
+}
