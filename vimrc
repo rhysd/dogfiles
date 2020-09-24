@@ -682,7 +682,6 @@ if has('vim_starting')
     set rtp+=~/.vim/bundle/neobundle.vim/
 endif
 
-let s:meet_neocomplete_requirements = has('lua') && (v:version > 703 || (v:version == 703 && has('patch885')))
 if has('mac')
     let s:xcode_usr_path = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/'
     let g:clang_library_path = s:xcode_usr_path . 'lib/'
@@ -960,10 +959,6 @@ if neobundle#load_cache()
                 \   }
                 \ })
 
-    call neobundle#add('Shougo/neocomplete.vim', {
-                \ 'fetch' : !s:meet_neocomplete_requirements,
-                \ })
-
     call neobundle#add('junegunn/vader.vim', {
                 \ 'lazy' : 1,
                 \ 'autoload' : {
@@ -1016,10 +1011,6 @@ if neobundle#load_cache()
                 \ 'autoload' : {'filetypes' : 'haskell'}
                 \ })
     call neobundle#add('eagletmt/unite-haddock', {
-                \ 'lazy' : 1,
-                \ 'autoload' : {'filetypes' : 'haskell'}
-                \ })
-    call neobundle#add('ujihisa/neco-ghc', {
                 \ 'lazy' : 1,
                 \ 'autoload' : {'filetypes' : 'haskell'}
                 \ })
@@ -1490,103 +1481,6 @@ command! -bar -nargs=? PlantUML call s:preview_plantuml(<q-args>)
 AutocmdFT yaml SetIndent 2
 " }}}
 
-if s:meet_neocomplete_requirements
-" neocomplete.vim {{{
-"AutoComplPopを無効にする
-let g:acp_enableAtStartup = 0
-"vim起動時に有効化
-let g:neocomplete#enable_at_startup = 1
-"smart_caseを有効にする．大文字が入力されるまで大文字小文字の区別をなくす
-let g:neocomplete#enable_smart_case = 1
-" あいまいな候補一致
-let g:neocomplete#enable_fuzzy_completion = 1
-" デリミタ（autoload 関数の # など）の自動挿入
-let g:neocomplete#enable_auto_delimiter = 1
-"シンタックスをキャッシュするときの最小文字長を4に
-let g:neocomplete#min_keyword_length = 4
-let g:neocomplete#sources#syntax#min_keyword_length = 4
-"補完を開始する入力文字長
-let g:neocomplete#auto_completion_start_length = 3
-"日本語を収集しないようにする
-if !exists('g:neocomplete#keyword_patterns')
-    let g:neocomplete#keyword_patterns = {}
-endif
-let g:neocomplete#keyword_patterns['default'] = '\h\w*'
-" ctags は自分の用意したものを使う
-if executable('/usr/local/bin/ctags')
-    let g:neocomplete#ctags_command = '/usr/local/bin/ctags'
-elseif executable('/usr/bin/ctags')
-    let g:neocomplete#ctags_command = '/usr/bin/ctags'
-endif
-" Ruby の外部ファイルの拡張子
-let g:neocomplete#sources#file_include#exts
-            \ = get(g:, 'neocomplete#sources#file_include#exts', {})
-let g:neocomplete#sources#file_include#exts.ruby = ['', 'rb']
-"リスト表示
-let g:neocomplete#max_list = 300
-"区切り文字パターンの定義
-if !exists('g:neocomplete#delimiter_patterns')
-    let g:neocomplete#delimiter_patterns = {}
-endif
-let g:neocomplete#delimiter_patterns.vim = ['#']
-let g:neocomplete#delimiter_patterns.cpp = ['::']
-"インクルードパスの指定
-if !exists('g:neocomplete#sources#include#paths')
-    let g:neocomplete#sources#include#paths = {}
-endif
-let g:neocomplete#sources#include#paths.cpp  = '.,/usr/local/include'
-let g:neocomplete#sources#include#paths.c    = '.,/usr/include'
-"インクルード文のパターンを指定
-let g:neocomplete#sources#include#patterns = { 'c' : '^\s*#\s*include', 'cpp' : '^\s*#\s*include', 'ruby' : '^\s*require', 'perl' : '^\s*use', }
-"インクルード先のファイル名の解析パターン
-let g:neocomplete#filename#include#exprs = {
-            \ 'ruby' : "substitute(substitute(v:fname,'::','/','g'),'$','.rb','')"
-            \ }
-" オムニ補完を有効にする(ruby のオムニ補完は挙動が怪しいので off)
-AutocmdFT html   setlocal omnifunc=htmlcomplete#CompleteTags
-AutocmdFT css    setlocal omnifunc=csscomplete#CompleteCSS
-" オムニ補完を実行するパターン
-if !exists('g:neocomplete#sources#omni#input_patterns')
-    let g:neocomplete#sources#omni#input_patterns = {}
-endif
-let g:neocomplete#sources#omni#input_patterns.c   = '\%(\.\|->\)\h\w*'
-let g:neocomplete#sources#omni#input_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
-let g:neocomplete#sources#omni#input_patterns.javascript = '\%(\h\w*\|[^. \t]\.\w*\)'
-let g:neocomplete#sources#omni#input_patterns.markdown = ''
-let g:neocomplete#sources#omni#input_patterns.gitcommit = ''
-" neocomplete 補完用関数
-let g:neocomplete#sources#vim#complete_functions = {
-    \ 'Unite' : 'unite#complete_source',
-    \}
-let g:neocomplete#force_overwrite_completefunc = 1
-if !exists('g:neocomplete#force_omni_input_patterns')
-    let g:neocomplete#force_omni_input_patterns = {}
-endif
-" neosnippet だけは短いキーワードでも候補に出す
-call neocomplete#custom#source('neosnippet', 'min_pattern_length', 1)
-" オムニ補完に使う関数
-let g:neocomplete#sources#omni#functions = get(g:, 'neocomplete#sources#omni#functions', {})
-
-"neocompleteのマッピング
-inoremap <expr><C-g> neocomplete#undo_completion()
-inoremap <expr><C-s> neocomplete#complete_common_string()
-" <Tab>: completion
-inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-"<C-h>, <BS>: close popup and delete backword char.
-inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-inoremap <expr><C-y> neocomplete#cancel_popup()
-inoremap <expr><CR> neocomplete#smart_close_popup()."\<CR>\<C-r>=endwize#crend()\<CR>"
-" コマンドラインウィンドウでは Tab の挙動が変わるのでワークアラウンド
-Autocmd CmdwinEnter * inoremap <silent><buffer><Tab> <C-n>
-Autocmd CmdwinEnter * inoremap <expr><buffer><CR> (pumvisible() ? neocomplete#smart_close_popup() : "")."\<CR>"
-Autocmd CmdwinEnter * inoremap <silent><buffer><expr><C-h> col('.') == 1 ?
-                                    \ "\<ESC>:quit\<CR>" : neocomplete#cancel_popup()."\<C-h>"
-Autocmd CmdwinEnter * inoremap <silent><buffer><expr><BS> col('.') == 1 ?
-                                    \ "\<ESC>:quit\<CR>" : neocomplete#cancel_popup()."\<BS>"
-" }}}
-endif
-
 " neosnippet {{{
 "スニペット展開候補があれば展開を，そうでなければbash風補完を．
 " プレースホルダ優先で展開
@@ -1949,9 +1843,7 @@ AutocmdFT vimspec
     \ let b:endwize_words = 'Describe,Context,It,Before,After' |
     \ let b:endwize_syngroups = 'vimspecCommand' |
     \ let b:endwize_comment = '"'
-if !s:meet_neocomplete_requirements
-    inoremap <CR> <CR><C-r>=endwize#crend()<CR>
-endif
+inoremap <CR> <CR><C-r>=endwize#crend()<CR>
 "}}}
 
 " open-browser.vim "{{{
