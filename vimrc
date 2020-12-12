@@ -750,6 +750,7 @@ if neobundle#load_cache()
     call neobundle#add('rhysd/vim-github-actions')
     call neobundle#add('rhysd/vim-notes-cli')
     call neobundle#add('rhysd/git-messenger.vim')
+    call neobundle#add('rhysd/vim-gh-cli')
 
     " unite.vim sources
     call neobundle#add('Shougo/unite-outline')
@@ -1918,16 +1919,6 @@ call submode#map('altr', 'n', 'r', 'A', 'sA')
 " vim-altr {{{
 let s:bundle = neobundle#get('vim-altr')
 function! s:bundle.hooks.on_source(bundle) abort
-    " for vimrc
-    if has('mac')
-        call altr#define('.vimrc', '.gvimrc', '.mac.vimrc')
-    elseif s:on_win
-        call altr#define('_vimrc', '_gvimrc')
-    elseif has('unix')
-        call altr#define('.vimrc', '.gvimrc', '.linux.vimrc')
-    endif
-    call altr#define('dotfiles/vimrc', 'dotfiles/gvimrc',
-                   \ 'dotfiles/mac.vimrc', 'dotfiles/linux.vimrc')
     " Ruby
     call altr#define('%.rb', 'spec/%_spec.rb')
     " Crystal
