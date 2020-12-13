@@ -750,7 +750,6 @@ if neobundle#load_cache()
     call neobundle#add('rhysd/vim-github-actions')
     call neobundle#add('rhysd/vim-notes-cli')
     call neobundle#add('rhysd/git-messenger.vim')
-    call neobundle#add('rhysd/vim-gh-cli')
 
     " unite.vim sources
     call neobundle#add('Shougo/unite-outline')
@@ -1958,11 +1957,6 @@ function! s:bundle.hooks.on_post_source(bundle) abort
 endfunction
 unlet s:bundle
 " }}}
-
-" vim-window-adjuster {{{
-" カレントウィンドウをリサイズ
-nnoremap <silent><C-w>r :<C-u>AdjustWindowWidth --margin=1 --direction=shrink<CR>
-"}}}
 
 " EasyMotion {{{
 let g:EasyMotion_do_mapping = 0
