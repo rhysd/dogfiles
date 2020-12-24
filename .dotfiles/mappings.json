@@ -1,7 +1,6 @@
 {
   "agignore": "~/.agignore",
   "cabal_config": "~/.cabal/config",
-  "eslintrc.json": "~/.eslintrc.json",
   "gitconfig": "~/.gitconfig",
   "global.gitignore": "~/.global.gitignore",
   "peco": "~/.config/peco",

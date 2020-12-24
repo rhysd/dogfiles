@@ -24,11 +24,10 @@
         "mocha": true
     },
     "parserOptions": {
-        "ecmaVersion": 2020
+        "ecmaVersion": 2021
     },
     "extends": "eslint:recommended",
     "ecmaFeatures": {
-        "jsx": true,
-        "modules": true
+        "jsx": true
     }
 }
