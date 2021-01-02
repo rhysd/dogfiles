@@ -722,7 +722,6 @@ if neobundle#load_cache()
     call neobundle#add('Shougo/neomru.vim')
     call neobundle#add('rhysd/committia.vim')
     call neobundle#add('rust-lang/rust.vim')
-    call neobundle#add('rhysd/rust-doc.vim')
     call neobundle#add('cespare/vim-toml')
     call neobundle#add('slim-template/vim-slim')
     call neobundle#add('HerringtonDarkholme/yats.vim')
@@ -1054,14 +1053,6 @@ if neobundle#load_cache()
                 \ 'autoload' : {
                 \     'commands' : 'TsuOpen',
                 \     'function_prefix': 'tsuquyomi',
-                \   }
-                \ })
-
-    " Rust
-    call neobundle#add('racer-rust/vim-racer', {
-                \ 'lazy' : 1,
-                \ 'autoload' : {
-                \     'filetypes' : 'rust'
                 \   }
                 \ })
 
@@ -1407,15 +1398,7 @@ Autocmd BufRead,BufNew,BufNewFile go.sum setlocal filetype=
 
 " Rust {{{
 let g:rust_recommended_style = 0
-let g:rust_doc#downloaded_rust_doc_dir = '~/Documents/rust-docs'
-let $RUST_SRC_PATH = $HOME . '/Develop/github.com/rust-lang/rust/src'
-let g:racer_cmd = 'racer'
-let g:racer_insert_paren = 0
-let g:racer_experimental_completer = 1
-let g:rust_doc#define_map_K = 0
 function! s:setup_rust() abort
-    nnoremap <buffer><silent>K :<C-u>Unite rust/doc:cursor -no-empty -immediately<CR>
-    vnoremap <buffer><silent>K :Unite rust/doc:visual -no-empty -immediately<CR>
     noremap <buffer><Leader>t :<C-u>RustTest<CR>
 endfunction
 AutocmdFT rust call <SID>setup_rust()
