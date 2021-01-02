@@ -749,6 +749,7 @@ if neobundle#load_cache()
     call neobundle#add('rhysd/vim-github-actions')
     call neobundle#add('rhysd/vim-notes-cli')
     call neobundle#add('rhysd/git-messenger.vim')
+    call neobundle#add('prabirshrestha/vim-lsp')
 
     " unite.vim sources
     call neobundle#add('Shougo/unite-outline')
@@ -1443,6 +1444,62 @@ command! -bar -nargs=? PlantUML call s:preview_plantuml(<q-args>)
 " YAML {{{
 AutocmdFT yaml SetIndent 2
 " }}}
+
+" vim-lsp
+let g:lsp_fold_enabled = 0
+let g:lsp_diagnostics_enabled = 0
+
+function! s:setup_lsp() abort
+    if executable('pyls')
+        " pip install python-language-server
+        call lsp#register_server({
+            \ 'name': 'pyls',
+            \ 'cmd': { server_info -> ['pyls'] },
+            \ 'allowlist': ['python'],
+            \ })
+    endif
+
+    if executable('rust-analyzer')
+        " https://rust-analyzer.github.io/manual.html#rust-analyzer-language-server-binary
+        call lsp#register_server({
+            \ 'name': 'rust-analyzer',
+            \ 'cmd': { server_info -> ['rust-analyzer'] },
+            \ 'allowlist': ['rust'],
+            \ })
+    endif
+
+    if executable('typescript-language-server')
+        " npm install -g tyepscript-language-server
+        call lsp#register_server({
+            \ 'name': 'tyepscript-language-server',
+            \ 'cmd': { server_info -> ['typescript-language-server', '--stdio'] },
+            \ 'allowlist': ['typescript'],
+            \ })
+    endif
+endfunction
+
+Autocmd User lsp_setup call s:setup_lsp()
+
+function! s:on_lsp_buffer_enabled() abort
+    setlocal omnifunc=lsp#complete
+    setlocal signcolumn=yes
+    if exists('+tagfunc')
+        setlocal tagfunc=lsp#tagfunc
+    endif
+
+    " Override
+    nmap <buffer> gd <Plug>(lsp-definition)
+    nmap <buffer> K <Plug>(lsp-hover)
+    " Mapping features under <Leader>l
+    nmap <buffer> <Leader>ld <Plug>(lsp-definition)
+    nmap <buffer> <Leader>lh <Plug>(lsp-hover)
+    nmap <buffer> <Leader>lr <Plug>(lsp-references)
+    nmap <buffer> <Leader>li <Plug>(lsp-implementation)
+    nmap <buffer> <Leader>lt <Plug>(lsp-type-definition)
+    nmap <buffer> <Leader>lR <Plug>(lsp-rename)
+endfunction
+
+Autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 
 " neosnippet {{{
 "スニペット展開候補があれば展開を，そうでなければbash風補完を．
