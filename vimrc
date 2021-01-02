@@ -22,6 +22,7 @@ let s:SID = s:get_SID()
 delfunction s:get_SID
 
 let s:on_win = has('win32')
+let s:on_mac = has('mac')
 
 " Vimrc augroup
 augroup MyVimrc
@@ -682,15 +683,6 @@ if has('vim_starting')
     set rtp+=~/.vim/bundle/neobundle.vim/
 endif
 
-if has('mac')
-    let s:xcode_usr_path = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/'
-    let g:clang_library_path = s:xcode_usr_path . 'lib/'
-    let g:clang_user_options = '-std=c++1y -I ' . s:xcode_usr_path . 'include/c++/v1 -I /usr/local/include'
-else
-    let g:clang_library_path = '/usr/lib/llvm/lib'
-endif
-let s:clang_complete_available = has('python') && isdirectory(g:clang_library_path)
-
 call neobundle#begin(expand('~/.vim/bundle'))
 
 if neobundle#load_cache()
@@ -996,13 +988,6 @@ if neobundle#load_cache()
                 \   'autoload' : {
                 \     'filetypes' : 'gitrebase',
                 \   }
-                \ })
-
-    " C++用のプラグイン
-    call neobundle#add('Rip-Rip/clang_complete', {
-                \ 'lazy' : 1,
-                \ 'autoload' : {'filetypes' : ['c', 'cpp']},
-                \ 'fetch' : !s:clang_complete_available,
                 \ })
 
     " Haskell 用プラグイン
@@ -1548,7 +1533,7 @@ function! s:bundle.hooks.on_source(bundle) abort
     "}}}
 
     " Finder for Mac
-    if has('mac')
+    if s:on_mac
         let finder = { 'description' : 'open with Finder.app' }
         function! finder.func(candidate) abort
             if a:candidate.kind ==# 'directory'
@@ -1901,12 +1886,6 @@ let g:clever_f_use_migemo = 1
 nnoremap <C-w>o :<C-u>ZoomWin<CR>
 "}}}
 
-" clang_complete {{{
-let g:clang_complete_auto = 0
-let g:clang_auto_select = 1
-" let g:clang_make_default_keymappings = 0
-" }}}
-
 " submode.vim {{{
 let g:submode_keep_leaving_key = 1
 " タブ移動
@@ -2175,7 +2154,7 @@ function! SourceIfExist(path) abort
     endif
 endfunction
 
-if has('mac')
+if s:on_mac
     " 不可視文字
     set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
 
