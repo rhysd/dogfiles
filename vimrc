@@ -1047,15 +1047,6 @@ if neobundle#load_cache()
                 \   }
                 \ })
 
-    " TypeScript
-    call neobundle#add('Quramy/tsuquyomi', {
-                \ 'lazy' : 1,
-                \ 'autoload' : {
-                \     'commands' : 'TsuOpen',
-                \     'function_prefix': 'tsuquyomi',
-                \   }
-                \ })
-
     " 書き込み権限の無いファイルを編集しようとした時
     call neobundle#add('sudo.vim', {'lazy' : 1})
 
@@ -1406,17 +1397,6 @@ AutocmdFT rust call <SID>setup_rust()
 
 " TypeScript {{{
 let g:yats_host_keyword = 0
-let g:tsuquyomi_auto_open = 0
-function! s:tsu_open() abort
-    call tsuquyomi#open()
-    iunmap <buffer><C-x><C-o>
-    autocmd! MyVimrc-tsuopen
-    call feedkeys("\<C-x>\<C-o>")
-endfunction
-augroup MyVimrc-tsuopen
-    autocmd!
-    autocmd FileType typescript inoremap <buffer><C-x><C-o> <C-o>:call <SID>tsu_open()<CR>
-augroup END
 " }}}
 
 " Zsh {{{
