@@ -1461,6 +1461,22 @@ function! s:setup_lsp() abort
             \ 'allowlist': ['typescript'],
             \ })
     endif
+
+    if s:on_mac
+        " brew install llvm (llvm formula is keg-only)
+        let clangd = '/usr/local/opt/llvm/bin/clangd'
+    else
+        let clangd = 'clangd'
+    endif
+
+    if executable(clangd)
+        " npm install -g tyepscript-language-server
+        call lsp#register_server({
+            \ 'name': 'clangd',
+            \ 'cmd': { server_info -> [clangd] },
+            \ 'allowlist': ['c', 'cpp'],
+            \ })
+    endif
 endfunction
 
 Autocmd User lsp_setup call s:setup_lsp()
