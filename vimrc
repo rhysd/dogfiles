@@ -1430,9 +1430,11 @@ command! -bar -nargs=? PlantUML call s:preview_plantuml(<q-args>)
 AutocmdFT yaml SetIndent 2
 " }}}
 
-" vim-lsp
+" vim-lsp {{{
 let g:lsp_fold_enabled = 0
 let g:lsp_diagnostics_enabled = 0
+" Disable document preview since it hides signatures of completion items
+let g:lsp_documentation_float = 0
 
 function! s:setup_lsp() abort
     if executable('pyls')
@@ -1483,7 +1485,6 @@ Autocmd User lsp_setup call s:setup_lsp()
 
 function! s:on_lsp_buffer_enabled() abort
     setlocal omnifunc=lsp#complete
-    setlocal signcolumn=yes
     if exists('+tagfunc')
         setlocal tagfunc=lsp#tagfunc
     endif
@@ -1501,6 +1502,18 @@ function! s:on_lsp_buffer_enabled() abort
 endfunction
 
 Autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+
+" Change border of popup. Note that this only affects document hover and
+" doesn't affect document preview
+function! s:lsp_on_popup() abort
+endfunction
+Autocmd User lsp_float_opened call popup_setoptions(
+        \ lsp#ui#vim#output#getpreviewwinid(),
+        \ {
+        \   'borderchars': ['─', '│', '─', '│', '┌', '┐', '┘', '└'],
+        \   'highlight': 'NormalFloat',
+        \ })
+" }}}
 
 " neosnippet {{{
 "スニペット展開候補があれば展開を，そうでなければbash風補完を．
