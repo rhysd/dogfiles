@@ -122,8 +122,6 @@ set langmenu=none
 " foldingの設定
 set foldenable
 set foldmethod=marker
-" マルチバイト文字があってもカーソルがずれないようにする
-set ambiwidth=double
 " 読み込んでいるファイルが変更された時自動で読み直す
 set autoread
 " h と l で行を跨げるようにする
