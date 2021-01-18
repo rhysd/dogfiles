@@ -2190,6 +2190,9 @@ if s:on_mac
     if filereadable('/usr/local/opt/llvm/bin/llc')
         let g:ale_llvm_llc_executable = '/usr/local/opt/llvm/bin/llc'
     endif
+
+    " macOS では python コマンドは Python2 なので Homebrew で入る python3 を使う
+    let g:quickrun_config['python'] = { 'command' : 'python3' }
 elseif has('unix') || s:on_win
     " 不可視文字
     set listchars=tab:>-,trail:-,eol:$,extends:>,precedes:<,nbsp:%
