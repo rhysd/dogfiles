@@ -1695,34 +1695,6 @@ let g:quickrun_config['tmux'] = {
             \ 'exec' : ['%c %o %s:p', 'echo "sourced %s"'],
             \ }
 
-let g:quickrun_config['llvm'] = {
-            \   'exec' : 'llvm-as-3.4 %s:p -o=- | lli-3.4 - %a',
-            \ }
-
-let g:quickrun_config['dachs'] = {
-            \   'command' : './bin/dachs',
-            \   'cmdopt' : '--disable-color',
-            \   'exec' : ['%c %o %s:p', '%s:p:r %a'],
-            \ }
-
-let g:quickrun_config['dachs/llvm'] = {
-            \   'type' : 'dachs',
-            \   'cmdopt' : '--emit-llvm',
-            \   'exec' : '%c %o %s:p',
-            \ }
-
-let g:quickrun_config['slim'] = {
-            \   'command' : 'slimrb',
-            \   'cmdopt' : '--pretty',
-            \   'exec' : '%c %o %s:p',
-            \ }
-
-let g:quickrun_config['gocaml'] = {
-            \   'command' : $GOPATH . '/src/github.com/rhysd/gocaml/gocaml',
-            \   'exec' : ['%c %o %s:p', '%s:p:r %a'],
-            \   'errorformat' : '',
-            \ }
-
 let g:quickrun_config['vimspec'] = {
             \   'command' : $HOME . '/.vim/bundle/vim-themis/bin/themis',
             \   'exec' : '%c %o %s:p',
