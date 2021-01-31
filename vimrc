@@ -604,7 +604,6 @@ function! s:move_forward_by_step() abort
         normal! $
     endif
 endfunction
-" }}}
 
 if exists(':terminal')
     if exists('+termwinkey')
@@ -642,6 +641,7 @@ if exists(':terminal')
         tnoremap <C-e> <End>
     endif
 endif
+" }}}
 "}}}
 
 " 最小限の設定と最小限のプラグインだけ読み込む {{{
