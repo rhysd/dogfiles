@@ -116,7 +116,7 @@ set noshowcmd
 " 自前で用意したものへの path
 set path=.,/usr/include,/usr/local/include
 " 補完でプレビューウィンドウを開かない
-set completeopt=menuone,menu
+set completeopt=menuone,longest,noselect
 " メニューの言語
 set langmenu=none
 " foldingの設定
@@ -1108,7 +1108,7 @@ function! s:double_semi() abort
     endif
     return ';'
 endfunction
-AutocmdFT cpp,rust inoremap <silent><buffer><expr>; <SID>double_semi()
+AutocmdFT cpp,rust,ruby inoremap <silent><buffer><expr>; <SID>double_semi()
 "}}}
 
 " 追加のハイライト {{{
@@ -1148,7 +1148,6 @@ let g:quantum_black = 1
 " Ruby {{{
 AutocmdFT ruby SetIndent 2
 AutocmdFT ruby inoremap <buffer><C-s> self.
-AutocmdFT ruby inoremap <buffer>;; ::
 AutocmdFT ruby nnoremap <buffer>[unite]r :<C-u>Unite ruby/require<CR>
 Autocmd BufRead,BufNew,BufNewFile Guardfile setlocal filetype=ruby
 
