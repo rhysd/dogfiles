@@ -1127,8 +1127,7 @@ if !has('gui_running')
         set background=dark
         colorscheme default
     else
-        " Note: On Terminal.app, tmux sets 'truecolor' to $COLORTERM wrongly
-        if has('termguicolors') && $COLORTERM ==# 'truecolor' && $TERM_PROGRAM !=# 'Apple_Terminal'
+        if has('termguicolors') && $COLORTERM ==# 'truecolor'
             let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
             let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
             set termguicolors
