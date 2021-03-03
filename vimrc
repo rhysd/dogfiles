@@ -1877,6 +1877,7 @@ command! -nargs=0 -bar GitHubHere call <SID>open_github_here()
 let g:clever_f_smart_case = 1
 let g:clever_f_across_no_line = 1
 let g:clever_f_use_migemo = 1
+let g:clever_f_highlight_timeout_ms = 1000
 "}}}
 
 " ZoomWin {{{

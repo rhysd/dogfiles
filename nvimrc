@@ -721,6 +721,7 @@ endtry
 let g:clever_f_smart_case = 1
 let g:clever_f_across_no_line = 1
 let g:clever_f_use_migemo = 1
+let g:clever_f_highlight_timeout_ms = 1000
 
 let g:quickrun_no_default_key_mappings = 1
 " quickrun_configの初期化
