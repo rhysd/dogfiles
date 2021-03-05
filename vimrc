@@ -161,7 +161,7 @@ if exists('+breakindent')
     let &showbreak = '>>> '
 endif
 " 一時ディレクトリではバックアップを取らない
-set backupskip=/tmp/*,/private/tmp/*
+set backupskip=/tmp/*,/private/tmp/*,/var/*
 
 if has('vim_starting')
     " インサートモード時に非点滅の縦棒タイプのカーソル
