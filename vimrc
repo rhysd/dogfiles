@@ -740,6 +740,7 @@ if neobundle#load_cache()
     call neobundle#add('rhysd/vim-notes-cli')
     call neobundle#add('rhysd/git-messenger.vim')
     call neobundle#add('prabirshrestha/vim-lsp')
+    call neobundle#add('ziglang/zig.vim')
 
     " unite.vim sources
     call neobundle#add('Shougo/unite-outline')
@@ -1473,6 +1474,15 @@ function! s:setup_lsp() abort
             \ 'name': 'clangd',
             \ 'cmd': { server_info -> [clangd] },
             \ 'allowlist': ['c', 'cpp'],
+            \ })
+    endif
+
+    if executable('zls')
+        " Build from source https://github.com/zigtools/zls
+        call lsp#register_server({
+            \ 'name': 'zls',
+            \ 'cmd': { server_info -> ['zls'] },
+            \ 'allowlist': ['zig'],
             \ })
     endif
 endfunction
