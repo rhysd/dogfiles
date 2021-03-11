@@ -1427,6 +1427,10 @@ command! -bar -nargs=? PlantUML call s:preview_plantuml(<q-args>)
 AutocmdFT yaml SetIndent 2
 " }}}
 
+" Zig {{{
+let g:zig_fmt_parse_errors = 0
+" }}}
+
 " vim-lsp {{{
 let g:lsp_fold_enabled = 0
 let g:lsp_diagnostics_enabled = 0
