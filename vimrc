@@ -370,8 +370,8 @@ noremap @: @;
 "モードから抜ける
 inoremap <expr> j getline('.')[col('.') - 2] ==# 'j' ? "\<BS>\<ESC>" : 'j'
 cnoremap <expr> j getcmdline()[getcmdpos() - 2] ==# 'j' ? "\<BS>\<ESC>" : 'j'
-" <C-c> も Esc と同じ抜け方にする
-inoremap <C-c> <Esc>
+" <C-c> をオムニ補完に使う
+inoremap <C-c> <C-x><C-o>
 " Yの挙動はy$のほうが自然
 nnoremap Y y$
 " 縦方向は論理移動する
