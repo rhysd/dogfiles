@@ -1504,19 +1504,20 @@ function! s:on_lsp_buffer_enabled() abort
     nmap <buffer> K <Plug>(lsp-hover)
     " Mapping features under <Leader>l
     nmap <buffer> <Leader>ld <Plug>(lsp-definition)
+    nmap <buffer> <Leader>lD <Plug>(lsp-declaration)
     nmap <buffer> <Leader>lh <Plug>(lsp-hover)
     nmap <buffer> <Leader>lr <Plug>(lsp-references)
     nmap <buffer> <Leader>li <Plug>(lsp-implementation)
     nmap <buffer> <Leader>lt <Plug>(lsp-type-definition)
+    nmap <buffer> <Leader>lT <Plug>(lsp-type-hierarchy)
     nmap <buffer> <Leader>lR <Plug>(lsp-rename)
+    nmap <buffer> <Leader>lw <Plug>(lsp-workspace-symbol)
 endfunction
 
 Autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 
 " Change border of popup. Note that this only affects document hover and
 " doesn't affect document preview
-function! s:lsp_on_popup() abort
-endfunction
 Autocmd User lsp_float_opened call popup_setoptions(
         \ lsp#ui#vim#output#getpreviewwinid(),
         \ {
