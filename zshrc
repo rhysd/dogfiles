@@ -77,6 +77,7 @@ alias -g D='> /dev/null 2>&1'
 alias -g X='| xargs'
 alias -g XV='| xargs -o | vim --not-a-term'
 alias -g SPONGE='> /tmp/zsh-sponge-tmp; cat /tmp/zsh-sponge-tmp >'
+alias -g Q='&& exit'
 
 if [[ $TMUX != "" ]]; then
     alias -g BG=' 2>&1 | xargs tmux display-message &'
