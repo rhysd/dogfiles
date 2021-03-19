@@ -1436,6 +1436,10 @@ let g:lsp_fold_enabled = 0
 let g:lsp_diagnostics_enabled = 0
 " Disable document preview since it hides signatures of completion items
 let g:lsp_documentation_float = 0
+" Hide 'A>' sign for code action
+let g:lsp_document_code_action_signs_enabled = 0
+" Uncomment for debugging
+" let g:lsp_log_file = 'lsp-log.txt'
 
 function! s:setup_lsp() abort
     if executable('pyls')
@@ -1453,6 +1457,14 @@ function! s:setup_lsp() abort
             \ 'name': 'rust-analyzer',
             \ 'cmd': { server_info -> ['rust-analyzer'] },
             \ 'allowlist': ['rust'],
+            \ })
+    endif
+
+    if executable('gopls')
+        call lsp#register_server({
+            \ 'name': 'gopls',
+            \ 'cmd': ['gopls'],
+            \ 'allowlist': ['go', 'gomod'],
             \ })
     endif
 
@@ -1512,6 +1524,8 @@ function! s:on_lsp_buffer_enabled() abort
     nmap <buffer> <Leader>lT <Plug>(lsp-type-hierarchy)
     nmap <buffer> <Leader>lR <Plug>(lsp-rename)
     nmap <buffer> <Leader>lw <Plug>(lsp-workspace-symbol)
+    nmap <buffer> <Leader>lc <Plug>(lsp-code-lens)
+    nmap <buffer> <Leader>la <Plug>(lsp-code-action)
 endfunction
 
 Autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
