@@ -1523,8 +1523,10 @@ function! s:on_lsp_buffer_enabled() abort
     nmap <buffer> <Leader>lT <Plug>(lsp-type-hierarchy)
     nmap <buffer> <Leader>lR <Plug>(lsp-rename)
     nmap <buffer> <Leader>lw <Plug>(lsp-workspace-symbol)
-    nmap <buffer> <Leader>lc <Plug>(lsp-code-lens)
+    nmap <buffer> <Leader>ll <Plug>(lsp-code-lens)
     nmap <buffer> <Leader>la <Plug>(lsp-code-action)
+    nmap <buffer> <Leader>lco <Plug>(lsp-call-hierarchy-outgoing)
+    nmap <buffer> <Leader>lci <Plug>(lsp-call-hierarchy-incoming)
 endfunction
 
 Autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
