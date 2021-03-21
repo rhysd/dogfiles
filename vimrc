@@ -1013,12 +1013,12 @@ if neobundle#load_cache()
 
     " Go
     call neobundle#add('fatih/vim-go', {
-                \ 'lazy' : 1,
-                \ 'autoload' : {
-                \     'filetypes' : ['go', 'gomod'],
-                \     'commands' : ['GoImport', 'GoDrop', 'GoDef', 'GoVet', 'GoDoc', 'GoLint', 'GoRename', 'GoImports']
-                \   }
-                \ })
+               \ 'lazy' : 1,
+               \ 'autoload' : {
+               \     'filetypes' : ['go', 'gomod'],
+               \     'commands' : ['GoImport', 'GoDrop', 'GoDef', 'GoVet', 'GoDoc', 'GoLint', 'GoRename', 'GoImports']
+               \   }
+               \ })
 
     " LLVM IR
     call neobundle#add('rhysd/vim-llvm')
@@ -1328,30 +1328,29 @@ endfunction
 function! s:golang_settings() abort
     setlocal noexpandtab
 
-    let g:go_snippet_engine = 'neosnippet'
+    let g:go_def_mapping_enabled = 0
+    let g:go_code_completion_enabled = 0
+    let g:go_gopls_enabled = 0
+    let g:go_doc_keywordprg_enabled = 0
+    let g:go_diagnostics_enabled = 0
+
+    let g:go_snippet_engine = ''
     let g:go_highlight_trailing_whitespace_error = 0
     let g:go_play_open_browser = 1
-
     let g:go_highlight_chan_whitespace_error = 0
     let g:go_highlight_extra_types = 0
     let g:go_highlight_space_tab_error = 0
     let g:go_highlight_array_whitespace_error = 0
     let g:go_highlight_functions = 1
-
-    let g:go_metalinter_autosave_enabled = ['vet', 'golint']
-    if executable('gofmtrlx')
-        let g:go_fmt_command = 'gofmtrlx'
-    elseif executable('goimports')
-        let g:go_fmt_command = 'goimports'
-    endif
-    let g:go_snippet_engine = ''
+    let g:go_metalinter_autosave_enabled = []
+    let g:go_fmt_command = 'goimports'
 
     nnoremap <buffer><Space>i :<C-u>Unite go/import -start-insert<CR>
     nnoremap <buffer><Leader>i :<C-u>GoImports<CR>
     inoremap <buffer><C-g><C-i> <C-o>:GoImports<CR>
     nnoremap <buffer><Leader>gt :<C-u>GoTestFunc<CR>
     nnoremap <buffer><Leader>gr :<C-u>GoRename<Space>
-    nnoremap <buffer><Leader>gi :<C-u>GoInfo<CR>
+    nnoremap <buffer><Leader>gi :<C-u>execute 'GoImport' expand('<cword>')<CR>
     nnoremap <buffer><Leader>gn :<C-u>GoSameIds<CR>
     command! -buffer -nargs=0 -bar GoToggleAccess call <SID>toggle_access()
 endfunction
