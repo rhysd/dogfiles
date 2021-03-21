@@ -175,8 +175,9 @@ endif
 " 一定時間カーソルを移動しないとカーソルラインを表示（ただし，ウィンドウ移動時
 " はなぜか切り替わらない
 " http://d.hatena.ne.jp/thinca/20090530/1243615055
-Autocmd CursorMoved,CursorMovedI,WinLeave * noautocmd setlocal nocursorline
-Autocmd CursorHold,CursorHoldI,WinEnter * noautocmd setlocal cursorline
+" vim-lsp の quickpick は選択中のアイテムの表示のために cursorline を使うので，その設定を変更しない
+Autocmd CursorMoved,CursorMovedI,WinLeave * noautocmd if &filetype !=# 'lsp-quickpick' | setlocal nocursorline | endif
+Autocmd CursorHold,CursorHoldI,WinEnter * noautocmd if &filetype !=# 'lsp-quickpick' | setlocal cursorline | endif
 
 " git config file
 Autocmd BufRead,BufNew,BufNewFile gitconfig setlocal ft=gitconfig
