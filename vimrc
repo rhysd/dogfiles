@@ -1440,6 +1440,51 @@ let g:lsp_document_code_action_signs_enabled = 0
 " Uncomment for debugging
 " let g:lsp_log_file = 'lsp-log.txt'
 
+function! s:rust_analyzer_apply_source_change(context) abort
+    let command = get(a:context, 'command', {})
+
+    let arguments = get(command, 'arguments', [])
+    let argument = get(arguments, 0, {})
+
+    let workspace_edit = get(argument, 'workspaceEdit', {})
+    if !empty(workspace_edit)
+        call lsp#utils#workspace_edit#apply_workspace_edit(workspace_edit)
+    endif
+
+    let cursor_position = get(argument, 'cursorPosition', {})
+    if !empty(cursor_position)
+        call cursor(lsp#utils#position#lsp_to_vim('%', cursor_position))
+    endif
+endfunction
+
+function! s:rust_analyzer_run_single(context) abort
+    let command = get(a:context, 'command', {})
+    let arguments = get(command, 'arguments', [])
+    let argument = get(arguments, 0, {})
+
+    if !has_key(argument, 'kind')
+        throw 'Unsupported rust-analyzer.runSingle command. ' . string(command)
+    endif
+
+    if argument['kind'] ==# 'cargo'
+        let label = get(argument, 'label', 'cargo')
+        let args = get(argument, 'args', {})
+        let workspaceRoot = get(args, 'workspaceRoot', getcwd())
+        let cargoArgs = get(args, 'cargoArgs', [])
+        let cargoExtraArgs = get(args, 'cargoExtraArgs', [])
+        let executableArgs = get(args, 'executableArgs', [])
+        let cmd = ['cargo'] + cargoArgs + cargoExtraArgs
+
+        if !empty(executableArgs)
+            let cmd += ['--'] + executableArgs
+        endif
+
+        call term_start(cmd, {'cwd': workspaceRoot})
+    else
+        throw 'unsupported rust-analyzer.runSingle command. ' . string(command)
+    endif
+endfunction
+
 function! s:setup_lsp() abort
     if executable('pyls')
         " pip install python-language-server
@@ -1457,6 +1502,8 @@ function! s:setup_lsp() abort
             \ 'cmd': { server_info -> ['rust-analyzer'] },
             \ 'allowlist': ['rust'],
             \ })
+        call lsp#register_command('rust-analyzer.applySourceChange', function('s:rust_analyzer_apply_source_change'))
+        call lsp#register_command('rust-analyzer.runSingle', function('s:rust_analyzer_run_single'))
     endif
 
     if executable('gopls')
