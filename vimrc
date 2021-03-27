@@ -1571,6 +1571,7 @@ function! s:on_lsp_buffer_enabled() abort
     nmap <buffer> <Leader>lT <Plug>(lsp-type-hierarchy)
     nmap <buffer> <Leader>lR <Plug>(lsp-rename)
     nmap <buffer> <Leader>lw <Plug>(lsp-workspace-symbol)
+    nmap <buffer> <Leader>l/ <Plug>(lsp-workspace-symbol-search)
     nmap <buffer> <Leader>ll <Plug>(lsp-code-lens)
     nmap <buffer> <Leader>la <Plug>(lsp-code-action)
     nmap <buffer> <Leader>lco <Plug>(lsp-call-hierarchy-outgoing)
@@ -1587,6 +1588,14 @@ Autocmd User lsp_float_opened call popup_setoptions(
         \   'borderchars': ['─', '│', '─', '│', '┌', '┐', '┘', '└'],
         \   'highlight': 'NormalFloat',
         \ })
+
+function! s:on_lsp_quickpick() abort
+    nmap <silent><buffer> <C-g> <Plug>(lsp-quickpick-cancel)
+    imap <silent><buffer> <C-g> <Plug>(lsp-quickpick-cancel)
+    nmap <silent><buffer> <Esc> <Plug>(lsp-quickpick-cancel)
+    imap <silent><buffer> <Esc> <Plug>(lsp-quickpick-cancel)
+endfunction
+AutocmdFT lsp-quickpick-filter call s:on_lsp_quickpick()
 " }}}
 
 " neosnippet {{{
