@@ -2,14 +2,6 @@ scriptencoding utf-8
 
 " 必須な基本設定
 
-let s:on_nyaovim = exists('g:nyaovim_version')
-
-function! s:get_SID()
-    return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeget_SID$')
-endfunction
-let s:SID = s:get_SID()
-delfunction s:get_SID
-
 " Vimrc augroup
 augroup MyVimrc
     autocmd!
@@ -705,18 +697,8 @@ let s:true_color_enabled = $TERM_PROGRAM ==# 'iTerm.app'
 if s:true_color_enabled
     set termguicolors
 endif
-try
-    if s:on_nyaovim || s:true_color_enabled
-        colorscheme spring-night
-        let g:airline_theme = 'spring_night'
-    else
-        colorscheme wallaby
-        let g:airline_theme = 'wombat'
-    endif
-catch
-    set background=dark
-    colorscheme default
-endtry
+colorscheme spring-night
+let g:airline_theme = 'spring_night'
 
 let g:clever_f_smart_case = 1
 let g:clever_f_across_no_line = 1
