@@ -29,7 +29,8 @@ credentials.*
 credential.*
 
 # Cache directories
-.crystal
+.crystal/
+zig-cache/
 
 # A directory containing Python's virtual environment
 .venv
