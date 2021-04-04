@@ -740,7 +740,7 @@ if neobundle#load_cache()
     call neobundle#add('rhysd/vim-github-actions')
     call neobundle#add('rhysd/vim-notes-cli')
     call neobundle#add('rhysd/git-messenger.vim')
-    call neobundle#add('rhysd/vim-lsp')
+    call neobundle#add('prabirshrestha/vim-lsp')
     call neobundle#add('ziglang/zig.vim')
 
     " unite.vim sources
@@ -1438,7 +1438,6 @@ let g:lsp_diagnostics_enabled = 0
 let g:lsp_documentation_float = 0
 " Hide 'A>' sign for code action
 let g:lsp_document_code_action_signs_enabled = 0
-let g:lsp_quickpick_options = {'wrap': 1}
 " Uncomment for debugging
 " let g:lsp_log_file = 'lsp-log.txt'
 
