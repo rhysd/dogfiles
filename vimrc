@@ -1589,11 +1589,37 @@ Autocmd User lsp_float_opened call popup_setoptions(
         \   'highlight': 'NormalFloat',
         \ })
 
+function! s:quickpick_wrap(next) abort
+    let winid = lsp#internal#ui#quickpick#results_winid()
+    if winid == 0
+        return
+    endif
+
+    if a:next
+        let cur = line('.', winid)
+        let end = line('$', winid)
+        let cmd = cur == end ? 'gg' : 'j'
+    else
+        let cur = line('.', winid)
+        let cmd = cur == 1 ? 'G' : 'k'
+    endif
+
+    call win_execute(winid, 'noautocmd normal! ' . cmd)
+endfunction
+
 function! s:on_lsp_quickpick() abort
     nmap <silent><buffer> <C-g> <Plug>(lsp-quickpick-cancel)
     imap <silent><buffer> <C-g> <Plug>(lsp-quickpick-cancel)
     nmap <silent><buffer> <Esc> <Plug>(lsp-quickpick-cancel)
     imap <silent><buffer> <Esc> <Plug>(lsp-quickpick-cancel)
+    " Dummy mappings to prevent quickpick from overriding below mappings
+    nmap <buffer><expr><Nop> <Plug>(lsp-quickpick-move-next)
+    nmap <buffer><expr><Nop><Nop> <Plug>(lsp-quickpick-move-previous)
+    " Wrap scroll to choosei item
+    nnoremap <buffer><C-n> :<C-u>call <SID>quickpick_wrap(1)<CR>
+    inoremap <buffer><C-n> <C-o>:call <SID>quickpick_wrap(1)<CR>
+    nnoremap <buffer><C-p> :<C-u>call <SID>quickpick_wrap(0)<CR>
+    inoremap <buffer><C-p> <C-o>:call <SID>quickpick_wrap(0)<CR>
 endfunction
 AutocmdFT lsp-quickpick-filter call s:on_lsp_quickpick()
 " }}}
