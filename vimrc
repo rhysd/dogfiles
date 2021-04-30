@@ -741,6 +741,7 @@ if neobundle#load_cache()
     call neobundle#add('rhysd/vim-notes-cli')
     call neobundle#add('rhysd/git-messenger.vim')
     call neobundle#add('prabirshrestha/vim-lsp')
+    call neobundle#add('rhysd/vim-lsp-ale')
     call neobundle#add('ziglang/zig.vim')
 
     " unite.vim sources
@@ -1433,7 +1434,7 @@ let g:zig_fmt_parse_errors = 0
 
 " vim-lsp {{{
 let g:lsp_fold_enabled = 0
-let g:lsp_diagnostics_enabled = 0
+
 " Disable document preview since it hides signatures of completion items
 let g:lsp_documentation_float = 0
 " Hide 'A>' sign for code action
@@ -1562,7 +1563,7 @@ function! s:on_lsp_buffer_enabled() abort
     nmap <buffer> gd <Plug>(lsp-definition)
     nmap <buffer> K <Plug>(lsp-hover)
     " Mapping features under <Leader>l
-    nmap <buffer> <Leader>ld <Plug>(lsp-definition)
+    nmap <buffer> <Leader>ld <plug>(lsp-document-diagnostics)
     nmap <buffer> <Leader>lD <Plug>(lsp-declaration)
     nmap <buffer> <Leader>lh <Plug>(lsp-hover)
     nmap <buffer> <Leader>lr <Plug>(lsp-references)
@@ -2179,8 +2180,13 @@ let s:ale_fixers = {
     \   'sh': ['shfmt'],
     \ }
 let g:ale_linters = {
-    \   'python': ['pylint', 'mypy'],
-    \   'typescript': ['tslint', 'tsserver'],
+    \   'python': ['pylint', 'mypy', 'vim-lsp'],
+    \   'typescript': ['eslint', 'vim-lsp'],
+    \   'go': ['vim-lsp'],
+    \   'rust': ['vim-lsp'],
+    \   'c': ['clang-tidy', 'vim-lsp'],
+    \   'cpp': ['clang-tidy', 'vim-lsp'],
+    \   'zig': ['vim-lsp'],
     \ }
 let g:ale_fixers = s:ale_fixers
 AutocmdFT typescript,javascript,css,c,cpp,python,rust,json let b:ale_fix_on_save = 1
