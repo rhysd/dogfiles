@@ -1549,6 +1549,15 @@ function! s:setup_lsp() abort
             \ 'allowlist': ['zig'],
             \ })
     endif
+
+    if executable('crystalline')
+        " pip install python-language-server
+        call lsp#register_server({
+            \ 'name': 'crystalline',
+            \ 'cmd': { server_info -> ['crystalline'] },
+            \ 'allowlist': ['crystal'],
+            \ })
+    endif
 endfunction
 
 Autocmd User lsp_setup call s:setup_lsp()
