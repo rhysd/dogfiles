@@ -901,3 +901,7 @@ nmap <Leader>cc <Plug>(caw:hatpos:toggle)
 xmap <Leader>cc <Plug>(caw:hatpos:toggle:operator)
 " ブロックコメント
 map <Leader>cb <Plug>(caw:wrap:toggle:operator)
+
+" git-messenger.vim
+nmap <Leader>gm <Plug>(git-messenger)
+let g:git_messenger_floating_win_opts = { 'border': 'shadow' }
