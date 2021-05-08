@@ -2191,7 +2191,7 @@ let s:ale_fixers = {
 let g:ale_linters = {
     \   'python': ['pylint', 'mypy', 'vim-lsp'],
     \   'typescript': ['eslint', 'vim-lsp'],
-    \   'go': ['vim-lsp'],
+    \   'go': ['golint', 'vim-lsp'],
     \   'rust': ['vim-lsp'],
     \   'c': ['clang-tidy', 'vim-lsp'],
     \   'cpp': ['clang-tidy', 'vim-lsp'],
