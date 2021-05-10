@@ -1440,7 +1440,7 @@ let g:lsp_documentation_float = 0
 " Hide 'A>' sign for code action
 let g:lsp_document_code_action_signs_enabled = 0
 " Uncomment for debugging
-" let g:lsp_log_file = 'lsp-log.txt'
+" let g:lsp_log_file = 'vim-lsp-log.txt'
 
 function! s:rust_analyzer_apply_source_change(context) abort
     let command = get(a:context, 'command', {})
@@ -1499,11 +1499,17 @@ function! s:setup_lsp() abort
 
     if executable('rust-analyzer')
         " https://rust-analyzer.github.io/manual.html#rust-analyzer-language-server-binary
-        call lsp#register_server({
-            \ 'name': 'rust-analyzer',
-            \ 'cmd': { server_info -> ['rust-analyzer'] },
-            \ 'allowlist': ['rust'],
-            \ })
+        let config = {
+        \   'name': 'rust-analyzer',
+        \   'cmd': { server_info -> ['rust-analyzer'] },
+        \   'allowlist': ['rust'],
+        \ }
+        if executable('cargo-clippy')
+            let config.initialization_options = {
+            \   'checkOnSave': { 'command': 'clippy' },
+            \ }
+        endif
+        call lsp#register_server(config)
         call lsp#register_command('rust-analyzer.applySourceChange', function('s:rust_analyzer_apply_source_change'))
         call lsp#register_command('rust-analyzer.runSingle', function('s:rust_analyzer_run_single'))
     endif
