@@ -1465,7 +1465,7 @@ function! s:rust_analyzer_run_single(context) abort
     let argument = get(arguments, 0, {})
 
     if !has_key(argument, 'kind')
-        throw 'Unsupported rust-analyzer.runSingle command. ' . string(command)
+        throw printf('Unsupported rust-analyzer.runSingle command. command=%s, arg=%s', string(command), string(argument))
     endif
 
     if argument['kind'] ==# 'cargo'
@@ -1483,7 +1483,7 @@ function! s:rust_analyzer_run_single(context) abort
 
         call term_start(cmd, {'cwd': workspaceRoot})
     else
-        throw 'unsupported rust-analyzer.runSingle command. ' . string(command)
+        throw printf('unsupported rust-analyzer.runSingle command. command=%s, arg=%s', string(command), string(argument))
     endif
 endfunction
 
