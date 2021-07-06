@@ -2186,7 +2186,7 @@ let g:ale_sh_shfmt_options = '-i 4'
 let s:ale_fixers = {
     \   'javascript': ['prettier'],
     \   'typescript': ['prettier'],
-    \   'css': ['prettier'],
+    \   'css': ['stylelint'],
     \   'c': ['clang-format'],
     \   'cpp': ['clang-format'],
     \   'python': ['yapf'],
