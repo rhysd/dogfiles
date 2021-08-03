@@ -1922,8 +1922,6 @@ vnoremap <Leader>a= :Alignta <<<1 =<CR>
 vnoremap <Leader>a, :Alignta ,<CR>
 vnoremap <Leader>a> :Alignta =><CR>
 
-vnoremap <expr>x ':Alignta 1:1 '.nr2char(getchar())."\<CR>"
-
 let g:unite_source_alignta_preset_arguments = [
       \ ["Align at '='", '11 =>\='],
       \ ["Align at ':'", '01 :'],
