@@ -6,5 +6,6 @@
   "peco": "~/.config/peco",
   "tmux.conf": "~/.tmux.conf",
   "yamllint": "~/.config/yamllint/config",
-  "zshrc": "~/.zshrc"
+  "zshrc": "~/.zshrc",
+  "docker.json": "~/.docker/config.json"
 }
