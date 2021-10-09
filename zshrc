@@ -108,6 +108,12 @@ function source-file(){
 function pg(){
     ps aux | grep "$1" | grep -v grep
 }
+
+function rgf() {
+    rg --line-number "$*" | \
+        fzf --multi --preview='bat --pager never --color always --highlight-line {2} --line-range {2}: --style=plain {1}' --delimiter=: | \
+        cut -d: -f1
+}
 # }}}
 
 ####################
