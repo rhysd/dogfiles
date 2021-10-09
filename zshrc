@@ -606,20 +606,19 @@ export NOTES_CLI_EDITOR="vim"
 ###############
 #   FILTER    #
 ###############
-export FILTER_CMD=fzf
-export FILTER_OPTS="--layout=reverse"
-if hash "$FILTER_CMD" 2> /dev/null; then
+export FZF_DEFAULT_OPTS="--layout=reverse --bind=ctrl-t:toggle-preview"
+if hash fzf 2> /dev/null; then
 # {{{
-alias -g F="| $FILTER_CMD $FILTER_OPTS"
-alias -g FX="| $FILTER_CMD $FILTER_OPTS $FILTER_OPTS | xargs"
+alias -g F="| fzf"
+alias -g FX="| fzf | xargs"
 
 function filter-pgrep() {
     if [[ $1 == "" ]]; then
-        filter="$FILTER_CMD $FILTER_OPTS"
+        filter="fzf"
     else
-        filter="$FILTER_CMD $FILTER_OPTS --query \"$1\""
+        filter="fzf --query \"$1\""
     fi
-    ps aux | eval $FILTER_CMD $FILTER_OPTS --prompt "\"pgrep> \"" | awk '{ print $2 }'
+    ps aux | eval fzf --prompt "\"pgrep> \"" | awk '{ print $2 }'
 }
 zle -N filter-pgrep
 
@@ -637,7 +636,7 @@ zle -N filter-pkill
 function filter-history-insert() {
     local tac
     hash gtac 2> /dev/null && tac="gtac" || { hash tac 2> /dev/null && tac="tac" || { tac="tail -r" } }
-    BUFFER=$(fc -l -n 1 | eval $tac | $FILTER_CMD $FILTER_OPTS  --prompt 'history-insert> ' --query "$LBUFFER")
+    BUFFER=$(fc -l -n 1 | eval $tac | fzf  --prompt 'history-insert> ' --query "$LBUFFER")
     CURSOR=$#BUFFER         # move cursor
     zle -R -c               # refresh
 }
@@ -646,7 +645,7 @@ zle -N filter-history-insert
 function filter-history() {
     local tac
     hash gtac 2> /dev/null && tac="gtac" || { hash tac 2> /dev/null && tac="tac" || { tac="tail -r" } }
-    BUFFER=$(fc -l -n 1 | eval $tac | $FILTER_CMD $FILTER_OPTS --prompt 'history> ' --query "$LBUFFER")
+    BUFFER=$(fc -l -n 1 | eval $tac | fzf --prompt 'history> ' --query "$LBUFFER")
     zle clear-screen
     zle accept-line
 }
@@ -656,11 +655,11 @@ bindkey -M viins '^ h' filter-history
 function filter-cdr-impl() {
     cdr -l | \
         sed -e 's/^[[:digit:]]*[[:blank:]]*//' | \
-        $FILTER_CMD $FILTER_OPTS --prompt 'cdr> ' --query "$LBUFFER"
+        fzf --prompt 'cdr> ' --query "$LBUFFER"
 }
 function filter-cdr-insert() {
     local selected
-    selected=$(cdr -l | sed -e 's/^[[:digit:]]*[[:blank:]]*//' | $FILTER_CMD $FILTER_OPTS --prompt 'cdr-insert> ')
+    selected=$(cdr -l | sed -e 's/^[[:digit:]]*[[:blank:]]*//' | fzf --prompt 'cdr-insert> ')
     BUFFER=${BUFFER}${selected}
     CURSOR=$#BUFFER
     zle redisplay
@@ -693,7 +692,7 @@ bindkey -M viins '^ r' filter-cdr
 
 if hash ghq 2> /dev/null; then
     function filter-ghq() {
-        local selected_dir=$(ghq list | $FILTER_CMD $FILTER_OPTS --prompt 'ghq> ' --query "$LBUFFER")
+        local selected_dir=$(ghq list | fzf --prompt 'ghq> ' --query "$LBUFFER")
         if [ -n "$selected_dir" ]; then
             BUFFER="cd $(ghq root)/${selected_dir}"
             zle accept-line
@@ -706,7 +705,7 @@ fi
 
 if [[ "$GOPATH" != "" ]]; then
     function filter-gopath() {
-        local selected=$(find "$GOPATH/src" -maxdepth 3 -mindepth 3 -name "*" -type d | $FILTER_CMD $FILTER_OPTS --prompt 'GOPATH> ' --query "$LBUFFER")
+        local selected=$(find "$GOPATH/src" -maxdepth 3 -mindepth 3 -name "*" -type d | fzf --prompt 'GOPATH> ' --query "$LBUFFER")
         if [ -n "$selected" ]; then
             BUFFER="cd $selected"
             zle accept-line
@@ -732,7 +731,7 @@ function filter-repos() {
     fi
     input="$(echo "$input" | sed "s#^$HOME#~#g")"
 
-    local selected_dir=$(echo "${input}" | $FILTER_CMD $FILTER_OPTS --prompt 'repos> ' --query "$LBUFFER")
+    local selected_dir=$(echo "${input}" | fzf --prompt 'repos> ' --query "$LBUFFER")
     if [ -n "$selected_dir" ]; then
         BUFFER="cd ${selected_dir}"
         zle accept-line
@@ -754,7 +753,7 @@ function filter-git-log() {
     esac
 
     local commit
-    commit=$(git log --no-color --oneline --graph --all --decorate | $FILTER_CMD $FILTER_OPTS --prompt 'git-log> ' | $sed -e "s/^\W\+\([0-9A-Fa-f]\+\).*$/\1/")
+    commit=$(git log --no-color --oneline --graph --all --decorate | fzf --prompt 'git-log> ' | $sed -e "s/^\W\+\([0-9A-Fa-f]\+\).*$/\1/")
     BUFFER="${BUFFER}${commit}"
     CURSOR=$#BUFFER
     zle redisplay
@@ -764,7 +763,7 @@ bindkey -M viins '^ o' filter-git-log
 
 function filter-ls-l-insert(){
     local selected
-    selected=$(ls -l | grep -v ^total | $FILTER_CMD $FILTER_OPTS --prompt 'ls-l-insert> ' | awk '{print $(NF)}')
+    selected=$(ls -l | grep -v ^total | fzf --prompt 'ls-l-insert> ' | awk '{print $(NF)}')
     BUFFER="${BUFFER}$selected"
     CURSOR=$#BUFFER
     zle redisplay
@@ -774,7 +773,7 @@ bindkey -M viins '^ l' filter-ls-l-insert
 
 function filter-find-insert(){
     local selected
-    selected=$(find ./* | $FILTER_CMD $FILTER_OPTS --prompt 'find-insert> ')
+    selected=$(find ./* | fzf --prompt 'find-insert> ')
     BUFFER="${BUFFER}${selected}"
     CURSOR=$#BUFFER
     zle redisplay
@@ -788,7 +787,7 @@ function filter-directory-entries() {
     fi
 
     local selected
-    selected=$(ls -1 "$1" | $FILTER_CMD $FILTER_OPTS --prompt "$(basename "$1")> ")
+    selected=$(ls -1 "$1" | fzf --prompt "$(basename "$1")> ")
     if [[ "$selected" != "" ]]; then
         echo "$1/$selected"
     fi
@@ -818,7 +817,7 @@ function filter-man-list-all() {
 }
 
 function filter-man() {
-    local selected=$(filter-man-list-all | $FILTER_CMD $FILTER_OPTS --prompt 'man> ')
+    local selected=$(filter-man-list-all | fzf --prompt 'man> ')
     if [[ "$selected" != "" ]]; then
         man "$selected"
     fi
@@ -834,7 +833,7 @@ function filter-git-cd() {
         return
     fi
 
-    local selected="$(git ls-files "$cdup" | grep '/' | sed 's/\/[^\/]*$//g' | sort | uniq | $FILTER_CMD $FILTER_OPTS --prompt 'git-cd> ')"
+    local selected="$(git ls-files "$cdup" | grep '/' | sed 's/\/[^\/]*$//g' | sort | uniq | fzf --prompt 'git-cd> ')"
     if [[ "$selected" != "" ]]; then
         BUFFER="cd $selected"
         zle accept-line
@@ -864,7 +863,7 @@ function filter-source(){
         neobundle \
         repos \
     )
-    selected_source=$(echo ${(j/\n/)sources} | $FILTER_CMD $FILTER_OPTS --prompt 'source> ')
+    selected_source=$(echo ${(j/\n/)sources} | fzf --prompt 'source> ')
     zle clear-screen
     if [[ "$selected_source" != "" ]]; then
         zle filter-${selected_source}
