@@ -114,6 +114,15 @@ function rgf() {
         fzf --multi --preview='bat --pager never --color always --highlight-line {2} --line-range {2}: --style=plain {1}' --delimiter=: | \
         cut -d: -f1
 }
+
+function rgfv() {
+    # Open selected line in the file with `vim +$LINE $FILE`
+    vim $( \
+        rg --line-number "$*" | \
+        fzf --multi --preview='bat --pager never --color always --highlight-line {2} --line-range {2}: --style=plain {1}' --delimiter=: | \
+        awk -F : '{print "+"$2" "$1}' \
+    )
+}
 # }}}
 
 ####################
