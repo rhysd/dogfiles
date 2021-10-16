@@ -28,6 +28,9 @@ fi
 # デフォルトで venv 以外で pip install できないようにする
 # グローバルでインストールしたい時は PIP_REQUIRE_VENV= pip install を使う
 export PIP_REQUIRE_VENV=true
+
+# Rust 製プログラムのクラッシュ時バックトレースを常に表示
+export RUST_BACKTRACE=1
 # }}}
 
 ###############
