@@ -674,6 +674,10 @@ if dein#load_state(s:dein_cache_dir)
                 \   'depends' : 'vim-operator-user',
                 \   'on_map' : '<Plug>(caw:',
                 \ })
+    call dein#add('github/copilot.vim', {
+                \   'lazy' : 1,
+                \   'on_cmd' : ['Copilot'],
+                \ })
 
     " Completion
     call dein#add('Shougo/deoplete.nvim')
