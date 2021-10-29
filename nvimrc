@@ -909,3 +909,13 @@ map <Leader>cb <Plug>(caw:wrap:toggle:operator)
 " git-messenger.vim
 nmap <Leader>gm <Plug>(git-messenger)
 let g:git_messenger_floating_win_opts = { 'border': 'shadow' }
+
+" copilot.vim
+let s:copilot_enabled = v:false
+function! s:toggle_copilot() abort
+    execute 'Copilot' s:copilot_enabled ? 'disable' : 'enable'
+    echom 'Copilot ' . (s:copilot_enabled ? 'disabled' : 'enabled')
+    let s:copilot_enabled = !s:copilot_enabled
+endfunction
+nnoremap <Leader>cp :<C-u>call <SID>toggle_copilot()<CR>
+inoremap <C-x><C-x> <C-o>:call <SID>toggle_copilot()<CR>
