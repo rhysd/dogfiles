@@ -389,7 +389,7 @@ nnoremap <silent><expr>m 'i'.nr2char(getchar())."\<Esc>"
 noremap gm m
 "Esc->Escで検索結果とエラーハイライトをクリア
 nnoremap <silent><Esc><Esc> :<C-u>nohlsearch<CR>
-"{数値}<Tab>でその行へ移動．それ以外だと通常の<Tab>の動きに
+" {数値}<Tab>でその行へ移動．それ以外だと通常の<Tab>の動きに
 function! s:go_to_line() abort
     set number
     augroup vimrc-go-to-line
@@ -399,6 +399,8 @@ function! s:go_to_line() abort
     return 'G'
 endfunction
 noremap <expr><Tab> v:count != 0 ? <SID>go_to_line() : "\<Tab>zvzz"
+" Tab で補完候補選択
+inoremap <silent><expr><Tab> pumvisible() ? "\<C-y>" : "\<Tab>"
 " コマンドラインウィンドウ
 " 検索後画面の中心に。
 nnoremap n nzvzz
