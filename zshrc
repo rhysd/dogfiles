@@ -112,12 +112,6 @@ function pg(){
     ps aux | grep "$1" | grep -v grep
 }
 
-function rgf() {
-    rg --line-number "$*" | \
-        fzf --multi --preview='bat --pager never --color always --highlight-line {2} --line-range {2}: --style=plain {1}' --delimiter=: | \
-        cut -d: -f1
-}
-
 function rgfv() {
     # Open selected line in the file with `vim +$LINE $FILE`
     vim $( \
@@ -125,6 +119,11 @@ function rgfv() {
         fzf --multi --preview='bat --pager never --color always --highlight-line {2} --line-range {2}: --style=plain {1}' --delimiter=: | \
         awk -F : '{print "+"$2" "$1}' \
     )
+}
+
+function hgrep() {
+    command hgrep --theme ayu-mirage --term-width "$COLUMNS" "$@" | less -R
+    test "${pipestatus[1]}" -eq 0
 }
 # }}}
 
