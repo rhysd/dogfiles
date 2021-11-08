@@ -57,8 +57,7 @@ alias be='bundle exec'
 alias gvim='vim -g'
 alias sudo='sudo '
 alias memo='cat > /dev/null'
-alias nr='npm run'
-alias cr='cargo run --'
+alias hgrep='hgrep --theme ayu-mirage --hidden'
 
 alias l=ls
 alias v=vim
@@ -70,6 +69,8 @@ alias g=git
 alias cl='clang++ -stdlib=libc++ -std=c++1y -Wall -Wextra'
 alias m=make
 alias d=docker
+alias nr='npm run'
+alias cr='cargo run --'
 
 # global alias
 alias -g G='| grep'
@@ -119,11 +120,6 @@ function rgfv() {
         fzf --multi --preview='bat --pager never --color always --highlight-line {2} --line-range {2}: --style=plain {1}' --delimiter=: | \
         awk -F : '{print "+"$2" "$1}' \
     )
-}
-
-function hgrep() {
-    command hgrep --theme ayu-mirage --term-width "$COLUMNS" "$@" | less -R
-    test "${pipestatus[1]}" -eq 0
 }
 # }}}
 
