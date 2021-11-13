@@ -57,7 +57,6 @@ alias be='bundle exec'
 alias gvim='vim -g'
 alias sudo='sudo '
 alias memo='cat > /dev/null'
-alias hgrep='hgrep --theme ayu-mirage --hidden'
 
 alias l=ls
 alias v=vim
@@ -66,11 +65,11 @@ alias n=nvim
 alias t=time
 alias ng=noglob
 alias g=git
-alias cl='clang++ -stdlib=libc++ -std=c++1y -Wall -Wextra'
 alias m=make
 alias d=docker
 alias nr='npm run'
 alias cr='cargo run --'
+alias h='hgrep --theme ayu-mirage'
 
 # global alias
 alias -g G='| grep'
@@ -262,9 +261,12 @@ zstyle ':completion:*:sudo:*' command-path $sudo_path $path
 # キャッシュ
 zstyle ':completion:*' use-cache true
 
-# git をエイリアス時にも補完できるようにする
+# エイリアス時にも補完できるようにする
 compdef _git g=git
 compdef _docker d=docker
+compdef _hgrep h=hgrep
+compdef _vim v=vim
+compdef _make m=make
 # }}}
 
 ##############
