@@ -2191,7 +2191,7 @@ let s:ale_fixers = {
     \   'css': ['stylelint'],
     \   'c': ['clang-format'],
     \   'cpp': ['clang-format'],
-    \   'python': ['yapf'],
+    \   'python': ['black', 'yapf'],
     \   'rust': ['rustfmt'],
     \   'json': ['fixjson'],
     \   'sh': ['shfmt'],
@@ -2205,6 +2205,7 @@ let g:ale_linters = {
     \   'c': ['clang-tidy', 'vim-lsp'],
     \   'cpp': ['clang-tidy', 'vim-lsp'],
     \   'zig': ['vim-lsp'],
+    \   'wgsl': ['naga'],
     \ }
 let g:ale_fixers = s:ale_fixers
 AutocmdFT typescript,javascript,css,c,cpp,python,rust,json let b:ale_fix_on_save = 1
