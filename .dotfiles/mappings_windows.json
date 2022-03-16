@@ -1,5 +1,6 @@
 {
   "gvimrc": "~/vimfiles/gvimrc",
   "nvimrc": "~/vimfiles/gvimrc",
-  "vimrc": "~/vimfiles/vimrc"
+  "vimrc": "~/vimfiles/vimrc",
+  "Microsoft.PowerShell_profile.ps1": "~/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1"
 }
