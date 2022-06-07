@@ -8,4 +8,7 @@ if ($host.Name -eq 'ConsoleHost')
     Set-PSReadLineKeyHandler -Key Ctrl+j -Function AcceptLine
     Set-PSReadLineKeyHandler -Key Ctrl+y -Function Paste
     Set-PSReadLineKeyHandler -Key Ctrl+d -Function DeleteChar
+
+    Set-Alias g git
+    Set-Alias v gvim
 }
