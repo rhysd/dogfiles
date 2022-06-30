@@ -1507,12 +1507,16 @@ function! s:setup_lsp() abort
         \   'cmd': { server_info -> ['rust-analyzer'] },
         \   'allowlist': ['rust'],
         \ }
+        let config.initialization_options = {}
         if executable('cargo-clippy')
-            let config.initialization_options = {
-            \   'checkOnSave': { 'command': 'clippy' },
-            \ }
+            let config.initialization_options.checkOnSave = {
+                \   'command': 'clippy',
+                \   'features': 'all',
+                \ }
         endif
+        let config.initialization_options.cargo = { 'features': 'all' }
         call lsp#register_server(config)
+
         call lsp#register_command('rust-analyzer.applySourceChange', function('s:rust_analyzer_apply_source_change'))
         call lsp#register_command('rust-analyzer.runSingle', function('s:rust_analyzer_run_single'))
     endif
