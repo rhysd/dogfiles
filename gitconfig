@@ -11,7 +11,7 @@
 	adp = add -p
 	adu = add -u :/
 	bl  = blame
-	br  = branch
+	br  = branch -vv
 	checkout-pr = "!f(){ \
 			set -e;\
 			if [ -z \"$1\" ]; then\
