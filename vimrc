@@ -1376,8 +1376,47 @@ Autocmd BufRead,BufNew,BufNewFile go.sum setlocal filetype=
 
 " Rust {{{
 let g:rust_recommended_style = 0
+
+function! s:rust_analyzer_open_docs_callback(context) abort
+    if !has_key(a:context, 'response')
+        echohl ErrorMsg | echom 'experimental/externalDocs returned with no response: ' . string(a:context) | echohl None
+        return
+    endif
+    let res = a:context['response']
+    if has_key(res, 'error')
+        let err = res['error']
+        echohl ErrorMsg | echom printf('experimental/externalDocs returned an error: %s (code=%d)', err['message'], err['code']) | echohl None
+        return
+    endif
+    if !has_key(res, 'result')
+        echohl ErrorMsg | echom 'experimental/externalDocs returned with no result: ' . string(res) | echohl None
+        return
+    endif
+    if res['result'] == v:null
+        " Fallback to opening something under cursor with open-browser.vim
+        execute 'normal' "\<Plug>(openbrowser-smart-search)"
+        return
+    endif
+    execute 'OpenBrowser' res['result']
+endfunction
+
+function! s:rust_analyzer_open_docs() abort
+    let params = {
+    \   'textDocument': lsp#get_text_document_identifier(),
+    \   'position': lsp#get_position(),
+    \ }
+    call lsp#send_request('rust-analyzer', {
+    \   'method': 'experimental/externalDocs',
+    \   'params': params,
+    \   'sync': v:false,
+    \   'on_notification': function('s:rust_analyzer_open_docs_callback')
+    \ })
+endfunction
+
 function! s:setup_rust() abort
+    command! -buffer -nargs=0 -bar RustDoc call <SID>rust_analyzer_open_docs()
     noremap <buffer><Leader>t :<C-u>RustTest<CR>
+    nnoremap <buffer><Leader>o :<C-u>RustDoc<CR>
 endfunction
 AutocmdFT rust call <SID>setup_rust()
 " }}}
