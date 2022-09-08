@@ -27,7 +27,9 @@
 	cmf = commit --fixup
 	cmm = commit -m
 	co  = checkout
-	cob = checkout -b
+	sw  = switch
+	swc = switch -c
+	cob = switch -c
 	copr = checkout-pr
 	delete-branch = "!f(){\
 			set -e;\
