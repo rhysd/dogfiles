@@ -625,7 +625,11 @@ if exists(':terminal')
             endif
             return
         endif
-        execute 'topleft' winwidth(0) >= 160 ? 'vsplit' : 'split' ' | terminal ++curwin ++close'
+        let shell = ''
+        if s:on_win
+            let shell = ' powershell'
+        endif
+        execute 'topleft' winwidth(0) >= 160 ? 'vsplit' : 'split' ' | terminal ++curwin ++close' . shell
     endfunction
     nnoremap <silent><Space><Space> :<C-u>call <SID>open_terminal()<CR>
     " XXX: This kills original <Esc><Esc>, which sends raw '<Esc>' to shell
