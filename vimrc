@@ -2235,6 +2235,7 @@ let g:ale_sh_shfmt_options = '-i 4'
 let s:ale_fixers = {
     \   'javascript': ['prettier'],
     \   'typescript': ['prettier'],
+    \   'typescriptreact': ['prettier'],
     \   'css': ['stylelint'],
     \   'c': ['clang-format'],
     \   'cpp': ['clang-format'],
@@ -2243,6 +2244,8 @@ let s:ale_fixers = {
     \   'json': ['fixjson'],
     \   'sh': ['shfmt'],
     \ }
+" Note: Disable linter on 'asm' by default because running linter against bunch of assembly code generated from
+" disassembler makes Vim so slow.
 let g:ale_linters = {
     \   'python': ['pylint', 'mypy', 'vim-lsp'],
     \   'javascript': ['eslint'],
@@ -2253,9 +2256,10 @@ let g:ale_linters = {
     \   'cpp': ['clang-tidy', 'vim-lsp'],
     \   'zig': ['vim-lsp'],
     \   'wgsl': ['naga'],
+    \   'asm': [],
     \ }
 let g:ale_fixers = s:ale_fixers
-AutocmdFT typescript,javascript,css,c,cpp,python,rust,json let b:ale_fix_on_save = 1
+AutocmdFT typescript,javascript,typescriptreact,css,c,cpp,python,rust,json let b:ale_fix_on_save = 1
 function! s:toggle_ale_fix(bang) abort
     if a:bang
         if empty(g:ale_fixers)
