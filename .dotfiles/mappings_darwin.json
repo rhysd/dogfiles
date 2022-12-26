@@ -8,5 +8,6 @@
   "ranger": "~/.config/ranger",
   "rustfmt.toml": "~/.rustfmt.toml",
   "cargo.toml": "~/.cargo/config",
+  "stylua.toml": "~/.config/stylua/stylua.toml",
   "vimrc": "~/.vimrc"
 }

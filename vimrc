@@ -1614,6 +1614,15 @@ function! s:setup_lsp() abort
             \ 'allowlist': ['crystal'],
             \ })
     endif
+
+    if executable('lua-language-server')
+        " https://github.com/sumneko/lua-language-server/wiki/Getting-Started#command-line
+        call lsp#register_server({
+            \ 'name': 'lua-language-server',
+            \ 'cmd': { server_info -> ['lua-language-server'] },
+            \ 'allowlist': ['lua'],
+            \ })
+    endif
 endfunction
 
 Autocmd User lsp_setup call s:setup_lsp()
@@ -2243,6 +2252,7 @@ let s:ale_fixers = {
     \   'rust': ['rustfmt'],
     \   'json': ['fixjson'],
     \   'sh': ['shfmt'],
+    \   'lua': ['stylua'],
     \ }
 " Note: Disable linter on 'asm' by default because running linter against bunch of assembly code generated from
 " disassembler makes Vim so slow.
@@ -2257,9 +2267,10 @@ let g:ale_linters = {
     \   'zig': ['vim-lsp'],
     \   'wgsl': ['naga'],
     \   'asm': [],
+    \   'lua': ['vim-lsp'],
     \ }
 let g:ale_fixers = s:ale_fixers
-AutocmdFT typescript,javascript,typescriptreact,css,c,cpp,python,rust,json let b:ale_fix_on_save = 1
+AutocmdFT typescript,javascript,typescriptreact,css,c,cpp,python,rust,json,lua let b:ale_fix_on_save = 1
 function! s:toggle_ale_fix(bang) abort
     if a:bang
         if empty(g:ale_fixers)

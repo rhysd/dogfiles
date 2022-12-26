@@ -9,5 +9,6 @@
   "rustfmt.toml": "~/.config/rustfmt/rustfmt.toml",
   "cargo.toml": "~/.cargo/config",
   "prettier.json": "~/.prettier.json",
+  "stylua.toml": "~/.config/stylua/stylua.toml",
   "vimrc": "~/.vimrc"
 }
