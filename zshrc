@@ -31,6 +31,9 @@ export PIP_REQUIRE_VENV=true
 
 # Rust 製プログラムのクラッシュ時バックトレースを常に表示
 export RUST_BACKTRACE=1
+
+# `bat` コマンドのカラーテーマ（macOS ではシステムのカラーテーマに合わせられてしまうため）
+export BAT_THEME=OneHalfDark
 # }}}
 
 ###############
