@@ -913,6 +913,7 @@ case $OSTYPE in
         export HOMEBREW_VERBOSE=true
         export HOMEBREW_EDITOR=vim
         export HOMEBREW_NO_ANALYTICS=1
+        export HOMEBREW_NO_AUTO_UPDATE=1
 
         # Git
         export PATH=$PATH:/usr/local/opt/git/share/git-core/contrib/diff-highlight
