@@ -655,9 +655,9 @@ endif
 " % vim --cmd "g:linda_pp_startup_with_tiny = 1" で起動した時
 " または vi という名前の シンボリックリンク越しに vim を起動した時
 if get(g:, 'linda_pp_startup_with_tiny', 0)
-            \ || v:progname ==# 'vi'
-            \ || ! exists('v:version') || v:version < 702
-            \ || ! executable('git')
+        \ || v:progname ==# 'vi'
+        \ || !exists('v:version') || v:version < 702
+        \ || !executable('git')
     syntax enable
     finish
 endif
@@ -743,7 +743,6 @@ if neobundle#load_cache()
     call neobundle#add('aklt/plantuml-syntax')
     call neobundle#add('machakann/vim-highlightedyank')
     call neobundle#add('PProvost/vim-ps1')
-    call neobundle#add('rhysd/vim-github-actions')
     call neobundle#add('rhysd/vim-notes-cli')
     call neobundle#add('rhysd/git-messenger.vim')
     call neobundle#add('prabirshrestha/vim-lsp')
