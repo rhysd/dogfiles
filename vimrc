@@ -748,7 +748,6 @@ if neobundle#load_cache()
     call neobundle#add('prabirshrestha/vim-lsp')
     call neobundle#add('rhysd/vim-lsp-ale')
     call neobundle#add('ziglang/zig.vim')
-    call neobundle#add('DingDean/wgsl.vim')
 
     " unite.vim sources
     call neobundle#add('Shougo/unite-outline')
@@ -1003,10 +1002,6 @@ if neobundle#load_cache()
                 \ 'autoload' : {'filetypes' : 'haskell'}
                 \ })
     call neobundle#add('eagletmt/unite-haddock', {
-                \ 'lazy' : 1,
-                \ 'autoload' : {'filetypes' : 'haskell'}
-                \ })
-    call neobundle#add('eagletmt/ghcmod-vim', {
                 \ 'lazy' : 1,
                 \ 'autoload' : {'filetypes' : 'haskell'}
                 \ })
@@ -1939,19 +1934,6 @@ map <silent>gy <Plug>(operator-surround-append)
 map <silent>gd <Plug>(operator-surround-delete)
 map <silent>gc <Plug>(operator-surround-replace)
 "}}}
-"}}}
-
-" ghcmod-vim {{{
-AutocmdFT haskell nnoremap <buffer><C-t> :<C-u>GhcModType<CR>
-AutocmdFT haskell let &l:statusline = '%{empty(getqflist()) ? "[No Errors] " : "[Errors Found] "}'
-                                            \ . (empty(&l:statusline) ? &statusline : &l:statusline)
-AutocmdFT haskell nnoremap <buffer><silent><Esc><Esc> :<C-u>nohlsearch<CR>:GhcModTypeClear<CR>
-AutocmdFT haskell nnoremap <buffer><Leader>ge :<C-u>GhcModExpand<CR>
-Autocmd BufWritePost *.hs GhcModCheckAndLintAsync
-let g:ghcmod_open_quickfix_function = s:SID . 'open_quickfix_with_unite'
-function! s:open_quickfix_with_unite() abort
-    Unite -no-empty -no-start-insert quickfix
-endfunction
 "}}}
 
 " vim2hs.vim {{{
