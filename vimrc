@@ -734,7 +734,6 @@ if neobundle#load_cache()
     call neobundle#add('rhysd/y-output.vim')
     call neobundle#add('rhysd/vim-goyacc')
     call neobundle#add('vim-jp/vim-cpp')
-    call neobundle#add('rhysd/vim-filetype-haskell')
     call neobundle#add('othree/html5.vim')
     call neobundle#add('hail2u/vim-css3-syntax')
     call neobundle#add('w0rp/ale')
@@ -1935,18 +1934,6 @@ map <silent>gd <Plug>(operator-surround-delete)
 map <silent>gc <Plug>(operator-surround-replace)
 "}}}
 "}}}
-
-" vim2hs.vim {{{
-" quasi operator highlight is broken (2012/09/26 (Wed) 05:07)
-let g:haskell_quasi = 0
-" disable conceal settings because multi-byte signs are broken in a console
-let g:haskell_conceal = 0
-" relieve load on highlighting
-let g:haskell_sql = 0
-let g:haskell_json = 0
-let g:haskell_xml = 0
-let g:haskell_hsp = 0
-" }}}
 
 " inu-snippets {{{
 let g:neosnippet#snippets_directory = $HOME . '/.vim/bundle/inu-snippets/snippets'
