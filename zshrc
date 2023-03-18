@@ -94,15 +94,11 @@ fi
 #   関数   #
 ############
 # {{{
-function separate(){
+function kiritori(){
     echo -n $fg_bold[yellow]
-    for i in $(seq 1 $(($COLUMNS/4-2))); do
-        echo -n '- '
-    done
+    printf '- %.0s' {1..$(($COLUMNS/4-2))}
     echo -n ' ｷﾘﾄﾘｾﾝ '
-    for i in $(seq 1 $(($COLUMNS/4-2))); do
-        echo -n ' -'
-    done
+    printf '- %.0s' {1..$(($COLUMNS/4-2))}
     echo -n $reset_color
     echo
 }
