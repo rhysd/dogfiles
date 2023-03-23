@@ -19,7 +19,8 @@
       "files": "*.css",
       "options": {
         "tabWidth": 2,
-        "printWidth": -1
+        "singleQuote": false,
+        "printWidth": 200
       }
     },
     {
