@@ -1570,7 +1570,7 @@ function! s:setup_lsp() abort
         call lsp#register_server({
             \ 'name': 'tyepscript-language-server',
             \ 'cmd': { server_info -> ['typescript-language-server', '--stdio'] },
-            \ 'allowlist': ['typescript'],
+            \ 'allowlist': ['typescript', 'typescriptreact'],
             \ })
     endif
 
