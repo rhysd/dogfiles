@@ -28,9 +28,6 @@ a.out
 .crystal/
 zig-cache/
 
-# A directory containing Python's virtual environment
-.venv
-
 # Python
 __pycache__/
 *.py[cod]
