@@ -311,11 +311,11 @@ function vcs_info_precmd(){
 terminfo_down_sc=$terminfo[cud1]$terminfo[cuu1]$terminfo[sc]$terminfo[cud1]
 function _left_down_prompt_preexec () { print -rn -- $terminfo[el]; }
 add-zsh-hook preexec _left_down_prompt_preexec
-PROMPT_2='$(vcs_info_precmd)'
-PROMPT_NEWLINE=$'\n'
-GREEN_PROMPT="%{$fg_bold[green]%}%~%{$reset_color%}${PROMPT_NEWLINE}%{$terminfo_down_sc$PROMPT_2$terminfo[rc]%}%{$fg_bold[green]%}U%(?,'w',;w;))%{$reset_color%} { "
-YELLOW_PROMPT="%{$fg_bold[yellow]%}%~%{$reset_color%}${PROMPT_NEWLINE}%{$terminfo_down_sc$PROMPT_2$terminfo[rc]%}%{$fg_bold[yellow]%}U%(?,'w',;w;))%{$reset_color%} { "
-PROMPT="$GREEN_PROMPT"
+MY_PROMPT_VCS='$(vcs_info_precmd)'
+MY_NEWLINE=$'\n'
+MY_INS_PROMPT="%{$fg_bold[green]%}%~%{$reset_color%}${MY_NEWLINE}%{$terminfo_down_sc$MY_PROMPT_VCS$terminfo[rc]%}%{$fg_bold[green]%}U%(?,'w',;w;))%{$reset_color%} { "
+MY_NORM_PROMPT="%{$fg_bold[yellow]%}%~%{$reset_color%}${MY_NEWLINE}%{$terminfo_down_sc$MY_PROMPT_VCS$terminfo[rc]%}%{$fg_bold[yellow]%}U%(?,'w',;w;))%{$reset_color%} { "
+PROMPT="$MY_INS_PROMPT"
 
 # 右プロンプト
 RPROMPT='[%{$fg_bold[red]%}${HOST}%{$reset_color%}][%{$fg_bold[red]%}%D{%m/%d %H:%M}%{$reset_color%}]'
@@ -324,9 +324,9 @@ RPROMPT='[%{$fg_bold[red]%}${HOST}%{$reset_color%}][%{$fg_bold[red]%}%D{%m/%d %H
 # XXX: vicmd で ^M や ^C 押下時に insert モードに入っても色が戻らない
 function zle-keymap-select () {
     case $KEYMAP in
-        vicmd) PROMPT="$YELLOW_PROMPT";;
-        main) PROMPT="$GREEN_PROMPT";;
-        viins) PROMPT="$GREEN_PROMPT";;
+        vicmd) PROMPT="$MY_NORM_PROMPT";;
+        main) PROMPT="$MY_INS_PROMPT";;
+        viins) PROMPT="$MY_INS_PROMPT";;
     esac
     zle reset-prompt
 }
@@ -454,9 +454,9 @@ zle -N _ls_files
 #  外部プラグイン  #
 ####################
 # {{{
-export ZSHPLUGIN=$DOTZSH/plugins
-if [ ! -d $ZSHPLUGIN ]; then
-    mkdir -p $ZSHPLUGIN
+export ZSH_PLUGIN_DIR=$DOTZSH/plugins
+if [ ! -d $ZSH_PLUGIN_DIR ]; then
+    mkdir -p $ZSH_PLUGIN_DIR
 fi
 
 # Note: zsh-syntax-highlighting must be at the last.
@@ -474,7 +474,7 @@ function zsh-plugin-update() {
     local plugin_url
     for plugin_url in $ZSH_PLUGINS; do
         local plugin="${${plugin_url%.git}##*/}"
-        local plugin_dir="${ZSHPLUGIN}/${plugin}"
+        local plugin_dir="${ZSH_PLUGIN_DIR}/${plugin}"
 
         if [ -d "$plugin_dir" ]; then
             # Update
@@ -483,7 +483,7 @@ function zsh-plugin-update() {
             git pull
         else
             echo "Installing ${plugin}..."
-            chpwd_functions= builtin cd "$ZSHPLUGIN"
+            chpwd_functions= builtin cd "$ZSH_PLUGIN_DIR"
             git clone "$plugin_url"
         fi
         echo
@@ -497,9 +497,9 @@ function zsh-plugin-load() {
     local plugin_url
     for plugin_url in $ZSH_PLUGINS; do
         local plugin="${${plugin_url%.git}##*/}"
-        local plugin_file="${ZSHPLUGIN}/${plugin}/${plugin}.zsh"  # zsh-foo/zsh-foo.zsh
-        local plugin_file2="${ZSHPLUGIN}/${plugin}/${${plugin}##zsh-}.zsh"  # zsh-foo/foo.zsh
-        local plugin_file3="${ZSHPLUGIN}/${plugin}/${plugin}"  # foo.zsh/foo.zsh
+        local plugin_file="${ZSH_PLUGIN_DIR}/${plugin}/${plugin}.zsh"  # zsh-foo/zsh-foo.zsh
+        local plugin_file2="${ZSH_PLUGIN_DIR}/${plugin}/${${plugin}##zsh-}.zsh"  # zsh-foo/foo.zsh
+        local plugin_file3="${ZSH_PLUGIN_DIR}/${plugin}/${plugin}"  # foo.zsh/foo.zsh
         if [ -f "$plugin_file" ]; then
             source "$plugin_file"
         elif [ -f "$plugin_file2" ]; then
