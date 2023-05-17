@@ -1582,11 +1582,29 @@ function! s:setup_lsp() abort
     endif
 
     if executable(clangd)
-        " npm install -g tyepscript-language-server
+        " https://clangd.llvm.org/
+        function! s:clangd_args(clangd) abort
+            let path = expand('%:p')
+            if path !~# '/WebKit/'
+                return [a:clangd]
+            endif
+
+            let root = gitmessenger#git#root_dir(path)
+            if root ==# ''
+                return [a:clangd]
+            endif
+
+            if fnamemodify(root, ':t') !=# 'WebKit'
+                return [a:clangd]
+            endif
+
+            return [a:clangd, '--compile-commands-dir=' . root . '/WebKitBuild/Debug']
+        endfunction
+
         call lsp#register_server({
             \ 'name': 'clangd',
-            \ 'cmd': { server_info -> [clangd] },
-            \ 'allowlist': ['c', 'cpp'],
+            \ 'cmd': { server_info -> s:clangd_args(clangd) },
+            \ 'allowlist': ['c', 'cpp', 'objc'],
             \ })
     endif
 
