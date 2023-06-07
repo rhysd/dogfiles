@@ -130,17 +130,15 @@ function zsh-update-comp-defs() {
 
     comps="$DOTZSH/site-functions"
     urls=(
-        https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_go
-        https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_jq
+        https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_golang
         https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_node
         https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_cmake
         https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_bundle
         https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_ghc
-        https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_perf
         https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker
         https://raw.githubusercontent.com/docker/compose/master/contrib/completion/zsh/_docker-compose
-        https://raw.githubusercontent.com/motemen/ghq/master/zsh/_ghq
-        https://raw.githubusercontent.com/jwilm/alacritty/master/alacritty-completions.zsh
+        https://raw.githubusercontent.com/x-motemen/ghq/master/misc/zsh/_ghq
+        https://raw.githubusercontent.com/alacritty/alacritty/master/extra/completions/_alacritty
         https://raw.githubusercontent.com/rhysd/notes-cli/master/completions/zsh/_notes
     )
 
