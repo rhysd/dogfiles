@@ -1158,15 +1158,12 @@ Autocmd BufNewFile *.rb call append(0, s:ruby_template) | normal! G
 "}}}
 
 " C++ {{{
-
 " C++ ラベル字下げ設定
 set cinoptions& cinoptions+=:0,g0,N-1,m1
 
 AutocmdFT cpp setlocal matchpairs+=<:>
 AutocmdFT cpp inoremap <buffer>, ,<Space>
 AutocmdFT cpp inoremap <expr> e getline('.')[col('.') - 6:col('.') - 2] ==# 'const' ? 'expr ' : 'e'
-
-let g:c_syntax_for_h = 1
 " }}}
 
 " Haskell {{{
@@ -2258,6 +2255,7 @@ let g:ale_linters = {
     \ }
 let g:ale_fixers = s:ale_fixers
 AutocmdFT typescript,javascript,typescriptreact,css,c,cpp,python,rust,json,lua let b:ale_fix_on_save = 1
+AutocmdFT cpp let b:ale_fix_on_save = expand('%:p') !~# '\/WebKit\/'
 function! s:toggle_ale_fix(bang) abort
     if a:bang
         if empty(g:ale_fixers)
