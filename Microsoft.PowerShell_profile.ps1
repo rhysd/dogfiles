@@ -11,4 +11,7 @@ if ($host.Name -eq 'ConsoleHost')
 
     Set-Alias g git
     Set-Alias v gvim
+
+    # Set-Alias doesn't support arguments
+    function hg { hgrep --theme ayu-mirage $args }
 }
