@@ -1549,6 +1549,9 @@ function! s:setup_lsp() abort
                 \ }
         endif
         let config.initialization_options.cargo = { 'features': 'all' }
+        let config.initialization_options.files = {
+            \   'excludeDirs': ['node_modules'],
+            \ }
         call lsp#register_server(config)
 
         call lsp#register_command('rust-analyzer.applySourceChange', function('s:rust_analyzer_apply_source_change'))
