@@ -193,6 +193,8 @@ Autocmd BufRead,BufNew,BufNewFile *.mal,*.crisp setlocal ft=lisp
 Autocmd BufRead,BufNew,BufNewFile *_test.js,*_test.jsx setlocal ft=javascript.test
 " Vader
 Autocmd BufRead,BufNew,BufNewFile *.vader setlocal ft=vader
+" WiX config file
+Autocmd BufRead,BufNew,BufNewFile *.wxs setlocal ft=xml
 
 " カーソル位置の復元
 Autocmd BufReadPost *
@@ -1205,16 +1207,6 @@ AutocmdFT crystal SetIndent 2
 " }}}
 
 " html, css, sass, scss, haml {{{
-AutocmdFT html,javascript
-            \ if expand('%:e') ==# 'html' |
-            \   nnoremap <buffer><silent><C-t>
-            \       :<C-u>if &filetype ==# 'javascript' <Bar>
-            \               setf html <Bar>
-            \             else <Bar>
-            \               setf javascript <Bar>
-            \             endif<CR> |
-            \ endif
-
 AutocmdFT haml inoremap <expr> k getline('.')[col('.') - 2] ==# 'k' ? "\<BS>%" : 'k'
 AutocmdFT haml,html,css SetIndent 2
 Autocmd BufRead,BufNew,BufNewFile *.ejs setlocal ft=html
