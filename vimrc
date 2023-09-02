@@ -710,7 +710,6 @@ if neobundle#load_cache()
     call neobundle#add('kana/vim-textobj-user')
     call neobundle#add('thinca/vim-prettyprint')
     call neobundle#add('kana/vim-operator-user')
-    call neobundle#add('h1mesuke/vim-alignta')
     call neobundle#add('rhysd/clever-f.vim')
     call neobundle#add('airblade/vim-gitgutter')
     call neobundle#add('kana/vim-submode')
@@ -749,6 +748,7 @@ if neobundle#load_cache()
     call neobundle#add('prabirshrestha/vim-lsp')
     call neobundle#add('rhysd/vim-lsp-ale')
     call neobundle#add('ziglang/zig.vim')
+    call neobundle#add('junegunn/vim-easy-align')
 
     " unite.vim sources
     call neobundle#add('Shougo/unite-outline')
@@ -1949,52 +1949,6 @@ map <silent>gc <Plug>(operator-surround-replace)
 " inu-snippets {{{
 let g:neosnippet#snippets_directory = $HOME . '/.vim/bundle/inu-snippets/snippets'
 "}}}
-
-" vim-alignta {{{
-let g:alignta_default_options   = '<<<0:0'
-let g:alignta_default_arguments = '\s'
-vnoremap <expr><leader>al   ':Alignta 1:1 '.nr2char(getchar())."\<CR>"
-vnoremap <Leader>aa :Alignta<CR>
-vnoremap <Leader>ae :Alignta <<<1 =<CR>
-vnoremap <Leader>a= :Alignta <<<1 =<CR>
-vnoremap <Leader>a, :Alignta ,<CR>
-vnoremap <Leader>a> :Alignta =><CR>
-
-let g:unite_source_alignta_preset_arguments = [
-      \ ["Align at '='", '11 =>\='],
-      \ ["Align at ':'", '01 :'],
-      \ ["Align at '|'", '|'   ],
-      \ ["Align at ')'", '0 )' ],
-      \ ["Align at ']'", '0 ]' ],
-      \ ["Align at '}'", '}'   ],
-      \ ["Align at '>'", '0 >' ],
-      \ ["Align at '('", '0 (' ],
-      \ ["Align at '['", '0 [' ],
-      \ ["Align at '{'", '{'   ],
-      \ ["Align at '<'", '0 <' ],
-      \ ["Align at ','", '01 ,' ],
-      \ ['Align first spaces', '0 \s/1' ],
-      \]
-
-let g:unite_source_alignta_preset_options = [
-      \ ['Justify Left',             '<<' ],
-      \ ['Justify Center',           '||' ],
-      \ ['Justify Right',            '>>' ],
-      \ ['Justify None',             '==' ],
-      \ ['Shift Left',               '<-' ],
-      \ ['Shift Right',              '->' ],
-      \ ['Shift Left  [Tab]',        '<--'],
-      \ ['Shift Right [Tab]',        '-->'],
-      \ ['Margin 0:0',               '0'  ],
-      \ ['Margin 0:1',               '01' ],
-      \ ['Margin 1:0',               '10' ],
-      \ ['Margin 1:1',               '1'  ],
-      \ [' : (key: val)',            '01 :'],
-      \ [' , (ruby array #comment)', ',\zs 0:1 #'],
-      \ ['Not space',                '\S\+'],
-      \]
-
-" }}}
 
 " endwize.vim "{{{
 " 自動挿入された end の末尾に情報を付け加える e.g. end # if hoge
