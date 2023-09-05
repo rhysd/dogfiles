@@ -1,8 +1,8 @@
-[(U>◡╹)-♡](https://twitter.com/Linda_pp) 
+# (U>◡╹)-♡
 
 All configuration files are linked as symbolic links with [dotfiles](https://github.com/rhysd/dotfiles).
 
-Distributed under [MIT License](http://opensource.org/licenses/MIT)
+Distributed under [the MIT License](http://opensource.org/licenses/MIT)
 
 ```
 Copyright (c) 2011 rhysd
