@@ -95,3 +95,5 @@
 	conflictstyle = diff3
 [init]
 	defaultBranch = main
+[include]
+	path = .gitconfig.local
