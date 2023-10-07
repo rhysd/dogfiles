@@ -951,16 +951,9 @@ if neobundle#load_cache()
                 \   }
                 \ })
 
-    call neobundle#add('rhysd/vim-grammarous', {
-                \ 'lazy' : 1,
-                \ 'autoload' : {
-                \     'commands' : 'GrammarousCheck'
-                \   }
-                \ })
-
     call neobundle#add('junegunn/vader.vim', {
-                \ 'lazy' : 1,
-                \ 'autoload' : {
+                \   'lazy' : 1,
+                \   'autoload' : {
                 \     'commands' : 'Vader',
                 \     'filetypes' : 'vader',
                 \   }
@@ -969,7 +962,6 @@ if neobundle#load_cache()
     " GUI オンリーなプラグイン
     call neobundle#add('nathanaelkane/vim-indent-guides', {
                 \   'lazy' : 1,
-                \   'gui' : 1,
                 \   'autoload' : {
                 \     'filetypes' : ['haskell', 'python']
                 \   }
@@ -977,7 +969,6 @@ if neobundle#load_cache()
 
     call neobundle#add('tyru/restart.vim', {
                 \   'lazy' : 1,
-                \   'gui' : 1,
                 \   'autoload' : {
                 \     'commands' : 'Restart'
                 \   }
