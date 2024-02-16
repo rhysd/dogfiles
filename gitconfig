@@ -45,6 +45,7 @@
 				git branch -D \"$2\";\
 			fi;\
 		};f"
+	delta = -c core.pager=delta -c delta.navigate=true diff
 	db = delete-branch
 	di  = diff
 	dic = diff --cached
