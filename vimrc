@@ -723,7 +723,6 @@ if neobundle#load_cache()
     call neobundle#add('cespare/vim-toml')
     call neobundle#add('slim-template/vim-slim')
     call neobundle#add('HerringtonDarkholme/yats.vim')
-    call neobundle#add('keith/tmux.vim')
     call neobundle#add('rhysd/npm-filetypes.vim')
     call neobundle#add('rhysd/github-complete.vim')
     call neobundle#add('vim-crystal/vim-crystal')
@@ -1865,22 +1864,17 @@ let g:quickrun_config['c/llvm'] = {
             \ 'type' : 'c/clang',
             \ 'exec' : '%c %o -emit-llvm -S %s -o -',
             \ }
-"outputter
-let g:quickrun_unite_quickfix_outputter_unite_context = { 'no_empty' : 1 }
-Autocmd BufReadPost,BufNewFile [Rr]akefile{,.rb}
-            \ let b:quickrun_config = {'exec': 'rake -f %s'}
-" tmux
-let g:quickrun_config['tmux'] = {
-            \ 'command' : 'tmux',
-            \ 'cmdopt' : 'source-file',
-            \ 'exec' : ['%c %o %s:p', 'echo "sourced %s"'],
-            \ }
-
+" Vim script unit tests
 let g:quickrun_config['vimspec'] = {
             \   'command' : $HOME . '/.vim/bundle/vim-themis/bin/themis',
             \   'exec' : '%c %o %s:p',
             \   'errorformat' : '',
             \ }
+
+"outputter
+let g:quickrun_unite_quickfix_outputter_unite_context = { 'no_empty' : 1 }
+Autocmd BufReadPost,BufNewFile [Rr]akefile{,.rb}
+            \ let b:quickrun_config = {'exec': 'rake -f %s'}
 
 "QuickRunのキーマップ {{{
 nnoremap <silent><Leader>q :<C-u>QuickRun<CR>
