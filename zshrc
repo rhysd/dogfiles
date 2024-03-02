@@ -20,6 +20,11 @@ if [ -d $HOME/.opam ]; then
     source ~/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
 fi
 
+# Note: pipx installs packages in ~/.local
+if [ -d $HOME/.local/bin ]; then
+    export PATH=$PATH:$HOME/.local/bin
+fi
+
 export DOTZSH=$HOME/.zsh
 if [ ! -d $DOTZSH ]; then
     mkdir -p $DOTZSH
