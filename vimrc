@@ -1205,6 +1205,10 @@ Autocmd BufRead,BufNew,BufNewFile *.ejs setlocal ft=html
 let g:html_my_rendering = 0
 "}}}
 
+" Markdown {{{
+let g:markdown_syntax_conceal = 0
+" }}}
+
 " Dachs {{{
 " For Readme
 function! s:bold(...) abort
