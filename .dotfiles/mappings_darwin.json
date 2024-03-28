@@ -7,7 +7,7 @@
   "prettierrc.json": "~/.prettierrc.json",
   "ranger": "~/.config/ranger",
   "rustfmt.toml": "~/.rustfmt.toml",
-  "cargo.toml": "~/.cargo/config",
+  "cargo.toml": "~/.cargo/config.toml",
   "stylua.toml": "~/.config/stylua/stylua.toml",
   "vimrc": "~/.vimrc"
 }
