@@ -39,6 +39,9 @@ export RUST_BACKTRACE=1
 
 # `bat` コマンドのカラーテーマ（macOS ではシステムのカラーテーマに合わせられてしまうため）
 export BAT_THEME=OneHalfDark
+
+# `hgrep` のデフォルトオプション
+export HGREP_DEFAULT_OPTS='--theme ayu-mirage'
 # }}}
 
 ###############
@@ -77,7 +80,6 @@ alias m=make
 alias d=docker
 alias nr='npm run'
 alias cr='cargo run --'
-alias h='hgrep --theme ayu-mirage'
 
 # global alias
 alias -g G='| grep'
