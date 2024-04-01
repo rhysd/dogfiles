@@ -177,6 +177,12 @@ function zsh-update-comp-defs() {
             ln -s "$HOME/.rustup/toolchains/$toolchain/share/zsh/site-functions/_cargo" "$comps/_cargo"
         fi
     fi
+
+    if which hgrep > /dev/null; then
+        echo "Setting up completion definitions for hgrep"
+        hgrep --generate-completion-script zsh > "$comps/_hgrep"
+        chmod +x "$comps/_hgrep"
+    fi
 }
 
 if [ ! -d "$DOTZSH/site-functions" ]; then
