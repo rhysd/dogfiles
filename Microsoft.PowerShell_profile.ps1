@@ -1,5 +1,15 @@
 if ($host.Name -eq 'ConsoleHost')
 {
+    Set-Alias g git
+    Set-Alias v gvim
+
+    # Set the default encoding of > and >>
+    $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
+
+    # Environment variables
+    $Env:HGREP_DEFAULT_OPTS = "--theme ayu-mirage --background"
+
+    # Line editor config
     Import-Module PSReadLine
 
     Set-PSReadlineOption -EditMode Emacs
@@ -8,10 +18,4 @@ if ($host.Name -eq 'ConsoleHost')
     Set-PSReadLineKeyHandler -Key Ctrl+j -Function AcceptLine
     Set-PSReadLineKeyHandler -Key Ctrl+y -Function Paste
     Set-PSReadLineKeyHandler -Key Ctrl+d -Function DeleteChar
-
-    Set-Alias g git
-    Set-Alias v gvim
-
-    # Set-Alias doesn't support arguments
-    function hg { hgrep --theme ayu-mirage $args }
 }
