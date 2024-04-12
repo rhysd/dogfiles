@@ -925,11 +925,9 @@ case $OSTYPE in
         # Git
         export PATH=$PATH:/usr/local/opt/git/share/git-core/contrib/diff-highlight
 
-        # emscripten
-        if [ -f ~/.emscripten ]; then
-            export LLVM=/usr/local/opt/emscripten/libexec/llvm/bin
-            export BINARYEN=/usr/local/opt/binaryen
-        fi
+        # pipx home is set to `~/Library/Application Support` by default but containing spaces in path is problematic.
+        # To avoid troubles, install venvs for packages under `~/.local/pipx` instead.
+        export PIPX_HOME=$HOME/.local/pipx
         # }}}
         ;;
     linux*)
