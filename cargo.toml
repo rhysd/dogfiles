@@ -1,12 +1,12 @@
 [alias]
 b = "build"
-c = "check --tests --all"
-t = "test --workspace"
+c = "check --tests --benches"
+t = "test"
 i = "install"
 w = "watch --why"
 wt = "watch --why -x test"
-wc = "watch --why -x clippy"
+wc = ["watch", "--why", "-x", "check --tests --benches"]
 r = "run"
-cl = "clippy --tests --all"
+cl = "clippy --tests --benches --workspace"
 up = "update"
 od = "outdated --depth=1"
