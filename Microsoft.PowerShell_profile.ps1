@@ -3,6 +3,9 @@ if ($host.Name -eq "ConsoleHost")
     # Aliases
     Set-Alias g git
     Set-Alias v gvim
+    function nr {
+        npm run @args
+    }
 
     # Set the default encoding of > and >>
     $PSDefaultParameterValues["Out-File:Encoding"] = "utf8"
