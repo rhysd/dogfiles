@@ -903,6 +903,7 @@ case $OSTYPE in
         unalias ls
         alias ls='ls -G'
         alias top='sudo htop'
+        alias safari='open -a Safari'
 
         if hash grm 2> /dev/null; then
             alias rm=grm
