@@ -1511,11 +1511,11 @@ function! s:rust_analyzer_run_single(context) abort
 endfunction
 
 function! s:setup_lsp() abort
-    if executable('pyls')
-        " pip install python-language-server
+    if executable('pylsp')
+        " pipx install python-lsp-server
         call lsp#register_server({
-            \ 'name': 'pyls',
-            \ 'cmd': { server_info -> ['pyls'] },
+            \ 'name': 'pylsp',
+            \ 'cmd': { server_info -> ['pylsp'] },
             \ 'allowlist': ['python'],
             \ })
     endif
