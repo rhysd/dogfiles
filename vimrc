@@ -727,7 +727,7 @@ if neobundle#load_cache()
     call neobundle#add('rhysd/github-complete.vim')
     call neobundle#add('vim-crystal/vim-crystal')
     call neobundle#add('thinca/vim-themis')
-    call neobundle#add('othree/yajs.vim')
+    call neobundle#add('pangloss/vim-javascript')
     call neobundle#add('rhysd/vim-wasm')
     call neobundle#add('rhysd/vim-gfm-syntax')
     call neobundle#add('ekalinin/Dockerfile.vim')
@@ -2182,7 +2182,7 @@ let g:ale_linters = {
     \   'python': ['pylint', 'mypy', 'vim-lsp'],
     \   'javascript': ['eslint'],
     \   'typescript': ['eslint', 'vim-lsp'],
-    \   'go': ['golint', 'vim-lsp'],
+    \   'go': ['staticcheck', 'vim-lsp'],
     \   'rust': ['vim-lsp'],
     \   'c': ['clang-tidy', 'vim-lsp'],
     \   'cpp': ['clang-tidy', 'vim-lsp'],
