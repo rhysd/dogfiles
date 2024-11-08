@@ -15,6 +15,7 @@ if ($host.Name -eq "ConsoleHost")
 
     # Line editor config
     Import-Module PSReadLine
+    Set-PSReadlineOption -BellStyle Visual
     Set-PSReadlineOption -EditMode Emacs
     Set-PSReadLineKeyHandler -Key Ctrl+i -Function Complete
     Set-PSReadLineKeyHandler -Key Ctrl+j -Function AcceptLine
