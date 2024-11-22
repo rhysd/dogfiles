@@ -1,0 +1,12 @@
+# https://alacritty.org/config-alacritty.html
+
+[font]
+size = 14.0
+
+[scrolling]
+history = 0
+
+[window]
+opacity = 0.9
+padding = { x = 6, y = 6 }
+decorations = "Buttonless"

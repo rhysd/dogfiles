@@ -1,5 +1,5 @@
 {
-  "alacritty.yml": "~/.config/alacritty/alacritty.yml",
+  "alacritty.toml": "~/.config/alacritty/alacritty.toml",
   "gvimrc": "~/.gvimrc",
   "karabiner.json": "~/.config/karabiner/karabiner.json",
   "nvimrc": "~/.config/nvim/init.vim",
