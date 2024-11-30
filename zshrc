@@ -329,7 +329,7 @@ MY_NORM_PROMPT="%{$fg_bold[yellow]%}%~%{$reset_color%}${MY_NEWLINE}%{$terminfo_d
 PROMPT="$MY_INS_PROMPT"
 
 # 右プロンプト
-RPROMPT='[%{$fg_bold[red]%}${HOST}%{$reset_color%}][%{$fg_bold[red]%}%D{%m/%d %H:%M}%{$reset_color%}]'
+RPROMPT="[%{$fg[yellow]%}${HOST}%{$reset_color%}][%{$fg[yellow]%}%D{%m/%d %H:%M}%{$reset_color%}]"
 
 # モードでプロンプトの色を変える
 # XXX: vicmd で ^M や ^C 押下時に insert モードに入っても色が戻らない
