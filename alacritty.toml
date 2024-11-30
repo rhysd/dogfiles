@@ -10,3 +10,8 @@ history = 0
 opacity = 0.9
 padding = { x = 6, y = 6 }
 decorations = "Buttonless"
+
+[general]
+import = [
+    "~/.config/alacritty/spring_night.toml"
+]
