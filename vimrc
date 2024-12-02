@@ -719,7 +719,7 @@ if neobundle#load_cache()
     call neobundle#add('rhysd/vim-window-adjuster')
     call neobundle#add('Shougo/neomru.vim')
     call neobundle#add('rhysd/committia.vim')
-    call neobundle#add('rust-lang/rust.vim')
+    call neobundle#add('rhysd/rust.vim')  " Use my fork because the original is unmaintained
     call neobundle#add('cespare/vim-toml')
     call neobundle#add('slim-template/vim-slim')
     call neobundle#add('HerringtonDarkholme/yats.vim')
