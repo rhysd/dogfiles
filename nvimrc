@@ -13,7 +13,6 @@ Autocmd ColorScheme * highlight def link myVimAutocmd vimAutoCmd
 
 "エンコーディング
 set encoding=utf-8
-set termencoding=utf-8
 set fileencoding=utf-8
 set fileencodings=utf-8,cp932,euc-jp
 " user-defined prefix
@@ -680,7 +679,6 @@ if dein#load_state(s:dein_cache_dir)
                 \ })
 
     " Completion
-    call dein#add('Shougo/deoplete.nvim')
     call dein#add('autozimu/LanguageClient-neovim', {'build' : 'bash install.sh'})
 
     " call dein#local("~/.vim/bundle", {}, [])
@@ -868,9 +866,6 @@ function! s:on_dirvish() abort
 endfunction
 AutocmdFT dirvish call <SID>on_dirvish()
 nnoremap <silent><Leader><Leader> :<C-u>execute 'Dirvish' expand('%:p:h')<CR>
-
-" deoplete
-let g:deoplete#enable_at_startup = 1
 
 " LanguageClient-neovim
 let g:LanguageClient_serverCommands = {
