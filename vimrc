@@ -748,6 +748,7 @@ if neobundle#load_cache()
     call neobundle#add('rhysd/vim-lsp-ale')
     call neobundle#add('ziglang/zig.vim')
     call neobundle#add('junegunn/vim-easy-align')
+    call neobundle#add('beyondmarc/hlsl.vim')
 
     " unite.vim sources
     call neobundle#add('Shougo/unite-outline')
