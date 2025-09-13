@@ -30,7 +30,7 @@ augroup MyVimrc
 augroup END
 command! -nargs=+ Autocmd autocmd MyVimrc <args>
 command! -nargs=+ AutocmdFT autocmd MyVimrc FileType <args>
-Autocmd VimEnter,WinEnter .vimrc,.gvimrc,vimrc,gvimrc syn keyword myVimAutocmd Autocmd AutocmdFT contained containedin=vimIsCommand
+Autocmd VimEnter,WinEnter .vimrc,.gvimrc,vimrc,gvimrc syn keyword myVimAutocmd Autocmd AutocmdFT contained containedin=vimUsrCmd
 Autocmd ColorScheme * highlight def link myVimAutocmd vimAutoCmd
 
 " user-defined prefix
