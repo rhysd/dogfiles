@@ -92,6 +92,4 @@ elseif has('win32')
     set vb t_vb=
 endif
 
-call SourceIfExist($HOME . '/.local.gvimrc')
-
 " vim: set ft=vim fdm=marker ff=unix fileencoding=utf-8 :
