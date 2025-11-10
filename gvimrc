@@ -42,10 +42,10 @@ if has('mac')
     let g:loaded_togglebg = 1
 
     set fuoptions=maxvert,maxhorz
-    set guifont=Ricty:h16
+    set guifont=SF\ Mono:h14
     " F12 で透過率を3段階に切り替え(0, 40, 80)
     set transparency=0 "初期背景透過0%
-    nnoremap <expr><F12> &transparency+40 > 100 ? ":set transparency=0\<CR>" : ":let &transparency=&transparency+40\<CR>"
+    nnoremap <silent><F12> :<C-u>let &transparency=&transparency + 40 > 100 ? 0 : &transparency + 40<CR>
 
     function! s:show_on_safari() abort
         let src = expand('%')
@@ -61,17 +61,21 @@ if has('mac')
             return
         endif
 
-        call system('open -a Safari ' . f)
-        if v:shell_error
-            echoerr 'Failed to open Safari: ' + f
-            return
-        endif
+        try
+            call system('open -a Safari ' . f)
+            if v:shell_error
+                echoerr 'Failed to open Safari: ' + f
+                return
+            endif
 
-        " Need to wait Safari starting before deleting the temporary file
-        sleep 1
+            " Need to wait Safari starting before deleting the temporary file
+            sleep 2
 
-        call delete(f)
-        bwipeout!
+            bwipeout!
+        finally
+            call delete(f)
+        endtry
+
         quit
     endfunction
     command! -nargs=0 -bar ShowOnSafari call <SID>show_on_safari()
@@ -84,7 +88,7 @@ elseif has('unix')
     set guifont=Migu\ 2M\ 14
     set guioptions-=e
 elseif has('win32')
-    set guifont=Consolas:h10:cANSI:qDRAFT
+    set guifont=Cascadia_Code:h10:cANSI:qDRAFT
     set vb t_vb=
 endif
 
