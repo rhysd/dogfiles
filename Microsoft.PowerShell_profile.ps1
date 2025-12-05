@@ -3,6 +3,7 @@ if ($host.Name -eq "ConsoleHost")
     # Aliases
     Set-Alias g git
     Set-Alias v gvim
+    Set-Alias m make
     function nr {
         npm run @args
     }
