@@ -6,7 +6,7 @@ if !1 | finish | endif
 set encoding=utf-8
 set termencoding=utf-8
 set fileencoding=utf-8
-set fileencodings=utf-8,cp932,euc-jp
+set fileencodings=ucs-bom,utf-8,cp932,euc-jp,iso-2022-jp,latin1
 
 scriptencoding utf-8
 
