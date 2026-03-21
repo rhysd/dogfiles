@@ -1530,7 +1530,7 @@ function! s:setup_lsp() abort
         \ }
         let config.initialization_options = {}
         if executable('cargo-clippy')
-            let config.initialization_options.checkOnSave = {
+            let config.initialization_options.check = {
                 \   'command': 'clippy',
                 \   'features': 'all',
                 \ }
