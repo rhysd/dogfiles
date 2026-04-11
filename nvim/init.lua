@@ -644,7 +644,6 @@ api.nvim_create_autocmd("FileType", {
 vim.pack.add({
   { src = "https://github.com/rhysd/vim-color-spring-night" },
   { src = "https://github.com/rhysd/clever-f.vim" },
-  { src = "https://github.com/haya14busa/vim-asterisk" },
   { src = "https://github.com/justinmk/vim-dirvish" },
   { src = "https://github.com/lewis6991/gitsigns.nvim" },
   { src = "https://github.com/nvim-lualine/lualine.nvim" },
@@ -671,15 +670,54 @@ local function pack_add_once(key)
 end
 
 pack_load("clever-f.vim")
-pack_load("vim-asterisk")
 pack_load("vim-dirvish")
 pack_load("gitsigns.nvim")
 pack_load("lualine.nvim")
 
-keymap({ "n", "x" }, "*", "<Plug>(asterisk-z*)", { remap = true })
-keymap({ "n", "x" }, "#", "<Plug>(asterisk-z#)", { remap = true })
-keymap({ "n", "x" }, "g*", "<Plug>(asterisk-gz*)", { remap = true })
-keymap({ "n", "x" }, "g#", "<Plug>(asterisk-gz#)", { remap = true })
+local function asterisk_search_pat(text, whole)
+  local pattern = text:gsub("\\", "\\\\"):gsub("\n", "\\n")
+  if whole then
+    return "\\V\\<" .. pattern .. "\\>"
+  end
+  return "\\V" .. pattern
+end
+
+local function asterisk_cword_pat(whole)
+  local cword = whole and fn.expand("<cword>") or fn.expand("<cWORD>")
+  return cword == "" and nil or asterisk_search_pat(cword, whole)
+end
+
+local function asterisk_visual_pat(whole)
+  local visual_type = fn.mode()
+  if visual_type ~= "v" and visual_type ~= "V" and visual_type ~= "\022" then
+    visual_type = "v"
+  end
+  local start_pos = fn.getpos("v")
+  local end_pos = fn.getcurpos()
+  local lines = fn.getregion(start_pos, end_pos, { type = visual_type })
+  local text = table.concat(lines, "\n")
+  return text == "" and nil or asterisk_search_pat(text, whole)
+end
+
+local function asterisk(whole, forward, visual)
+  local pattern = visual and asterisk_visual_pat(whole) or asterisk_cword_pat(whole)
+  if pattern then
+    fn.setreg("/", pattern)
+    fn.histadd("/", pattern)
+    vim.v.searchforward = forward and 1 or 0
+    vim.o.hlsearch = vim.o.hlsearch
+  end
+  return "<Esc>"
+end
+
+keymap("n", "*", function() asterisk(true, true, false) end, { silent = true })
+keymap("n", "#", function() asterisk(true, false, false) end, { silent = true })
+keymap("n", "g*", function() asterisk(false, true, false) end, { silent = true })
+keymap("n", "g#", function() asterisk(false, false, false) end, { silent = true })
+keymap("x", "*", function() return asterisk(false, true, true) end, { expr = true, silent = true })
+keymap("x", "#", function() return asterisk(false, false, true) end, { expr = true, silent = true })
+keymap("x", "g*", function() return asterisk(false, true, true) end, { expr = true, silent = true })
+keymap("x", "g#", function() return asterisk(false, false, true) end, { expr = true, silent = true })
 
 local function operator_replace_mapping()
   pack_add_once("operator_replace")
