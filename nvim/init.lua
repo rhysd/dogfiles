@@ -78,7 +78,7 @@ api.nvim_create_autocmd("LspAttach", {
     keymap("n", "<Leader>li", telescope_picker("lsp_implementations"), map_opts)
     keymap("n", "<Leader>lr", telescope_picker("lsp_references"), map_opts)
     keymap("n", "<Leader>ln", vim.lsp.buf.rename, map_opts)
-    keymap({ "n", "v" }, "<Leader>ca", vim.lsp.buf.code_action, map_opts)
+    keymap({ "n", "v" }, "<Leader>la", vim.lsp.buf.code_action, map_opts)
     keymap("n", "<Leader>ld", vim.diagnostic.open_float, map_opts)
     keymap("n", "[d", vim.diagnostic.goto_prev, map_opts)
     keymap("n", "]d", vim.diagnostic.goto_next, map_opts)
@@ -770,6 +770,7 @@ api.nvim_create_autocmd("FileType", {
 telescope_builtin = function()
   if pack_add_once("telescope") then
     local telescope_actions = require("telescope.actions")
+    local plenary_path = require("plenary.path")
     require("telescope").setup({
       defaults = {
         prompt_prefix = "> ",
@@ -796,7 +797,7 @@ telescope_builtin = function()
   return require("telescope.builtin")
 end
 
-keymap("n", "<Space><Space>", function()
+keymap("n", "<Space>m", function()
   telescope_builtin().oldfiles()
 end, { silent = true })
 
@@ -810,6 +811,10 @@ end, { silent = true })
 
 keymap("n", "<Space>b", function()
   telescope_builtin().buffers()
+end, { silent = true })
+
+keymap("n", "<Space>/", function()
+  telescope_builtin().current_buffer_fuzzy_find()
 end, { silent = true })
 
 keymap("n", "<Space>o", function()
@@ -827,6 +832,10 @@ end, { silent = true })
 
 keymap("n", "<Space>d", function()
   telescope_builtin().diagnostics()
+end, { silent = true })
+
+keymap("n", "<Space><Space>", function()
+  telescope_builtin().builtin()
 end, { silent = true })
 
 require("lualine").setup({
