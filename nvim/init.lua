@@ -6,6 +6,33 @@ local fn = vim.fn
 local keymap = vim.keymap.set
 local cmd = vim.cmd
 local opt = vim.opt
+local telescope_builtin
+local lazy_plugins = {
+  telescope = {
+    { src = "https://github.com/nvim-lua/plenary.nvim" },
+    { src = "https://github.com/nvim-telescope/telescope.nvim" },
+  },
+  treesitter = {
+    { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
+    { src = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects" },
+  },
+  operator_replace = {
+    { src = "https://github.com/kana/vim-operator-user" },
+    { src = "https://github.com/kana/vim-operator-replace" },
+  },
+  textobj_entire = {
+    { src = "https://github.com/kana/vim-textobj-user" },
+    { src = "https://github.com/kana/vim-textobj-entire" },
+  },
+  textobj_anyblock = {
+    { src = "https://github.com/kana/vim-textobj-user" },
+    { src = "https://github.com/rhysd/vim-textobj-anyblock" },
+  },
+  textobj_indent = {
+    { src = "https://github.com/kana/vim-textobj-user" },
+    { src = "https://github.com/kana/vim-textobj-indent" },
+  },
+}
 
 local augroup = api.nvim_create_augroup("MyVimrc", { clear = true })
 local lsp_format_augroup = api.nvim_create_augroup("MyLspFormat", { clear = true })
@@ -16,6 +43,19 @@ local lsp_float_opts = {
   focusable = true,
   silent = true,
 }
+local lsp_capabilities = {
+  { method = "textDocument/definition", label = "definition" },
+  { method = "textDocument/references", label = "references" },
+  { method = "textDocument/rename", label = "rename" },
+  { method = "textDocument/formatting", label = "format" },
+  { method = "textDocument/inlayHint", label = "inlayHint" },
+}
+
+local function telescope_picker(name)
+  return function()
+    telescope_builtin()[name]()
+  end
+end
 
 vim.diagnostic.config({
   virtual_text = true,
@@ -30,23 +70,13 @@ api.nvim_create_autocmd("LspAttach", {
     local client = vim.lsp.get_client_by_id(event.data.client_id)
     local map_opts = { buffer = event.buf }
     keymap("n", "gd", vim.lsp.buf.definition, map_opts)
-    keymap("n", "K", function()
-      vim.lsp.buf.hover(lsp_float_opts)
-    end, map_opts)
+    keymap("n", "K", function() vim.lsp.buf.hover(lsp_float_opts) end, map_opts)
     keymap("n", "<Leader>ls", vim.lsp.buf.signature_help, map_opts)
-    keymap("n", "<Leader>lci", function()
-      require("telescope.builtin").lsp_incoming_calls()
-    end, map_opts)
-    keymap("n", "<Leader>lco", function()
-      require("telescope.builtin").lsp_outgoing_calls()
-    end, map_opts)
+    keymap("n", "<Leader>lci", telescope_picker("lsp_incoming_calls"), map_opts)
+    keymap("n", "<Leader>lco", telescope_picker("lsp_outgoing_calls"), map_opts)
     keymap("n", "gD", vim.lsp.buf.declaration, map_opts)
-    keymap("n", "<Leader>li", function()
-      require("telescope.builtin").lsp_implementations()
-    end, map_opts)
-    keymap("n", "<Leader>lr", function()
-      require("telescope.builtin").lsp_references()
-    end, map_opts)
+    keymap("n", "<Leader>li", telescope_picker("lsp_implementations"), map_opts)
+    keymap("n", "<Leader>lr", telescope_picker("lsp_references"), map_opts)
     keymap("n", "<Leader>ln", vim.lsp.buf.rename, map_opts)
     keymap({ "n", "v" }, "<Leader>ca", vim.lsp.buf.code_action, map_opts)
     keymap("n", "<Leader>ld", vim.diagnostic.open_float, map_opts)
@@ -93,12 +123,21 @@ api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
+local enabled_lsps = {}
+
 local function enable_lsp(name, config, executable)
-  if fn.exepath(executable or name) == "" then
-    return
-  end
-  vim.lsp.config(name, config)
-  vim.lsp.enable(name)
+  api.nvim_create_autocmd("FileType", {
+    group = augroup,
+    pattern = config.filetypes,
+    callback = function()
+      if enabled_lsps[name] or fn.exepath(executable or name) == "" then
+        return
+      end
+      vim.lsp.config(name, config)
+      vim.lsp.enable(name)
+      enabled_lsps[name] = true
+    end,
+  })
 end
 
 enable_lsp("clangd", {
@@ -241,20 +280,10 @@ api.nvim_create_user_command("LspInfo", function()
       local root = client.root_dir or cfg.root_dir or "(none)"
       local caps = {}
 
-      if client:supports_method("textDocument/definition") then
-        table.insert(caps, "definition")
-      end
-      if client:supports_method("textDocument/references") then
-        table.insert(caps, "references")
-      end
-      if client:supports_method("textDocument/rename") then
-        table.insert(caps, "rename")
-      end
-      if client:supports_method("textDocument/formatting") then
-        table.insert(caps, "format")
-      end
-      if client:supports_method("textDocument/inlayHint") then
-        table.insert(caps, "inlayHint")
+      for _, capability in ipairs(lsp_capabilities) do
+        if client:supports_method(capability.method) then
+          table.insert(caps, capability.label)
+        end
       end
 
       table.insert(lines, ("[%d] %s (id=%d)"):format(i, client.name, client.id))
@@ -281,21 +310,14 @@ end, {})
 api.nvim_create_user_command("LspRename", function()
   vim.lsp.buf.rename()
 end, {})
-
-api.nvim_create_user_command("LspIncomingCalls", function()
-  require("telescope.builtin").lsp_incoming_calls()
-end, {})
-
-api.nvim_create_user_command("LspOutgoingCalls", function()
-  require("telescope.builtin").lsp_outgoing_calls()
-end, {})
-
-api.nvim_create_user_command("Diagnostics", function(opts)
+api.nvim_create_user_command("LspIncomingCalls", telescope_picker("lsp_incoming_calls"), {})
+api.nvim_create_user_command("LspOutgoingCalls", telescope_picker("lsp_outgoing_calls"), {})
+api.nvim_create_user_command("LspDiagnostics", function(opts)
   local diagnostics_opts = {}
   if opts.bang then
     diagnostics_opts.severity = { min = vim.diagnostic.severity.WARN }
   end
-  require("telescope.builtin").diagnostics(diagnostics_opts)
+  telescope_builtin().diagnostics(diagnostics_opts)
 end, { bang = true })
 
 cmd("language message C")
@@ -358,14 +380,6 @@ api.nvim_create_autocmd("FileType", {
   end,
 })
 
-api.nvim_create_autocmd("FileType", {
-  group = augroup,
-  pattern = "diff",
-  callback = function()
-    vim.opt_local.foldenable = false
-  end,
-})
-
 api.nvim_create_autocmd("TextYankPost", {
   group = augroup,
   callback = function()
@@ -379,8 +393,6 @@ api.nvim_create_autocmd("TextYankPost", {
 keymap("n", "<Leader>h", ":<C-u>help <C-l>", { silent = true })
 keymap("n", "<Leader>cc", "gcc", { remap = true })
 keymap("x", "<Leader>cc", "gc", { remap = true })
-keymap("n", "<Leader>r", "<Plug>(operator-replace)")
-keymap("x", "<Leader>r", "<Plug>(operator-replace)")
 
 api.nvim_create_user_command("SetIndent", function(opts)
   local target = opts.bang and vim.opt or vim.opt_local
@@ -633,53 +645,103 @@ vim.pack.add({
   { src = "https://github.com/rhysd/clever-f.vim" },
   { src = "https://github.com/haya14busa/vim-asterisk" },
   { src = "https://github.com/justinmk/vim-dirvish" },
-  { src = "https://github.com/kana/vim-operator-user" },
-  { src = "https://github.com/kana/vim-operator-replace" },
-  { src = "https://github.com/kana/vim-textobj-user" },
-  { src = "https://github.com/kana/vim-textobj-entire" },
-  { src = "https://github.com/rhysd/vim-textobj-anyblock" },
-  { src = "https://github.com/kana/vim-textobj-indent" },
-  { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
-  { src = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects" },
-  { src = "https://github.com/nvim-lua/plenary.nvim" },
-  { src = "https://github.com/nvim-telescope/telescope.nvim" },
   { src = "https://github.com/lewis6991/gitsigns.nvim" },
   { src = "https://github.com/nvim-lualine/lualine.nvim" },
-}, { load = true })
+})
 
 -- cmd.colorscheme("spring-night")
+
+local loaded_plugins = {}
+local function pack_load(name)
+  if loaded_plugins[name] then
+    return
+  end
+  cmd("packadd " .. name)
+  loaded_plugins[name] = true
+end
+
+local function pack_add_once(key)
+  if loaded_plugins[key] then
+    return false
+  end
+  vim.pack.add(lazy_plugins[key], { load = true })
+  loaded_plugins[key] = true
+  return true
+end
+
+pack_load("clever-f.vim")
+pack_load("vim-asterisk")
+pack_load("vim-dirvish")
+pack_load("gitsigns.nvim")
+pack_load("lualine.nvim")
 
 keymap({ "n", "x" }, "*", "<Plug>(asterisk-z*)", { remap = true })
 keymap({ "n", "x" }, "#", "<Plug>(asterisk-z#)", { remap = true })
 keymap({ "n", "x" }, "g*", "<Plug>(asterisk-gz*)", { remap = true })
 keymap({ "n", "x" }, "g#", "<Plug>(asterisk-gz#)", { remap = true })
 
-require("nvim-treesitter").setup()
+local function operator_replace_mapping()
+  pack_add_once("operator_replace")
+  return "<Plug>(operator-replace)"
+end
 
-require("nvim-treesitter-textobjects").setup({
-  select = {
-    lookahead = true,
-  },
-})
+keymap("n", "<Leader>r", function()
+  return operator_replace_mapping()
+end, { expr = true, remap = true })
+keymap("x", "<Leader>r", function()
+  return operator_replace_mapping()
+end, { expr = true, remap = true })
 
-local ts_select = require("nvim-treesitter-textobjects.select")
+local function textobj_mapping(group_name, plug_name)
+  return function()
+    pack_add_once(group_name)
+    return plug_name
+  end
+end
+
+keymap({ "x", "o" }, "ae", textobj_mapping("textobj_entire", "<Plug>(textobj-entire-a)"), { expr = true, remap = true })
+keymap({ "x", "o" }, "ie", textobj_mapping("textobj_entire", "<Plug>(textobj-entire-i)"), { expr = true, remap = true })
+keymap({ "x", "o" }, "ab", textobj_mapping("textobj_anyblock", "<Plug>(textobj-anyblock-a)"), { expr = true, remap = true })
+keymap({ "x", "o" }, "ib", textobj_mapping("textobj_anyblock", "<Plug>(textobj-anyblock-i)"), { expr = true, remap = true })
+keymap({ "x", "o" }, "ai", textobj_mapping("textobj_indent", "<Plug>(textobj-indent-a)"), { expr = true, remap = true })
+keymap({ "x", "o" }, "ii", textobj_mapping("textobj_indent", "<Plug>(textobj-indent-i)"), { expr = true, remap = true })
+keymap({ "x", "o" }, "aI", textobj_mapping("textobj_indent", "<Plug>(textobj-indent-same-a)"), { expr = true, remap = true })
+keymap({ "x", "o" }, "iI", textobj_mapping("textobj_indent", "<Plug>(textobj-indent-same-i)"), { expr = true, remap = true })
+
+local function ensure_treesitter()
+  if pack_add_once("treesitter") then
+    require("nvim-treesitter").setup()
+    require("nvim-treesitter-textobjects").setup({
+      select = {
+        lookahead = true,
+      },
+    })
+  end
+end
+
 keymap({ "x", "o" }, "af", function()
-  ts_select.select_textobject("@function.outer", "textobjects")
+  ensure_treesitter()
+  require("nvim-treesitter-textobjects.select").select_textobject("@function.outer", "textobjects")
 end)
 keymap({ "x", "o" }, "if", function()
-  ts_select.select_textobject("@function.inner", "textobjects")
+  ensure_treesitter()
+  require("nvim-treesitter-textobjects.select").select_textobject("@function.inner", "textobjects")
 end)
 keymap({ "x", "o" }, "ac", function()
-  ts_select.select_textobject("@class.outer", "textobjects")
+  ensure_treesitter()
+  require("nvim-treesitter-textobjects.select").select_textobject("@class.outer", "textobjects")
 end)
 keymap({ "x", "o" }, "ic", function()
-  ts_select.select_textobject("@class.inner", "textobjects")
+  ensure_treesitter()
+  require("nvim-treesitter-textobjects.select").select_textobject("@class.inner", "textobjects")
 end)
 keymap({ "x", "o" }, "aa", function()
-  ts_select.select_textobject("@parameter.outer", "textobjects")
+  ensure_treesitter()
+  require("nvim-treesitter-textobjects.select").select_textobject("@parameter.outer", "textobjects")
 end)
 keymap({ "x", "o" }, "ia", function()
-  ts_select.select_textobject("@parameter.inner", "textobjects")
+  ensure_treesitter()
+  require("nvim-treesitter-textobjects.select").select_textobject("@parameter.inner", "textobjects")
 end)
 
 api.nvim_create_autocmd("FileType", {
@@ -700,69 +762,72 @@ api.nvim_create_autocmd("FileType", {
     "help",
   },
   callback = function(args)
+    ensure_treesitter()
     pcall(vim.treesitter.start, args.buf)
   end,
 })
 
-local telescope_actions = require("telescope.actions")
-
-require("telescope").setup({
-  defaults = {
-    prompt_prefix = "> ",
-    selection_caret = "> ",
-    entry_prefix = "  ",
-    sorting_strategy = "ascending",
-    border = true,
-    layout_config = {
-      prompt_position = "top",
-    },
-    mappings = {
-      i = {
-        ["<Esc>"] = telescope_actions.close,
-        ["<C-g>"] = telescope_actions.close,
+telescope_builtin = function()
+  if pack_add_once("telescope") then
+    local telescope_actions = require("telescope.actions")
+    require("telescope").setup({
+      defaults = {
+        prompt_prefix = "> ",
+        selection_caret = "> ",
+        entry_prefix = "  ",
+        sorting_strategy = "ascending",
+        border = true,
+        layout_config = {
+          prompt_position = "top",
+        },
+        mappings = {
+          i = {
+            ["<Esc>"] = telescope_actions.close,
+            ["<C-g>"] = telescope_actions.close,
+          },
+          n = {
+            ["<Esc>"] = telescope_actions.close,
+            ["<C-g>"] = telescope_actions.close,
+          },
+        },
       },
-      n = {
-        ["<Esc>"] = telescope_actions.close,
-        ["<C-g>"] = telescope_actions.close,
-      },
-    },
-  },
-})
+    })
+  end
+  return require("telescope.builtin")
+end
 
 keymap("n", "<Space><Space>", function()
-  require("telescope.builtin").oldfiles()
+  telescope_builtin().oldfiles()
 end, { silent = true })
 
 keymap("n", "<Space>g", function()
-  require("telescope.builtin").live_grep()
+  telescope_builtin().live_grep()
 end, { silent = true })
 
 keymap("n", "<Space>f", function()
-  require("telescope.builtin").find_files()
+  telescope_builtin().find_files()
 end, { silent = true })
 
 keymap("n", "<Space>b", function()
-  require("telescope.builtin").buffers()
+  telescope_builtin().buffers()
 end, { silent = true })
 
 keymap("n", "<Space>o", function()
   local clients = vim.lsp.get_clients({ bufnr = 0 })
   if #clients > 0 then
-    require("telescope.builtin").lsp_document_symbols()
+    telescope_builtin().lsp_document_symbols()
   else
-    require("telescope.builtin").treesitter()
+    telescope_builtin().treesitter()
   end
 end, { silent = true })
 
 keymap("n", "<Space>s", function()
-  require("telescope.builtin").lsp_workspace_symbols()
+  telescope_builtin().lsp_workspace_symbols()
 end, { silent = true })
 
 keymap("n", "<Space>d", function()
-  require("telescope.builtin").diagnostics()
+  telescope_builtin().diagnostics()
 end, { silent = true })
-
-require("gitsigns").setup()
 
 require("lualine").setup({
   options = {
@@ -794,3 +859,5 @@ require("lualine").setup({
     lualine_z = { "location" },
   },
 })
+
+require("gitsigns").setup()
