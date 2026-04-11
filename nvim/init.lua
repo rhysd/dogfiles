@@ -47,7 +47,6 @@ local lsp_capabilities = {
   { method = "textDocument/references", label = "references" },
   { method = "textDocument/rename", label = "rename" },
   { method = "textDocument/formatting", label = "format" },
-  { method = "textDocument/inlayHint", label = "inlayHint" },
 }
 
 local function telescope_picker(name)
@@ -81,10 +80,6 @@ api.nvim_create_autocmd("LspAttach", {
     keymap("n", "<Leader>ld", vim.diagnostic.open_float, map_opts)
     keymap("n", "[d", vim.diagnostic.goto_prev, map_opts)
     keymap("n", "]d", vim.diagnostic.goto_next, map_opts)
-
-    if client and client:supports_method("textDocument/inlayHint") then
-      vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
-    end
 
     if client and client:supports_method("textDocument/documentHighlight") then
       api.nvim_clear_autocmds({
@@ -202,30 +197,6 @@ enable_lsp("ts_ls", {
     "jsconfig.json",
     "package.json",
     ".git",
-  },
-  settings = {
-    typescript = {
-      inlayHints = {
-        includeInlayParameterNameHints = "all",
-        includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-        includeInlayFunctionParameterTypeHints = true,
-        includeInlayVariableTypeHints = false,
-        includeInlayPropertyDeclarationTypeHints = true,
-        includeInlayFunctionLikeReturnTypeHints = true,
-        includeInlayEnumMemberValueHints = true,
-      },
-    },
-    javascript = {
-      inlayHints = {
-        includeInlayParameterNameHints = "all",
-        includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-        includeInlayFunctionParameterTypeHints = true,
-        includeInlayVariableTypeHints = false,
-        includeInlayPropertyDeclarationTypeHints = true,
-        includeInlayFunctionLikeReturnTypeHints = true,
-        includeInlayEnumMemberValueHints = true,
-      },
-    },
   },
 }, "typescript-language-server")
 
