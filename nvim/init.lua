@@ -1,6 +1,5 @@
 vim.g.mapleader = ","
 
-
 local api = vim.api
 local fn = vim.fn
 local keymap = vim.keymap.set
@@ -842,7 +841,11 @@ end, { silent = true })
 
 local function macro_recording_status()
   local reg = fn.reg_recording()
-  return reg == "" and "" or ("●REC @" .. reg)
+  return reg == "" and "" or ("REC @" .. reg)
+end
+
+local function location_status()
+  return ("%d/%d:%d"):format(fn.line("."), fn.line("$"), fn.col("."))
 end
 
 require("lualine").setup({
@@ -872,7 +875,7 @@ require("lualine").setup({
       "fileformat",
     },
     lualine_y = { "progress" },
-    lualine_z = { "location" },
+    lualine_z = { location_status },
   },
 })
 
