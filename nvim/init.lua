@@ -342,8 +342,10 @@ opt.clipboard = "unnamed"
 opt.virtualedit = "block"
 opt.fileformats = { "unix", "dos", "mac" }
 opt.showcmd = false
+opt.showcmdloc = "statusline"
 opt.completeopt = { "menuone", "menu" }
 opt.langmenu = "none"
+opt.cmdheight = 0
 opt.foldmethod = "expr"
 opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 opt.foldlevel = 99
@@ -838,6 +840,11 @@ keymap("n", "<Space><Space>", function()
   telescope_builtin().builtin()
 end, { silent = true })
 
+local function macro_recording_status()
+  local reg = fn.reg_recording()
+  return reg == "" and "" or ("●REC @" .. reg)
+end
+
 require("lualine").setup({
   options = {
     icons_enabled = false,
@@ -847,7 +854,7 @@ require("lualine").setup({
     theme = "auto",
   },
   sections = {
-    lualine_a = { "mode" },
+    lualine_a = { "mode", macro_recording_status },
     lualine_b = { "branch", "diff" },
     lualine_c = {
       {
