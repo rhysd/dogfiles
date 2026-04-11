@@ -465,6 +465,7 @@ keymap("c", "<C-y>", "<C-r>+")
 keymap("c", "<C-g>", "<C-u><BS>")
 keymap("n", "<C-n>", ":<C-u>bnext<CR>", { silent = true })
 keymap("n", "<C-p>", ":<C-u>bprevious<CR>", { silent = true })
+keymap("n", "<CR>", "o<Esc>", { silent = true })
 keymap("n", "s", "<C-w>")
 keymap("n", "<C-w>O", "<C-w>o")
 
