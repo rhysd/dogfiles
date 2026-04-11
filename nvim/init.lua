@@ -578,15 +578,42 @@ api.nvim_create_autocmd("FileType", {
   callback = on_filetype_qf,
 })
 
-local function git(cmdline)
+local function git_cwd()
   local dir = fn.expand("%:p:h")
   if dir == "" then
     dir = fn.getcwd()
   end
+  return dir
+end
 
-  cmd("terminal VIMRUNTIME= git -C " .. fn.fnameescape(dir) .. " " .. cmdline)
+api.nvim_create_user_command("GitAdd", function(opts)
+  local argv = { "git", "-C", git_cwd(), "add", fn.expand("%:p") }
+  local extra_args = vim.split(opts.args, "%s+", { trimempty = true })
+  vim.list_extend(argv, extra_args)
+
+  vim.system(argv, {
+    env = { VIMRUNTIME = "" },
+    text = true,
+  }, function(result)
+    vim.schedule(function()
+      if result.code == 0 then
+        vim.api.nvim_echo({ { "Done: `git add`" } }, false, {})
+        return
+      end
+
+      local message = result.stderr ~= "" and result.stderr or result.stdout
+      vim.notify(message, vim.log.levels.ERROR)
+    end)
+  end)
+end, { nargs = "*" })
+
+api.nvim_create_user_command("GitCommit", function(opts)
+  local cmdline = "commit " .. opts.args
+  cmd("enew")
   local term_bufnr = fn.bufnr("%")
-  local channel = vim.bo[term_bufnr].channel
+  local channel = fn.termopen("git -C " .. fn.shellescape(git_cwd()) .. " " .. cmdline, {
+    env = { VIMRUNTIME = "" },
+  })
 
   api.nvim_create_autocmd("TermClose", {
     group = augroup,
@@ -599,14 +626,6 @@ local function git(cmdline)
       end
     end,
   })
-end
-
-api.nvim_create_user_command("GitAdd", function(opts)
-  git("add " .. fn.expand("%:p") .. " " .. opts.args)
-end, { nargs = "*" })
-
-api.nvim_create_user_command("GitCommit", function(opts)
-  git("commit " .. opts.args)
 end, { nargs = "*" })
 
 keymap("n", "<Leader>ga", ":<C-u>GitAdd<CR>", { silent = true })
