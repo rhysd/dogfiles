@@ -81,6 +81,15 @@ api.nvim_create_autocmd("LspAttach", {
     keymap("n", "[d", vim.diagnostic.goto_prev, map_opts)
     keymap("n", "]d", vim.diagnostic.goto_next, map_opts)
 
+    if client and client:supports_method("textDocument/inlayHint") then
+        api.nvim_buf_create_user_command(event.buf, "LspToggleInlayHints", function()
+            local enabled = not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf })
+            vim.lsp.inlay_hint.enable(enabled, { bufnr = event.buf })
+            vim.api.nvim_echo({ { enabled and "Enabled inlay hints" or "Disabled inlay hints" } }, false, {})
+        end, {})
+        keymap("n", "<Leader>lh", ":<C-u>LspToggleInlayHints<CR>", map_opts)
+    end
+
     if client and client:supports_method("textDocument/documentHighlight") then
       api.nvim_clear_autocmds({
         group = lsp_document_highlight_augroup,
