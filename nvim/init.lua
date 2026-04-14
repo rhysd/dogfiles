@@ -371,7 +371,30 @@ api.nvim_create_autocmd("TextYankPost", {
   end,
 })
 
+local temp_lnum_augroup = api.nvim_create_augroup("MyTemporaryNumber", { clear = true })
+local function set_number_temporarily()
+  local winid = api.nvim_get_current_win()
+  vim.wo[winid].number = true
+  local bufnr = api.nvim_get_current_buf()
+  api.nvim_clear_autocmds({
+    group = temp_lnum_augroup,
+    buffer = bufnr,
+  })
+
+  api.nvim_create_autocmd("CursorMoved", {
+    group = temp_lnum_augroup,
+    buffer = bufnr,
+    callback = function(ev)
+      pcall(api.nvim_del_autocmd, ev.id)
+      if api.nvim_win_is_valid(winid) then
+        vim.wo[winid].number = false
+      end
+    end,
+  })
+end
+
 keymap("n", "<Leader>h", ":<C-u>help <C-l>", { silent = true })
+keymap("n", "<Leader>n", set_number_temporarily, { silent = true })
 keymap("n", "<Leader>cc", "gcc", { remap = true })
 keymap("x", "<Leader>cc", "gc", { remap = true })
 
@@ -398,6 +421,9 @@ keymap("c", "j", function()
 end, { expr = true })
 
 keymap("i", "<C-c>", "<Esc>")
+keymap("n", "<Tab>", function()
+  return vim.v.count > 0 and "G" or "<Tab>"
+end, { expr = true })
 keymap("n", "Y", "y$")
 keymap({ "n", "v", "o" }, "j", "gj")
 keymap({ "n", "v", "o" }, "k", "gk")
