@@ -191,6 +191,14 @@ enable_lsp("pylsp", {
   },
 })
 
+enable_lsp("wgsl_analyzer", {
+  cmd = { "wgsl-analyzer" },
+  filetypes = { "wgsl" },
+  root_markers = {
+    ".git",
+  },
+}, "wgsl-analyzer")
+
 enable_lsp("ts_ls", {
   cmd = { "typescript-language-server", "--stdio" },
   filetypes = {
@@ -786,6 +794,7 @@ api.nvim_create_autocmd("FileType", {
     "typescript",
     "typescriptreact",
     "vim",
+    "wgsl",
     "help",
   },
   callback = function(args)
