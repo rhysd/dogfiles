@@ -861,6 +861,10 @@ keymap("n", "<Space>d", function()
   telescope_builtin().diagnostics()
 end, { silent = true })
 
+keymap("n", "<Space>r", function()
+  telescope_builtin().resume()
+end, { silent = true })
+
 keymap("n", "<Space><Space>", function()
   telescope_builtin().builtin()
 end, { silent = true })
