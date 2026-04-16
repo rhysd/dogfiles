@@ -239,14 +239,6 @@ enable_lsp("lua_ls", {
   },
 }, "lua-language-server")
 
-api.nvim_create_user_command("Autocmd", function(opts)
-  api.nvim_exec2("autocmd MyVimrc " .. opts.args, { output = false })
-end, { nargs = "*" })
-
-api.nvim_create_user_command("AutocmdFT", function(opts)
-  api.nvim_exec2("autocmd MyVimrc FileType " .. opts.args, { output = false })
-end, { nargs = "*" })
-
 api.nvim_create_user_command("LspInfo", function()
   local bufnr = api.nvim_get_current_buf()
   local clients = vim.lsp.get_clients({ bufnr = bufnr })
@@ -480,19 +472,9 @@ keymap("c", "<C-g>", "<C-u><BS>")
 keymap("n", "<C-n>", ":<C-u>bnext<CR>", { silent = true })
 keymap("n", "<C-p>", ":<C-u>bprevious<CR>", { silent = true })
 keymap("n", "<CR>", "o<Esc>", { silent = true })
-keymap("n", "s", "<C-w>")
+keymap("n", "s", "<C-w>", { remap = true })
 keymap("n", "<C-w>O", "<C-w>o")
-
-local function delete_current_buf()
-  local current = fn.bufnr("%")
-  cmd.bnext()
-  if current == fn.bufnr("%") then
-    cmd.enew()
-  end
-  cmd("silent! bdelete! #")
-end
-
-keymap("n", "<C-w>d", delete_current_buf)
+keymap("n", "<C-w>d", ":<C-u>bdelete!<CR>", { silent = true })
 keymap("n", "x", '"_x')
 keymap("n", "gp", function()
   return "`[" .. fn.strpart(fn.getregtype(), 0, 1) .. "`]"
