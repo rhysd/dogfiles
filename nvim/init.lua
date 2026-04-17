@@ -6,6 +6,7 @@ local keymap = vim.keymap.set
 local cmd = vim.cmd
 local opt = vim.opt
 local telescope_builtin
+
 local lazy_plugins = {
   telescope = {
     { src = "https://github.com/nvim-lua/plenary.nvim" },
@@ -33,271 +34,40 @@ local lazy_plugins = {
   },
 }
 
+vim.pack.add({
+  { src = "https://github.com/rhysd/vim-color-spring-night" },
+  { src = "https://github.com/rhysd/clever-f.vim" },
+  { src = "https://github.com/haya14busa/vim-asterisk" },
+  { src = "https://github.com/justinmk/vim-dirvish" },
+  { src = "https://github.com/lewis6991/gitsigns.nvim" },
+  { src = "https://github.com/nvim-lualine/lualine.nvim" },
+})
+
+local loaded_plugins = {}
+local function pack_load(name)
+  if loaded_plugins[name] then
+    return
+  end
+  cmd("packadd " .. name)
+  loaded_plugins[name] = true
+end
+
+local function pack_add_once(key)
+  if loaded_plugins[key] then
+    return false
+  end
+  vim.pack.add(lazy_plugins[key], { load = true })
+  loaded_plugins[key] = true
+  return true
+end
+
+pack_load("clever-f.vim")
+pack_load("vim-asterisk")
+pack_load("vim-dirvish")
+pack_load("gitsigns.nvim")
+pack_load("lualine.nvim")
+
 local augroup = api.nvim_create_augroup("MyVimrc", { clear = true })
-local lsp_format_augroup = api.nvim_create_augroup("MyLspFormat", { clear = true })
-local lsp_document_highlight_augroup = api.nvim_create_augroup("MyLspDocumentHighlight", { clear = true })
-
-local lsp_float_opts = {
-  border = "single",
-  focusable = true,
-  silent = true,
-}
-local lsp_capabilities = {
-  { method = "textDocument/definition", label = "definition" },
-  { method = "textDocument/references", label = "references" },
-  { method = "textDocument/rename", label = "rename" },
-  { method = "textDocument/formatting", label = "format" },
-}
-
-local function telescope_picker(name)
-  return function()
-    telescope_builtin()[name]()
-  end
-end
-
-vim.diagnostic.config({
-  virtual_text = true,
-  underline = true,
-  severity_sort = true,
-  float = { border = "rounded" },
-})
-
-api.nvim_create_autocmd("LspAttach", {
-  group = augroup,
-  callback = function(event)
-    local client = vim.lsp.get_client_by_id(event.data.client_id)
-    local map_opts = { buffer = event.buf }
-    keymap("n", "gd", vim.lsp.buf.definition, map_opts)
-    keymap("n", "K", function() vim.lsp.buf.hover(lsp_float_opts) end, map_opts)
-    keymap("n", "<Leader>ls", vim.lsp.buf.signature_help, map_opts)
-    keymap("n", "<Leader>lci", telescope_picker("lsp_incoming_calls"), map_opts)
-    keymap("n", "<Leader>lco", telescope_picker("lsp_outgoing_calls"), map_opts)
-    keymap("n", "gD", vim.lsp.buf.declaration, map_opts)
-    keymap("n", "<Leader>li", telescope_picker("lsp_implementations"), map_opts)
-    keymap("n", "<Leader>lr", telescope_picker("lsp_references"), map_opts)
-    keymap("n", "<Leader>ln", vim.lsp.buf.rename, map_opts)
-    keymap({ "n", "v" }, "<Leader>la", vim.lsp.buf.code_action, map_opts)
-    keymap("n", "<Leader>ld", vim.diagnostic.open_float, map_opts)
-    keymap("n", "[d", vim.diagnostic.goto_prev, map_opts)
-    keymap("n", "]d", vim.diagnostic.goto_next, map_opts)
-
-    if client and client:supports_method("textDocument/inlayHint") then
-        api.nvim_buf_create_user_command(event.buf, "LspToggleInlayHints", function()
-            local enabled = not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf })
-            vim.lsp.inlay_hint.enable(enabled, { bufnr = event.buf })
-            vim.api.nvim_echo({ { enabled and "Enabled inlay hints" or "Disabled inlay hints" } }, false, {})
-        end, {})
-        keymap("n", "<Leader>lh", ":<C-u>LspToggleInlayHints<CR>", map_opts)
-    end
-
-    if client and client:supports_method("textDocument/documentHighlight") then
-      api.nvim_clear_autocmds({
-        group = lsp_document_highlight_augroup,
-        buffer = event.buf,
-      })
-      api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-        group = lsp_document_highlight_augroup,
-        buffer = event.buf,
-        callback = vim.lsp.buf.document_highlight,
-      })
-      api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI", "BufLeave" }, {
-        group = lsp_document_highlight_augroup,
-        buffer = event.buf,
-        callback = vim.lsp.buf.clear_references,
-      })
-    end
-
-    if client and client:supports_method("textDocument/formatting") then
-      api.nvim_clear_autocmds({
-        group = lsp_format_augroup,
-        buffer = event.buf,
-      })
-      api.nvim_create_autocmd("BufWritePre", {
-        group = lsp_format_augroup,
-        buffer = event.buf,
-        callback = function()
-          vim.lsp.buf.format({
-            bufnr = event.buf,
-            timeout_ms = 1000,
-          })
-        end,
-      })
-    end
-  end,
-})
-
-local enabled_lsps = {}
-
-local function enable_lsp(name, config, executable)
-  api.nvim_create_autocmd("FileType", {
-    group = augroup,
-    pattern = config.filetypes,
-    callback = function()
-      if enabled_lsps[name] or fn.exepath(executable or name) == "" then
-        return
-      end
-      vim.lsp.config(name, config)
-      vim.lsp.enable(name)
-      enabled_lsps[name] = true
-    end,
-  })
-end
-
-enable_lsp("clangd", {
-  cmd = { "clangd" },
-  filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
-  root_markers = {
-    { "compile_commands.json", "compile_flags.txt" },
-    ".clangd",
-    ".git",
-  },
-})
-
-enable_lsp("rust_analyzer", {
-  cmd = { "rust-analyzer" },
-  filetypes = { "rust" },
-  root_markers = {
-    "Cargo.toml",
-    "rust-project.json",
-    ".git",
-  },
-  settings = {
-    ["rust-analyzer"] = {
-      cargo = { allFeatures = true },
-      checkOnSave = true,
-    },
-  },
-}, "rust-analyzer")
-
-enable_lsp("gopls", {
-  cmd = { "gopls" },
-  filetypes = { "go", "gomod", "gowork", "gotmpl" },
-  root_markers = {
-    "go.work",
-    "go.mod",
-    ".git",
-  },
-})
-
-enable_lsp("pylsp", {
-  cmd = { "pylsp" },
-  filetypes = { "python" },
-  root_markers = {
-    "pyproject.toml",
-    "setup.py",
-    "setup.cfg",
-    "requirements.txt",
-    ".git",
-  },
-})
-
-enable_lsp("wgsl_analyzer", {
-  cmd = { "wgsl-analyzer" },
-  filetypes = { "wgsl" },
-  root_markers = {
-    ".git",
-  },
-}, "wgsl-analyzer")
-
-enable_lsp("ts_ls", {
-  cmd = { "typescript-language-server", "--stdio" },
-  filetypes = {
-    "javascript",
-    "javascriptreact",
-    "javascript.jsx",
-    "typescript",
-    "typescriptreact",
-    "typescript.tsx",
-  },
-  root_markers = {
-    "tsconfig.json",
-    "jsconfig.json",
-    "package.json",
-    ".git",
-  },
-}, "typescript-language-server")
-
-enable_lsp("lua_ls", {
-  cmd = { "lua-language-server" },
-  filetypes = { "lua" },
-  root_markers = {
-    { ".luarc.json", ".luarc.jsonc" },
-    ".git",
-  },
-  settings = {
-    Lua = {
-      runtime = { version = "LuaJIT" },
-      diagnostics = {
-        globals = { "vim" },
-      },
-      workspace = {
-        library = vim.api.nvim_get_runtime_file("", true),
-        checkThirdParty = false,
-      },
-      telemetry = { enable = false },
-    },
-  },
-}, "lua-language-server")
-
-api.nvim_create_user_command("LspInfo", function()
-  local bufnr = api.nvim_get_current_buf()
-  local clients = vim.lsp.get_clients({ bufnr = bufnr })
-  local lines = {
-    "LSP clients for current buffer",
-    "",
-    "Buffer: " .. api.nvim_buf_get_name(bufnr),
-    "Filetype: " .. vim.bo[bufnr].filetype,
-    "",
-  }
-
-  if #clients == 0 then
-    table.insert(lines, "No LSP clients attached.")
-  else
-    for i, client in ipairs(clients) do
-      local cfg = client.config or {}
-      local cmdline = cfg.cmd and table.concat(cfg.cmd, " ") or "(none)"
-      local root = client.root_dir or cfg.root_dir or "(none)"
-      local caps = {}
-
-      for _, capability in ipairs(lsp_capabilities) do
-        if client:supports_method(capability.method) then
-          table.insert(caps, capability.label)
-        end
-      end
-
-      table.insert(lines, ("[%d] %s (id=%d)"):format(i, client.name, client.id))
-      table.insert(lines, "  root: " .. tostring(root))
-      table.insert(lines, "  cmd: " .. cmdline)
-      table.insert(lines, "  capabilities: " .. (#caps > 0 and table.concat(caps, ", ") or "(none)"))
-      table.insert(lines, "")
-    end
-  end
-
-  local info_buf = api.nvim_create_buf(false, true)
-  api.nvim_buf_set_lines(info_buf, 0, -1, false, lines)
-
-  local bo = vim.bo[info_buf]
-  bo.bufhidden = "wipe"
-  bo.filetype = "lspinfo"
-  bo.modifiable = false
-  bo.buftype = "nofile"
-
-  cmd("botright new")
-  api.nvim_win_set_buf(0, info_buf)
-end, {})
-
-api.nvim_create_user_command("LspRename", function()
-  vim.lsp.buf.rename()
-end, {})
-api.nvim_create_user_command("LspIncomingCalls", telescope_picker("lsp_incoming_calls"), {})
-api.nvim_create_user_command("LspOutgoingCalls", telescope_picker("lsp_outgoing_calls"), {})
-api.nvim_create_user_command("LspDiagnostics", function(opts)
-  local diagnostics_opts = {}
-  if opts.bang then
-    diagnostics_opts.severity = { min = vim.diagnostic.severity.WARN }
-  end
-  telescope_builtin().diagnostics(diagnostics_opts)
-end, { bang = true })
 
 cmd("language message C")
 cmd("language time C")
@@ -343,6 +113,8 @@ opt.undofile = true
 opt.cmdwinheight = 3
 opt.spelllang = { "en", "cjk" }
 opt.breakindent = true
+
+-- cmd.colorscheme("spring-night")
 
 api.nvim_create_autocmd({ "BufRead", "BufNew", "BufNewFile" }, {
   group = augroup,
@@ -657,73 +429,302 @@ api.nvim_create_autocmd("FileType", {
   end,
 })
 
-vim.pack.add({
-  { src = "https://github.com/rhysd/vim-color-spring-night" },
-  { src = "https://github.com/rhysd/clever-f.vim" },
-  { src = "https://github.com/haya14busa/vim-asterisk" },
-  { src = "https://github.com/justinmk/vim-dirvish" },
-  { src = "https://github.com/lewis6991/gitsigns.nvim" },
-  { src = "https://github.com/nvim-lualine/lualine.nvim" },
+if fn.has("win32") == 1 then
+  opt.shell = "powershell.exe"
+  opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
+  opt.shellquote = ""
+  opt.shellxquote = ""
+  opt.shellredir = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
+  opt.shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
+end
+
+api.nvim_create_autocmd("TermOpen", {
+  group = augroup,
+  callback = function(event)
+    local buf_name = api.nvim_buf_get_name(event.buf)
+    local cmd_name = buf_name:match("//%d+:(.*)$")
+    local shell_name = fn.fnamemodify(vim.o.shell, ":t:r"):lower()
+    local terminal_name = cmd_name and fn.fnamemodify(cmd_name, ":t:r"):lower() or ""
+    vim.b[event.buf].close_on_term_exit = terminal_name == shell_name
+    cmd("startinsert")
+  end,
 })
 
--- cmd.colorscheme("spring-night")
+api.nvim_create_autocmd("TermClose", {
+  group = augroup,
+  callback = function(event)
+    vim.schedule(function()
+      if api.nvim_buf_is_valid(event.buf) and vim.b[event.buf].close_on_term_exit then
+        cmd(("silent! %d bdelete!"):format(event.buf))
+      end
+    end)
+  end,
+})
 
-local loaded_plugins = {}
-local function pack_load(name)
-  if loaded_plugins[name] then
-    return
-  end
-  cmd("packadd " .. name)
-  loaded_plugins[name] = true
-end
+local lsp_format_augroup = api.nvim_create_augroup("MyLspFormat", { clear = true })
+local lsp_document_highlight_augroup = api.nvim_create_augroup("MyLspDocumentHighlight", { clear = true })
 
-local function pack_add_once(key)
-  if loaded_plugins[key] then
-    return false
-  end
-  vim.pack.add(lazy_plugins[key], { load = true })
-  loaded_plugins[key] = true
-  return true
-end
+local lsp_float_opts = {
+  border = "single",
+  focusable = true,
+  silent = true,
+}
+local lsp_capabilities = {
+  { method = "textDocument/definition", label = "definition" },
+  { method = "textDocument/references", label = "references" },
+  { method = "textDocument/rename", label = "rename" },
+  { method = "textDocument/formatting", label = "format" },
+}
 
-pack_load("clever-f.vim")
-pack_load("vim-asterisk")
-pack_load("vim-dirvish")
-pack_load("gitsigns.nvim")
-pack_load("lualine.nvim")
-
-keymap({ "n", "x" }, "*", "<Plug>(asterisk-z*)", { remap = true })
-keymap({ "n", "x" }, "#", "<Plug>(asterisk-z#)", { remap = true })
-keymap({ "n", "x" }, "g*", "<Plug>(asterisk-gz*)", { remap = true })
-keymap({ "n", "x" }, "g#", "<Plug>(asterisk-gz#)", { remap = true })
-
-local function operator_replace_mapping()
-  pack_add_once("operator_replace")
-  return "<Plug>(operator-replace)"
-end
-
-keymap("n", "<Leader>r", function()
-  return operator_replace_mapping()
-end, { expr = true, remap = true })
-keymap("x", "<Leader>r", function()
-  return operator_replace_mapping()
-end, { expr = true, remap = true })
-
-local function textobj_mapping(group_name, plug_name)
+local function telescope_picker(name)
   return function()
-    pack_add_once(group_name)
-    return plug_name
+    telescope_builtin()[name]()
   end
 end
 
-keymap({ "x", "o" }, "ae", textobj_mapping("textobj_entire", "<Plug>(textobj-entire-a)"), { expr = true, remap = true })
-keymap({ "x", "o" }, "ie", textobj_mapping("textobj_entire", "<Plug>(textobj-entire-i)"), { expr = true, remap = true })
-keymap({ "x", "o" }, "ab", textobj_mapping("textobj_anyblock", "<Plug>(textobj-anyblock-a)"), { expr = true, remap = true })
-keymap({ "x", "o" }, "ib", textobj_mapping("textobj_anyblock", "<Plug>(textobj-anyblock-i)"), { expr = true, remap = true })
-keymap({ "x", "o" }, "ai", textobj_mapping("textobj_indent", "<Plug>(textobj-indent-a)"), { expr = true, remap = true })
-keymap({ "x", "o" }, "ii", textobj_mapping("textobj_indent", "<Plug>(textobj-indent-i)"), { expr = true, remap = true })
-keymap({ "x", "o" }, "aI", textobj_mapping("textobj_indent", "<Plug>(textobj-indent-same-a)"), { expr = true, remap = true })
-keymap({ "x", "o" }, "iI", textobj_mapping("textobj_indent", "<Plug>(textobj-indent-same-i)"), { expr = true, remap = true })
+vim.diagnostic.config({
+  virtual_text = true,
+  underline = true,
+  severity_sort = true,
+  float = { border = "rounded" },
+})
+
+api.nvim_create_autocmd("LspAttach", {
+  group = augroup,
+  callback = function(event)
+    local client = vim.lsp.get_client_by_id(event.data.client_id)
+    local map_opts = { buffer = event.buf }
+    keymap("n", "gd", vim.lsp.buf.definition, map_opts)
+    keymap("n", "K", function() vim.lsp.buf.hover(lsp_float_opts) end, map_opts)
+    keymap("n", "<Leader>ls", vim.lsp.buf.signature_help, map_opts)
+    keymap("n", "<Leader>lci", telescope_picker("lsp_incoming_calls"), map_opts)
+    keymap("n", "<Leader>lco", telescope_picker("lsp_outgoing_calls"), map_opts)
+    keymap("n", "gD", vim.lsp.buf.declaration, map_opts)
+    keymap("n", "<Leader>li", telescope_picker("lsp_implementations"), map_opts)
+    keymap("n", "<Leader>lr", telescope_picker("lsp_references"), map_opts)
+    keymap("n", "<Leader>ln", vim.lsp.buf.rename, map_opts)
+    keymap({ "n", "v" }, "<Leader>la", vim.lsp.buf.code_action, map_opts)
+    keymap("n", "<Leader>ld", vim.diagnostic.open_float, map_opts)
+    keymap("n", "[d", vim.diagnostic.goto_prev, map_opts)
+    keymap("n", "]d", vim.diagnostic.goto_next, map_opts)
+
+    if client and client:supports_method("textDocument/inlayHint") then
+        api.nvim_buf_create_user_command(event.buf, "LspToggleInlayHints", function()
+            local enabled = not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf })
+            vim.lsp.inlay_hint.enable(enabled, { bufnr = event.buf })
+            vim.api.nvim_echo({ { enabled and "Enabled inlay hints" or "Disabled inlay hints" } }, false, {})
+        end, {})
+        keymap("n", "<Leader>lh", ":<C-u>LspToggleInlayHints<CR>", map_opts)
+    end
+
+    if client and client:supports_method("textDocument/documentHighlight") then
+      api.nvim_clear_autocmds({
+        group = lsp_document_highlight_augroup,
+        buffer = event.buf,
+      })
+      api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+        group = lsp_document_highlight_augroup,
+        buffer = event.buf,
+        callback = vim.lsp.buf.document_highlight,
+      })
+      api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI", "BufLeave" }, {
+        group = lsp_document_highlight_augroup,
+        buffer = event.buf,
+        callback = vim.lsp.buf.clear_references,
+      })
+    end
+
+    if client and client:supports_method("textDocument/formatting") then
+      api.nvim_clear_autocmds({
+        group = lsp_format_augroup,
+        buffer = event.buf,
+      })
+      api.nvim_create_autocmd("BufWritePre", {
+        group = lsp_format_augroup,
+        buffer = event.buf,
+        callback = function()
+          vim.lsp.buf.format({
+            bufnr = event.buf,
+            timeout_ms = 1000,
+          })
+        end,
+      })
+    end
+  end,
+})
+
+local enabled_lsps = {}
+
+local function enable_lsp(name, config, executable)
+  api.nvim_create_autocmd("FileType", {
+    group = augroup,
+    pattern = config.filetypes,
+    callback = function()
+      if enabled_lsps[name] or fn.exepath(executable or name) == "" then
+        return
+      end
+      vim.lsp.config(name, config)
+      vim.lsp.enable(name)
+      enabled_lsps[name] = true
+    end,
+  })
+end
+
+enable_lsp("clangd", {
+  cmd = { "clangd" },
+  filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
+  root_markers = {
+    { "compile_commands.json", "compile_flags.txt" },
+    ".clangd",
+    ".git",
+  },
+})
+
+enable_lsp("rust_analyzer", {
+  cmd = { "rust-analyzer" },
+  filetypes = { "rust" },
+  root_markers = {
+    "Cargo.toml",
+    "rust-project.json",
+    ".git",
+  },
+  settings = {
+    ["rust-analyzer"] = {
+      cargo = { allFeatures = true },
+      checkOnSave = true,
+    },
+  },
+}, "rust-analyzer")
+
+enable_lsp("gopls", {
+  cmd = { "gopls" },
+  filetypes = { "go", "gomod", "gowork", "gotmpl" },
+  root_markers = {
+    "go.work",
+    "go.mod",
+    ".git",
+  },
+})
+
+enable_lsp("pylsp", {
+  cmd = { "pylsp" },
+  filetypes = { "python" },
+  root_markers = {
+    "pyproject.toml",
+    "setup.py",
+    "setup.cfg",
+    "requirements.txt",
+    ".git",
+  },
+})
+
+enable_lsp("wgsl_analyzer", {
+  cmd = { "wgsl-analyzer" },
+  filetypes = { "wgsl" },
+  root_markers = {
+    ".git",
+  },
+}, "wgsl-analyzer")
+
+enable_lsp("ts_ls", {
+  cmd = { "typescript-language-server", "--stdio" },
+  filetypes = {
+    "javascript",
+    "javascriptreact",
+    "javascript.jsx",
+    "typescript",
+    "typescriptreact",
+    "typescript.tsx",
+  },
+  root_markers = {
+    "tsconfig.json",
+    "jsconfig.json",
+    "package.json",
+    ".git",
+  },
+}, "typescript-language-server")
+
+enable_lsp("lua_ls", {
+  cmd = { "lua-language-server" },
+  filetypes = { "lua" },
+  root_markers = {
+    { ".luarc.json", ".luarc.jsonc" },
+    ".git",
+  },
+  settings = {
+    Lua = {
+      runtime = { version = "LuaJIT" },
+      diagnostics = {
+        globals = { "vim" },
+      },
+      workspace = {
+        library = vim.api.nvim_get_runtime_file("", true),
+        checkThirdParty = false,
+      },
+      telemetry = { enable = false },
+    },
+  },
+}, "lua-language-server")
+
+api.nvim_create_user_command("LspInfo", function()
+  local bufnr = api.nvim_get_current_buf()
+  local clients = vim.lsp.get_clients({ bufnr = bufnr })
+  local lines = {
+    "LSP clients for current buffer",
+    "",
+    "Buffer: " .. api.nvim_buf_get_name(bufnr),
+    "Filetype: " .. vim.bo[bufnr].filetype,
+    "",
+  }
+
+  if #clients == 0 then
+    table.insert(lines, "No LSP clients attached.")
+  else
+    for i, client in ipairs(clients) do
+      local cfg = client.config or {}
+      local cmdline = cfg.cmd and table.concat(cfg.cmd, " ") or "(none)"
+      local root = client.root_dir or cfg.root_dir or "(none)"
+      local caps = {}
+
+      for _, capability in ipairs(lsp_capabilities) do
+        if client:supports_method(capability.method) then
+          table.insert(caps, capability.label)
+        end
+      end
+
+      table.insert(lines, ("[%d] %s (id=%d)"):format(i, client.name, client.id))
+      table.insert(lines, "  root: " .. tostring(root))
+      table.insert(lines, "  cmd: " .. cmdline)
+      table.insert(lines, "  capabilities: " .. (#caps > 0 and table.concat(caps, ", ") or "(none)"))
+      table.insert(lines, "")
+    end
+  end
+
+  local info_buf = api.nvim_create_buf(false, true)
+  api.nvim_buf_set_lines(info_buf, 0, -1, false, lines)
+
+  local bo = vim.bo[info_buf]
+  bo.bufhidden = "wipe"
+  bo.filetype = "lspinfo"
+  bo.modifiable = false
+  bo.buftype = "nofile"
+
+  cmd("botright new")
+  api.nvim_win_set_buf(0, info_buf)
+end, {})
+
+api.nvim_create_user_command("LspRename", function()
+  vim.lsp.buf.rename()
+end, {})
+api.nvim_create_user_command("LspIncomingCalls", telescope_picker("lsp_incoming_calls"), {})
+api.nvim_create_user_command("LspOutgoingCalls", telescope_picker("lsp_outgoing_calls"), {})
+api.nvim_create_user_command("LspDiagnostics", function(opts)
+  local diagnostics_opts = {}
+  if opts.bang then
+    diagnostics_opts.severity = { min = vim.diagnostic.severity.WARN }
+  end
+  telescope_builtin().diagnostics(diagnostics_opts)
+end, { bang = true })
 
 local function ensure_treesitter()
   if pack_add_once("treesitter") then
@@ -901,3 +902,36 @@ require("lualine").setup({
 })
 
 require("gitsigns").setup()
+
+keymap({ "n", "x" }, "*", "<Plug>(asterisk-z*)", { remap = true })
+keymap({ "n", "x" }, "#", "<Plug>(asterisk-z#)", { remap = true })
+keymap({ "n", "x" }, "g*", "<Plug>(asterisk-gz*)", { remap = true })
+keymap({ "n", "x" }, "g#", "<Plug>(asterisk-gz#)", { remap = true })
+
+local function operator_replace_mapping()
+  pack_add_once("operator_replace")
+  return "<Plug>(operator-replace)"
+end
+
+keymap("n", "<Leader>r", function()
+  return operator_replace_mapping()
+end, { expr = true, remap = true })
+keymap("x", "<Leader>r", function()
+  return operator_replace_mapping()
+end, { expr = true, remap = true })
+
+local function textobj_mapping(group_name, plug_name)
+  return function()
+    pack_add_once(group_name)
+    return plug_name
+  end
+end
+
+keymap({ "x", "o" }, "ae", textobj_mapping("textobj_entire", "<Plug>(textobj-entire-a)"), { expr = true, remap = true })
+keymap({ "x", "o" }, "ie", textobj_mapping("textobj_entire", "<Plug>(textobj-entire-i)"), { expr = true, remap = true })
+keymap({ "x", "o" }, "ab", textobj_mapping("textobj_anyblock", "<Plug>(textobj-anyblock-a)"), { expr = true, remap = true })
+keymap({ "x", "o" }, "ib", textobj_mapping("textobj_anyblock", "<Plug>(textobj-anyblock-i)"), { expr = true, remap = true })
+keymap({ "x", "o" }, "ai", textobj_mapping("textobj_indent", "<Plug>(textobj-indent-a)"), { expr = true, remap = true })
+keymap({ "x", "o" }, "ii", textobj_mapping("textobj_indent", "<Plug>(textobj-indent-i)"), { expr = true, remap = true })
+keymap({ "x", "o" }, "aI", textobj_mapping("textobj_indent", "<Plug>(textobj-indent-same-a)"), { expr = true, remap = true })
+keymap({ "x", "o" }, "iI", textobj_mapping("textobj_indent", "<Plug>(textobj-indent-same-i)"), { expr = true, remap = true })
