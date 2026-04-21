@@ -168,7 +168,7 @@ end
 keymap("n", "<Leader>h", ":<C-u>help <C-l>", { silent = true })
 keymap("n", "<Leader>n", set_number_temporarily, { silent = true })
 keymap("n", "<Leader>cc", "gcc", { remap = true })
-keymap("x", "<Leader>cc", "gc", { remap = true })
+keymap("x", "<Leader>c", "gc", { remap = true })
 
 api.nvim_create_user_command("SetIndent", function(opts)
   local target = opts.bang and vim.opt or vim.opt_local
@@ -463,7 +463,6 @@ api.nvim_create_autocmd("TermClose", {
 
 local lsp_format_augroup = api.nvim_create_augroup("MyLspFormat", { clear = true })
 local lsp_document_highlight_augroup = api.nvim_create_augroup("MyLspDocumentHighlight", { clear = true })
-
 local lsp_float_opts = {
   border = "single",
   focusable = true,
@@ -482,6 +481,7 @@ local function telescope_picker(name)
   end
 end
 
+vim.lsp.log.set_level(vim.log.levels.OFF)
 vim.diagnostic.config({
   virtual_text = true,
   underline = true,
@@ -786,6 +786,7 @@ api.nvim_create_autocmd("FileType", {
   end,
 })
 
+vim.env.TELESCOPE_LOG_FILE = fn.has("win32") == 1 and "NUL" or "/dev/null"
 telescope_builtin = function()
   if pack_add_once("telescope") then
     local telescope_actions = require("telescope.actions")
@@ -810,32 +811,27 @@ telescope_builtin = function()
             ["<C-g>"] = telescope_actions.close,
           },
         },
+        log_level = "error",
       },
     })
   end
   return require("telescope.builtin")
 end
-
 keymap("n", "<Space>m", function()
   telescope_builtin().oldfiles()
 end, { silent = true })
-
 keymap("n", "<Space>g", function()
   telescope_builtin().live_grep()
 end, { silent = true })
-
 keymap("n", "<Space>f", function()
   telescope_builtin().find_files()
 end, { silent = true })
-
 keymap("n", "<Space>b", function()
   telescope_builtin().buffers()
 end, { silent = true })
-
 keymap("n", "<Space>/", function()
   telescope_builtin().current_buffer_fuzzy_find()
 end, { silent = true })
-
 keymap("n", "<Space>o", function()
   local clients = vim.lsp.get_clients({ bufnr = 0 })
   if #clients > 0 then
@@ -844,19 +840,15 @@ keymap("n", "<Space>o", function()
     telescope_builtin().treesitter()
   end
 end, { silent = true })
-
 keymap("n", "<Space>s", function()
   telescope_builtin().lsp_workspace_symbols()
 end, { silent = true })
-
 keymap("n", "<Space>d", function()
   telescope_builtin().diagnostics()
 end, { silent = true })
-
 keymap("n", "<Space>r", function()
   telescope_builtin().resume()
 end, { silent = true })
-
 keymap("n", "<Space><Space>", function()
   telescope_builtin().builtin()
 end, { silent = true })
@@ -865,11 +857,9 @@ local function macro_recording_status()
   local reg = fn.reg_recording()
   return reg == "" and "" or ("●REC @" .. reg)
 end
-
 local function location_status()
   return ("%d/%d:%d"):format(fn.line("."), fn.line("$"), fn.col("."))
 end
-
 require("lualine").setup({
   options = {
     icons_enabled = false,
