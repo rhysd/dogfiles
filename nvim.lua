@@ -193,9 +193,7 @@ keymap("c", "j", function()
 end, { expr = true })
 
 keymap("i", "<C-c>", "<Esc>")
-keymap("n", "<Tab>", function()
-  return vim.v.count > 0 and "G" or "<Tab>"
-end, { expr = true })
+keymap("n", "<Tab>", function() return vim.v.count > 0 and "G" or "<Tab>" end, { expr = true })
 keymap("n", "Y", "y$")
 keymap({ "n", "v", "o" }, "j", "gj")
 keymap({ "n", "v", "o" }, "k", "gk")
@@ -203,41 +201,25 @@ keymap("n", "<C-j>", ":<C-u>keepjumps normal! }<CR>", { silent = true })
 keymap("n", "<C-k>", ":<C-u>keepjumps normal! {<CR>", { silent = true })
 keymap("v", "<C-j>", "}")
 keymap("v", "<C-k>", "{")
-keymap("n", "m", function()
-  return "i" .. fn.nr2char(fn.getchar()) .. "<Esc>"
-end, { expr = true, silent = true })
+keymap("n", "m", function() return "i" .. fn.nr2char(fn.getchar()) .. "<Esc>" end, { expr = true, silent = true })
 keymap({ "n", "v", "o" }, "gm", "m")
 keymap("n", "<Esc><Esc>", ":<C-u>nohlsearch<CR>", { silent = true })
-keymap("i", "<Tab>", function()
-  return fn.pumvisible() == 1 and "<C-n>" or "<Tab>"
-end, { expr = true, silent = true })
+keymap("i", "<Tab>", function() return fn.pumvisible() == 1 and "<C-n>" or "<Tab>" end, { expr = true, silent = true })
 keymap("n", "n", "nzvzz")
 keymap("n", "N", "Nzvzz")
 keymap("i", "<C-e>", "<End>")
 keymap("c", "<C-e>", "<End>")
 keymap("i", "<C-a>", "<Home>")
 keymap("c", "<C-a>", "<Home>")
-keymap("i", "<C-n>", function()
-  return fn.pumvisible() == 1 and "<C-y><Down>" or "<Down>"
-end, { expr = true, silent = true })
-keymap("i", "<C-p>", function()
-  return fn.pumvisible() == 1 and "<C-y><Up>" or "<Up>"
-end, { expr = true, silent = true })
-keymap("i", "<C-b>", function()
-  return fn.pumvisible() == 1 and "<C-y><Left>" or "<Left>"
-end, { expr = true, silent = true })
-keymap("i", "<C-f>", function()
-  return fn.pumvisible() == 1 and "<C-y><Right>" or "<Right>"
-end, { expr = true, silent = true })
+keymap("i", "<C-n>", function() return fn.pumvisible() == 1 and "<C-y><Down>" or "<Down>" end, { expr = true, silent = true })
+keymap("i", "<C-p>", function() return fn.pumvisible() == 1 and "<C-y><Up>" or "<Up>" end, { expr = true, silent = true })
+keymap("i", "<C-b>", function() return fn.pumvisible() == 1 and "<C-y><Left>" or "<Left>" end, { expr = true, silent = true })
+keymap("i", "<C-f>", function() return fn.pumvisible() == 1 and "<C-y><Right>" or "<Right>" end, { expr = true, silent = true })
 keymap("c", "<C-f>", "<Right>")
 keymap("c", "<C-b>", "<Left>")
 keymap("i", "<C-d>", "<Del>")
-keymap("c", "<C-d>", function()
-  return #fn.getcmdline() == fn.getcmdpos() - 1 and "<C-d>" or "<Del>"
-end, { expr = true })
-keymap("i", "<C-k>", function()
-  return "<C-g>u" .. (fn.col(".") == fn.col("$") and "<C-o>gJ" or "<C-o>D")
-end, { expr = true, silent = true })
+keymap("c", "<C-d>", function() return #fn.getcmdline() == fn.getcmdpos() - 1 and "<C-d>" or "<Del>" end, { expr = true })
+keymap("i", "<C-k>", function() return "<C-g>u" .. (fn.col(".") == fn.col("$") and "<C-o>gJ" or "<C-o>D") end, { expr = true, silent = true })
 keymap("c", "<C-k>", [[<C-\>e getcmdpos() == 1 ? '' : getcmdline()[:getcmdpos()-2]<CR>]])
 keymap("c", "<C-y>", "<C-r>+")
 keymap("c", "<C-g>", "<C-u><BS>")
@@ -248,9 +230,7 @@ keymap("n", "s", "<C-w>", { remap = true })
 keymap("n", "<C-w>O", "<C-w>o")
 keymap("n", "<C-w>d", ":<C-u>bdelete!<CR>", { silent = true })
 keymap("n", "x", '"_x')
-keymap("n", "gp", function()
-  return "`[" .. fn.strpart(fn.getregtype(), 0, 1) .. "`]"
-end, { expr = true })
+keymap("n", "gp", function() return "`[" .. fn.strpart(fn.getregtype(), 0, 1) .. "`]" end, { expr = true })
 keymap("n", "P", '"0P')
 keymap("n", "ge", ":<C-u>tabedit ")
 keymap("n", "gn", ":<C-u>tabnew<CR>")
@@ -476,9 +456,7 @@ local lsp_capabilities = {
 }
 
 local function telescope_picker(name)
-  return function()
-    telescope_builtin()[name]()
-  end
+  return function() telescope_builtin()[name]() end
 end
 
 vim.lsp.log.set_level(vim.log.levels.OFF)
@@ -713,9 +691,7 @@ api.nvim_create_user_command("LspInfo", function()
   api.nvim_win_set_buf(0, info_buf)
 end, {})
 
-api.nvim_create_user_command("LspRename", function()
-  vim.lsp.buf.rename()
-end, {})
+api.nvim_create_user_command("LspRename", function() vim.lsp.buf.rename() end, {})
 api.nvim_create_user_command("LspIncomingCalls", telescope_picker("lsp_incoming_calls"), {})
 api.nvim_create_user_command("LspOutgoingCalls", telescope_picker("lsp_outgoing_calls"), {})
 api.nvim_create_user_command("LspDiagnostics", function(opts)
@@ -903,12 +879,8 @@ local function operator_replace_mapping()
   return "<Plug>(operator-replace)"
 end
 
-keymap("n", "<Leader>r", function()
-  return operator_replace_mapping()
-end, { expr = true, remap = true })
-keymap("x", "<Leader>r", function()
-  return operator_replace_mapping()
-end, { expr = true, remap = true })
+keymap("n", "<Leader>r", function() return operator_replace_mapping() end, { expr = true, remap = true })
+keymap("x", "<Leader>r", function() return operator_replace_mapping() end, { expr = true, remap = true })
 
 local function textobj_mapping(group_name, plug_name)
   return function()
