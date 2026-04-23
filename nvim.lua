@@ -74,6 +74,7 @@ local augroup = api.nvim_create_augroup("MyVimrc", { clear = true })
 
 cmd("language message C")
 cmd("language time C")
+cmd("syntax enable")
 
 opt.tabstop = 4
 opt.shiftwidth = 4
