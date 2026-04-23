@@ -32,6 +32,9 @@ local lazy_plugins = {
     { src = "https://github.com/kana/vim-textobj-user" },
     { src = "https://github.com/kana/vim-textobj-indent" },
   },
+  surround = {
+    { src = "https://github.com/kylechui/nvim-surround" },
+  },
 }
 
 vim.pack.add({
@@ -866,6 +869,39 @@ require("lualine").setup({
     lualine_z = { location_status },
   },
 })
+
+vim.g.nvim_surround_no_mappings = true
+
+local function ensure_nvim_surround()
+  if not pack_add_once("surround") then
+    return
+  end
+
+  require("nvim-surround").setup({
+    surrounds = {
+      ["("] = {
+        add = { "(", ")" },
+      },
+    },
+    aliases = {
+      b = { ")", "}", "]", ">", '"', "'", "`" },
+    },
+  })
+end
+
+local function nvim_surround_mapping(plug)
+  return function()
+    ensure_nvim_surround()
+    return plug
+  end
+end
+
+keymap("n", "gy", nvim_surround_mapping("<Plug>(nvim-surround-normal)"), { expr = true, remap = true, silent = true })
+keymap("n", "gd", nvim_surround_mapping("<Plug>(nvim-surround-delete)"), { expr = true, remap = true, silent = true })
+keymap("n", "gc", nvim_surround_mapping("<Plug>(nvim-surround-change)"), { expr = true, remap = true, silent = true })
+keymap("x", "gy", nvim_surround_mapping("<Plug>(nvim-surround-visual)"), { expr = true, remap = true, silent = true })
+keymap("x", "gd", nvim_surround_mapping("<Esc><Plug>(nvim-surround-delete)"), { expr = true, remap = true, silent = true })
+keymap("x", "gc", nvim_surround_mapping("<Esc><Plug>(nvim-surround-change)"), { expr = true, remap = true, silent = true })
 
 require("gitsigns").setup()
 
