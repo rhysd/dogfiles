@@ -107,6 +107,11 @@ opt.history = 100
 opt.updatetime = 3000
 opt.swapfile = false
 opt.shortmess:append("I")
+opt.guicursor = {
+  "n-v-c-sm:block",
+  "i-ci-ve:ver25",
+  "r-cr-o:hor20",
+}
 
 local undo_dir = fn.stdpath("state") .. "/undo"
 if fn.isdirectory(undo_dir) == 0 then
