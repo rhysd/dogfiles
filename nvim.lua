@@ -112,7 +112,6 @@ opt.guicursor = {
   "i-ci-ve:ver25",
   "r-cr-o:hor20",
 }
-
 local undo_dir = fn.stdpath("state") .. "/undo"
 if fn.isdirectory(undo_dir) == 0 then
   fn.mkdir(undo_dir, "p")
@@ -122,6 +121,7 @@ opt.undofile = true
 opt.cmdwinheight = 3
 opt.spelllang = { "en", "cjk" }
 opt.breakindent = true
+opt.title = true
 
 -- cmd.colorscheme("spring-night")
 
