@@ -176,8 +176,12 @@ end
 
 keymap("n", "<Leader>h", ":<C-u>help <C-l>", { silent = true })
 keymap("n", "<Leader>n", set_number_temporarily, { silent = true })
-keymap("n", "<Leader>cc", "gcc", { remap = true })
-keymap("x", "<Leader>c", "gc", { remap = true })
+keymap("n", "<Leader>cc", function()
+  return require("vim._comment").operator() .. "_"
+end, { expr = true })
+keymap("x", "<Leader>c", function()
+  return require("vim._comment").operator()
+end, { expr = true })
 
 api.nvim_create_user_command("SetIndent", function(opts)
   local target = opts.bang and vim.opt or vim.opt_local
