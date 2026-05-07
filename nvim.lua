@@ -97,6 +97,7 @@ opt.fileformats = { "unix", "dos", "mac" }
 opt.showcmd = false
 opt.showcmdloc = "statusline"
 opt.completeopt = { "menuone", "menu", "noselect" }
+opt.winborder = "rounded"
 opt.langmenu = "none"
 opt.cmdheight = 1
 opt.foldmethod = "expr"
