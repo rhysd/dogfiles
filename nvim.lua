@@ -248,7 +248,7 @@ keymap("n", "gp", function() return "`[" .. fn.strpart(fn.getregtype(), 0, 1) ..
 keymap("n", "P", '"0P')
 keymap("n", "ge", ":<C-u>tabedit ")
 keymap("n", "gn", ":<C-u>tabnew<CR>")
-keymap("n", "gx", ":<C-u>tabclose<CR>", { silent = true })
+keymap("n", "gX", ":<C-u>tabclose<CR>", { silent = true })
 keymap("n", "H", "g0")
 keymap("n", "M", "g^")
 keymap("n", "L", "g$")
@@ -351,8 +351,7 @@ end
 
 api.nvim_create_user_command("GitAdd", function(opts)
   local argv = { "git", "-C", git_cwd(), "add", fn.expand("%:p") }
-  local extra_args = vim.split(opts.args, "%s+", { trimempty = true })
-  vim.list_extend(argv, extra_args)
+  vim.list_extend(argv, opts.fargs)
 
   vim.system(argv, {
     env = { VIMRUNTIME = "" },
@@ -371,12 +370,20 @@ api.nvim_create_user_command("GitAdd", function(opts)
 end, { nargs = "*" })
 
 api.nvim_create_user_command("GitCommit", function(opts)
-  local cmdline = "commit " .. opts.args
+  local argv = { "git", "-C", git_cwd(), "commit" }
+  vim.list_extend(argv, opts.fargs)
+  local display_cmd = "commit" .. (opts.args ~= "" and " " .. opts.args or "")
+
   cmd("enew")
   local term_bufnr = fn.bufnr("%")
-  local channel = fn.termopen("git -C " .. fn.shellescape(git_cwd()) .. " " .. cmdline, {
+  local channel = fn.termopen(argv, {
     env = { VIMRUNTIME = "" },
   })
+  if channel <= 0 then
+    vim.notify("Failed to start `git commit`.", vim.log.levels.ERROR)
+    cmd(("silent! %d bdelete!"):format(term_bufnr))
+    return
+  end
 
   api.nvim_create_autocmd("TermClose", {
     group = augroup,
@@ -385,7 +392,7 @@ api.nvim_create_user_command("GitCommit", function(opts)
     callback = function()
       if fn.jobwait({ channel }, 0)[1] == 0 then
         cmd(("silent %d bdelete!"):format(term_bufnr))
-        vim.api.nvim_echo({ { ("Done: `git %s`"):format(cmdline) } }, false, {})
+        vim.api.nvim_echo({ { ("Done: `git %s`"):format(display_cmd) } }, false, {})
       end
     end,
   })
@@ -780,7 +787,6 @@ vim.env.TELESCOPE_LOG_FILE = fn.has("win32") == 1 and "NUL" or "/dev/null"
 telescope_builtin = function()
   if pack_add_once("telescope") then
     local telescope_actions = require("telescope.actions")
-    local plenary_path = require("plenary.path")
     require("telescope").setup({
       defaults = {
         prompt_prefix = "> ",
@@ -908,10 +914,10 @@ local function nvim_surround_mapping(plug)
 end
 
 keymap("n", "gy", nvim_surround_mapping("<Plug>(nvim-surround-normal)"), { expr = true, remap = true, silent = true })
-keymap("n", "gd", nvim_surround_mapping("<Plug>(nvim-surround-delete)"), { expr = true, remap = true, silent = true })
+keymap("n", "gx", nvim_surround_mapping("<Plug>(nvim-surround-delete)"), { expr = true, remap = true, silent = true })
 keymap("n", "gc", nvim_surround_mapping("<Plug>(nvim-surround-change)"), { expr = true, remap = true, silent = true })
 keymap("x", "gy", nvim_surround_mapping("<Plug>(nvim-surround-visual)"), { expr = true, remap = true, silent = true })
-keymap("x", "gd", nvim_surround_mapping("<Esc><Plug>(nvim-surround-delete)"), { expr = true, remap = true, silent = true })
+keymap("x", "gx", nvim_surround_mapping("<Esc><Plug>(nvim-surround-delete)"), { expr = true, remap = true, silent = true })
 keymap("x", "gc", nvim_surround_mapping("<Esc><Plug>(nvim-surround-change)"), { expr = true, remap = true, silent = true })
 
 require("gitsigns").setup()
