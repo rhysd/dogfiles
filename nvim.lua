@@ -619,6 +619,9 @@ enable_lsp("wgsl_analyzer", {
 
 enable_lsp("ts_ls", {
   cmd = { "typescript-language-server", "--stdio" },
+  init_options = {
+    hostInfo = "neovim",
+  },
   filetypes = {
     "javascript",
     "javascriptreact",
