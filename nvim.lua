@@ -89,6 +89,7 @@ opt.cindent = true
 opt.ignorecase = true
 opt.smartcase = true
 opt.list = true
+opt.listchars = { tab = "» ", trail = "·", nbsp = "␣", extends = "›", precedes = "‹", eol = "↲" }
 opt.formatoptions:remove({ "r", "o" })
 opt.nrformats:remove({ "octal" })
 opt.clipboard = "unnamed"
@@ -122,6 +123,7 @@ opt.undofile = true
 opt.cmdwinheight = 3
 opt.spelllang = { "en", "cjk" }
 opt.breakindent = true
+opt.showbreak = "↪ "
 opt.title = true
 
 -- cmd.colorscheme("spring-night")
