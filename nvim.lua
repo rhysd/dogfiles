@@ -696,17 +696,7 @@ api.nvim_create_user_command("LspInfo", function()
     end
   end
 
-  local info_buf = api.nvim_create_buf(false, true)
-  api.nvim_buf_set_lines(info_buf, 0, -1, false, lines)
-
-  local bo = vim.bo[info_buf]
-  bo.bufhidden = "wipe"
-  bo.filetype = "lspinfo"
-  bo.modifiable = false
-  bo.buftype = "nofile"
-
-  cmd("botright new")
-  api.nvim_win_set_buf(0, info_buf)
+  vim.api.nvim_echo({ { table.concat(lines, "\n") } }, true, {})
 end, {})
 
 api.nvim_create_user_command("LspRename", function() vim.lsp.buf.rename() end, {})
