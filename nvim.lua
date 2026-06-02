@@ -756,6 +756,7 @@ api.nvim_create_autocmd("FileType", {
     "javascriptreact",
     "lua",
     "markdown",
+    "python",
     "query",
     "rust",
     "typescript",
