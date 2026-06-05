@@ -500,8 +500,8 @@ api.nvim_create_autocmd("LspAttach", {
     keymap("n", "<Leader>ln", vim.lsp.buf.rename, map_opts)
     keymap({ "n", "v" }, "<Leader>la", vim.lsp.buf.code_action, map_opts)
     keymap("n", "<Leader>ld", vim.diagnostic.open_float, map_opts)
-    keymap("n", "[d", vim.diagnostic.goto_prev, map_opts)
-    keymap("n", "]d", vim.diagnostic.goto_next, map_opts)
+    keymap("n", "[d", function() vim.diagnostic.jump({ count = -1, float = true }) end, map_opts)
+    keymap("n", "]d", function() vim.diagnostic.jump({ count = 1, float = true }) end, map_opts)
 
     if client and client:supports_method("textDocument/inlayHint") then
         api.nvim_buf_create_user_command(event.buf, "LspToggleInlayHints", function()
