@@ -418,7 +418,9 @@ api.nvim_create_autocmd("FileType", {
       end
     end
 
-    keymap("n", "h", ":<C-u>Dirvish %:p:h:h<CR>", { buffer = event.buf, silent = true })
+    keymap("n", "h", function()
+      cmd("Dirvish " .. fn.fnameescape(fn.expand("%:p:h:h")))
+    end, { buffer = event.buf, silent = true })
     keymap("n", "l", dirvish_open, { buffer = event.buf, silent = true })
     keymap("n", "~", ":<C-u>Dirvish ~<CR>", { buffer = event.buf, silent = true })
   end,
@@ -429,8 +431,8 @@ if fn.has("win32") == 1 then
   opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
   opt.shellquote = ""
   opt.shellxquote = ""
-  opt.shellredir = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
-  opt.shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
+  opt.shellredir = "2>&1 | Out-File -Encoding UTF8 -LiteralPath '%s'; exit $LastExitCode"
+  opt.shellpipe = "2>&1 | Out-File -Encoding UTF8 -LiteralPath '%s'; exit $LastExitCode"
 end
 
 api.nvim_create_autocmd("TermOpen", {
