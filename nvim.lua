@@ -703,12 +703,9 @@ api.nvim_create_user_command("LspRename", function() vim.lsp.buf.rename() end, {
 api.nvim_create_user_command("LspIncomingCalls", telescope_picker("lsp_incoming_calls"), {})
 api.nvim_create_user_command("LspOutgoingCalls", telescope_picker("lsp_outgoing_calls"), {})
 api.nvim_create_user_command("LspDiagnostics", function(opts)
-  local diagnostics_opts = {}
-  if opts.bang then
-    diagnostics_opts.severity = { min = vim.diagnostic.severity.WARN }
-  end
+  local diagnostics_opts = { severity = { min = vim.diagnostic.severity.WARN } }
   telescope_builtin().diagnostics(diagnostics_opts)
-end, { bang = true })
+end, {})
 
 local function ensure_treesitter()
   if pack_add_once("treesitter") then
