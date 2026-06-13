@@ -344,7 +344,12 @@ local function git_cwd()
 end
 
 api.nvim_create_user_command("GitAdd", function(opts)
-  local argv = { "git", "-C", git_cwd(), "add", fn.expand("%:p") }
+  local argv
+  if opts.bang then
+    argv = { "git", "-C", git_cwd(), "add", "-u", ":/" }
+  else
+    argv = { "git", "-C", git_cwd(), "add", fn.expand("%:p") }
+  end
   vim.list_extend(argv, opts.fargs)
 
   vim.system(argv, {
@@ -361,7 +366,7 @@ api.nvim_create_user_command("GitAdd", function(opts)
       vim.notify(message, vim.log.levels.ERROR)
     end)
   end)
-end, { nargs = "*" })
+end, { nargs = "*", bang = true })
 
 api.nvim_create_user_command("GitCommit", function(opts)
   local argv = { "git", "-C", git_cwd(), "commit" }
@@ -393,6 +398,7 @@ api.nvim_create_user_command("GitCommit", function(opts)
 end, { nargs = "*" })
 
 keymap("n", "<Leader>ga", ":<C-u>GitAdd<CR>", { silent = true })
+keymap("n", "<Leader>gA", ":<C-u>GitAdd!<CR>", { silent = true })
 keymap("n", "<Leader>gc", ":<C-u>GitCommit<CR>", { silent = true })
 
 keymap("n", "<Leader><Leader>", function()
