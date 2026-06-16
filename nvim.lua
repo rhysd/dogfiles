@@ -345,10 +345,13 @@ end
 
 api.nvim_create_user_command("GitAdd", function(opts)
   local argv
+  local what
   if opts.bang then
     argv = { "git", "-C", git_cwd(), "add", "-u", ":/" }
+    what = "all modified files"
   else
     argv = { "git", "-C", git_cwd(), "add", fn.expand("%:p") }
+    what = "this buffer"
   end
   vim.list_extend(argv, opts.fargs)
 
@@ -358,7 +361,7 @@ api.nvim_create_user_command("GitAdd", function(opts)
   }, function(result)
     vim.schedule(function()
       if result.code == 0 then
-        vim.api.nvim_echo({ { "Done: `git add`" } }, false, {})
+        vim.api.nvim_echo({ { "Git: Added " .. what } }, false, {})
         return
       end
 
