@@ -562,29 +562,6 @@ local function lsp_executable(cmd_parts, fallback)
   return fallback
 end
 
-local function diagnostic_summary(bufnr)
-  local severity = vim.diagnostic.severity
-  local counts = {
-    [severity.ERROR] = 0,
-    [severity.WARN] = 0,
-    [severity.INFO] = 0,
-    [severity.HINT] = 0,
-  }
-
-  for _, diagnostic in ipairs(vim.diagnostic.get(bufnr)) do
-    if counts[diagnostic.severity] then
-      counts[diagnostic.severity] = counts[diagnostic.severity] + 1
-    end
-  end
-
-  return ("Error %d, Warn %d, Info %d, Hint %d"):format(
-    counts[severity.ERROR],
-    counts[severity.WARN],
-    counts[severity.INFO],
-    counts[severity.HINT]
-  )
-end
-
 local function format_server_info(client)
   local server_info = client.server_info
   if not server_info then
@@ -737,7 +714,6 @@ api.nvim_create_user_command("LspInfo", function()
     "",
     "Buffer: " .. (buffer_name ~= "" and buffer_name or "(unnamed)"),
     "Filetype: " .. (filetype ~= "" and filetype or "(none)"),
-    "Diagnostics: " .. diagnostic_summary(bufnr),
     "",
   }
 
