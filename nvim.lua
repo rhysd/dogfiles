@@ -474,13 +474,6 @@ local lsp_float_opts = {
   focusable = true,
   silent = true,
 }
-local lsp_capabilities = {
-  { method = "textDocument/definition", label = "definition" },
-  { method = "textDocument/references", label = "references" },
-  { method = "textDocument/rename", label = "rename" },
-  { method = "textDocument/formatting", label = "format" },
-}
-
 local function telescope_picker(name)
   return function() telescope_builtin()[name]() end
 end
@@ -559,12 +552,73 @@ api.nvim_create_autocmd("LspAttach", {
 
 local enabled_lsps = {}
 
+local function lsp_executable(cmd_parts, fallback)
+  if type(cmd_parts) == "table" then
+    return cmd_parts[1] or fallback
+  end
+  if type(cmd_parts) == "string" then
+    return cmd_parts:match("%S+") or fallback
+  end
+  return fallback
+end
+
+local function diagnostic_summary(bufnr)
+  local severity = vim.diagnostic.severity
+  local counts = {
+    [severity.ERROR] = 0,
+    [severity.WARN] = 0,
+    [severity.INFO] = 0,
+    [severity.HINT] = 0,
+  }
+
+  for _, diagnostic in ipairs(vim.diagnostic.get(bufnr)) do
+    if counts[diagnostic.severity] then
+      counts[diagnostic.severity] = counts[diagnostic.severity] + 1
+    end
+  end
+
+  return ("Error %d, Warn %d, Info %d, Hint %d"):format(
+    counts[severity.ERROR],
+    counts[severity.WARN],
+    counts[severity.INFO],
+    counts[severity.HINT]
+  )
+end
+
+local function format_server_info(client)
+  local server_info = client.server_info
+  if not server_info then
+    return "(not provided)"
+  end
+
+  if server_info.name and server_info.version then
+    return ("%s %s"):format(server_info.name, server_info.version)
+  end
+  return server_info.name or server_info.version or vim.inspect(server_info)
+end
+
+local function format_workspace_folders(client)
+  local folders = client.workspace_folders or {}
+  if #folders == 0 then
+    return "(none)"
+  end
+
+  local names = {}
+  for _, folder in ipairs(folders) do
+    local path = folder.uri and vim.uri_to_fname(folder.uri) or folder.name or tostring(folder)
+    table.insert(names, path)
+  end
+  return table.concat(names, ", ")
+end
+
 local function enable_lsp(name, config, executable)
+  local executable_name = executable or lsp_executable(config.cmd, name)
+
   api.nvim_create_autocmd("FileType", {
     group = augroup,
     pattern = config.filetypes,
     callback = function()
-      if enabled_lsps[name] or fn.exepath(executable or name) == "" then
+      if enabled_lsps[name] or fn.exepath(executable_name) == "" then
         return
       end
       vim.lsp.config(name, config)
@@ -676,32 +730,53 @@ enable_lsp("lua_ls", {
 api.nvim_create_user_command("LspInfo", function()
   local bufnr = api.nvim_get_current_buf()
   local clients = vim.lsp.get_clients({ bufnr = bufnr })
+  local buffer_name = api.nvim_buf_get_name(bufnr)
+  local filetype = vim.bo[bufnr].filetype
   local lines = {
     "LSP clients for current buffer",
     "",
-    "Buffer: " .. api.nvim_buf_get_name(bufnr),
-    "Filetype: " .. vim.bo[bufnr].filetype,
+    "Buffer: " .. (buffer_name ~= "" and buffer_name or "(unnamed)"),
+    "Filetype: " .. (filetype ~= "" and filetype or "(none)"),
+    "Diagnostics: " .. diagnostic_summary(bufnr),
     "",
   }
 
   if #clients == 0 then
     table.insert(lines, "No LSP clients attached.")
   else
+    local capabilities = {
+      { method = "textDocument/hover", label = "hover" },
+      { method = "textDocument/completion", label = "completion" },
+      { method = "textDocument/definition", label = "definition" },
+      { method = "textDocument/references", label = "references" },
+      { method = "textDocument/implementation", label = "implementation" },
+      { method = "textDocument/typeDefinition", label = "type-definition" },
+      { method = "textDocument/rename", label = "rename" },
+      { method = "textDocument/codeAction", label = "code-action" },
+      { method = "textDocument/formatting", label = "format" },
+      { method = "textDocument/documentSymbol", label = "document-symbol" },
+      { method = "textDocument/documentHighlight", label = "document-highlight" },
+      { method = "textDocument/inlayHint", label = "inlay-hint" },
+      { method = "textDocument/semanticTokens/full", label = "semantic-tokens" },
+      { method = "textDocument/prepareCallHierarchy", label = "call-hierarchy" },
+    }
+
     for i, client in ipairs(clients) do
       local cfg = client.config or {}
-      local cmdline = cfg.cmd and table.concat(cfg.cmd, " ") or "(none)"
       local root = client.root_dir or cfg.root_dir or "(none)"
       local caps = {}
 
-      for _, capability in ipairs(lsp_capabilities) do
+      for _, capability in ipairs(capabilities) do
         if client:supports_method(capability.method) then
           table.insert(caps, capability.label)
         end
       end
 
       table.insert(lines, ("[%d] %s (id=%d)"):format(i, client.name, client.id))
+      table.insert(lines, "  server: " .. format_server_info(client))
       table.insert(lines, "  root: " .. tostring(root))
-      table.insert(lines, "  cmd: " .. cmdline)
+      table.insert(lines, "  workspace folders: " .. format_workspace_folders(client))
+      table.insert(lines, "  offset encoding: " .. tostring(client.offset_encoding or "(none)"))
       table.insert(lines, "  capabilities: " .. (#caps > 0 and table.concat(caps, ", ") or "(none)"))
       table.insert(lines, "")
     end
