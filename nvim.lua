@@ -552,14 +552,13 @@ api.nvim_create_autocmd("LspAttach", {
 
 local enabled_lsps = {}
 
-local function lsp_executable(cmd_parts, fallback)
+local function lsp_executable(cmd_parts)
   if type(cmd_parts) == "table" then
-    return cmd_parts[1] or fallback
+    return cmd_parts[1]
   end
   if type(cmd_parts) == "string" then
-    return cmd_parts:match("%S+") or fallback
+    return cmd_parts:match("%S+")
   end
-  return fallback
 end
 
 local function format_server_info(client)
@@ -589,7 +588,7 @@ local function format_workspace_folders(client)
 end
 
 local function enable_lsp(name, config, executable)
-  local executable_name = executable or lsp_executable(config.cmd, name)
+  local executable_name = executable or lsp_executable(config.cmd) or name
 
   api.nvim_create_autocmd("FileType", {
     group = augroup,
@@ -721,20 +720,20 @@ api.nvim_create_user_command("LspInfo", function()
     table.insert(lines, "No LSP clients attached.")
   else
     local capabilities = {
-      { method = "textDocument/hover", label = "hover" },
-      { method = "textDocument/completion", label = "completion" },
-      { method = "textDocument/definition", label = "definition" },
-      { method = "textDocument/references", label = "references" },
-      { method = "textDocument/implementation", label = "implementation" },
-      { method = "textDocument/typeDefinition", label = "type-definition" },
-      { method = "textDocument/rename", label = "rename" },
-      { method = "textDocument/codeAction", label = "code-action" },
-      { method = "textDocument/formatting", label = "format" },
-      { method = "textDocument/documentSymbol", label = "document-symbol" },
-      { method = "textDocument/documentHighlight", label = "document-highlight" },
-      { method = "textDocument/inlayHint", label = "inlay-hint" },
-      { method = "textDocument/semanticTokens/full", label = "semantic-tokens" },
-      { method = "textDocument/prepareCallHierarchy", label = "call-hierarchy" },
+      "hover",
+      "completion",
+      "definition",
+      "references",
+      "implementation",
+      "typeDefinition",
+      "rename",
+      "codeAction",
+      "formatting",
+      "documentSymbol",
+      "documentHighlight",
+      "inlayHint",
+      "semanticTokens/full",
+      "prepareCallHierarchy",
     }
 
     for i, client in ipairs(clients) do
@@ -743,8 +742,8 @@ api.nvim_create_user_command("LspInfo", function()
       local caps = {}
 
       for _, capability in ipairs(capabilities) do
-        if client:supports_method(capability.method) then
-          table.insert(caps, capability.label)
+        if client:supports_method("textDocument/" .. capability) then
+          table.insert(caps, capability)
         end
       end
 
