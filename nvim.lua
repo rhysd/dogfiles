@@ -177,7 +177,24 @@ local function set_number_temporarily()
   })
 end
 
+local function open_url_under_cursor()
+  local line = api.nvim_get_current_line()
+  local col = api.nvim_win_get_cursor(0)[2] + 1
+
+  for start_col, url in line:gmatch("()(https?://[^%s<>\"'`]+)") do
+    local end_col = start_col + #url - 1
+    if start_col <= col and col <= end_col then
+      url = url:gsub("[%)%]%}%.,;:!?。、]+$", "")
+      vim.ui.open(url)
+      return
+    end
+  end
+
+  vim.notify("No URL under cursor", vim.log.levels.WARN)
+end
+
 keymap("n", "<Leader>h", ":<C-u>help <C-l>", { silent = true })
+keymap("n", "<Leader>o", open_url_under_cursor, { silent = true, desc = "Open URL under cursor" })
 keymap("n", "<Leader>n", set_number_temporarily, { silent = true })
 keymap("n", "<Leader>cc", function()
   return require("vim._comment").operator() .. "_"
