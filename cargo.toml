@@ -1,10 +1,11 @@
 [alias]
 b = "build"
-c = "check --tests --benches"
+c = "check --all-targets --workspace"
 t = "test"
 w = "watch"
 wt = "watch -x test"
-wc = ["watch", "-x", "clippy --all-targets --workspace"]
+wc = ["watch", "-x", "check --all-targets --workspace"]
 r = "run"
 rr = "run --release"
-cl = "clippy --all-targets --workspace"
+cl = "clippy --all-targets --all-features --workspace"
+outdated = "upgrade --dry-run --incompatible allow --compatible ignore --verbose"
