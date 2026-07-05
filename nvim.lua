@@ -260,6 +260,20 @@ keymap("n", "<C-n>", ":<C-u>bnext<CR>", { silent = true })
 keymap("n", "<C-p>", ":<C-u>bprevious<CR>", { silent = true })
 keymap("n", "<CR>", "o<Esc>", { silent = true })
 keymap("n", "s", "<C-w>", { remap = true })
+
+local function wrap_window_jump(command, fallback)
+  local old = fn.winnr()
+  cmd("wincmd " .. command)
+
+  if old == fn.winnr() then
+    cmd("999wincmd " .. fallback)
+  end
+end
+
+keymap("n", "<C-w>h", function() wrap_window_jump("h", "l") end, { silent = true })
+keymap("n", "<C-w>j", function() wrap_window_jump("j", "k") end, { silent = true })
+keymap("n", "<C-w>k", function() wrap_window_jump("k", "j") end, { silent = true })
+keymap("n", "<C-w>l", function() wrap_window_jump("l", "h") end, { silent = true })
 keymap("n", "<C-w>O", "<C-w>o")
 keymap("n", "<C-w>d", ":<C-u>bdelete!<CR>", { silent = true })
 keymap("n", "x", '"_x')
