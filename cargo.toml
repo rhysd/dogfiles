@@ -2,6 +2,7 @@
 b = "build"
 c = "check --all-targets --workspace"
 t = "test"
+up = "update"
 w = "watch"
 wt = "watch -x test"
 wc = ["watch", "-x", "check --all-targets --workspace"]
