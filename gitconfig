@@ -73,6 +73,21 @@
 	rmr = rm -r
 	rmrc = rm -r --cached
 	st  = status -sb
+	delta  = -c core.pager=delta diff
+	de  = delta
+	dec = delta --cached
+	des  = -c core.pager=delta show
+[delta]
+	navigate = true
+	dark = true
+	syntax-theme = OneHalfDark
+	line-numbers=true
+	file-style=silver bold
+	file-decoration-style=silver ul
+	hunk-header-decoration-style=dimgray box
+	hunk-header-line-number-style=dimgray
+	line-numbers-left-style=dimgray
+	line-numbers-right-style=dimgray
 [diff]
 	compactionHeuristic = true
 [push]
