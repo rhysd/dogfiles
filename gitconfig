@@ -45,7 +45,6 @@
 				git branch -D \"$2\";\
 			fi;\
 		};f"
-	delta = -c core.pager=delta -c delta.navigate=true diff
 	db = delete-branch
 	di  = diff
 	dic = diff --cached
@@ -102,8 +101,6 @@
 [tig "bind"]
 	generic = <Ctrl-f> scroll-page-down
 	generic = <Ctrl-b> scroll-page-up
-[pager]
-	diff = diff-highlight | less
 [interactive]
 	difffilter = diff-highlight
 [pull]
