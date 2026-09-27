@@ -155,24 +155,22 @@ api.nvim_create_autocmd("TextYankPost", {
   end,
 })
 
-local temp_lnum_augroup = api.nvim_create_augroup("MyTemporaryNumber", { clear = true })
+local temp_lnum_augroup = api.nvim_create_augroup("MyTempLineNumber", { clear = true })
 local function set_number_temporarily()
   local winid = api.nvim_get_current_win()
-  vim.wo[winid].number = true
-  local bufnr = api.nvim_get_current_buf()
-  api.nvim_clear_autocmds({
-    group = temp_lnum_augroup,
-    buffer = bufnr,
-  })
+  if vim.wo[winid].number then
+    return
+  end
 
-  api.nvim_create_autocmd("CursorMoved", {
+  vim.wo[winid].number = true
+  api.nvim_create_autocmd({ "CursorMoved", "WinLeave", "BufLeave" }, {
     group = temp_lnum_augroup,
-    buffer = bufnr,
-    callback = function(ev)
-      pcall(api.nvim_del_autocmd, ev.id)
-      if api.nvim_win_is_valid(winid) then
-        vim.wo[winid].number = false
+    callback = function()
+      if api.nvim_get_current_win() ~= winid then
+        return
       end
+      vim.wo[winid].number = false
+      return true
     end,
   })
 end
