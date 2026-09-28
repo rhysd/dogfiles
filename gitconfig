@@ -62,7 +62,6 @@
 	plr = pull --rebase
 	ps  = push
 	pushf = push --force-with-lease
-	pr  = brws --pr
 	rb  = rebase
 	rba = rebase --abort
 	rbc = rebase --continue
