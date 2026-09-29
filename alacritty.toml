@@ -7,15 +7,16 @@ size = 14.0
 history = 0
 
 [window]
-opacity = 0.9
 padding = { x = 6, y = 6 }
-decorations = "Buttonless"
 
 [general]
 import = [
     "~/.config/alacritty/spring_night.toml"
 ]
 
+# Enable Shift+Return inside tmux on Alacritty.
+# Tmux requests xterm modifyOtherKeys however Alacritty only implements Kitty keyboard protocol.
+# https://github.com/alacritty/alacritty/issues/3101
 [[keyboard.bindings]]
 key = "Return"
 mods = "Shift"
