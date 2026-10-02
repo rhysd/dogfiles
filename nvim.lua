@@ -74,7 +74,6 @@ local augroup = api.nvim_create_augroup("MyVimrc", { clear = true })
 
 cmd("language message C")
 cmd("language time C")
-cmd("syntax enable")
 
 opt.tabstop = 4
 opt.shiftwidth = 4
@@ -1025,3 +1024,8 @@ keymap({ "x", "o" }, "ai", textobj_mapping("textobj_indent", "<Plug>(textobj-ind
 keymap({ "x", "o" }, "ii", textobj_mapping("textobj_indent", "<Plug>(textobj-indent-i)"), { expr = true, remap = true })
 keymap({ "x", "o" }, "aI", textobj_mapping("textobj_indent", "<Plug>(textobj-indent-same-a)"), { expr = true, remap = true })
 keymap({ "x", "o" }, "iI", textobj_mapping("textobj_indent", "<Plug>(textobj-indent-same-i)"), { expr = true, remap = true })
+
+-- Ensure that all FileType configurations are done before `:syntax enable`. `:syntax enable` can
+-- trigger FileType for the initial buffer. For example, if LSP handlers are registered later, they
+-- miss that event and the server does not start for the file opened at startup.
+cmd("syntax enable")
