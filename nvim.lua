@@ -406,7 +406,8 @@ api.nvim_create_user_command("GitCommit", function(opts)
 
     cmd("enew")
     local term_bufnr = fn.bufnr("%")
-    local channel = fn.termopen(argv, {
+    local channel = fn.jobstart(argv, {
+        term = true,
         env = { VIMRUNTIME = "" },
     })
     if channel <= 0 then
