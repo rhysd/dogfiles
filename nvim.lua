@@ -127,6 +127,25 @@ opt.title = true
 
 -- cmd.colorscheme("spring-night")
 
+-- `default` colorscheme doesn't set its own terminal colors and the default terminal colors are too
+-- vivid. Steal colors from `habamax` colorscheme.
+vim.g.terminal_color_0 = "#1c1c1c"
+vim.g.terminal_color_1 = "#af5f5f"
+vim.g.terminal_color_2 = "#5faf5f"
+vim.g.terminal_color_3 = "#af875f"
+vim.g.terminal_color_4 = "#5f87af"
+vim.g.terminal_color_5 = "#af87af"
+vim.g.terminal_color_6 = "#5f8787"
+vim.g.terminal_color_7 = "#9e9e9e"
+vim.g.terminal_color_8 = "#767676"
+vim.g.terminal_color_9 = "#d75f87"
+vim.g.terminal_color_10 = "#87d787"
+vim.g.terminal_color_11 = "#d7af87"
+vim.g.terminal_color_12 = "#5fafd7"
+vim.g.terminal_color_13 = "#d787d7"
+vim.g.terminal_color_14 = "#87afaf"
+vim.g.terminal_color_15 = "#c7c7c7"
+
 api.nvim_create_autocmd({ "BufRead", "BufNew", "BufNewFile" }, {
     group = augroup,
     pattern = "gitconfig",
