@@ -412,7 +412,7 @@ api.nvim_create_user_command("GitAdd", function(opts)
                 return
             end
 
-            local message = result.stderr ~= "" and result.stderr or result.stdout
+            local message = result.stderr ~= "" and result.stderr or result.stdout or "git add failed"
             vim.notify(message, vim.log.levels.ERROR)
         end)
     end)
