@@ -879,7 +879,15 @@ api.nvim_create_autocmd("FileType", {
     },
     callback = function(args)
         ensure_treesitter()
-        pcall(vim.treesitter.start, args.buf)
+        local ok, err = pcall(vim.treesitter.start, args.buf)
+        if not ok then
+            local message = "Treesitter failed to start: " .. err
+            local lang = vim.treesitter.language.get_lang(vim.bo[args.buf].filetype)
+            if lang then
+                message = message .. "\nTo install the parser, try :TSInstall " .. lang
+            end
+            vim.notify(message, vim.log.levels.ERROR)
+        end
     end,
 })
 
