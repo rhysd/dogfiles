@@ -181,14 +181,15 @@ local function set_number_temporarily()
     end
 
     vim.wo[winid].number = true
-    api.nvim_create_autocmd({ "CursorMoved", "WinLeave", "BufLeave" }, {
+    local autocmd_id
+    autocmd_id = api.nvim_create_autocmd({ "CursorMoved", "WinLeave", "BufLeave" }, {
         group = temp_lnum_augroup,
         callback = function()
             if api.nvim_get_current_win() ~= winid then
                 return
             end
             vim.wo[winid].number = false
-            return true
+            api.nvim_del_autocmd(autocmd_id)
         end,
     })
 end
