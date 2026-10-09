@@ -46,29 +46,15 @@ vim.pack.add({
     { src = "https://github.com/nvim-lualine/lualine.nvim" },
 })
 
-local loaded_plugins = {}
-local function pack_load(name)
-    if loaded_plugins[name] then
-        return
-    end
-    cmd("packadd " .. name)
-    loaded_plugins[name] = true
-end
-
+local loaded_lazy_plugins = {}
 local function pack_add_once(key)
-    if loaded_plugins[key] then
+    if loaded_lazy_plugins[key] then
         return false
     end
     vim.pack.add(lazy_plugins[key], { load = true })
-    loaded_plugins[key] = true
+    loaded_lazy_plugins[key] = true
     return true
 end
-
-pack_load("clever-f.vim")
-pack_load("vim-asterisk")
-pack_load("vim-dirvish")
-pack_load("gitsigns.nvim")
-pack_load("lualine.nvim")
 
 local augroup = api.nvim_create_augroup("MyVimrc", { clear = true })
 
