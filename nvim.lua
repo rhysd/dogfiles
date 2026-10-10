@@ -92,7 +92,7 @@ opt.foldlevel = 99
 opt.whichwrap:append("h,l")
 opt.history = 100
 opt.updatetime = 3000
-opt.swapfile = false
+opt.swapfile = true
 opt.shortmess:append("I")
 opt.guicursor = {
     "n-v-c-sm:block",
