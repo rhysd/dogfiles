@@ -5,7 +5,6 @@ local fn = vim.fn
 local keymap = vim.keymap.set
 local cmd = vim.cmd
 local opt = vim.opt
-local telescope_builtin
 
 local lazy_plugins = {
     telescope = {
@@ -502,6 +501,72 @@ api.nvim_create_autocmd("TermClose", {
     end,
 })
 
+vim.env.TELESCOPE_LOG_FILE = fn.has("win32") == 1 and "NUL" or "/dev/null"
+local function telescope_builtin()
+    if pack_add_once("telescope") then
+        local telescope_actions = require("telescope.actions")
+        require("telescope").setup({
+            defaults = {
+                prompt_prefix = "> ",
+                selection_caret = "> ",
+                entry_prefix = "  ",
+                sorting_strategy = "ascending",
+                border = true,
+                layout_config = {
+                    prompt_position = "top",
+                },
+                mappings = {
+                    i = {
+                        ["<Esc>"] = telescope_actions.close,
+                        ["<C-g>"] = telescope_actions.close,
+                    },
+                    n = {
+                        ["<Esc>"] = telescope_actions.close,
+                        ["<C-g>"] = telescope_actions.close,
+                    },
+                },
+                log_level = "error",
+            },
+        })
+    end
+    return require("telescope.builtin")
+end
+keymap("n", "<Space>m", function()
+    telescope_builtin().oldfiles()
+end, { silent = true })
+keymap("n", "<Space>g", function()
+    telescope_builtin().live_grep()
+end, { silent = true })
+keymap("n", "<Space>f", function()
+    telescope_builtin().find_files()
+end, { silent = true })
+keymap("n", "<Space>b", function()
+    telescope_builtin().buffers()
+end, { silent = true })
+keymap("n", "<Space>/", function()
+    telescope_builtin().current_buffer_fuzzy_find()
+end, { silent = true })
+keymap("n", "<Space>o", function()
+    local clients = vim.lsp.get_clients({ bufnr = 0 })
+    if #clients > 0 then
+        telescope_builtin().lsp_document_symbols()
+    else
+        telescope_builtin().treesitter()
+    end
+end, { silent = true })
+keymap("n", "<Space>s", function()
+    telescope_builtin().lsp_workspace_symbols()
+end, { silent = true })
+keymap("n", "<Space>d", function()
+    telescope_builtin().diagnostics()
+end, { silent = true })
+keymap("n", "<Space>r", function()
+    telescope_builtin().resume()
+end, { silent = true })
+keymap("n", "<Space><Space>", function()
+    telescope_builtin().builtin()
+end, { silent = true })
+
 local lsp_format_augroup = api.nvim_create_augroup("MyLspFormat", { clear = true })
 local lsp_document_highlight_augroup = api.nvim_create_augroup("MyLspDocumentHighlight", { clear = true })
 local lsp_float_opts = {
@@ -509,9 +574,6 @@ local lsp_float_opts = {
     focusable = true,
     silent = true,
 }
-local function telescope_picker(name)
-    return function() telescope_builtin()[name]() end
-end
 
 vim.lsp.log.set_level(vim.log.levels.OFF)
 vim.diagnostic.config({
@@ -529,11 +591,11 @@ api.nvim_create_autocmd("LspAttach", {
         keymap("n", "gd", vim.lsp.buf.definition, map_opts)
         keymap("n", "K", function() vim.lsp.buf.hover(lsp_float_opts) end, map_opts)
         keymap("n", "<Leader>ls", vim.lsp.buf.signature_help, map_opts)
-        keymap("n", "<Leader>lci", telescope_picker("lsp_incoming_calls"), map_opts)
-        keymap("n", "<Leader>lco", telescope_picker("lsp_outgoing_calls"), map_opts)
+        keymap("n", "<Leader>lci", function() telescope_builtin().lsp_incoming_calls() end, map_opts)
+        keymap("n", "<Leader>lco", function() telescope_builtin().lsp_outgoing_calls() end, map_opts)
         keymap("n", "gD", vim.lsp.buf.declaration, map_opts)
-        keymap("n", "<Leader>li", telescope_picker("lsp_implementations"), map_opts)
-        keymap("n", "<Leader>lr", telescope_picker("lsp_references"), map_opts)
+        keymap("n", "<Leader>li", function() telescope_builtin().lsp_implementations() end, map_opts)
+        keymap("n", "<Leader>lr", function() telescope_builtin().lsp_references() end, map_opts)
         keymap("n", "<Leader>ln", vim.lsp.buf.rename, map_opts)
         keymap({ "n", "v" }, "<Leader>la", vim.lsp.buf.code_action, map_opts)
         keymap("n", "<Leader>ld", vim.diagnostic.open_float, map_opts)
@@ -801,8 +863,8 @@ api.nvim_create_user_command("LspInfo", function()
 end, {})
 
 api.nvim_create_user_command("LspRename", function() vim.lsp.buf.rename() end, {})
-api.nvim_create_user_command("LspIncomingCalls", telescope_picker("lsp_incoming_calls"), {})
-api.nvim_create_user_command("LspOutgoingCalls", telescope_picker("lsp_outgoing_calls"), {})
+api.nvim_create_user_command("LspIncomingCalls", function() telescope_builtin().lsp_incoming_calls() end, {})
+api.nvim_create_user_command("LspOutgoingCalls", function() telescope_builtin().lsp_outgoing_calls() end, {})
 api.nvim_create_user_command("LspDiagnostics", function(opts)
     local diagnostics_opts = { severity = { min = vim.diagnostic.severity.WARN } }
     telescope_builtin().diagnostics(diagnostics_opts)
@@ -876,72 +938,6 @@ api.nvim_create_autocmd("FileType", {
         end
     end,
 })
-
-vim.env.TELESCOPE_LOG_FILE = fn.has("win32") == 1 and "NUL" or "/dev/null"
-telescope_builtin = function()
-    if pack_add_once("telescope") then
-        local telescope_actions = require("telescope.actions")
-        require("telescope").setup({
-            defaults = {
-                prompt_prefix = "> ",
-                selection_caret = "> ",
-                entry_prefix = "  ",
-                sorting_strategy = "ascending",
-                border = true,
-                layout_config = {
-                    prompt_position = "top",
-                },
-                mappings = {
-                    i = {
-                        ["<Esc>"] = telescope_actions.close,
-                        ["<C-g>"] = telescope_actions.close,
-                    },
-                    n = {
-                        ["<Esc>"] = telescope_actions.close,
-                        ["<C-g>"] = telescope_actions.close,
-                    },
-                },
-                log_level = "error",
-            },
-        })
-    end
-    return require("telescope.builtin")
-end
-keymap("n", "<Space>m", function()
-    telescope_builtin().oldfiles()
-end, { silent = true })
-keymap("n", "<Space>g", function()
-    telescope_builtin().live_grep()
-end, { silent = true })
-keymap("n", "<Space>f", function()
-    telescope_builtin().find_files()
-end, { silent = true })
-keymap("n", "<Space>b", function()
-    telescope_builtin().buffers()
-end, { silent = true })
-keymap("n", "<Space>/", function()
-    telescope_builtin().current_buffer_fuzzy_find()
-end, { silent = true })
-keymap("n", "<Space>o", function()
-    local clients = vim.lsp.get_clients({ bufnr = 0 })
-    if #clients > 0 then
-        telescope_builtin().lsp_document_symbols()
-    else
-        telescope_builtin().treesitter()
-    end
-end, { silent = true })
-keymap("n", "<Space>s", function()
-    telescope_builtin().lsp_workspace_symbols()
-end, { silent = true })
-keymap("n", "<Space>d", function()
-    telescope_builtin().diagnostics()
-end, { silent = true })
-keymap("n", "<Space>r", function()
-    telescope_builtin().resume()
-end, { silent = true })
-keymap("n", "<Space><Space>", function()
-    telescope_builtin().builtin()
-end, { silent = true })
 
 local function macro_recording_status()
     local reg = fn.reg_recording()
