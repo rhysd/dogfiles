@@ -134,9 +134,7 @@ vim.g.terminal_color_15 = "#c7c7c7"
 api.nvim_create_autocmd({ "BufRead", "BufNew", "BufNewFile" }, {
     group = augroup,
     pattern = "gitconfig",
-    callback = function()
-        vim.bo.filetype = "gitconfig"
-    end,
+    callback = function() vim.bo.filetype = "gitconfig" end,
 })
 
 api.nvim_create_autocmd("FileType", {
@@ -178,6 +176,7 @@ local function set_number_temporarily()
         end,
     })
 end
+keymap("n", "<Leader>n", set_number_temporarily, { silent = true })
 
 local function open_url_under_cursor()
     local line = api.nvim_get_current_line()
@@ -194,10 +193,9 @@ local function open_url_under_cursor()
 
     vim.notify("No URL under cursor", vim.log.levels.WARN)
 end
+keymap("n", "<Leader>o", open_url_under_cursor, { silent = true, desc = "Open URL under cursor" })
 
 keymap("n", "<Leader>h", ":<C-u>help <C-l>", { silent = true })
-keymap("n", "<Leader>o", open_url_under_cursor, { silent = true, desc = "Open URL under cursor" })
-keymap("n", "<Leader>n", set_number_temporarily, { silent = true })
 keymap("n", "<Leader>cc", function()
     return require("vim._comment").operator() .. "_"
 end, { expr = true })
@@ -261,7 +259,6 @@ keymap("c", "<C-g>", "<C-u><BS>")
 keymap("n", "<C-n>", ":<C-u>bnext<CR>", { silent = true })
 keymap("n", "<C-p>", ":<C-u>bprevious<CR>", { silent = true })
 keymap("n", "<CR>", "o<Esc>", { silent = true })
-keymap("n", "s", "<C-w>", { remap = true })
 
 local function wrap_window_jump(command, fallback)
     local old = fn.winnr()
@@ -272,6 +269,7 @@ local function wrap_window_jump(command, fallback)
     end
 end
 
+keymap("n", "s", "<C-w>", { remap = true })
 keymap("n", "<C-w>h", function() wrap_window_jump("h", "l") end, { silent = true })
 keymap("n", "<C-w>j", function() wrap_window_jump("j", "k") end, { silent = true })
 keymap("n", "<C-w>k", function() wrap_window_jump("k", "j") end, { silent = true })
@@ -296,19 +294,17 @@ keymap("v", "gh", "H")
 keymap("v", "gl", "L")
 keymap("n", "<Leader>ss", ":<C-u>setl spell! spell?<CR>")
 
-local function cmdline_window_settings()
-    local map_opts = { buffer = true, silent = true }
-    keymap("n", "q", ":<C-u>q<CR>", map_opts)
-    keymap("n", "<Esc>", ":<C-u>q<CR>", map_opts)
-    keymap("n", "<Esc><Esc>", ":<C-u>q<CR>", map_opts)
-    keymap("i", "<C-g>", "<Esc>:q<CR>", map_opts)
-    keymap("n", "<CR>", "A<CR>", map_opts)
-end
-
 api.nvim_create_autocmd("CmdwinEnter", {
     group = augroup,
     pattern = "*",
-    callback = cmdline_window_settings,
+    callback = function()
+        local opts = { buffer = true, silent = true }
+        keymap("n", "q", ":<C-u>q<CR>", opts)
+        keymap("n", "<Esc>", ":<C-u>q<CR>", opts)
+        keymap("n", "<Esc><Esc>", ":<C-u>q<CR>", opts)
+        keymap("i", "<C-g>", "<Esc>:q<CR>", opts)
+        keymap("n", "<CR>", "A<CR>", opts)
+    end,
 })
 
 keymap("n", "<Leader>cl", function()
@@ -334,41 +330,37 @@ api.nvim_create_autocmd("FileType", {
 
 keymap("t", "<Esc><Esc>", [[<C-\><C-n>]])
 
-local function on_filetype_help_define_mappings()
-    if vim.bo.readonly then
-        local map_opts = { buffer = true }
-        keymap("n", "J", "<C-]>", map_opts)
-        keymap("n", "K", "<C-t>", map_opts)
-        keymap("n", "u", "<C-u>", map_opts)
-        keymap("n", "d", "<C-d>", map_opts)
-        keymap("n", "q", ":<C-u>q<CR>", map_opts)
-    end
-end
-
 api.nvim_create_autocmd("FileType", {
     group = augroup,
     pattern = "help",
-    callback = on_filetype_help_define_mappings,
+    callback = function()
+        if vim.bo.readonly then
+            local opts = { buffer = true }
+            keymap("n", "J", "<C-]>", opts)
+            keymap("n", "K", "<C-t>", opts)
+            keymap("n", "u", "<C-u>", opts)
+            keymap("n", "d", "<C-d>", opts)
+            keymap("n", "q", ":<C-u>q<CR>", opts)
+        end
+    end,
 })
-
-local function on_filetype_qf()
-    local map_opts = { buffer = true, silent = true }
-    keymap("n", "q", ":<C-u>cclose<CR>", map_opts)
-    keymap("n", "j", ":<C-u>cnext<CR>:copen<CR>", map_opts)
-    keymap("n", "k", ":<C-u>cprevious<CR>:copen<CR>", map_opts)
-    keymap("n", "J", ":<C-u>cnfile<CR>:copen<CR>", map_opts)
-    keymap("n", "K", ":<C-u>cpfile<CR>:copen<CR>", map_opts)
-    keymap("n", "l", ":<C-u>clist<CR>", map_opts)
-    keymap("n", "<CR>", "<CR>", { buffer = true })
-end
 
 api.nvim_create_autocmd("FileType", {
     group = augroup,
     pattern = "qf",
-    callback = on_filetype_qf,
+    callback = function()
+        local opts = { buffer = true, silent = true }
+        keymap("n", "q", ":<C-u>cclose<CR>", opts)
+        keymap("n", "j", ":<C-u>cnext<CR>:copen<CR>", opts)
+        keymap("n", "k", ":<C-u>cprevious<CR>:copen<CR>", opts)
+        keymap("n", "J", ":<C-u>cnfile<CR>:copen<CR>", opts)
+        keymap("n", "K", ":<C-u>cpfile<CR>:copen<CR>", opts)
+        keymap("n", "l", ":<C-u>clist<CR>", opts)
+        keymap("n", "<CR>", "<CR>", opts)
+    end,
 })
 
-local function git_cwd()
+local function getcwd_for_git()
     local dir = fn.expand("%:p:h")
     if dir == "" then
         dir = fn.getcwd()
@@ -380,10 +372,10 @@ api.nvim_create_user_command("GitAdd", function(opts)
     local argv
     local what
     if opts.bang then
-        argv = { "git", "-C", git_cwd(), "add", "-u", ":/" }
+        argv = { "git", "-C", getcwd_for_git(), "add", "-u", ":/" }
         what = "all modified files"
     else
-        argv = { "git", "-C", git_cwd(), "add", fn.expand("%:p") }
+        argv = { "git", "-C", getcwd_for_git(), "add", fn.expand("%:p") }
         what = "this buffer"
     end
     vim.list_extend(argv, opts.fargs)
@@ -405,7 +397,7 @@ api.nvim_create_user_command("GitAdd", function(opts)
 end, { nargs = "*", bang = true })
 
 api.nvim_create_user_command("GitCommit", function(opts)
-    local argv = { "git", "-C", git_cwd(), "commit" }
+    local argv = { "git", "-C", getcwd_for_git(), "commit" }
     vim.list_extend(argv, opts.fargs)
     local display_cmd = "commit" .. (opts.args ~= "" and " " .. opts.args or "")
 
@@ -454,16 +446,15 @@ api.nvim_create_autocmd("FileType", {
                 return
             end
 
-            if fn.isdirectory(path) == 1 then
-                cmd("Dirvish " .. fn.fnameescape(path))
-            else
-                cmd("edit " .. fn.fnameescape(path))
-            end
+            local command = fn.isdirectory(path) == 1 and "Dirvish" or "edit"
+            cmd(("%s %s"):format(command, fn.fnameescape(path)))
         end
 
-        keymap("n", "h", function()
+        local function dirvish_parent()
             cmd("Dirvish " .. fn.fnameescape(fn.expand("%:p:h:h")))
-        end, { buffer = event.buf, silent = true })
+        end
+
+        keymap("n", "h", dirvish_parent, { buffer = event.buf, silent = true })
         keymap("n", "l", dirvish_open, { buffer = event.buf, silent = true })
         keymap("n", "~", ":<C-u>Dirvish ~<CR>", { buffer = event.buf, silent = true })
     end,
