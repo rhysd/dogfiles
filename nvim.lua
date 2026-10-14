@@ -195,7 +195,7 @@ local function open_url_under_cursor()
 end
 keymap("n", "<Leader>o", open_url_under_cursor, { silent = true, desc = "Open URL under cursor" })
 
-keymap("n", "<Leader>h", ":<C-u>help <C-l>", { silent = true })
+keymap("n", "<Leader>h", ":<C-u>help <C-l>")
 keymap("n", "<Leader>cc", function()
     return require("vim._comment").operator() .. "_"
 end, { expr = true })
