@@ -418,7 +418,7 @@ api.nvim_create_user_command("GitCommit", function(opts)
         buffer = term_bufnr,
         once = true,
         callback = function()
-            if fn.jobwait({ channel }, 0)[1] == 0 then
+            if vim.v.event.status == 0 then
                 cmd(("silent %d bdelete!"):format(term_bufnr))
                 vim.api.nvim_echo({ { ("Done: `git %s`"):format(display_cmd) } }, false, {})
             end
