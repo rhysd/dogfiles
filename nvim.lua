@@ -350,12 +350,13 @@ api.nvim_create_autocmd("FileType", {
     pattern = "qf",
     callback = function()
         local opts = { buffer = true, silent = true }
-        keymap("n", "q", ":<C-u>cclose<CR>", opts)
-        keymap("n", "j", ":<C-u>cnext<CR>:copen<CR>", opts)
-        keymap("n", "k", ":<C-u>cprevious<CR>:copen<CR>", opts)
-        keymap("n", "J", ":<C-u>cnfile<CR>:copen<CR>", opts)
-        keymap("n", "K", ":<C-u>cpfile<CR>:copen<CR>", opts)
-        keymap("n", "l", ":<C-u>clist<CR>", opts)
+        local prefix = fn.getwininfo(api.nvim_get_current_win())[1].loclist == 1 and "l" or "c"
+        keymap("n", "q", ":<C-u>" .. prefix .. "close<CR>", opts)
+        keymap("n", "j", ":<C-u>" .. prefix .. "next<CR>:" .. prefix .. "open<CR>", opts)
+        keymap("n", "k", ":<C-u>" .. prefix .. "previous<CR>:" .. prefix .. "open<CR>", opts)
+        keymap("n", "J", ":<C-u>" .. prefix .. "nfile<CR>:" .. prefix .. "open<CR>", opts)
+        keymap("n", "K", ":<C-u>" .. prefix .. "pfile<CR>:" .. prefix .. "open<CR>", opts)
+        keymap("n", "l", ":<C-u>" .. prefix .. "list<CR>", opts)
         keymap("n", "<CR>", "<CR>", opts)
     end,
 })
