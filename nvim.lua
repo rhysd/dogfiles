@@ -185,7 +185,17 @@ local function open_url_under_cursor()
     for start_col, url in line:gmatch("()(https?://[^%s<>\"'`]+)") do
         local end_col = start_col + #url - 1
         if start_col <= col and col <= end_col then
-            url = url:gsub("[%)%]%}%.,;:!?。、！？]+$", "")
+            local previous
+            repeat
+                previous = url
+                -- Lua's [] class is unavailable for multi-byte characters because it's byte-wise.
+                -- For example, 。 is 3 bytes and [。] matches to one of them.
+                url = url:gsub("[%)%]%}%.,;:!?]+$", "")
+                for _, punctuation in ipairs({ "。", "、", "！", "？" }) do
+                    url = url:gsub(punctuation .. "$", "")
+                end
+            until url == previous
+
             vim.ui.open(url)
             return
         end
