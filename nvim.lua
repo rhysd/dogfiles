@@ -214,8 +214,12 @@ keymap("x", "<Leader>c", function()
 end, { expr = true })
 
 api.nvim_create_user_command("SetIndent", function(opts)
-    local target = opts.bang and vim.opt or vim.opt_local
     local width = tonumber(opts.args)
+    if not width or width <= 0 or width % 1 ~= 0 then
+        vim.notify("SetIndent: expected a positive integer", vim.log.levels.ERROR)
+        return
+    end
+    local target = opts.bang and vim.opt or vim.opt_local
     target.tabstop = width
     target.shiftwidth = width
     target.softtabstop = width
