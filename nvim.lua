@@ -215,8 +215,8 @@ end, { expr = true })
 
 api.nvim_create_user_command("SetIndent", function(opts)
     local width = tonumber(opts.args)
-    if not width or width <= 0 or width % 1 ~= 0 then
-        vim.notify("SetIndent: expected a positive integer", vim.log.levels.ERROR)
+    if not width or width <= 0 or width > 9999 or width % 1 ~= 0 then
+        vim.notify("SetIndent: expected a positive integer smaller than 10000", vim.log.levels.ERROR)
         return
     end
     local target = opts.bang and vim.opt or vim.opt_local
