@@ -323,9 +323,12 @@ api.nvim_create_autocmd("CmdwinEnter", {
 
 keymap("n", "<Leader>cl", function()
     local cc = vim.wo.colorcolumn
-    local width = (cc == "" or cc == "0") and (vim.v.count == 0 and fn.virtcol(".") or vim.v.count) or 0
-    cmd("set colorcolumn=" .. width)
-end, { expr = false })
+    local width = ""
+    if cc == "" then
+        width = tostring(vim.v.count == 0 and fn.virtcol(".") or vim.v.count)
+    end
+    vim.wo.colorcolumn = width
+end)
 
 local function double_semi()
     if fn.getline("."):sub(fn.col(".") - 1, fn.col(".") - 1) == ";" then
