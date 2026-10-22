@@ -98,11 +98,6 @@ opt.guicursor = {
     "i-ci-ve:ver25",
     "r-cr-o:hor20",
 }
-local undo_dir = fn.stdpath("state") .. "/undo"
-if fn.isdirectory(undo_dir) == 0 then
-    fn.mkdir(undo_dir, "p")
-end
-opt.undodir = undo_dir
 opt.undofile = true
 opt.cmdwinheight = 3
 opt.spelllang = { "en", "cjk" }
@@ -241,7 +236,6 @@ end, { expr = true })
 
 keymap("i", "<C-c>", "<Esc>")
 keymap("n", "<Tab>", function() return vim.v.count > 0 and "G" or "<Tab>" end, { expr = true })
-keymap("n", "Y", "y$")
 keymap({ "n", "v", "o" }, "j", "gj")
 keymap({ "n", "v", "o" }, "k", "gk")
 keymap("n", "<C-j>", ":<C-u>keepjumps normal! }<CR>", { silent = true })
@@ -352,7 +346,7 @@ api.nvim_create_autocmd("FileType", {
     pattern = "help",
     callback = function()
         if vim.bo.readonly then
-            local opts = { buffer = true }
+            local opts = { buffer = true, silent = true }
             keymap("n", "J", "<C-]>", opts)
             keymap("n", "K", "<C-t>", opts)
             keymap("n", "u", "<C-u>", opts)
