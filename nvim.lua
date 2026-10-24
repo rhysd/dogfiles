@@ -640,13 +640,6 @@ api.nvim_create_autocmd("LspAttach", {
                 group = lsp_format_augroup,
                 buffer = event.buf,
                 callback = function()
-                    local clients = vim.lsp.get_clients({ bufnr = event.buf, method = "textDocument/formatting" })
-
-                    -- Do nothing when all clients are detached
-                    if #clients == 0 then
-                        return
-                    end
-
                     vim.lsp.buf.format({
                         bufnr = event.buf,
                         timeout_ms = 1000,
