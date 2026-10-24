@@ -15,9 +15,8 @@ local lazy_plugins = {
         { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
         { src = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects" },
     },
-    operator_replace = {
-        { src = "https://github.com/kana/vim-operator-user" },
-        { src = "https://github.com/kana/vim-operator-replace" },
+    substitute = {
+        { src = "https://github.com/gbprod/substitute.nvim" },
     },
     textobj_entire = {
         { src = "https://github.com/kana/vim-textobj-user" },
@@ -1020,13 +1019,20 @@ keymap({ "n", "x" }, "#", "<Plug>(asterisk-z#)", { remap = true })
 keymap({ "n", "x" }, "g*", "<Plug>(asterisk-gz*)", { remap = true })
 keymap({ "n", "x" }, "g#", "<Plug>(asterisk-gz#)", { remap = true })
 
-local function operator_replace_mapping()
-    pack_add_once("operator_replace")
-    return "<Plug>(operator-replace)"
+local function substitute_mapping(action, yank)
+    return function()
+        if pack_add_once("substitute") then
+            require("substitute").setup()
+        end
+        require("substitute.config").options.yank_substituted_text = yank
+        require("substitute")[action]()
+    end
 end
 
-keymap("n", "<Leader>r", function() return operator_replace_mapping() end, { expr = true, remap = true })
-keymap("x", "<Leader>r", function() return operator_replace_mapping() end, { expr = true, remap = true })
+keymap("n", "<Leader>r", substitute_mapping("operator", false), { silent = true })
+keymap("x", "<Leader>r", substitute_mapping("visual", false), { silent = true })
+keymap("n", "<Leader>R", substitute_mapping("operator", true), { silent = true })
+keymap("x", "<Leader>R", substitute_mapping("visual", true), { silent = true })
 
 local function textobj_mapping(group_name, plug_name)
     return function()
