@@ -15,9 +15,6 @@ local lazy_plugins = {
         { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
         { src = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects" },
     },
-    substitute = {
-        { src = "https://github.com/gbprod/substitute.nvim" },
-    },
     textobj_entire = {
         { src = "https://github.com/kana/vim-textobj-user" },
         { src = "https://github.com/kana/vim-textobj-entire" },
@@ -42,6 +39,7 @@ vim.pack.add({
     { src = "https://github.com/justinmk/vim-dirvish" },
     { src = "https://github.com/lewis6991/gitsigns.nvim" },
     { src = "https://github.com/nvim-lualine/lualine.nvim" },
+    { src = "https://github.com/gbprod/substitute.nvim" },
 })
 
 local loaded_lazy_plugins = {}
@@ -1019,11 +1017,10 @@ keymap({ "n", "x" }, "#", "<Plug>(asterisk-z#)", { remap = true })
 keymap({ "n", "x" }, "g*", "<Plug>(asterisk-gz*)", { remap = true })
 keymap({ "n", "x" }, "g#", "<Plug>(asterisk-gz#)", { remap = true })
 
+require("substitute").setup()
+
 local function substitute_mapping(action, yank)
     return function()
-        if pack_add_once("substitute") then
-            require("substitute").setup()
-        end
         require("substitute.config").options.yank_substituted_text = yank
         require("substitute")[action]()
     end
