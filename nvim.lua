@@ -865,7 +865,7 @@ end, {})
 api.nvim_create_user_command("LspRename", function() vim.lsp.buf.rename() end, {})
 api.nvim_create_user_command("LspIncomingCalls", function() telescope_builtin().lsp_incoming_calls() end, {})
 api.nvim_create_user_command("LspOutgoingCalls", function() telescope_builtin().lsp_outgoing_calls() end, {})
-api.nvim_create_user_command("LspDiagnostics", function(opts)
+api.nvim_create_user_command("LspDiagnostics", function()
     local diagnostics_opts = { severity = { min = vim.diagnostic.severity.WARN } }
     telescope_builtin().diagnostics(diagnostics_opts)
 end, {})
