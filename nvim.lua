@@ -519,6 +519,7 @@ local function telescope_builtin()
                     i = {
                         ["<Esc>"] = telescope_actions.close,
                         ["<C-g>"] = telescope_actions.close,
+                        ["<C-Space>"] = telescope_actions.to_fuzzy_refine,
                     },
                     n = {
                         ["<Esc>"] = telescope_actions.close,
