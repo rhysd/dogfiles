@@ -590,11 +590,12 @@ api.nvim_create_autocmd("LspAttach", {
         local client = vim.lsp.get_client_by_id(event.data.client_id)
         local map_opts = { buffer = event.buf }
         keymap("n", "gd", vim.lsp.buf.definition, map_opts)
+        keymap("n", "gD", vim.lsp.buf.declaration, map_opts)
+        keymap("n", "<Leader>lt", vim.lsp.buf.type_definition, map_opts)
         keymap("n", "K", function() vim.lsp.buf.hover(lsp_float_opts) end, map_opts)
         keymap("n", "<Leader>ls", vim.lsp.buf.signature_help, map_opts)
         keymap("n", "<Leader>lci", function() telescope_builtin().lsp_incoming_calls() end, map_opts)
         keymap("n", "<Leader>lco", function() telescope_builtin().lsp_outgoing_calls() end, map_opts)
-        keymap("n", "gD", vim.lsp.buf.declaration, map_opts)
         keymap("n", "<Leader>li", function() telescope_builtin().lsp_implementations() end, map_opts)
         keymap("n", "<Leader>lr", function() telescope_builtin().lsp_references() end, map_opts)
         keymap("n", "<Leader>ln", vim.lsp.buf.rename, map_opts)
