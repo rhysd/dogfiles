@@ -604,6 +604,10 @@ api.nvim_create_autocmd("LspAttach", {
         keymap("n", "[d", function() vim.diagnostic.jump({ count = -1, float = true }) end, map_opts)
         keymap("n", "]d", function() vim.diagnostic.jump({ count = 1, float = true }) end, map_opts)
 
+        if client and client:supports_method("textDocument/linkedEditingRange") then
+            vim.lsp.linked_editing_range.enable(true, { client_id = client.id })
+        end
+
         if client and client:supports_method("textDocument/inlayHint") then
             api.nvim_buf_create_user_command(event.buf, "LspToggleInlayHints", function()
                 local enabled = not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf })
