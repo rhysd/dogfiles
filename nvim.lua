@@ -617,6 +617,16 @@ api.nvim_create_autocmd("LspAttach", {
             keymap("n", "<Leader>lh", ":<C-u>LspToggleInlayHints<CR>", map_opts)
         end
 
+        if client and client:supports_method("textDocument/codeLens") then
+            api.nvim_buf_create_user_command(event.buf, "LspToggleCodeLens", function()
+                local enabled = not vim.lsp.codelens.is_enabled({ bufnr = event.buf })
+                vim.lsp.codelens.enable(enabled, { bufnr = event.buf })
+                vim.api.nvim_echo({ { enabled and "Enabled code lens" or "Disabled code lens" } }, false, {})
+            end, {})
+            keymap("n", "<Leader>lcl", ":<C-u>LspToggleCodeLens<CR>", map_opts)
+            keymap("n", "<Leader>lcr", vim.lsp.codelens.run, map_opts)
+        end
+
         if client and client:supports_method("textDocument/documentHighlight") then
             api.nvim_clear_autocmds({
                 group = lsp_document_highlight_augroup,
@@ -707,6 +717,15 @@ local function enable_lsp(name, config, executable)
     })
 end
 
+local function show_lsp_references(command, ctx)
+    local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
+    fn.setqflist({}, " ", {
+        title = command.title,
+        items = vim.lsp.util.locations_to_items(command.arguments[3], client.offset_encoding),
+    })
+    cmd("copen")
+end
+
 enable_lsp("clangd", {
     cmd = { "clangd" },
     filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
@@ -725,10 +744,26 @@ enable_lsp("rust_analyzer", {
         "rust-project.json",
         ".git",
     },
+    capabilities = {
+        experimental = {
+            commands = { commands = { "rust-analyzer.showReferences" } },
+        },
+    },
+    commands = {
+        ["rust-analyzer.showReferences"] = show_lsp_references,
+    },
     settings = {
         ["rust-analyzer"] = {
             cargo = { allFeatures = true },
             checkOnSave = true,
+            lens = {
+                references = {
+                    adt = { enable = true },
+                    enumVariant = { enable = true },
+                    method = { enable = true },
+                    trait = { enable = true },
+                },
+            },
         },
     },
 }, "rust-analyzer")
@@ -782,18 +817,38 @@ enable_lsp("ts_ls", {
         "package.json",
         ".git",
     },
+    commands = {
+        ["editor.action.showReferences"] = show_lsp_references,
+    },
+    settings = {
+        typescript = {
+            referencesCodeLens = { enabled = true },
+            implementationsCodeLens = { enabled = true },
+        },
+        javascript = {
+            referencesCodeLens = { enabled = true },
+            implementationsCodeLens = { enabled = true },
+        },
+    },
 }, "typescript-language-server")
 
 enable_lsp("lua_ls", {
     cmd = { "lua-language-server" },
+    init_options = {
+        codeLensViewReferences = true,
+    },
     filetypes = { "lua" },
     root_markers = {
         { ".luarc.json", ".luarc.jsonc" },
         ".git",
     },
+    commands = {
+        ["lua.showReferences"] = show_lsp_references,
+    },
     settings = {
         Lua = {
             runtime = { version = "LuaJIT" },
+            codeLens = { enable = true },
             diagnostics = {
                 globals = { "vim" },
             },
