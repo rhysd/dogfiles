@@ -548,7 +548,7 @@ keymap("n", "<Space>/", function()
     telescope_builtin().current_buffer_fuzzy_find()
 end, { silent = true })
 keymap("n", "<Space>o", function()
-    local clients = vim.lsp.get_clients({ bufnr = 0 })
+    local clients = vim.lsp.get_clients({ bufnr = 0, method = "textDocument/documentSymbol" })
     if #clients > 0 then
         telescope_builtin().lsp_document_symbols()
     else
