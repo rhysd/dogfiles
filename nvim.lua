@@ -1016,7 +1016,29 @@ keymap("x", "gy", nvim_surround_mapping("<Plug>(nvim-surround-visual)"), { expr 
 keymap("x", "gx", nvim_surround_mapping("<Esc><Plug>(nvim-surround-delete)"), { expr = true, remap = true, silent = true })
 keymap("x", "gc", nvim_surround_mapping("<Esc><Plug>(nvim-surround-change)"), { expr = true, remap = true, silent = true })
 
-require("gitsigns").setup()
+local gitsigns = require("gitsigns")
+gitsigns.setup({
+    on_attach = function(bufnr)
+        local opts = { buffer = bufnr, silent = true }
+        local function jump_hunk(direction, motion)
+            if vim.wo.diff then
+                cmd.normal({ vim.v.count1 .. motion, bang = true })
+            else
+                -- The `opts` parameter type is too strict: https://github.com/lewis6991/gitsigns.nvim/issues/1608
+                ---@diagnostic disable-next-line: missing-fields
+                gitsigns.nav_hunk(direction, { target = "all" })
+            end
+        end
+
+        keymap("n", "[c", function() jump_hunk("prev", "[c") end, opts)
+        keymap("n", "]c", function() jump_hunk("next", "]c") end, opts)
+        keymap("n", "<Leader>gp", gitsigns.preview_hunk, opts)
+        keymap("n", "<Leader>gs", gitsigns.stage_hunk, opts)
+        keymap("x", "<Leader>gs", function()
+            gitsigns.stage_hunk({ fn.line("."), fn.line("v") })
+        end, opts)
+    end,
+})
 
 keymap({ "n", "x" }, "*", "<Plug>(asterisk-z*)", { remap = true })
 keymap({ "n", "x" }, "#", "<Plug>(asterisk-z#)", { remap = true })
