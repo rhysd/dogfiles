@@ -532,14 +532,19 @@ local function telescope_builtin()
     end
     return require("telescope.builtin")
 end
+
+local function project_cwd()
+    return vim.fs.root(0, ".git") or fn.getcwd()
+end
+
 keymap("n", "<Space>m", function()
     telescope_builtin().oldfiles()
 end, { silent = true })
 keymap("n", "<Space>g", function()
-    telescope_builtin().live_grep()
+    telescope_builtin().live_grep({ cwd = project_cwd() })
 end, { silent = true })
 keymap("n", "<Space>f", function()
-    telescope_builtin().find_files()
+    telescope_builtin().find_files({ cwd = project_cwd() })
 end, { silent = true })
 keymap("n", "<Space>b", function()
     telescope_builtin().buffers()
