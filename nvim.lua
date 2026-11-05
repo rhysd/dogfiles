@@ -54,6 +54,16 @@ end
 
 local augroup = api.nvim_create_augroup("MyVimrc", { clear = true })
 
+api.nvim_create_autocmd("PackChanged", {
+    group = augroup,
+    callback = function(event)
+        if event.data.kind == "update" and event.data.spec.name == "nvim-treesitter" then
+            cmd.packadd("nvim-treesitter")
+            cmd.TSUpdate()
+        end
+    end,
+})
+
 cmd("language message C")
 cmd("language time C")
 
