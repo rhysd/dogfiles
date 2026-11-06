@@ -902,30 +902,19 @@ local function ensure_treesitter()
     end
 end
 
-keymap({ "x", "o" }, "af", function()
-    ensure_treesitter()
-    require("nvim-treesitter-textobjects.select").select_textobject("@function.outer", "textobjects")
-end)
-keymap({ "x", "o" }, "if", function()
-    ensure_treesitter()
-    require("nvim-treesitter-textobjects.select").select_textobject("@function.inner", "textobjects")
-end)
-keymap({ "x", "o" }, "ac", function()
-    ensure_treesitter()
-    require("nvim-treesitter-textobjects.select").select_textobject("@class.outer", "textobjects")
-end)
-keymap({ "x", "o" }, "ic", function()
-    ensure_treesitter()
-    require("nvim-treesitter-textobjects.select").select_textobject("@class.inner", "textobjects")
-end)
-keymap({ "x", "o" }, "aa", function()
-    ensure_treesitter()
-    require("nvim-treesitter-textobjects.select").select_textobject("@parameter.outer", "textobjects")
-end)
-keymap({ "x", "o" }, "ia", function()
-    ensure_treesitter()
-    require("nvim-treesitter-textobjects.select").select_textobject("@parameter.inner", "textobjects")
-end)
+local function treesitter_textobj_mapping(query, group)
+    return function()
+        ensure_treesitter()
+        require("nvim-treesitter-textobjects.select").select_textobject(query, group)
+    end
+end
+
+keymap({ "x", "o" }, "af", treesitter_textobj_mapping("@function.outer", "textobjects"))
+keymap({ "x", "o" }, "if", treesitter_textobj_mapping("@function.inner", "textobjects"))
+keymap({ "x", "o" }, "ac", treesitter_textobj_mapping("@class.outer", "textobjects"))
+keymap({ "x", "o" }, "ic", treesitter_textobj_mapping("@class.inner", "textobjects"))
+keymap({ "x", "o" }, "aa", treesitter_textobj_mapping("@parameter.outer", "textobjects"))
+keymap({ "x", "o" }, "ia", treesitter_textobj_mapping("@parameter.inner", "textobjects"))
 
 api.nvim_create_autocmd("FileType", {
     group = augroup,
