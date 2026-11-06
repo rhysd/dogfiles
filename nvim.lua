@@ -937,6 +937,15 @@ api.nvim_create_autocmd("FileType", {
     },
     callback = function(args)
         ensure_treesitter()
+
+        local map_opts = { buffer = args.buf, silent = true }
+        keymap({ "n", "x", "o" }, "]m", function()
+            require("nvim-treesitter-textobjects.move").goto_next_start("@function.outer", "textobjects")
+        end, map_opts)
+        keymap({ "n", "x", "o" }, "[m", function()
+            require("nvim-treesitter-textobjects.move").goto_previous_start("@function.outer", "textobjects")
+        end, map_opts)
+
         local ok, err = pcall(vim.treesitter.start, args.buf)
         if not ok then
             local message = "Treesitter failed to start: " .. err
