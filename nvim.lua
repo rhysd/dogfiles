@@ -911,8 +911,10 @@ end
 
 keymap({ "x", "o" }, "af", treesitter_textobj_mapping("@function.outer", "textobjects"))
 keymap({ "x", "o" }, "if", treesitter_textobj_mapping("@function.inner", "textobjects"))
-keymap({ "x", "o" }, "ac", treesitter_textobj_mapping("@class.outer", "textobjects"))
-keymap({ "x", "o" }, "ic", treesitter_textobj_mapping("@class.inner", "textobjects"))
+keymap({ "x", "o" }, "ac", treesitter_textobj_mapping("@call.outer", "textobjects"))
+keymap({ "x", "o" }, "ic", treesitter_textobj_mapping("@call.inner", "textobjects"))
+keymap({ "x", "o" }, "as", treesitter_textobj_mapping("@class.outer", "textobjects"))
+keymap({ "x", "o" }, "is", treesitter_textobj_mapping("@class.inner", "textobjects"))
 keymap({ "x", "o" }, "aa", treesitter_textobj_mapping("@parameter.outer", "textobjects"))
 keymap({ "x", "o" }, "ia", treesitter_textobj_mapping("@parameter.inner", "textobjects"))
 
