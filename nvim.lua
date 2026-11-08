@@ -133,6 +133,21 @@ vim.g.terminal_color_13 = "#d787d7"
 vim.g.terminal_color_14 = "#87afaf"
 vim.g.terminal_color_15 = "#c7c7c7"
 
+-- Restore previous cursor position in the buffer
+api.nvim_create_autocmd("BufReadPost", {
+    group = augroup,
+    callback = function(args)
+        local ft = vim.filetype.match({ buf = args.buf })
+        if ft == "gitcommit" or ft == "gitrebase" then
+            return
+        end
+        local pos = api.nvim_buf_get_mark(args.buf, '"')
+        if pos[1] > 0 and pos[1] <= api.nvim_buf_line_count(args.buf) then
+            api.nvim_win_set_cursor(0, pos)
+        end
+    end,
+})
+
 api.nvim_create_autocmd({ "BufRead", "BufNew", "BufNewFile" }, {
     group = augroup,
     pattern = "gitconfig",
