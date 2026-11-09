@@ -824,6 +824,8 @@ enable_lsp("lua_ls", {
     settings = {
         Lua = {
             runtime = { version = "LuaJIT" },
+            hint = { enable = true, setType = true },
+            type = { inferParamType = true },
             diagnostics = {
                 globals = { "vim" },
             },
