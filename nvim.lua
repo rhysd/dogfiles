@@ -7,30 +7,63 @@ local cmd = vim.cmd
 local opt = vim.opt
 
 local lazy_plugins = {
+    plenary = {
+        src = "https://github.com/nvim-lua/plenary.nvim",
+        loaded = false,
+    },
     telescope = {
-        { src = "https://github.com/nvim-lua/plenary.nvim" },
-        { src = "https://github.com/nvim-telescope/telescope.nvim" },
+        src = "https://github.com/nvim-telescope/telescope.nvim",
+        deps = { "plenary" },
+        loaded = false,
     },
     treesitter = {
-        { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
-        { src = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects" },
+        src = "https://github.com/nvim-treesitter/nvim-treesitter",
+        loaded = false,
+    },
+    treesitter_textobjs = {
+        src = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
+        deps = { "treesitter" },
+        loaded = false,
+    },
+    textobj_user = {
+        src = "https://github.com/kana/vim-textobj-user",
+        loaded = false,
     },
     textobj_entire = {
-        { src = "https://github.com/kana/vim-textobj-user" },
-        { src = "https://github.com/kana/vim-textobj-entire" },
+        src = "https://github.com/kana/vim-textobj-entire",
+        deps = { "textobj_user" },
+        loaded = false,
     },
     textobj_anyblock = {
-        { src = "https://github.com/kana/vim-textobj-user" },
-        { src = "https://github.com/rhysd/vim-textobj-anyblock" },
+        src = "https://github.com/rhysd/vim-textobj-anyblock",
+        deps = { "textobj_user" },
+        loaded = false,
     },
     textobj_indent = {
-        { src = "https://github.com/kana/vim-textobj-user" },
-        { src = "https://github.com/kana/vim-textobj-indent" },
+        src = "https://github.com/kana/vim-textobj-indent",
+        deps = { "textobj_user" },
+        loaded = false,
     },
     surround = {
-        { src = "https://github.com/kylechui/nvim-surround" },
+        src = "https://github.com/kylechui/nvim-surround",
+        loaded = false,
     },
 }
+
+local function pack_add_once(key)
+    local lazy_plugin = lazy_plugins[key]
+    if lazy_plugin.loaded then
+        return false
+    end
+
+    for _, dep in ipairs(lazy_plugin.deps or {}) do
+        pack_add_once(dep)
+    end
+
+    vim.pack.add({ lazy_plugin }, { load = true })
+    lazy_plugin.loaded = true
+    return true
+end
 
 vim.pack.add({
     { src = "https://github.com/rhysd/vim-color-spring-night" },
@@ -41,16 +74,6 @@ vim.pack.add({
     { src = "https://github.com/nvim-lualine/lualine.nvim" },
     { src = "https://github.com/gbprod/substitute.nvim" },
 })
-
-local loaded_lazy_plugins = {}
-local function pack_add_once(key)
-    if loaded_lazy_plugins[key] then
-        return false
-    end
-    vim.pack.add(lazy_plugins[key], { load = true })
-    loaded_lazy_plugins[key] = true
-    return true
-end
 
 local augroup = api.nvim_create_augroup("MyVimrc", { clear = true })
 
@@ -922,6 +945,11 @@ end, {})
 local function ensure_treesitter()
     if pack_add_once("treesitter") then
         require("nvim-treesitter").setup()
+    end
+end
+
+local function ensure_treesitter_textobjects()
+    if pack_add_once("treesitter_textobjs") then
         require("nvim-treesitter-textobjects").setup({
             select = {
                 lookahead = true,
@@ -932,7 +960,7 @@ end
 
 local function treesitter_textobj_mapping(query, group)
     return function()
-        ensure_treesitter()
+        ensure_treesitter_textobjects()
         require("nvim-treesitter-textobjects.select").select_textobject(query, group)
     end
 end
@@ -970,9 +998,11 @@ api.nvim_create_autocmd("FileType", {
 
         local map_opts = { buffer = args.buf, silent = true }
         keymap({ "n", "x", "o" }, "]m", function()
+            ensure_treesitter_textobjects()
             require("nvim-treesitter-textobjects.move").goto_next_start("@function.outer", "textobjects")
         end, map_opts)
         keymap({ "n", "x", "o" }, "[m", function()
+            ensure_treesitter_textobjects()
             require("nvim-treesitter-textobjects.move").goto_previous_start("@function.outer", "textobjects")
         end, map_opts)
 
