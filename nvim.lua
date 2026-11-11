@@ -759,6 +759,17 @@ enable_lsp("rust_analyzer", {
         ["rust-analyzer"] = {
             cargo = { allFeatures = true },
             checkOnSave = true,
+            inlayHints = {
+                bindingModeHints = { enable = true },
+                closureCaptureHints = { enable = true },
+                closureReturnTypeHints = { enable = "always" },
+                expressionAdjustmentHints = { enable = "always" },
+                genericParameterHints = {
+                    lifetime = { enable = true },
+                    type = { enable = true },
+                },
+                lifetimeElisionHints = { enable = "skip_trivial" },
+            },
         },
     },
 }, "rust-analyzer")
