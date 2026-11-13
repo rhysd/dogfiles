@@ -56,29 +56,12 @@ local function pack_add_once(key)
         return false
     end
 
-    local added = {}
-    local pending = { lazy_plugin }
-    while #pending > 0 do
-        local plugin = table.remove(pending)
-        if not plugin.loaded then
-            plugin.loaded = true
-            added[#added + 1] = plugin
-
-            for _, dep in ipairs(plugin.deps or {}) do
-                pending[#pending + 1] = lazy_plugins[dep]
-            end
-        end
+    for _, dep in ipairs(lazy_plugin.deps or {}) do
+        pack_add_once(dep)
     end
 
-    -- Reverse the order to load the plugins.
-    -- The order may not be correct. To fix it we need topological sort but the current
-    -- implementation is enough for our usage.
-    for i = 1, #added / 2 do
-        local j = #added - i + 1
-        added[i], added[j] = added[j], added[i]
-    end
-
-    vim.pack.add(added, { load = true })
+    vim.pack.add({ lazy_plugin }, { load = true })
+    lazy_plugin.loaded = true
     return true
 end
 
