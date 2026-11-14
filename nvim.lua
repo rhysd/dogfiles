@@ -497,7 +497,12 @@ api.nvim_create_autocmd("FileType", {
     group = augroup,
     pattern = "dirvish",
     callback = function(event)
-        local function dirvish_open()
+        local opts = { buffer = event.buf, silent = true }
+
+        keymap("n", "h", function()
+            cmd("Dirvish " .. fn.fnameescape(fn.expand("%:p:h:h")))
+        end, opts)
+        keymap("n", "l", function()
             local path = fn.getline(".")
             if path == "" then
                 return
@@ -505,15 +510,8 @@ api.nvim_create_autocmd("FileType", {
 
             local command = fn.isdirectory(path) == 1 and "Dirvish" or "edit"
             cmd(("%s %s"):format(command, fn.fnameescape(path)))
-        end
-
-        local function dirvish_parent()
-            cmd("Dirvish " .. fn.fnameescape(fn.expand("%:p:h:h")))
-        end
-
-        keymap("n", "h", dirvish_parent, { buffer = event.buf, silent = true })
-        keymap("n", "l", dirvish_open, { buffer = event.buf, silent = true })
-        keymap("n", "~", ":<C-u>Dirvish ~<CR>", { buffer = event.buf, silent = true })
+        end, opts)
+        keymap("n", "~", ":<C-u>Dirvish ~<CR>", opts)
     end,
 })
 
