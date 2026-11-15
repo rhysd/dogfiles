@@ -504,14 +504,20 @@ api.nvim_create_autocmd("FileType", {
         end, opts)
         keymap("n", "l", function()
             local path = fn.getline(".")
-            if path == "" then
-                return
-            end
-
             local command = fn.isdirectory(path) == 1 and "Dirvish" or "edit"
-            cmd(("%s %s"):format(command, fn.fnameescape(path)))
+            cmd(command .. " " .. fn.fnameescape(path))
         end, opts)
-        keymap("n", "~", ":<C-u>Dirvish ~<CR>", opts)
+        keymap("x", "o", "<Cmd>call dirvish#open('split', 1)<CR>", opts)
+        keymap("x", "p", "<Cmd>call dirvish#open('p', 1)<CR>", opts)
+        keymap({ "n", "x" }, "O", "<Cmd>call dirvish#open('vsplit', 1)<CR>", opts)
+        keymap("n", "go", function()
+            local path = fn.getline(".")
+            if vim.uv.fs_stat(path) then
+                vim.ui.open(path)
+            else
+                vim.notify("Path does not exist: " .. path, vim.log.levels.ERROR)
+            end
+        end, opts)
     end,
 })
 
