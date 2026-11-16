@@ -499,14 +499,8 @@ api.nvim_create_autocmd("FileType", {
     callback = function(event)
         local opts = { buffer = event.buf, silent = true }
 
-        keymap("n", "h", function()
-            cmd("Dirvish " .. fn.fnameescape(fn.expand("%:p:h:h")))
-        end, opts)
-        keymap("n", "l", function()
-            local path = fn.getline(".")
-            local command = fn.isdirectory(path) == 1 and "Dirvish" or "edit"
-            cmd(command .. " " .. fn.fnameescape(path))
-        end, opts)
+        keymap("n", "h", "<Plug>(dirvish_up)", opts)
+        keymap("n", "l", "<Cmd>call dirvish#open('edit', 0)<CR>", opts)
         keymap("x", "o", "<Cmd>call dirvish#open('split', 1)<CR>", opts)
         keymap("x", "p", "<Cmd>call dirvish#open('p', 1)<CR>", opts)
         keymap({ "n", "x" }, "O", "<Cmd>call dirvish#open('vsplit', 1)<CR>", opts)
