@@ -265,10 +265,10 @@ api.nvim_create_user_command("SetIndent", function(opts)
     target.softtabstop = width
 end, { bang = true, nargs = 1 })
 
-keymap({ "n", "v", "o" }, ":", ";")
-keymap({ "n", "v", "o" }, ";", ":")
-keymap({ "n", "v", "o" }, "@;", "@:")
-keymap({ "n", "v", "o" }, "@:", "@;")
+keymap({ "n", "x", "o" }, ":", ";")
+keymap({ "n", "x", "o" }, ";", ":")
+keymap({ "n", "x", "o" }, "@;", "@:")
+keymap({ "n", "x", "o" }, "@:", "@;")
 
 keymap("i", "j", function()
     return fn.getline("."):sub(fn.col(".") - 1, fn.col(".") - 1) == "j" and "<BS><Esc>" or "j"
@@ -281,14 +281,14 @@ end, { expr = true })
 
 keymap("i", "<C-c>", "<Esc>")
 keymap("n", "<Tab>", function() return vim.v.count > 0 and "G" or "<Tab>" end, { expr = true })
-keymap({ "n", "v", "o" }, "j", "gj")
-keymap({ "n", "v", "o" }, "k", "gk")
+keymap({ "n", "x", "o" }, "j", "gj")
+keymap({ "n", "x", "o" }, "k", "gk")
 keymap("n", "<C-j>", "<Cmd>keepjumps normal! }<CR>", { silent = true })
 keymap("n", "<C-k>", "<Cmd>keepjumps normal! {<CR>", { silent = true })
-keymap("v", "<C-j>", "}")
-keymap("v", "<C-k>", "{")
+keymap("x", "<C-j>", "}")
+keymap("x", "<C-k>", "{")
 keymap("n", "m", function() return "i" .. fn.getcharstr() .. "<Esc>" end, { expr = true, silent = true })
-keymap({ "n", "v", "o" }, "gm", "m")
+keymap({ "n", "x", "o" }, "gm", "m")
 keymap("n", "<Esc><Esc>", "<Cmd>nohlsearch<CR>", { silent = true })
 keymap("i", "<Tab>", function() return fn.pumvisible() == 1 and "<C-n>" or "<Tab>" end, { expr = true, silent = true })
 keymap("n", "n", "nzvzz")
@@ -338,13 +338,13 @@ keymap("n", "gX", "<Cmd>tabclose<CR>", { silent = true })
 keymap("n", "H", "g0")
 keymap("n", "M", "g^")
 keymap("n", "L", "g$")
-keymap("v", "H", "g0")
-keymap("v", "M", "g^")
-keymap("v", "L", "g$")
+keymap("x", "H", "g0")
+keymap("x", "M", "g^")
+keymap("x", "L", "g$")
 keymap("n", "gh", "H")
 keymap("n", "gl", "L")
-keymap("v", "gh", "H")
-keymap("v", "gl", "L")
+keymap("x", "gh", "H")
+keymap("x", "gl", "L")
 keymap("n", "<Leader>ss", "<Cmd>setl spell! spell?<CR>")
 
 api.nvim_create_autocmd("CmdwinEnter", {
@@ -621,11 +621,6 @@ end, { silent = true })
 
 local lsp_format_augroup = api.nvim_create_augroup("MyLspFormat", { clear = true })
 local lsp_document_highlight_augroup = api.nvim_create_augroup("MyLspDocumentHighlight", { clear = true })
-local lsp_float_opts = {
-    border = "single",
-    focusable = true,
-    silent = true,
-}
 
 vim.lsp.log.set_level(vim.log.levels.OFF)
 vim.diagnostic.config({
@@ -643,14 +638,20 @@ api.nvim_create_autocmd("LspAttach", {
         keymap("n", "gd", vim.lsp.buf.definition, map_opts)
         keymap("n", "gD", vim.lsp.buf.declaration, map_opts)
         keymap("n", "<Leader>lt", vim.lsp.buf.type_definition, map_opts)
-        keymap("n", "K", function() vim.lsp.buf.hover(lsp_float_opts) end, map_opts)
+        keymap("n", "K", function()
+            vim.lsp.buf.hover({
+                border = "single",
+                focusable = true,
+                silent = true,
+            })
+        end, map_opts)
         keymap("n", "<Leader>ls", vim.lsp.buf.signature_help, map_opts)
         keymap("n", "<Leader>lci", function() telescope_builtin().lsp_incoming_calls() end, map_opts)
         keymap("n", "<Leader>lco", function() telescope_builtin().lsp_outgoing_calls() end, map_opts)
         keymap("n", "<Leader>li", function() telescope_builtin().lsp_implementations() end, map_opts)
         keymap("n", "<Leader>lr", function() telescope_builtin().lsp_references() end, map_opts)
         keymap("n", "<Leader>ln", vim.lsp.buf.rename, map_opts)
-        keymap({ "n", "v" }, "<Leader>la", vim.lsp.buf.code_action, map_opts)
+        keymap({ "n", "x" }, "<Leader>la", vim.lsp.buf.code_action, map_opts)
         keymap("n", "<Leader>ld", vim.diagnostic.open_float, map_opts)
         keymap("n", "[d", function() vim.diagnostic.jump({ count = -1, float = true }) end, map_opts)
         keymap("n", "]d", function() vim.diagnostic.jump({ count = 1, float = true }) end, map_opts)
