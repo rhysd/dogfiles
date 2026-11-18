@@ -1081,12 +1081,12 @@ local function nvim_surround_mapping(plug)
     end
 end
 
-keymap("n", "gy", nvim_surround_mapping("<Plug>(nvim-surround-normal)"), { expr = true, remap = true, silent = true })
-keymap("n", "gx", nvim_surround_mapping("<Plug>(nvim-surround-delete)"), { expr = true, remap = true, silent = true })
-keymap("n", "gc", nvim_surround_mapping("<Plug>(nvim-surround-change)"), { expr = true, remap = true, silent = true })
-keymap("x", "gy", nvim_surround_mapping("<Plug>(nvim-surround-visual)"), { expr = true, remap = true, silent = true })
-keymap("x", "gx", nvim_surround_mapping("<Esc><Plug>(nvim-surround-delete)"), { expr = true, remap = true, silent = true })
-keymap("x", "gc", nvim_surround_mapping("<Esc><Plug>(nvim-surround-change)"), { expr = true, remap = true, silent = true })
+keymap("n", "gy", nvim_surround_mapping("<Plug>(nvim-surround-normal)"), { expr = true, silent = true })
+keymap("n", "gx", nvim_surround_mapping("<Plug>(nvim-surround-delete)"), { expr = true, silent = true })
+keymap("n", "gc", nvim_surround_mapping("<Plug>(nvim-surround-change)"), { expr = true, silent = true })
+keymap("x", "gy", nvim_surround_mapping("<Plug>(nvim-surround-visual)"), { expr = true, silent = true })
+keymap("x", "gx", nvim_surround_mapping("<Esc><Plug>(nvim-surround-delete)"), { expr = true, silent = true })
+keymap("x", "gc", nvim_surround_mapping("<Esc><Plug>(nvim-surround-change)"), { expr = true, silent = true })
 
 local gitsigns = require("gitsigns")
 gitsigns.setup({
@@ -1112,10 +1112,10 @@ gitsigns.setup({
     end,
 })
 
-keymap({ "n", "x" }, "*", "<Plug>(asterisk-z*)", { remap = true })
-keymap({ "n", "x" }, "#", "<Plug>(asterisk-z#)", { remap = true })
-keymap({ "n", "x" }, "g*", "<Plug>(asterisk-gz*)", { remap = true })
-keymap({ "n", "x" }, "g#", "<Plug>(asterisk-gz#)", { remap = true })
+keymap({ "n", "x" }, "*", "<Plug>(asterisk-z*)")
+keymap({ "n", "x" }, "#", "<Plug>(asterisk-z#)")
+keymap({ "n", "x" }, "g*", "<Plug>(asterisk-gz*)")
+keymap({ "n", "x" }, "g#", "<Plug>(asterisk-gz#)")
 
 require("substitute").setup()
 
@@ -1138,11 +1138,11 @@ local function textobj_mapping(group_name, plug_name)
     end
 end
 
-keymap({ "x", "o" }, "ae", textobj_mapping("textobj_entire", "<Plug>(textobj-entire-a)"), { expr = true, remap = true })
-keymap({ "x", "o" }, "ie", textobj_mapping("textobj_entire", "<Plug>(textobj-entire-i)"), { expr = true, remap = true })
-keymap({ "x", "o" }, "ab", textobj_mapping("textobj_anyblock", "<Plug>(textobj-anyblock-a)"), { expr = true, remap = true })
-keymap({ "x", "o" }, "ib", textobj_mapping("textobj_anyblock", "<Plug>(textobj-anyblock-i)"), { expr = true, remap = true })
-keymap({ "x", "o" }, "ai", textobj_mapping("textobj_indent", "<Plug>(textobj-indent-a)"), { expr = true, remap = true })
-keymap({ "x", "o" }, "ii", textobj_mapping("textobj_indent", "<Plug>(textobj-indent-i)"), { expr = true, remap = true })
-keymap({ "x", "o" }, "aI", textobj_mapping("textobj_indent", "<Plug>(textobj-indent-same-a)"), { expr = true, remap = true })
-keymap({ "x", "o" }, "iI", textobj_mapping("textobj_indent", "<Plug>(textobj-indent-same-i)"), { expr = true, remap = true })
+keymap({ "x", "o" }, "ae", textobj_mapping("textobj_entire", "<Plug>(textobj-entire-a)"), { expr = true })
+keymap({ "x", "o" }, "ie", textobj_mapping("textobj_entire", "<Plug>(textobj-entire-i)"), { expr = true })
+keymap({ "x", "o" }, "ab", textobj_mapping("textobj_anyblock", "<Plug>(textobj-anyblock-a)"), { expr = true })
+keymap({ "x", "o" }, "ib", textobj_mapping("textobj_anyblock", "<Plug>(textobj-anyblock-i)"), { expr = true })
+keymap({ "x", "o" }, "ai", textobj_mapping("textobj_indent", "<Plug>(textobj-indent-a)"), { expr = true })
+keymap({ "x", "o" }, "ii", textobj_mapping("textobj_indent", "<Plug>(textobj-indent-i)"), { expr = true })
+keymap({ "x", "o" }, "aI", textobj_mapping("textobj_indent", "<Plug>(textobj-indent-same-a)"), { expr = true })
+keymap({ "x", "o" }, "iI", textobj_mapping("textobj_indent", "<Plug>(textobj-indent-same-i)"), { expr = true })
