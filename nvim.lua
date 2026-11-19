@@ -490,7 +490,7 @@ keymap("n", "<Leader>gc", "<Cmd>GitCommit<CR>", { silent = true })
 keymap("n", "<Leader><Leader>", function()
     local name = api.nvim_buf_get_name(0)
     local dir = name == "" and fn.getcwd() or fn.fnamemodify(name, ":p:h")
-    cmd("Dirvish " .. fn.fnameescape(dir))
+    cmd.Dirvish({ dir, magic = { file = false } })
 end, { silent = true })
 
 api.nvim_create_autocmd("FileType", {
