@@ -440,17 +440,14 @@ api.nvim_create_user_command("GitAdd", function(opts)
     vim.system(argv, {
         env = { VIMRUNTIME = "" },
         text = true,
-    }, function(result)
-        vim.schedule(function()
-            if result.code == 0 then
-                vim.api.nvim_echo({ { "Git: Added " .. what } }, false, {})
-                return
-            end
-
+    }, vim.schedule_wrap(function(result)
+        if result.code == 0 then
+            vim.api.nvim_echo({ { "Git: Added " .. what } }, false, {})
+        else
             local message = result.stderr ~= "" and result.stderr or result.stdout or "git add failed"
             vim.notify(message, vim.log.levels.ERROR)
-        end)
-    end)
+        end
+    end))
 end, { nargs = "*", bang = true })
 
 api.nvim_create_user_command("GitCommit", function(opts)
