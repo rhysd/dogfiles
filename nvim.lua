@@ -236,7 +236,10 @@ local function open_url_under_cursor()
                 end
             until url == previous
 
-            vim.ui.open(url)
+            local _, err = vim.ui.open(url)
+            if err then
+                vim.notify(err, vim.log.levels.ERROR)
+            end
             return
         end
     end
@@ -504,7 +507,10 @@ api.nvim_create_autocmd("FileType", {
         keymap("n", "go", function()
             local path = fn.getline(".")
             if vim.uv.fs_stat(path) then
-                vim.ui.open(path)
+                local _, err = vim.ui.open(path)
+                if err then
+                    vim.notify(err, vim.log.levels.ERROR)
+                end
             else
                 vim.notify("Path does not exist: " .. path, vim.log.levels.ERROR)
             end
