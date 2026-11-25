@@ -582,7 +582,7 @@ local function telescope_builtin()
     return require("telescope.builtin")
 end
 
-local function project_cwd()
+local function project_dir()
     return vim.fs.root(0, ".git") or fn.getcwd()
 end
 
@@ -590,10 +590,10 @@ keymap("n", "<Space>m", function()
     telescope_builtin().oldfiles()
 end, { silent = true })
 keymap("n", "<Space>g", function()
-    telescope_builtin().live_grep({ cwd = project_cwd() })
+    telescope_builtin().live_grep({ cwd = project_dir() })
 end, { silent = true })
 keymap("n", "<Space>f", function()
-    telescope_builtin().find_files({ cwd = project_cwd() })
+    telescope_builtin().find_files({ cwd = project_dir() })
 end, { silent = true })
 keymap("n", "<Space>b", function()
     telescope_builtin().buffers()
@@ -941,10 +941,17 @@ api.nvim_create_user_command("LspRename", function(opts)
 end, { nargs = "?" })
 api.nvim_create_user_command("LspIncomingCalls", function() telescope_builtin().lsp_incoming_calls() end, {})
 api.nvim_create_user_command("LspOutgoingCalls", function() telescope_builtin().lsp_outgoing_calls() end, {})
-api.nvim_create_user_command("LspDiagnostics", function()
-    local diagnostics_opts = { severity = { min = vim.diagnostic.severity.WARN } }
+api.nvim_create_user_command("LspDiagnostics", function(opts)
+    local diagnostics_opts = { severity_limit = vim.diagnostic.severity.WARN }
+    if opts.bang then
+        -- Telescope compares path prefixes, so keep the trailing directory separator.
+        diagnostics_opts.root_dir = fn.fnamemodify(project_dir(), ":p")
+        diagnostics_opts.workspace = true
+    else
+        diagnostics_opts.bufnr = 0
+    end
     telescope_builtin().diagnostics(diagnostics_opts)
-end, {})
+end, { bang = true })
 
 local function ensure_treesitter()
     if pack_add_once("treesitter") then
