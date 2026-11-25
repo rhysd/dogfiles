@@ -435,7 +435,12 @@ api.nvim_create_user_command("GitAdd", function(opts)
         argv = { "git", "-C", getcwd_for_git(), "add", "-u", ":/" }
         what = "all modified files"
     else
-        argv = { "git", "-C", getcwd_for_git(), "add", fn.expand("%:p") }
+        local path = fn.expand("%:p")
+        if path == "" then
+            vim.notify("GitAdd: current buffer has no file name", vim.log.levels.ERROR)
+            return
+        end
+        argv = { "git", "-C", getcwd_for_git(), "add", ":(literal)" .. path }
         what = "this buffer"
     end
     vim.list_extend(argv, opts.fargs)
@@ -942,15 +947,15 @@ end, { nargs = "?" })
 api.nvim_create_user_command("LspIncomingCalls", function() telescope_builtin().lsp_incoming_calls() end, {})
 api.nvim_create_user_command("LspOutgoingCalls", function() telescope_builtin().lsp_outgoing_calls() end, {})
 api.nvim_create_user_command("LspDiagnostics", function(opts)
-    local diagnostics_opts = { severity_limit = vim.diagnostic.severity.WARN }
+    local opts = { severity_limit = vim.diagnostic.severity.WARN }
     if opts.bang then
         -- Telescope compares path prefixes, so keep the trailing directory separator.
-        diagnostics_opts.root_dir = fn.fnamemodify(project_dir(), ":p")
-        diagnostics_opts.workspace = true
+        opts.root_dir = fn.fnamemodify(project_dir(), ":p")
+        opts.workspace = true
     else
-        diagnostics_opts.bufnr = 0
+        opts.bufnr = 0
     end
-    telescope_builtin().diagnostics(diagnostics_opts)
+    telescope_builtin().diagnostics(opts)
 end, { bang = true })
 
 local function ensure_treesitter()
