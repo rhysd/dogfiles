@@ -664,11 +664,11 @@ api.nvim_create_autocmd("LspAttach", {
         keymap("n", "[d", function() vim.diagnostic.jump({ count = -1, float = true }) end, map_opts)
         keymap("n", "]d", function() vim.diagnostic.jump({ count = 1, float = true }) end, map_opts)
 
-        if client and client:supports_method("textDocument/linkedEditingRange") then
+        if client and client:supports_method("textDocument/linkedEditingRange", event.buf) then
             vim.lsp.linked_editing_range.enable(true, { client_id = client.id })
         end
 
-        if client and client:supports_method("textDocument/inlayHint") then
+        if client and client:supports_method("textDocument/inlayHint", event.buf) then
             api.nvim_buf_create_user_command(event.buf, "LspToggleInlayHints", function()
                 local enabled = not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf })
                 vim.lsp.inlay_hint.enable(enabled, { bufnr = event.buf })
@@ -677,7 +677,7 @@ api.nvim_create_autocmd("LspAttach", {
             keymap("n", "<Leader>lh", "<Cmd>LspToggleInlayHints<CR>", map_opts)
         end
 
-        if client and client:supports_method("textDocument/documentHighlight") then
+        if client and client:supports_method("textDocument/documentHighlight", event.buf) then
             api.nvim_clear_autocmds({
                 group = lsp_document_highlight_augroup,
                 buffer = event.buf,
@@ -694,7 +694,7 @@ api.nvim_create_autocmd("LspAttach", {
             })
         end
 
-        if client and client:supports_method("textDocument/formatting") then
+        if client and client:supports_method("textDocument/formatting", event.buf) then
             api.nvim_clear_autocmds({
                 group = lsp_format_augroup,
                 buffer = event.buf,
@@ -923,7 +923,7 @@ api.nvim_create_user_command("LspInfo", function()
             local caps = {}
 
             for _, capability in ipairs(capabilities) do
-                if client:supports_method("textDocument/" .. capability) then
+                if client:supports_method("textDocument/" .. capability, bufnr) then
                     table.insert(caps, capability)
                 end
             end
