@@ -713,17 +713,6 @@ api.nvim_create_autocmd("LspAttach", {
     end,
 })
 
-local enabled_lsps = {}
-
-local function lsp_executable(cmd_parts)
-    if type(cmd_parts) == "table" then
-        return cmd_parts[1]
-    end
-    if type(cmd_parts) == "string" then
-        return cmd_parts:match("%S+")
-    end
-end
-
 local function format_server_info(client)
     local server_info = client.server_info
     if not server_info then
@@ -750,21 +739,9 @@ local function format_workspace_folders(client)
     return table.concat(names, ", ")
 end
 
-local function enable_lsp(name, config, executable)
-    local executable_name = executable or lsp_executable(config.cmd) or name
-
-    api.nvim_create_autocmd("FileType", {
-        group = augroup,
-        pattern = config.filetypes,
-        callback = function()
-            if enabled_lsps[name] or fn.exepath(executable_name) == "" then
-                return
-            end
-            vim.lsp.config(name, config)
-            vim.lsp.enable(name)
-            enabled_lsps[name] = true
-        end,
-    })
+local function enable_lsp(name, config)
+    vim.lsp.config(name, config)
+    vim.lsp.enable(name)
 end
 
 enable_lsp("clangd", {
@@ -802,7 +779,7 @@ enable_lsp("rust_analyzer", {
             },
         },
     },
-}, "rust-analyzer")
+})
 
 enable_lsp("gopls", {
     cmd = { "gopls" },
@@ -832,7 +809,7 @@ enable_lsp("wgsl_analyzer", {
     root_markers = {
         ".git",
     },
-}, "wgsl-analyzer")
+})
 
 enable_lsp("ts_ls", {
     cmd = { "typescript-language-server", "--stdio" },
@@ -853,7 +830,7 @@ enable_lsp("ts_ls", {
         "package.json",
         ".git",
     },
-}, "typescript-language-server")
+})
 
 enable_lsp("lua_ls", {
     cmd = { "lua-language-server" },
@@ -882,7 +859,7 @@ enable_lsp("lua_ls", {
             telemetry = { enable = false },
         },
     },
-}, "lua-language-server")
+})
 
 api.nvim_create_user_command("LspInfo", function()
     local bufnr = api.nvim_get_current_buf()
